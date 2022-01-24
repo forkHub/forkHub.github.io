@@ -34,21 +34,7 @@ div.demo div.snipet {
 }
 
 @media only screen and (orientation:portrait) {
-    div.demo {
-        display: block;
-    }
-    
-    div.demo iframe {
-        overflow: hidden;
-        width: 50vw;
-        height: 100vh;
-        margin: 5px;
-    }
 
-    div.demo div.snipet {
-        overflow: auto;
-        white-space: pre;
-    }
 }
 
 
