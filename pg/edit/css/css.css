@@ -128,11 +128,10 @@ div.kontainer-utama div.kontainer-2 div.web {
 
 
 div.kontainer-utama div.kontainer-2 div.web iframe {
-	/* width: 100%; */
-	/* height: 100%; */
+	width: 100%;
+	height: 100%;
 	border: none;
 	flex-grow: 1;
-
 }
 
 div.loading {
