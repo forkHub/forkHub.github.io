@@ -130,8 +130,8 @@ let hal = `
 		<canvas class='buffer front-buffer'></canvas>
 		<div class='debug' style="z-index:1; position:relative"></div>
 
-		<script src="./js/blitzjs.js"></script>
-		<script>{{script}}</script>
+		<script src="./js/blitzjs.js?r=${Math.floor(Math.random() * 1000)}"></script>
+		<script>{{script}}?r=${Math.floor(Math.random() * 1000)}</script>
 	</body>
 
 	</html>
