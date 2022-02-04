@@ -20,5 +20,6 @@ echo update playground:
 echo ==================
 xcopy ..\blijs\playground\web\*.* .\pg\ /i /y /s
 xcopy ..\blijs\libjsprod\*.* .\pg\js\ /i /y /s
+copy ..\halib\web\libjs\*.* .\pg\js
 
 pause
