@@ -2,44 +2,11 @@ var ha;
 (function (ha) {
     var blitz;
     (function (blitz) {
-        class BlWindow {
-            constructor() {
-                this._fps = 1000 / 30;
-                this._canvasAr = [];
-                this.windowResize = () => {
-                    let canvas = ha.blitz.blWindow._canvasAktif.canvas;
-                    let cp = ha.blitz.blWindow._canvasAktif.canvas.width;
-                    let cl = ha.blitz.blWindow._canvasAktif.canvas.height;
-                    let wp = window.innerWidth;
-                    let wl = window.innerHeight;
-                    let ratio = Math.min((wp / cp), (wl / cl));
-                    let cp2 = Math.floor(cp * ratio);
-                    let cl2 = Math.floor(cl * ratio);
-                    ha.blitz.blWindow._canvasAktif.scaleX = ratio;
-                    ha.blitz.blWindow._canvasAktif.scaleY = ratio;
-                    canvas.style.width = cp2 + 'px';
-                    canvas.style.height = cl2 + 'px';
-                    canvas.style.top = ((wl - cl2) / 2) + 'px';
-                    canvas.style.left = ((wp - cp2) / 2) + 'px';
-                };
-                this.loop = async () => {
-                    let _window = window;
-                    if (typeof _window.Loop == 'function') {
-                        await _window.Loop();
-                    }
-                };
-                this.repeat = () => {
-                    this.loop()
-                        .then(() => {
-                        setTimeout(() => {
-                            requestAnimationFrame(this.repeat);
-                        }, ha.blitz.blWindow._fps);
-                    }).
-                        catch((e) => {
-                        console.error(e);
-                    });
-                };
-            }
+        class Main {
+            _fps = 1000 / 30;
+            _origin;
+            _canvasAr = [];
+            _canvasAktif;
             buatCanvas(buffer) {
                 let canvasEl = window.document.body.querySelector(`canvas.${buffer}`);
                 let canvas = {
@@ -55,7 +22,8 @@ var ha;
                     handleY: 0,
                     img: null,
                     isAnim: false,
-                    rotation: 0
+                    rotation: 0,
+                    rect: ha.rect.create()
                 };
                 return canvas;
             }
@@ -64,8 +32,41 @@ var ha;
                 this._canvasAr.push(canvas);
                 canvas = this.buatCanvas('front-buffer');
                 this._canvasAr.push(canvas);
-                ha.blitz.blWindow.canvasAktif = canvas;
+                ha.blitz.main.canvasAktif = canvas;
             }
+            windowResize = () => {
+                let canvas = ha.blitz.main._canvasAktif.canvas;
+                let cp = ha.blitz.main._canvasAktif.canvas.width;
+                let cl = ha.blitz.main._canvasAktif.canvas.height;
+                let wp = window.innerWidth;
+                let wl = window.innerHeight;
+                let ratio = Math.min((wp / cp), (wl / cl));
+                let cp2 = Math.floor(cp * ratio);
+                let cl2 = Math.floor(cl * ratio);
+                ha.blitz.main._canvasAktif.scaleX = ratio;
+                ha.blitz.main._canvasAktif.scaleY = ratio;
+                canvas.style.width = cp2 + 'px';
+                canvas.style.height = cl2 + 'px';
+                canvas.style.top = ((wl - cl2) / 2) + 'px';
+                canvas.style.left = ((wp - cp2) / 2) + 'px';
+            };
+            loop = async () => {
+                let _window = window;
+                if (typeof _window.Loop == 'function') {
+                    await _window.Loop();
+                }
+            };
+            repeat = () => {
+                this.loop()
+                    .then(() => {
+                    setTimeout(() => {
+                        requestAnimationFrame(this.repeat);
+                    }, ha.blitz.main._fps);
+                }).
+                    catch((e) => {
+                    console.error(e);
+                });
+            };
             get canvasAktif() {
                 return this._canvasAktif;
             }
@@ -91,7 +92,7 @@ var ha;
                 this._fps = value;
             }
         }
-        blitz.blWindow = new BlWindow();
+        blitz.main = new Main();
     })(blitz = ha.blitz || (ha.blitz = {}));
 })(ha || (ha = {}));
 var ha;
@@ -99,19 +100,51 @@ var ha;
     var blitz;
     (function (blitz) {
         class Image {
-            constructor() {
-                this.loadImage = async (url) => {
-                    return new Promise((resolve, reject) => {
-                        let image2 = document.createElement('img');
-                        image2.onload = () => {
-                            resolve(image2);
-                        };
-                        image2.src = url;
-                        image2.onerror = (e) => {
-                            reject(e);
-                        };
-                    });
-                };
+            loadImage = async (url) => {
+                return new Promise((resolve, reject) => {
+                    let image2 = document.createElement('img');
+                    image2.onload = () => {
+                        resolve(image2);
+                    };
+                    image2.src = url;
+                    image2.onerror = (e) => {
+                        reject(e);
+                    };
+                });
+            };
+            resetImageRect(img) {
+                let rect = img.rect;
+                let p;
+                p = rect.vs[0];
+                p.x = 0;
+                p.y = 0;
+                p = rect.vs[1];
+                p.x = img.frameW;
+                p.y = 0;
+                p = rect.vs[2];
+                p.x = img.frameW;
+                p.y = img.frameH;
+                p = rect.vs[3];
+                p.x = 0;
+                p.y = img.frameH;
+            }
+            rectToImageTransform(image, x, y) {
+                let rect = image.rect;
+                let p;
+                let x2 = image.frameW * image.scaleX;
+                let y2 = image.frameH * image.scaleY;
+                p = rect.vs[1];
+                p.x = x2;
+                p.y = 0;
+                p = rect.vs[2];
+                p.x = x2;
+                p.y = y2;
+                p = rect.vs[3];
+                p.x = 0;
+                p.y = y2;
+                ha.rect.translate(rect, x, y);
+                ha.rect.translate(rect, -image.handleX, -image.handleY);
+                ha.rect.rotate(rect, image.rotation, x, y);
             }
         }
         blitz.image = new Image();
@@ -122,31 +155,101 @@ var ha;
     var blitz;
     (function (blitz) {
         class Input {
+            _inputs = [];
+            _touchGlobal;
+            _mouseGlobal;
+            _keybGlobal;
+            _inputGlobal;
+            _event = new Event();
             constructor() {
-                this._inputs = [];
-                this._event = new Event();
-                this.BLGetInputPos = (cx, cy, canvasScaleX, canvasScaleY) => {
-                    let rect = ha.blitz.blWindow.canvasAktif.canvas.getBoundingClientRect();
-                    let poslx = Math.floor((cx - rect.x) / canvasScaleX);
-                    let posly = Math.floor((cy - rect.y) / canvasScaleY);
-                    return {
-                        x: poslx,
-                        y: posly
-                    };
+                this._touchGlobal = this.def();
+                this._mouseGlobal = this.def();
+                this._keybGlobal = this.def();
+                this._inputGlobal = this.def();
+                this._touchGlobal.type = 'touch';
+                this._keybGlobal.type = 'keyb';
+                this._mouseGlobal.type = 'mouse';
+            }
+            getMouseKey(e) {
+                if (e.pointerType == 'touch') {
+                    return e.pointerId + '';
+                }
+                else if (e.pointerType == 'mouse') {
+                    return e.button + '';
+                }
+                throw Error('');
+            }
+            init(canvas) {
+                canvas.onpointerdown = (e) => {
+                    e.stopPropagation();
+                    let pos = ha.blitz.input.pos(e.clientX, e.clientY, ha.blitz.main.canvasAktif.scaleX, ha.blitz.main.canvasAktif.scaleY);
+                    let key = this.getMouseKey(e);
+                    let input = ha.blitz.input.baru(key, e.pointerType);
+                    ha.blitz.input.event.down(input, key, e.pointerType, pos);
+                    ha.blitz.input.event.down(this._inputGlobal, key, e.pointerType, pos);
+                    if ("mouse" == e.pointerType)
+                        ha.blitz.input.event.down(this._mouseGlobal, key, 'mouse', pos);
+                    if ("touch" == e.pointerType)
+                        ha.blitz.input.event.down(this._touchGlobal, key, 'touch', pos);
                 };
-                this._touch = this.def();
-                this._mouse = this.def();
-                this.keyb = this.def();
-                this._touch.type = 'touch';
-                this.keyb.type = 'keyb';
-                this._mouse.type = 'mouse';
+                canvas.onpointermove = (e) => {
+                    e.stopPropagation();
+                    let input = this.baru(e.button + '', e.pointerType);
+                    ha.blitz.input.event.move(input, e);
+                    ha.blitz.input.event.move(this.inputGlobal, e);
+                    if (e.pointerType == 'touch')
+                        ha.blitz.input.event.move(ha.blitz.input.touchGlobal, e);
+                    if (e.pointerType == 'mouse')
+                        ha.blitz.input.event.move(ha.blitz.input.mouseGlobal, e);
+                };
+                canvas.onpointerout = (e) => {
+                    e.stopPropagation();
+                    let input = ha.blitz.input.baru(e.button + '', e.pointerType);
+                    ha.blitz.input.event.up(input);
+                    ha.blitz.input.event.up(this.inputGlobal);
+                    if (e.pointerType == 'touch')
+                        ha.blitz.input.event.up(ha.blitz.input.touchGlobal);
+                    if (e.pointerType == 'mouse')
+                        ha.blitz.input.event.up(ha.blitz.input.mouseGlobal);
+                };
+                canvas.onpointercancel = (e) => {
+                    e.stopPropagation();
+                    e.preventDefault();
+                };
+                canvas.onpointerup = (e) => {
+                    e.stopPropagation();
+                    let input = ha.blitz.input.baru(e.button + '', e.pointerType);
+                    ha.blitz.input.event.up(input);
+                    ha.blitz.input.event.up(this.inputGlobal);
+                    if (e.pointerType == 'touch')
+                        ha.blitz.input.event.up(ha.blitz.input.touchGlobal);
+                    if (e.pointerType == 'mouse')
+                        ha.blitz.input.event.up(ha.blitz.input.mouseGlobal);
+                };
+                window.onkeydown = (e) => {
+                    e.stopPropagation();
+                    let input = ha.blitz.input.baru(e.key + '', 'keyb');
+                    ha.blitz.input.event.down(input, e.key, 'keyb', ha.point.create());
+                    ha.blitz.input.event.down(this.inputGlobal, e.key, 'keyb', ha.point.create());
+                    ha.blitz.input.event.down(this._keybGlobal, e.key, 'keyb', ha.point.create());
+                    console.log('keydown');
+                };
+                window.onkeyup = (e) => {
+                    e.stopPropagation();
+                    let input = ha.blitz.input.baru(e.key + '', 'keyb');
+                    ha.blitz.input.event.up(input);
+                    ha.blitz.input.event.up(this.inputGlobal);
+                    ha.blitz.input.event.up(this._keybGlobal);
+                };
+                window.onresize = async () => {
+                    ha.blitz.main.windowResize();
+                };
             }
             def() {
                 return {
                     id: 0,
                     isDown: false,
                     isDrag: false,
-                    isHit: false,
                     isTap: false,
                     key: '',
                     timerEnd: 0,
@@ -157,14 +260,14 @@ var ha;
                     xStart: 0,
                     y: 0,
                     yDrag: 0,
-                    yStart: 0
+                    yStart: 0,
+                    hit: 0
                 };
             }
             reset(input) {
                 input.id = 0;
                 input.isDown = false;
                 input.isDrag = false;
-                input.isHit = false;
                 input.isTap = false;
                 input.key = '';
                 input.timerEnd = 0;
@@ -181,27 +284,43 @@ var ha;
                 while (this.inputs.length > 0) {
                     this.inputs.pop();
                 }
+                this.flushByInput(this._inputGlobal);
+                this.flushByInput(this._mouseGlobal);
+                this.flushByInput(this._touchGlobal);
+                this.flushByInput(this._keybGlobal);
             }
-            get(e, inputType) {
-                let inputBaru;
+            flushByType(type) {
+                this._inputs.forEach((input) => {
+                    if (type == input.type) {
+                        this.flushByInput(input);
+                    }
+                });
+            }
+            flushByInput(input) {
+                input.isDown = false;
+                input.isDrag = false;
+                input.isTap = false;
+                input.hit = 0;
+            }
+            getInput(key, inputType) {
+                let inputHasil;
                 for (let i = 0; i < this.inputs.length; i++) {
                     let input = this.inputs[i];
-                    if (input.type == inputType && input.key == e) {
-                        inputBaru = input;
-                        return inputBaru;
+                    if (input.type == inputType && input.key == key) {
+                        inputHasil = input;
+                        return inputHasil;
                     }
                 }
-                return inputBaru;
+                return inputHasil;
             }
             baru(e, inputType) {
-                let inputBaru = this.get(e, inputType);
+                let inputBaru = this.getInput(e, inputType);
                 if (!inputBaru) {
                     inputBaru = {
                         key: e,
                         type: inputType,
                         isDown: false,
                         isDrag: false,
-                        isHit: false,
                         isTap: false,
                         timerEnd: 0,
                         timerStart: 0,
@@ -211,36 +330,44 @@ var ha;
                         y: 0,
                         yDrag: 0,
                         yStart: 0,
-                        id: 0
+                        id: 0,
+                        hit: 0
                     };
                     this.inputs.push(inputBaru);
-                    console.log('new input:');
-                    console.log(inputBaru);
                 }
                 return inputBaru;
             }
+            pos = (cx, cy, canvasScaleX, canvasScaleY) => {
+                let rect = ha.blitz.main.canvasAktif.canvas.getBoundingClientRect();
+                let poslx = Math.floor((cx - rect.x) / canvasScaleX);
+                let posly = Math.floor((cy - rect.y) / canvasScaleY);
+                return {
+                    x: poslx,
+                    y: posly
+                };
+            };
             get inputs() {
                 return this._inputs;
             }
             get event() {
                 return this._event;
             }
-            get touch() {
-                return this._touch;
+            get touchGlobal() {
+                return this._touchGlobal;
             }
-            get mouse() {
-                return this._mouse;
+            get mouseGlobal() {
+                return this._mouseGlobal;
             }
-            get keyb() {
-                return this._keyb;
+            get keybGlobal() {
+                return this._keybGlobal;
             }
-            set keyb(value) {
-                this._keyb = value;
+            get inputGlobal() {
+                return this._inputGlobal;
             }
         }
         class Event {
             move(input, e) {
-                let pos = ha.blitz.input.BLGetInputPos(e.clientX, e.clientY, ha.blitz.blWindow.canvasAktif.scaleX, ha.blitz.blWindow.canvasAktif.scaleY);
+                let pos = ha.blitz.input.pos(e.clientX, e.clientY, ha.blitz.main.canvasAktif.scaleX, ha.blitz.main.canvasAktif.scaleY);
                 input.x = pos.x;
                 input.y = pos.y;
                 input.id = e.pointerId;
@@ -250,7 +377,10 @@ var ha;
                     input.yDrag = input.y - input.yStart;
                 }
             }
-            down(input, e, pos) {
+            down(input, key, type, pos) {
+                if (!input.isDown) {
+                    input.hit++;
+                }
                 input.xStart = pos.x;
                 input.yStart = pos.y;
                 input.x = pos.x;
@@ -258,36 +388,15 @@ var ha;
                 input.isDown = true;
                 input.isTap = false;
                 input.isDrag = false;
-                input.isHit = true;
-                input.key = e.button + '';
-                input.type = e.pointerType;
+                input.key = key;
+                input.type = type;
                 input.timerStart = Date.now();
             }
-            up(input2, e) {
-                input2.id = e.pointerId;
+            up(input2) {
                 input2.isDown = false;
                 input2.isDrag = false;
                 input2.timerEnd = Date.now();
                 input2.isTap = ((input2.timerEnd - input2.timerStart) < 500);
-            }
-            keyDown(input, e) {
-                input.key = e.key;
-                input.type = 'keyb';
-                input.isDown = true;
-                input.isDrag = false;
-                input.isTap = false;
-                if (!e.repeat) {
-                    input.timerStart = Date.now();
-                    input.isHit = true;
-                }
-            }
-            keyUp(input, e) {
-                input.isDown = false;
-                input.isDrag = false;
-                input.isTap = false;
-                input.key = e.key;
-                input.type = 'keyb';
-                input.timerEnd = Date.now();
             }
         }
         blitz.input = new Input();
@@ -298,6 +407,7 @@ const CreateImage = (w = 32, h = 32, frameW = 32, frameH = 32) => {
     let img;
     canvas.width = w;
     canvas.height = h;
+    let rect = ha.rect.create(0, 0, frameW, frameH);
     img = {
         width: w,
         height: h,
@@ -311,12 +421,31 @@ const CreateImage = (w = 32, h = 32, frameW = 32, frameH = 32) => {
         scaleX: 1,
         scaleY: 1,
         canvas: canvas,
-        ctx: canvas.getContext('2d')
+        ctx: canvas.getContext('2d'),
+        rect: rect
     };
     return img;
 };
+const CopyImage = (src) => {
+    return {
+        canvas: src.canvas,
+        ctx: src.ctx,
+        frameH: src.frameH,
+        frameW: src.frameW,
+        handleX: src.handleX,
+        handleY: src.handleY,
+        height: src.height,
+        img: src.img,
+        isAnim: src.isAnim,
+        rect: ha.rect.copy(src.rect),
+        rotation: src.rotation,
+        scaleX: src.scaleX,
+        scaleY: src.scaleY,
+        width: src.width
+    };
+};
 const DrawImage = (img, x = 0, y = 0, frame = 0) => {
-    let ctx = ha.blitz.blWindow.canvasAktif.ctx;
+    let ctx = ha.blitz.main.canvasAktif.ctx;
     let jmlH;
     let jmlV;
     let frameX;
@@ -347,7 +476,7 @@ const DrawImage = (img, x = 0, y = 0, frame = 0) => {
     }
 };
 const GrabImage = (img, x = 0, y = 0) => {
-    img.ctx.drawImage(ha.blitz.blWindow.canvasAktif.canvas, x, y, img.width, img.height, 0, 0, img.width, img.height);
+    img.ctx.drawImage(ha.blitz.main.canvasAktif.canvas, x, y, img.width, img.height, 0, 0, img.width, img.height);
 };
 const HandleImage = (img, x = 0, y = 0) => {
     img.handleX = x;
@@ -358,8 +487,14 @@ const ImageHeight = (img) => { return img.frameH * img.scaleY; };
 const ImageXHandle = (img) => { return img.handleX; };
 const ImageYHandle = (img) => { return img.handleY; };
 const ImageOverlap = () => { };
-const ImageColRect = () => { };
-const ImageRectOverlap = () => { };
+const ImageCollide = (img1, x1, y1, img2, x2, y2) => {
+    ha.blitz.image.resetImageRect(img1);
+    ha.blitz.image.rectToImageTransform(img1, x1, y1);
+    ha.blitz.image.resetImageRect(img2);
+    ha.blitz.image.rectToImageTransform(img2, x2, y2);
+    return ha.rect.collide(img1.rect, img2.rect);
+};
+const ImageBoundtOverlap = () => { };
 const MidHandle = (img) => {
     img.handleX = Math.floor((img.frameW * img.scaleX) / 2);
     img.handleY = Math.floor((img.frameH * img.scaleY) / 2);
@@ -368,9 +503,11 @@ const LoadImage = async (url) => {
     let img = await ha.blitz.image.loadImage(url);
     let canvas = document.createElement('canvas');
     let ctx = canvas.getContext('2d');
+    let rect;
     canvas.width = img.naturalWidth;
     canvas.height = img.naturalHeight;
     ctx.drawImage(img, 0, 0);
+    rect = ha.rect.create(0, 0, img.naturalWidth, img.naturalHeight);
     return {
         img: img,
         width: img.naturalWidth,
@@ -384,22 +521,25 @@ const LoadImage = async (url) => {
         scaleX: 1,
         scaleY: 1,
         ctx: ctx,
-        canvas: canvas
+        canvas: canvas,
+        rect: rect
     };
 };
-const LoadAnimImage = async (url, w = 32, h = 32) => {
+const LoadAnimImage = async (url, fw = 32, fh = 32) => {
     let img = await ha.blitz.image.loadImage(url);
     let canvas = document.createElement('canvas');
     let ctx = canvas.getContext('2d');
+    let rect;
     canvas.width = img.naturalWidth;
     canvas.height = img.naturalHeight;
     ctx.drawImage(img, 0, 0);
+    rect = ha.rect.create(0, 0, fw, fh);
     return {
         img: img,
         width: img.naturalWidth,
         height: img.naturalHeight,
-        frameH: w,
-        frameW: h,
+        frameH: fw,
+        frameW: fh,
         isAnim: true,
         handleX: 0,
         handleY: 0,
@@ -407,7 +547,8 @@ const LoadAnimImage = async (url, w = 32, h = 32) => {
         scaleX: 1,
         scaleY: 1,
         ctx: ctx,
-        canvas: canvas
+        canvas: canvas,
+        rect: rect
     };
 };
 const TileImage = (img, x = 0, y = 0, frame = 0) => {
@@ -424,8 +565,8 @@ const TileImage = (img, x = 0, y = 0, frame = 0) => {
     x -= w2;
     y -= h2;
     frame = Math.floor(frame);
-    jmlH = Math.ceil((ha.blitz.blWindow.canvasAktif.width + Math.abs(x)) / w2);
-    jmlV = Math.ceil((ha.blitz.blWindow.canvasAktif.height + Math.abs(y)) / h2);
+    jmlH = Math.ceil((ha.blitz.main.canvasAktif.width + Math.abs(x)) / w2);
+    jmlV = Math.ceil((ha.blitz.main.canvasAktif.height + Math.abs(y)) / h2);
     for (let i = 0; i < jmlH; i++) {
         for (let j = 0; j < jmlV; j++) {
             DrawImage(img, x + (i * w2), y + (j * h2), frame);
@@ -446,7 +587,7 @@ const ScaleImage = (img, xScale = 1, yScale = 1) => {
 };
 const GetPixel = (x = 0, y = 0) => {
     try {
-        let data = ha.blitz.blWindow.canvasAktif.ctx.getImageData(x, y, 1, 1).data;
+        let data = ha.blitz.main.canvasAktif.ctx.getImageData(x, y, 1, 1).data;
         let hasil = [];
         hasil.push(data[0]);
         hasil.push(data[1]);
@@ -463,124 +604,101 @@ const SetColor = (r = 255, g = 255, b = 255, a = 1) => {
     Color(r, g, b, a);
 };
 const SetPixel = (x = 0, y = 0) => {
-    ha.blitz.blWindow.canvasAktif.ctx.fillRect(Math.floor(x), Math.floor(y), 1, 1);
+    ha.blitz.main.canvasAktif.ctx.fillRect(Math.floor(x), Math.floor(y), 1, 1);
 };
 const ImagePivot = () => { };
 const BackgroundImage = () => { };
 const MainLayer = () => { };
 const CreateLayer = () => { };
 const LayerZ = () => { };
-const Input = (m, def) => {
+const Prompt = (m, def) => {
     let hasil = window.prompt(m, def);
     return hasil;
 };
-const InputHit = (type = "", kode = '0') => {
-    kode = kode + '';
-    if (type == "") {
-        if (BLInput.isHit) {
-            BLInput.isHit = false;
-            return true;
-        }
-    }
-    else if ((BLInput.isHit) && (BLInput.key == kode) && (BLInput.type == type)) {
-        BLInput.isHit = false;
-        return true;
-    }
-    else {
-    }
-    return false;
+const InputHit = () => {
+    return ha.blitz.input.inputGlobal.hit;
 };
-const InputTap = (type = "", kode = '0') => {
-    kode = kode + '';
-    if (type == "") {
-        if (BLInput.isTap) {
-            BLInput.isTap = false;
-            return true;
-        }
+const WaitInput = async () => {
+    while (true) {
+        if (InputHit() > 0)
+            return;
+        Delay(30);
     }
-    else if ((BLInput.isTap) && (BLInput.key == kode) && (BLInput.type == type)) {
-        BLInput.isTap = false;
-        return true;
-    }
-    else {
-    }
-    return false;
-};
-const WaitInput = async (type = '', kode = 0) => {
-    return new Promise((resolve, _reject) => {
-        let check = () => {
-            if (InputHit(type, kode)) {
-                resolve();
-            }
-            else {
-                setTimeout(() => {
-                    check();
-                }, 0);
-            }
-        };
-        check();
-    });
 };
 const InputX = () => {
-    return blitzConf.input.x;
+    return ha.blitz.input.inputGlobal.x;
 };
 const InputY = () => {
-    return blitzConf.input.y;
-};
-const InputType = () => {
-    return blitzConf.input.type;
+    return ha.blitz.input.inputGlobal.y;
 };
 const InputDragX = () => {
-    return blitzConf.input.yDrag;
+    return ha.blitz.input.inputGlobal.yDrag;
 };
 const InputDragY = () => {
-    return blitzConf.input.xDrag;
+    return ha.blitz.input.inputGlobal.xDrag;
 };
 const FlushInput = () => {
-    blitzConf.input.isHit = false;
-    blitzConf.input.isDown = false;
-    blitzConf.input.isDrag = false;
-    blitzConf.input.isTap = false;
     ha.blitz.input.flush();
 };
-const InputKey = () => {
-    return blitzConf.input.key;
-};
 const InputDown = () => {
-    return blitzConf.input.isDown;
+    return ha.blitz.input.inputGlobal.isDown;
 };
-const InputDrag = (type = '', key = '') => {
-    type;
-    key;
-    return blitzConf.input.isDrag;
+const InputDrag = () => {
+    return ha.blitz.input.inputGlobal.isDrag;
 };
 const FlushKeys = () => {
+    ha.blitz.input.flushByInput(ha.blitz.input.keybGlobal);
+    ha.blitz.input.flushByType('keyb');
 };
 const GetKey = () => {
-    return '';
+    return ha.blitz.input.keybGlobal.key;
 };
-const KeyDown = (key = '') => {
-    key;
+const KeyIsDown = (key = '') => {
+    if ("" == key) {
+        return ha.blitz.input.keybGlobal.isDown;
+    }
+    else {
+        let input = ha.blitz.input.getInput(key, 'keyb');
+        if (input) {
+            return input.isDown;
+        }
+        return false;
+    }
 };
 const KeyHit = (key = '') => {
-    key;
+    if ("" == key) {
+        let n = ha.blitz.input.keybGlobal.hit;
+        ha.blitz.input.keybGlobal.hit = 0;
+        return (n);
+    }
+    else {
+        let input = ha.blitz.input.getInput(key, 'keyb');
+        let n = 0;
+        if (input) {
+            n = input.hit;
+            input.hit = 0;
+        }
+        return n;
+    }
 };
-const WaitKey = async (kode = "keyb") => {
-    return new Promise((resolve, _reject) => {
-        let check = () => {
-            setTimeout(() => {
-                if (InputHit('keyb', kode)) {
-                    resolve();
-                }
-            }, 0);
-        };
-        check();
-    });
+const WaitKey = async (kode = "") => {
+    console.log('wait key: ' + kode);
+    let ulang = true;
+    while (ulang) {
+        if (KeyHit(kode) > 0)
+            ulang = false;
+        await Delay(30);
+    }
+    console.log('wait key end');
 };
 const GetMouse = () => {
-    return 0;
+    return parseInt(ha.blitz.input.mouseGlobal.key);
 };
-const MouseHit = () => {
+const MouseHit = (button = -1) => {
+    if (button == -1) {
+    }
+    else {
+    }
     return 0;
 };
 const MouseDown = (key) => {
@@ -601,13 +719,13 @@ const MouseZ = () => {
 const FlushMouse = () => {
 };
 const Cls = (r = 0, g = 0, b = 0, alpha = 1) => {
-    let ctx = ha.blitz.blWindow.canvasAktif.ctx;
+    let ctx = ha.blitz.main.canvasAktif.ctx;
     ctx.fillStyle = `rgba(${r}, ${g}, ${b}, ${alpha})`;
-    ctx.fillRect(0, 0, ha.blitz.blWindow.canvasAktif.width, ha.blitz.blWindow.canvasAktif.height);
+    ctx.fillRect(0, 0, ha.blitz.main.canvasAktif.width, ha.blitz.main.canvasAktif.height);
 };
 const BackBuffer = () => { };
 const Color = (r = 0, g = 0, b = 0, a = 1) => {
-    let ctx = ha.blitz.blWindow.canvasAktif.ctx;
+    let ctx = ha.blitz.main.canvasAktif.ctx;
     ctx.fillStyle = `rgba(${r}, ${g}, ${b}, ${a})`;
     ctx.strokeStyle = `rgba(${r}, ${g}, ${b}, ${a})`;
 };
@@ -620,7 +738,7 @@ const CopyRect = () => { };
 const FrontBuffer = () => { };
 const GetColor = () => { };
 const Graphics = (width = 320, height = 240, gl = true, pixel = true) => {
-    let canvas = ha.blitz.blWindow.canvasAktif;
+    let canvas = ha.blitz.main.canvasAktif;
     canvas.canvas.width = width;
     canvas.canvas.height = height;
     canvas.canvas.style.width = 320 + 'px';
@@ -628,19 +746,19 @@ const Graphics = (width = 320, height = 240, gl = true, pixel = true) => {
     canvas.width = width;
     canvas.height = height;
     if (gl) {
-        ha.blitz.blWindow.canvasAktif.canvas.classList.add('gl');
+        ha.blitz.main.canvasAktif.canvas.classList.add('gl');
     }
     else {
-        ha.blitz.blWindow.canvasAktif.canvas.classList.remove('gl');
+        ha.blitz.main.canvasAktif.canvas.classList.remove('gl');
     }
     if (pixel) {
-        ha.blitz.blWindow.canvasAktif.canvas.classList.add('pixel');
+        ha.blitz.main.canvasAktif.canvas.classList.add('pixel');
     }
-    ha.blitz.blWindow.windowResize();
+    ha.blitz.main.windowResize();
 };
 const GraphicsBuffer = () => { };
 const Line = (x1, y1, x2, y2) => {
-    let ctx = ha.blitz.blWindow.canvasAktif.ctx;
+    let ctx = ha.blitz.main.canvasAktif.ctx;
     x1 = Math.floor(x1);
     y1 = Math.floor(y1);
     x2 = Math.floor(x2);
@@ -653,101 +771,28 @@ const Line = (x1, y1, x2, y2) => {
 const Origin = () => { };
 const Oval = () => { };
 const Rect = (x1, y1, x2, y2) => {
-    let ctx = ha.blitz.blWindow.canvasAktif.ctx;
+    let ctx = ha.blitz.main.canvasAktif.ctx;
     ctx.strokeRect(x1, y1, x2 - x1, y2 - y1);
 };
 const SetBuffer = (buffer) => {
-    ha.blitz.blWindow.canvasAktif = buffer;
+    ha.blitz.main.canvasAktif = buffer;
 };
 const WritePixel = () => { };
 const ReadPixel = () => { };
 const Plot = () => { };
-var blitzConf = {
-    input: {
-        isDrag: false,
-        xDrag: 0,
-        xStart: 0,
-        yDrag: 0,
-        yStart: 0,
-        isDown: false,
-        isTap: false,
-        timerEnd: 0,
-        timerStart: 0,
-        x: 0,
-        y: 0,
-        isHit: false,
-        key: '',
-        type: '',
-        id: 0
-    },
-};
-const BLInput = blitzConf.input;
 window.onload = () => {
-    ha.blitz.blWindow.canvasInit();
-    const BLCanvas = ha.blitz.blWindow.canvasAktif.canvas;
-    BLCanvas.onpointerdown = (e) => {
-        e.stopPropagation();
-        e.preventDefault();
-        let pos = ha.blitz.input.BLGetInputPos(e.clientX, e.clientY, ha.blitz.blWindow.canvasAktif.scaleX, ha.blitz.blWindow.canvasAktif.scaleY);
-        let input = ha.blitz.input.baru(e.button + '', e.pointerType);
-        ha.blitz.input.event.down(input, e, pos);
-        ha.blitz.input.event.down(BLInput, e, pos);
-        if ("mouse" == e.pointerType)
-            ha.blitz.input.event.down(ha.blitz.input.mouse, e, pos);
-        if ("touch" == e.pointerType)
-            ha.blitz.input.event.down(ha.blitz.input.touch, e, pos);
-    };
-    BLCanvas.onpointermove = (e) => {
-        e.stopPropagation();
-        e.preventDefault();
-        let input = blitzConf.input;
-        let input2 = ha.blitz.input.baru(e.button + '', e.pointerType);
-        ha.blitz.input.event.move(input, e);
-        ha.blitz.input.event.move(input2, e);
-        if (e.pointerType == 'touch')
-            ha.blitz.input.event.move(ha.blitz.input.touch, e);
-        if (e.pointerType == 'mouse')
-            ha.blitz.input.event.move(ha.blitz.input.mouse, e);
-    };
-    BLCanvas.onpointercancel = (e) => {
-        e.stopPropagation();
-        e.preventDefault();
-    };
-    BLCanvas.onpointerup = (e) => {
-        e.stopPropagation();
-        e.preventDefault();
-        let input = ha.blitz.input.baru(e.button + '', e.pointerType);
-        ha.blitz.input.event.up(blitzConf.input, e);
-        ha.blitz.input.event.up(input, e);
-        if (e.pointerType == 'touch')
-            ha.blitz.input.event.up(ha.blitz.input.touch, e);
-        if (e.pointerType == 'mouse')
-            ha.blitz.input.event.up(ha.blitz.input.mouse, e);
-    };
-    window.onkeydown = (e) => {
-        e.stopPropagation();
-        e.preventDefault();
-        let input = ha.blitz.input.baru(e.key + '', 'keyb');
-        ha.blitz.input.event.keyDown(input, e);
-        ha.blitz.input.event.keyDown(blitzConf.input, e);
-    };
-    window.onkeyup = (e) => {
-        e.stopPropagation();
-        e.preventDefault();
-        let input = ha.blitz.input.baru(e.key + '', 'keyb');
-        ha.blitz.input.event.keyUp(input, e);
-        ha.blitz.input.event.keyUp(blitzConf.input, e);
-    };
+    ha.blitz.main.canvasInit();
+    ha.blitz.input.init(ha.blitz.main.canvasAktif.canvas);
     window.onresize = async () => {
-        ha.blitz.blWindow.windowResize();
+        ha.blitz.main.windowResize();
     };
-    ha.blitz.blWindow.windowResize();
+    ha.blitz.main.windowResize();
     let _window = window;
     setTimeout(() => {
         if (typeof _window.Start == "function") {
             _window.Start()
                 .then(() => {
-                ha.blitz.blWindow.repeat();
+                ha.blitz.main.repeat();
             })
                 .catch((e) => {
                 console.error(e);
@@ -755,38 +800,9 @@ window.onload = () => {
         }
         else {
             console.debug('start not found');
-            ha.blitz.blWindow.repeat();
+            ha.blitz.main.repeat();
         }
     }, 0);
-};
-const CreateTimer = (t) => {
-    return {
-        endTime: Date.now() + t,
-        startTime: Date.now(),
-        aktif: true,
-        time: t
-    };
-};
-const FreeTimer = (t) => {
-    t.aktif = false;
-};
-const WaitTimer = async (t) => {
-    return new Promise((resolve, _reject) => {
-        let check = () => {
-            if (Date.now() > t.endTime) {
-                let nLewat = (Date.now() - t.startTime) / t.time;
-                t.startTime = Date.now();
-                t.endTime = Date.now() + t.time;
-                resolve(nLewat);
-            }
-            else {
-                setTimeout(() => {
-                    check();
-                }, 0);
-            }
-        };
-        check();
-    });
 };
 const Delay = async (m = 0) => {
     return new Promise((resolve, _reject) => {
@@ -796,9 +812,9 @@ const Delay = async (m = 0) => {
     });
 };
 const FPS = (n) => {
-    ha.blitz.blWindow.fps = Math.floor(1000 / n);
+    ha.blitz.main.fps = Math.floor(1000 / n);
     if (n >= 60) {
-        ha.blitz.blWindow.fps = 0;
+        ha.blitz.main.fps = 0;
     }
 };
 const Dim = (...args) => {
@@ -914,57 +930,13 @@ var ha;
                 y: y
             };
         }
-        boundPosData(p, bound) {
-            let h = 0;
-            let v = 0;
-            if (ha.segment.deg(bound.segs[1]) != 0) {
-                ha.rect.rotateToHor(bound);
-            }
-            if (ha.trans.equal(ha.rect.minX(bound), p.x)) {
-                v = 1;
-            }
-            else if (ha.rect.minX(bound) > p.x) {
-                v = 0;
-            }
-            else if (ha.trans.equal(ha.rect.maxX(bound), p.x)) {
-                v = 3;
-            }
-            else if (ha.rect.maxX(bound) < p.x) {
-                v = 4;
-            }
-            else {
-                h = 2;
-            }
-            if (ha.trans.equal(ha.rect.minY(bound), p.y)) {
-                h = 1;
-            }
-            else if (ha.rect.minY(bound) > p.y) {
-                h = 0;
-            }
-            else if (ha.trans.equal(ha.rect.maxY(bound), p.y)) {
-                h = 3;
-            }
-            else if (ha.rect.maxY(bound) < p.y) {
-                h = 4;
-            }
-            else {
-                h = 2;
-            }
-            return ha.point.create(h, v);
+        copyInfo(p1, p2) {
+            p2.x = p1.x;
+            p2.y = p1.y;
         }
         copy(p) {
             let h = this.create(p.x, p.y);
             return h;
-        }
-        distFromPos(p, x = 0, y = 0) {
-            return ha.trans.dist(p.x, p.y, x, y);
-        }
-        distToSeg(p, seg) {
-            let seg2 = ha.segment.getUpSeg(seg);
-            let seg2Deg = ha.segment.deg(seg2);
-            let p2 = ha.point.copy(p);
-            ha.point.rotateRel(p2, seg2.v1.y, seg2.v2.y, -seg2Deg);
-            return Math.abs(Math.round(p2.y));
         }
         equal(p1, p2) {
             if (false == ha.trans.equal(p1.x, p2.x))
@@ -982,34 +954,19 @@ var ha;
             p.x = ha.trans.lastX;
             p.y = ha.trans.lastY;
         }
-        moveTo(p, x = 0, y = 0, speed = 10) {
-            ha.trans.moveTo(p.y, p.y, x, y, speed);
-            p.x = ha.trans.lastX;
-            p.y = ha.trans.lastY;
-        }
-        moveFrom(p, x = 0, y = 0, speed = 10) {
-            let p2 = ha.trans.moveFrom(p.y, p.y, x, y, speed);
-            p.y += p2.y;
-            p.y += p2.y;
-        }
-        moveByDeg(p, speed, deg = 10) {
-            let p2 = ha.trans.moveByDeg(speed, deg);
-            p.y += p2.y;
-            p.y += p2.y;
-        }
     }
     ha.point = new Point();
 })(ha || (ha = {}));
 var ha;
 (function (ha) {
     class Rect {
-        create(x1, y1, x2, y2) {
+        create(x1 = 0, y1 = 0, x2 = 0, y2 = 0) {
             let r = {};
             r.vs = [];
             r.vs.push(ha.point.create(x1, y1));
             r.vs.push(ha.point.create(x2, y1));
-            r.vs.push(ha.point.create(x1, y2));
             r.vs.push(ha.point.create(x2, y2));
+            r.vs.push(ha.point.create(x1, y2));
             r.segs = [];
             r.segs.push(ha.segment.createSeg(r.vs[0], r.vs[1]));
             r.segs.push(ha.segment.createSeg(r.vs[1], r.vs[2]));
@@ -1017,19 +974,55 @@ var ha;
             r.segs.push(ha.segment.createSeg(r.vs[3], r.vs[0]));
             return r;
         }
+        copy(r) {
+            return ha.rect.create(r.vs[0].x, r.vs[0].y, r.vs[3].x, r.vs[3].y);
+        }
+        copyInfo(r1, r2) {
+            for (let i = 0; i < r1.segs.length; i++) {
+                ha.segment.copyInfo(r1.segs[i], r2.segs[i]);
+            }
+        }
+        collideBound(r1, r2) {
+            if (this.maxX(r1) < this.minX(r2)) {
+                return false;
+            }
+            if (this.minX(r1) > this.maxX(r2)) {
+                return false;
+            }
+            if (this.maxY(r1) < this.minY(r2)) {
+                return false;
+            }
+            if (this.minY(r1) > this.maxY(r2)) {
+                return false;
+            }
+            return true;
+        }
+        collide(r1, r2) {
+            let bound = this.collideBound(r1, r2);
+            if (!bound)
+                return false;
+            for (let i = 0; i < r1.segs.length; i++) {
+                for (let j = 0; j < r2.segs.length; j++) {
+                    if (ha.segment.collide(r1.segs[i], r2.segs[j])) {
+                        return true;
+                    }
+                }
+            }
+            return false;
+        }
         minX(r) {
-            let x = r.vs[0].y;
+            let x = r.vs[0].x;
             r.vs.forEach((item) => {
-                if (item.y < x)
-                    x = item.y;
+                if (item.x < x)
+                    x = item.x;
             });
             return x;
         }
         maxX(r) {
-            let x = r.vs[0].y;
+            let x = r.vs[0].x;
             r.vs.forEach((item) => {
-                if (item.y > x)
-                    x = item.y;
+                if (item.x > x)
+                    x = item.x;
             });
             return x;
         }
@@ -1049,8 +1042,18 @@ var ha;
             });
             return y;
         }
-        rotateToHor(r) {
+        scale(r) {
             r;
+        }
+        translate(rect, x, y) {
+            rect.vs.forEach((v) => {
+                ha.point.translate(v, x, y);
+            });
+        }
+        rotate(r, deg, xc = 0, yc) {
+            r.vs.forEach((p) => {
+                ha.point.rotateRel(p, xc, yc, deg);
+            });
         }
     }
     ha.rect = new Rect();
@@ -1058,11 +1061,50 @@ var ha;
 var ha;
 (function (ha) {
     class Segment {
-        createSeg(v1, v2) {
+        createSeg(v1 = { x: 0, y: 0 }, v2 = { x: 0, y: 0 }) {
             return {
                 v1: v1,
                 v2: v2
             };
+        }
+        boundCollide(seg1, seg2) {
+            if (this.maxX(seg1) < this.minX(seg2))
+                return false;
+            if (this.minX(seg1) > this.maxX(seg2))
+                return false;
+            if (this.maxY(seg1) < this.minY(seg2))
+                return false;
+            if (this.minY(seg1) > this.maxY(seg2))
+                return false;
+            return true;
+        }
+        collide(seg1, seg2) {
+            let bound = this.boundCollide(seg1, seg2);
+            if (!bound)
+                return false;
+            let seg2Copy = this.copy(seg2);
+            let seg1Copy = this.copy(seg1);
+            let deg = this.deg(seg2);
+            this.rotate(seg2Copy, -deg, seg2.v1.x, seg2.v1.y);
+            this.rotate(seg1Copy, -deg, seg2.v1.x, seg2.v1.y);
+            if (!this.boundCollide(seg1Copy, seg2Copy))
+                return false;
+            this.translate(seg1Copy, -seg2.v1.x, -seg2.v1.y);
+            this.translate(seg2Copy, -seg2.v1.x, -seg2.v1.y);
+            if (!this.crossHor(seg1Copy)) {
+                return false;
+            }
+            let idx = this.xHorIdx(seg1Copy);
+            let x = this.getXAtIdx(seg1Copy, idx);
+            if (x > this.maxX(seg2Copy))
+                return false;
+            if (x < this.minX(seg2Copy))
+                return false;
+            return true;
+        }
+        copyInfo(seg1, seg2) {
+            ha.point.copyInfo(seg1.v1, seg2.v2);
+            ha.point.copyInfo(seg1.v2, seg2.v2);
         }
         copy(seg) {
             return {
@@ -1070,141 +1112,57 @@ var ha;
                 v2: ha.point.copy(seg.v2)
             };
         }
-        xHor(seg) {
-            if (!ha.segment.crossHor(seg))
-                return null;
-            let seg2 = ha.segment.getUpSeg(seg);
-            let perbV = seg2.v2.y / (ha.segment.vecJ(seg2));
-            let x;
-            x = seg2.v2.x + (perbV * ha.segment.vecI(seg2));
-            return x;
-        }
         crossHor(seg) {
-            if (ha.segment.maxYP(seg).y > 0) {
-                if (ha.segment.minYP(seg).y < 0) {
+            if (ha.segment.maxY(seg) > 0) {
+                if (ha.segment.minY(seg) < 0) {
                     return true;
                 }
             }
             return false;
         }
         deg(line) {
-            let h = line.v2.y - line.v1.y;
-            let w = line.v2.y - line.v1.y;
-            return ha.trans.deg(w, h);
+            let j = line.v2.y - line.v1.y;
+            let i = line.v2.x - line.v1.x;
+            return ha.trans.deg(i, j);
         }
-        fromPoint(p, l, deg) {
-            let seg = ha.segment.createSeg(ha.point.create(0, 0), ha.point.create(l, 0));
-            ha.segment.rotate(seg, deg, 0, 0);
-            ha.segment.translate(seg, p.x, p.y);
-            return seg;
+        getXAtIdx(seg, idx) {
+            return seg.v1.x + (idx * this.vecI(seg));
         }
-        flip(seg) {
-            return {
-                v1: ha.point.copy(seg.v2),
-                v2: ha.point.copy(seg.v1)
-            };
-        }
-        length(seg) {
-            let x = this.vecI(seg);
-            let y = this.vecJ(seg);
-            return Math.sqrt(x * x + y * y);
+        getYAtIdx(seg, idx) {
+            return seg.v1.y + (idx * this.vecJ(seg));
         }
         vecI(seg) {
             return seg.v2.x - seg.v1.x;
         }
         vecJ(seg) {
-            return seg.v2.x - seg.v1.x;
+            return seg.v2.y - seg.v1.y;
         }
         rotate(seg, deg = 0, xc = 0, yc = 0) {
             ha.point.rotateRel(seg.v1, xc, yc, deg);
             ha.point.rotateRel(seg.v2, xc, yc, deg);
         }
-        seg2Vec(seg) {
-            return ha.point.create(seg.v2.y - seg.v1.y, seg.v2.y - seg.v1.y);
+        minX(seg) {
+            return Math.min(seg.v1.x, seg.v2.x);
         }
-        scale(seg, scale) {
-            let px = seg.v2.x - seg.v1.x;
-            let py = seg.v2.y - seg.v1.y;
-            px *= scale;
-            py *= scale;
-            seg.v2.x = seg.v1.x + px;
-            seg.v2.y = seg.v1.y + py;
+        maxX(seg) {
+            return Math.max(seg.v1.x, seg.v2.x);
         }
-        scaleTo(seg, n) {
-            let p = ha.segment.length(seg);
-            let scale = n / p;
-            this.scale(seg, scale);
+        minY(seg) {
+            return Math.min(seg.v1.y, seg.v2.y);
         }
-        getUpSeg(seg) {
-            return {
-                v1: ha.point.copy(this.minYP(seg)),
-                v2: ha.point.copy(this.maxYP(seg))
-            };
-        }
-        minYP(seg) {
-            if (seg.v1.y <= seg.v2.y)
-                return seg.v1;
-            return seg.v2;
-        }
-        maxYP(seg) {
-            if (seg.v1.y >= seg.v2.y)
-                return seg.v1;
-            return seg.v2;
-        }
-        minXP(seg) {
-            if (seg.v1.y <= seg.v2.y)
-                return seg.v1;
-            return seg.v2;
-        }
-        maxXP(seg) {
-            if (seg.v1.y >= seg.v2.y)
-                return seg.v1;
-            return seg.v2;
-        }
-        isPointOnTheLeftOfSeg(p, seg) {
-            let bound = ha.segment.rect(seg);
-            let boundPos = ha.point.boundPosData(p, bound);
-            if (4 == boundPos.x)
-                return 0;
-            if (boundPos.y in [0, 4])
-                return 0;
-            if (boundPos.y in [1, 4])
-                return 2;
-            if (ha.trans.equal(p.y, seg.v1.y))
-                return 2;
-            if (ha.trans.equal(p.y, seg.v2.y))
-                return 2;
-            let seg2 = ha.segment.getUpSeg(seg);
-            let p2 = ha.point.copy(p);
-            let deg = ha.segment.deg(seg2);
-            ha.segment.rotateHor(seg2);
-            ha.point.rotateRel(p2, seg2.v1.x, seg2.v1.y, deg);
-            if (p2.y > 0)
-                return 1;
-            return 0;
-        }
-        rect(seg) {
-            return ha.rect.create(seg.v1.x, seg.v1.y, seg.v2.x, seg.v2.y);
-        }
-        rotateHor(seg) {
-            let deg = ha.segment.deg(seg);
-            if (0 == deg)
-                return;
-            ha.segment.rotate(seg, -deg, seg.v1.x, seg.v1.y);
-        }
-        rotateVer(seg) {
-            let deg = ha.segment.deg(seg);
-            if (deg < 90)
-                deg = 90 - deg;
-            if (deg > 90)
-                deg = deg - 90;
-            if (deg == 90)
-                return;
-            ha.segment.rotate(seg, -deg, seg.v1.x, seg.v1.y);
+        maxY(seg) {
+            return Math.max(seg.v1.y, seg.v2.y);
         }
         translate(seg, x = 0, y = 0) {
             ha.point.translate(seg.v1, x, y);
             ha.point.translate(seg.v2, x, y);
+        }
+        xHorIdx(seg) {
+            if (!ha.segment.crossHor(seg))
+                return NaN;
+            let idx = 0;
+            idx = (0 - seg.v1.y) / (seg.v2.y - seg.v1.y);
+            return idx;
         }
     }
     ha.segment = new Segment();
@@ -1212,63 +1170,63 @@ var ha;
 var ha;
 (function (ha) {
     class Transform {
-        constructor() {
-            this.RAD2DEG = 180.0 / Math.PI;
-            this.DEG2RAD = Math.PI / 180.0;
-            this._lastX = 0;
-            this._lastY = 0;
-        }
+        RAD2DEG = 180.0 / Math.PI;
+        DEG2RAD = Math.PI / 180.0;
+        _lastX = 0;
+        _lastY = 0;
         get lastX() {
             return this._lastX;
         }
         get lastY() {
             return this._lastY;
         }
-        clamp(n, m) {
-            let m2 = Math.abs(m);
-            let n2 = Math.abs(n);
-            let h = Math.min(n2, m2);
-            if (n >= 0)
-                return h;
-            return -h;
+        create() {
+            return {
+                pos: { x: 0, y: 0 },
+                scale: { x: 1, y: 1 },
+                rotation: 0
+            };
         }
         equal(n1, n2, tol = 1) {
             if (Math.abs(n1 - n2) <= tol)
                 return true;
             return false;
         }
-        quadDeg(x, y) {
+        quadDeg2(x, y, deg) {
             if (x == 0) {
-                if (y >= 0) {
-                    return 0;
+                if (y == 0) {
+                    return deg;
                 }
-                else {
-                    return 0;
+                else if (y > 0) {
+                    return deg;
+                }
+                else if (y < 0) {
+                    return 360 - Math.abs(deg);
                 }
             }
             else if (x > 0) {
-                if (y >= 0) {
-                    return 0;
+                if (y == 0) {
+                    return deg;
                 }
-                else {
-                    return 0;
+                else if (y > 0) {
+                    return deg;
+                }
+                else if (y < 0) {
+                    return 360 - Math.abs(deg);
                 }
             }
             else if (x < 0) {
-                if (y > 0) {
-                    return 90;
-                }
-                else if (y == 0) {
+                if (y == 0) {
                     return 180;
                 }
-                else {
-                    return -90;
+                else if (y > 0) {
+                    return 180 - Math.abs(deg);
+                }
+                else if (y < 0) {
+                    return 180 + Math.abs(deg);
                 }
             }
-            else {
-                console.log("error x :" + x + '/y: ' + y);
-                throw Error('');
-            }
+            throw Error();
         }
         deg(x, y) {
             let l;
@@ -1280,7 +1238,7 @@ var ha;
             s = y / l;
             s = Math.asin(s);
             s *= this.RAD2DEG;
-            s = s + ha.trans.quadDeg(x, y);
+            s = ha.trans.quadDeg2(x, y, s);
             s = this.normalizeDeg(s);
             return s;
         }
@@ -1326,50 +1284,10 @@ var ha;
                 }
             }
         }
-        vectorTo(x, y, xt, yt) {
-            let pjx = xt - x;
-            let pjy = yt - y;
-            this._lastX = pjx;
-            this._lastY = pjy;
-            return {
-                x: pjx,
-                y: pjy
-            };
-        }
-        moveTo(x, y, xt, yt, clamp) {
-            let pjx = xt - x;
-            let pjy = yt - y;
-            let pj = this.dist(x, y, xt, yt);
-            let perb = Math.abs(clamp) / pj;
-            this._lastX = x + perb * pjx;
-            this._lastY = y + perb * pjy;
-        }
-        moveFrom(x = 0, y = 0, xt = 0, yt = 0, v = 0) {
-            let pjx = xt - x;
-            let pjy = yt - y;
-            let pj = this.dist(x, y, xt, yt);
-            let perb = Math.abs(v) / pj;
-            this._lastX = perb * -pjx;
-            this._lastY = perb * -pjy;
-            return {
-                x: this._lastX,
-                y: this._lastY
-            };
-        }
         dist(x, y, xt, yt) {
             let pjx = xt - x;
             let pjy = yt - y;
             return Math.sqrt(pjx * pjx + pjy * pjy);
-        }
-        rotateFrom(x, y, tx, ty, rotNow) {
-            let angle = this.deg(tx - x, ty - y);
-            let angleMin = this.degMaxDist(rotNow, angle);
-            return angleMin;
-        }
-        rotateTo(x, y, tx = 0, ty = 0, rotNow = 0) {
-            let angle = this.deg(tx - x, ty - y);
-            let angleMin = this.degMinDist(rotNow, angle);
-            return angleMin;
         }
         rotateRel(x = 0, y = 0, xt = 0, yt = 0, deg = 10) {
             let xr = x - xt;
@@ -1381,15 +1299,6 @@ var ha;
             y1 = xr * Math.sin(deg) + yr * Math.cos(deg);
             this._lastX = x1 + xt;
             this._lastY = y1 + yt;
-        }
-        moveByDeg(speed = 10, deg = 10) {
-            deg *= this.DEG2RAD;
-            this._lastX = Math.cos(deg) * speed;
-            this._lastY = Math.sin(deg) * speed;
-            return {
-                x: this._lastX,
-                y: this._lastY
-            };
         }
     }
     ha.trans = new Transform();
