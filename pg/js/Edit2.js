@@ -100,7 +100,7 @@ let hal = `
 				position: relative;
 				width: 100%;
 				height: 100%;
-				background-color: #111;
+				background-color: #000;
 			}
 
 			canvas.buffer.back-buffer,
@@ -131,6 +131,7 @@ let hal = `
 		<canvas class='buffer front-buffer'></canvas>
 		<div class='debug' style="z-index:1; position:relative"></div>
 
+		<script src="./js/halib.js?r=${Math.floor(Math.random() * 1000)}"></script>
 		<script src="./js/blitzjs.js?r=${Math.floor(Math.random() * 1000)}"></script>
 		<script>{{script}}</script>
 	</body>
