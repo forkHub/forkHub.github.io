@@ -1,15 +1,31 @@
 "use strict";
 class Edit2 {
-    // private iframe: HTMLIFrameElement;
+    myCodeMirror;
+    editArea = document.querySelector('textarea.edit-area');
+    webCont = document.querySelector('div.kontainer-2 div.web');
+    editCont = document.querySelector('div.kontainer-2 div.edit-text');
+    tblRun = document.querySelector('button.jalan');
+    tblEdit = document.querySelector('button.edit');
     init() {
-        let editArea = document.querySelector('textarea.edit-area');
-        let tblRun = document.querySelector('button.jalan');
         console.log(CodeMirror);
-        tblRun.onclick = () => {
+        this.tblRun.onclick = () => {
             console.debug('run');
+            this.tblEdit.classList.remove('active');
+            this.editCont.classList.remove('active');
+            this.tblRun.classList.add('active');
+            this.webCont.classList.add('active');
             this.compile();
         };
-        this.myCodeMirror = CodeMirror.fromTextArea(editArea, {
+        this.tblEdit.onclick = () => {
+            this.tblEdit.classList.add('active');
+            this.editCont.classList.add('active');
+            this.editArea.classList.add('active');
+            this.tblRun.classList.remove('active');
+            this.webCont.classList.remove('active');
+            this.webCont.innerHTML = '';
+            console.log('edit click');
+        };
+        this.myCodeMirror = CodeMirror.fromTextArea(this.editArea, {
             lineNumbers: false,
             styleActiveLine: true,
             matchBrackets: true,
@@ -24,14 +40,17 @@ class Edit2 {
         let s = window.top.location.search.slice(1);
         let ar = s.split('=');
         console.log('loading: ' + ha.comp.loading);
-        ha.comp.Util.Ajax2('get', "./datajs/" + ar[1] + ".txt", '').then((value) => {
+        ha.comp.Util.Ajax2('get', "./datajs/" + ar[1] + ".js", '').then((value) => {
             this.myCodeMirror.setValue(value);
-            this.compile();
+            // this.compile();
         }).catch((e) => {
             console.error(e);
         });
         //load query
         console.log(ar);
+    }
+    klikRun() {
+        this.compile();
     }
     compile() {
         let hal2 = hal;

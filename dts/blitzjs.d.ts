@@ -1,5 +1,5 @@
 declare namespace ha.blitz {
-    class BlWindow {
+    class Main {
         private _fps;
         private _origin;
         private _canvasAr;
@@ -18,12 +18,14 @@ declare namespace ha.blitz {
         get fps(): number;
         set fps(value: number);
     }
-    export var blWindow: BlWindow;
+    export var main: Main;
     export {};
 }
 declare namespace ha.blitz {
     class Image {
         loadImage: (url: string) => Promise<HTMLImageElement>;
+        resetImageRect(img: IBuffer): void;
+        rectToImageTransform(image: IBuffer, x: number, y: number): void;
     }
     export var image: Image;
     export {};
@@ -31,38 +33,42 @@ declare namespace ha.blitz {
 declare namespace ha.blitz {
     class Input {
         private _inputs;
-        private _touch;
-        private _mouse;
-        private _keyb;
+        private _touchGlobal;
+        private _mouseGlobal;
+        private _keybGlobal;
+        private _inputGlobal;
         private _event;
         constructor();
+        getMouseKey(e: PointerEvent): string;
+        init(canvas: HTMLCanvasElement): void;
         def(): IInput;
         reset(input: IInput): void;
         flush(): void;
-        get(e: string, inputType: string): IInput;
+        flushByType(type: string): void;
+        flushByInput(input: IInput): void;
+        getInput(key: string, inputType: string): IInput;
         baru(e: string, inputType: string): IInput;
-        BLGetInputPos: (cx: number, cy: number, canvasScaleX: number, canvasScaleY: number) => {
+        pos: (cx: number, cy: number, canvasScaleX: number, canvasScaleY: number) => {
             x: number;
             y: number;
         };
         get inputs(): IInput[];
         get event(): Event;
-        get touch(): IInput;
-        get mouse(): IInput;
-        get keyb(): IInput;
-        set keyb(value: IInput);
+        get touchGlobal(): IInput;
+        get mouseGlobal(): IInput;
+        get keybGlobal(): IInput;
+        get inputGlobal(): IInput;
     }
     class Event {
         move(input: IInput, e: PointerEvent): void;
-        down(input: IInput, e: PointerEvent, pos: any): void;
-        up(input2: IInput, e: PointerEvent): void;
-        keyDown(input: IInput, e: KeyboardEvent): void;
-        keyUp(input: IInput, e: KeyboardEvent): void;
+        down(input: IInput, key: string, type: string, pos: IV2D): void;
+        up(input2: IInput): void;
     }
     export var input: Input;
     export {};
 }
 declare const CreateImage: (w?: number, h?: number, frameW?: number, frameH?: number) => IBuffer;
+declare const CopyImage: (src: IBuffer) => IBuffer;
 declare const DrawImage: (img: IBuffer, x?: number, y?: number, frame?: number) => void;
 declare const GrabImage: (img: IBuffer, x?: number, y?: number) => void;
 declare const HandleImage: (img: IBuffer, x?: number, y?: number) => void;
@@ -71,11 +77,11 @@ declare const ImageHeight: (img: IBuffer) => number;
 declare const ImageXHandle: (img: IBuffer) => number;
 declare const ImageYHandle: (img: IBuffer) => number;
 declare const ImageOverlap: () => void;
-declare const ImageColRect: () => void;
-declare const ImageRectOverlap: () => void;
+declare const ImageCollide: (img1: IBuffer, x1: number, y1: number, img2: IBuffer, x2: number, y2: number) => boolean;
+declare const ImageBoundtOverlap: () => void;
 declare const MidHandle: (img: IBuffer) => void;
 declare const LoadImage: (url: string) => Promise<IBuffer>;
-declare const LoadAnimImage: (url: string, w?: number, h?: number) => Promise<IBuffer>;
+declare const LoadAnimImage: (url: string, fw?: number, fh?: number) => Promise<IBuffer>;
 declare const TileImage: (img: IBuffer, x?: number, y?: number, frame?: number) => void;
 declare const ResizeImage: (img: IBuffer, w?: number, h?: number) => void;
 declare const RotateImage: (img: IBuffer, degree?: number) => void;
@@ -88,26 +94,23 @@ declare const BackgroundImage: () => void;
 declare const MainLayer: () => void;
 declare const CreateLayer: () => void;
 declare const LayerZ: () => void;
-declare const Input: (m: string, def: string) => string;
-declare const InputHit: (type?: string, kode?: string | number) => boolean;
-declare const InputTap: (type?: string, kode?: string | number) => boolean;
-declare const WaitInput: (type?: string, kode?: number) => Promise<void>;
+declare const Prompt: (m: string, def: string) => string;
+declare const InputHit: () => number;
+declare const WaitInput: () => Promise<void>;
 declare const InputX: () => number;
 declare const InputY: () => number;
-declare const InputType: () => string;
 declare const InputDragX: () => number;
 declare const InputDragY: () => number;
 declare const FlushInput: () => void;
-declare const InputKey: () => string;
 declare const InputDown: () => boolean;
-declare const InputDrag: (type?: string, key?: string) => boolean;
+declare const InputDrag: () => boolean;
 declare const FlushKeys: () => void;
 declare const GetKey: () => string;
-declare const KeyDown: (key?: string) => void;
-declare const KeyHit: (key?: string) => void;
+declare const KeyIsDown: (key?: string) => boolean;
+declare const KeyHit: (key?: string) => number;
 declare const WaitKey: (kode?: string) => Promise<void>;
 declare const GetMouse: () => number;
-declare const MouseHit: () => number;
+declare const MouseHit: (button?: number) => number;
 declare const MouseDown: (key: string) => boolean;
 declare const WaitMouse: () => void;
 declare const MouseX: () => number;
@@ -146,7 +149,7 @@ interface IInput {
     isDrag: boolean;
     isDown: boolean;
     isTap: boolean;
-    isHit: boolean;
+    hit: number;
     key: string;
     type: string;
     timerStart: number;
@@ -171,10 +174,16 @@ interface IBuffer {
     isAnim: boolean;
     canvas: HTMLCanvasElement;
     ctx: CanvasRenderingContext2D;
+    rect: IRect;
 }
 interface IV2D {
     x: number;
     y: number;
+}
+interface ITransform {
+    pos: IV2D;
+    scale: IV2D;
+    rotation: number;
 }
 declare const Cls: (r?: number, g?: number, b?: number, alpha?: number) => void;
 declare const BackBuffer: () => void;
@@ -197,11 +206,6 @@ declare const SetBuffer: (buffer: IBuffer) => void;
 declare const WritePixel: () => void;
 declare const ReadPixel: () => void;
 declare const Plot: () => void;
-declare var blitzConf: IConfig;
-declare const BLInput: IInput;
-declare const CreateTimer: (t: number) => ITimer;
-declare const FreeTimer: (t: ITimer) => void;
-declare const WaitTimer: (t: ITimer) => Promise<number>;
 declare const Delay: (m?: number) => Promise<void>;
 declare const FPS: (n: number) => void;
 declare const Dim: (...args: any[]) => any[];
@@ -220,58 +224,53 @@ declare namespace ha {
 declare namespace ha {
     class Point {
         create(x?: number, y?: number): IV2D;
-        boundPosData(p: IV2D, bound: IRect): IV2D;
+        copyInfo(p1: IV2D, p2: IV2D): void;
         copy(p: IV2D): IV2D;
-        distFromPos(p: IV2D, x?: number, y?: number): number;
-        distToSeg(p: IV2D, seg: ISegment): number;
         equal(p1: IV2D, p2: IV2D): boolean;
         translate(p: IV2D, x?: number, y?: number): void;
         rotateRel(p: IV2D, xc?: number, yc?: number, deg?: number): void;
-        moveTo(p: IV2D, x?: number, y?: number, speed?: number): void;
-        moveFrom(p: IV2D, x?: number, y?: number, speed?: number): void;
-        moveByDeg(p: IV2D, speed: number, deg?: number): void;
     }
     export var point: Point;
     export {};
 }
 declare namespace ha {
     class Rect {
-        create(x1: number, y1: number, x2: number, y2: number): IRect;
+        create(x1?: number, y1?: number, x2?: number, y2?: number): IRect;
+        copy(r: IRect): IRect;
+        copyInfo(r1: IRect, r2: IRect): void;
+        collideBound(r1: IRect, r2: IRect): boolean;
+        collide(r1: IRect, r2: IRect): boolean;
         minX(r: IRect): number;
         maxX(r: IRect): number;
         minY(r: IRect): number;
         maxY(r: IRect): number;
-        rotateToHor(r: IRect): void;
+        scale(r: IRect): void;
+        translate(rect: IRect, x: number, y: number): void;
+        rotate(r: IRect, deg: number, xc: number, yc: number): void;
     }
     export var rect: Rect;
     export {};
 }
 declare namespace ha {
     class Segment {
-        createSeg(v1: IV2D, v2: IV2D): ISegment;
+        createSeg(v1?: IV2D, v2?: IV2D): ISegment;
+        boundCollide(seg1: ISegment, seg2: ISegment): boolean;
+        collide(seg1: ISegment, seg2: ISegment): boolean;
+        copyInfo(seg1: ISegment, seg2: ISegment): void;
         copy(seg: ISegment): ISegment;
-        xHor(seg: ISegment): number;
         crossHor(seg: ISegment): boolean;
         deg(line: ISegment): number;
-        fromPoint(p: IV2D, l: number, deg: number): ISegment;
-        flip(seg: ISegment): ISegment;
-        length(seg: ISegment): number;
+        getXAtIdx(seg: ISegment, idx: number): number;
+        getYAtIdx(seg: ISegment, idx: number): number;
         vecI(seg: ISegment): number;
         vecJ(seg: ISegment): number;
         rotate(seg: ISegment, deg?: number, xc?: number, yc?: number): void;
-        seg2Vec(seg: ISegment): IV2D;
-        scale(seg: ISegment, scale: number): void;
-        scaleTo(seg: ISegment, n: number): void;
-        getUpSeg(seg: ISegment): ISegment;
-        minYP(seg: ISegment): IV2D;
-        maxYP(seg: ISegment): IV2D;
-        minXP(seg: ISegment): IV2D;
-        maxXP(seg: ISegment): IV2D;
-        isPointOnTheLeftOfSeg(p: IV2D, seg: ISegment): number;
-        rect(seg: ISegment): IRect;
-        rotateHor(seg: ISegment): void;
-        rotateVer(seg: ISegment): void;
+        minX(seg: ISegment): number;
+        maxX(seg: ISegment): number;
+        minY(seg: ISegment): number;
+        maxY(seg: ISegment): number;
         translate(seg: ISegment, x?: number, y?: number): void;
+        xHorIdx(seg: ISegment): number;
     }
     export var segment: Segment;
     export {};
@@ -284,21 +283,15 @@ declare namespace ha {
         private _lastY;
         get lastX(): number;
         get lastY(): number;
-        clamp(n: number, m: number): number;
+        create(): ITransform;
         equal(n1: number, n2: number, tol?: number): boolean;
-        quadDeg(x: number, y: number): number;
+        quadDeg2(x: number, y: number, deg: number): number;
         deg(x: number, y: number): number;
         normalizeDeg(deg: number): number;
         degMaxDist(angleS: number, angleT: number): number;
         degMinDist(angleS: number, angleT: number): number;
-        vectorTo(x: number, y: number, xt: number, yt: number): IV2D;
-        moveTo(x: number, y: number, xt: number, yt: number, clamp: number): void;
-        moveFrom(x?: number, y?: number, xt?: number, yt?: number, v?: number): IV2D;
         dist(x: number, y: number, xt: number, yt: number): number;
-        rotateFrom(x: number, y: number, tx: number, ty: number, rotNow: number): number;
-        rotateTo(x: number, y: number, tx?: number, ty?: number, rotNow?: number): number;
         rotateRel(x?: number, y?: number, xt?: number, yt?: number, deg?: number): void;
-        moveByDeg(speed?: number, deg?: number): IV2D;
     }
     export var trans: Transform;
     export {};

@@ -6,49 +6,13 @@
 	<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0,
         target-densityDpi=device-dpi">
 
-	<title>Blitz - explosion</title>
-
-	<style>
-		html,
-		body,
-		div,
-		canvas {
-			box-sizing: border-box;
-			overflow: hidden;
-			margin: 0px;
-			padding: 0px;
-		}
-
-		html,
-		body {
-			position: relative;
-			width: 100%;
-			height: 100%;
-			background-color: #111;
-		}
-
-		canvas {
-			position: absolute;
-			background-color: #000;
-			image-rendering: crisp-edges;
-			image-rendering: pixelated;
-		}
-
-		canvas.pixel {
-			image-rendering: crisp-edges;
-			image-rendering: pixelated;
-		}
-
-		div.debug {
-			touch-action: none;
-			height: 100vh;
-			pointer-events: none;
-		}
-	</style>
+	<title>Blitz</title>
+	<link href='css/css.css' rel="stylesheet">
 </head>
 
 <body>
-	<canvas id="renderCanvas"></canvas>
+	<canvas class='buffer back-buffer'></canvas>
+	<canvas class='buffer front-buffer'></canvas>
 	<div class='debug' style="z-index:1; position:relative"></div>
 
 	<script src="./js/blitzjs.js"></script>

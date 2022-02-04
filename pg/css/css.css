@@ -1,102 +1,113 @@
-
-html, body, div {
-	padding: 0px;
-	margin: 0px;
+html, body, div,p, form, iframe {
 	box-sizing: border-box;
-}
-
-body {
-	background-color: black;
-	height: 100%;
+	margin: 0px;
+	padding: 0px;
 }
 
 button {
 	position: relative;
 	box-shadow: 4px 4px #333;
+	padding: 4px 8px 4px 8px;
 }
 
-button:active {
+button:active, button.active {
 	top:2px;
 	left: 2px;
 	box-shadow: none;
+	background-color: #808080;
 }
 
-div.color-wheel {
-	display: flex;
+button:disabled {
+	top:2px;
+	left: 2px;
+	box-shadow: none;
+	color: white;
+	background-color: #333;
 }
 
-div.color-wheel div.b {
-	height: 32px;
-	flex-grow: 1;
-	margin-left: 2px;
-	margin-right: 2px;
+html {
+	background-color: black;
+	width: 100%;
 }
 
-div.tdl {
-	max-width: 720px;
-	margin: auto;
+div.kontainer-utama {
 	display: flex;
 	flex-direction: column;
 	height: 100%;
 }
 
-div.tdl div.header {
-	display: flex;
-	padding: 8px;
-	padding-right: 12px;
-	padding-bottom: 12px;
-	background-color: #008000;
+div.kontainer-utama div.kontainer-2{
+	flex-grow: 1;
+	background-color: #c0c0c0;
 }
 
-div.bayangan {
-	height: 4px;
+div.kontainer-utama div.kontainer-2 div.edit-text,
+div.kontainer-utama div.kontainer-2 div.web
+{
+	width: 100%;
+	height: 100%;
+}
+
+div.kontainer-utama div.kontainer-2 div.edit-text {
+	display:none;
+}
+
+div.kontainer-utama div.kontainer-2 div.edit-text.active {
+	display:block;
+}
+
+div.kontainer-2 div.edit-text form {
+	height: 100%;
+}
+
+
+div.kontainer-utama div.kontainer-2 div.web {
+	display: none;
+}
+
+div.kontainer-utama div.kontainer-2 div.web.active {
+	display: block;
+}
+
+div.kontainer-utama div.kontainer-2 div.edit-text textarea {
+	width: 100%;
+	height: 100vh;
+}
+
+div.kontainer-utama div.header {
+	display: flex;
+	background-color: #c0c0c0;
+}
+
+div.pisah {
+	border: 1px solid;
+	height: 3px;
+	background-color: #c0c0c0;
+	border-top: 1px solid white;
+	border-left: 1px solid white;
+	border-bottom: 1px solid #808080;
+	border-right: 1px solid #808080;
+}
+
+div.kontainer-utama div.header div.edit, 
+div.kontainer-utama div.header div.jalan {
+	width: 50%;
+	text-align: center;
+	padding: 8px;
+}
+
+div.kontainer-utama div.kontainer-2 div.web {
+	margin: 0px;
+	padding: 0px;
 	background-color: black;
 }
 
-div.tdl div.header span.judul {
-	flex-grow: 1;
-	font-weight: bold;
-	color: white;
-	padding-top: 12px;
+div.kontainer-utama div.kontainer-2 div.web iframe {
+	width: 100%;
+	height: 100%;
+	border: none;
 }
 
-div.tdl div.header button {
-	font-weight: bold;
-	color: black;
-	padding:8px;
+.CodeMirror {
+	height: 100%;
 }
-
-div.tdl div.daftar-cont {
-	flex-grow: 1;
-	background-color: #008080;
-	padding: 8px;
-}
-
-
-div.tdl div.daftar-cont div.item {
-	padding: 8px;
-	background-color: #008000;
-	margin-bottom: 8px;
-	margin-right: 6px;
-	box-shadow: 4px 4px #333;
-}
-
-div.item p.desk {
-	border: 1px solid yellow;
-	margin: 0px;
-	padding:8px;
-	color: white;
-}
-
-div.item div.tombol-cont {
-	padding: 8px;
-	background-color: #008000;
-	padding-left: 0px;
-	padding-bottom: 0px;
-	text-align: right;
-}
-
-div.item div.tombol-cont button {
-	padding: 8px;
-}
-

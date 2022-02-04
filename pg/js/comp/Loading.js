@@ -9,7 +9,7 @@ var ha;
                 this._template = `
 				<div class='loading'>
 					<div class='box'>
-						<img src='/gbr/loading.gif'/>
+						<img src=''/>
 						<p>Memuat</p> 
 					</div>
 				</div>
