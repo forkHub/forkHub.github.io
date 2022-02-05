@@ -36,18 +36,31 @@ class Edit2 {
         this.myCodeMirror.on("change", () => {
             console.log('change');
         });
-        //loading
-        let s = window.top.location.search.slice(1);
-        let ar = s.split('=');
-        console.log('loading: ' + ha.comp.loading);
-        ha.comp.Util.Ajax2('get', "./datajs/" + ar[1] + ".js", '').then((value) => {
-            this.myCodeMirror.setValue(value);
-            // this.compile();
-        }).catch((e) => {
+        this.loadFromQuery();
+    }
+    loadFromQuery() {
+        try {
+            //loading
+            let s = window.top.location.search.slice(1);
+            console.log('url: ' + s);
+            let ar = s.split('&');
+            console.log(ar);
+            ar = ar[0].split('=');
+            console.log(ar);
+            console.log('loading: ' + ha.comp.loading);
+            ha.comp.Util.Ajax2('get', "./datajs/" + ar[1] + ".js", '').then((value) => {
+                this.myCodeMirror.setValue(value);
+                // this.compile();
+            }).catch((e) => {
+                console.error(e);
+                ha.comp.dialog.tampil('Colud not load data');
+            });
+            //load query
+            console.log(ar);
+        }
+        catch (e) {
             console.error(e);
-        });
-        //load query
-        console.log(ar);
+        }
     }
     klikRun() {
         this.compile();

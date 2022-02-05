@@ -64,9 +64,10 @@ var ha;
             }
             static async Ajax2(type, url, dataStr, pf = null) {
                 let x = await this.Ajax(type, url, dataStr, pf);
-                if (x.status == 200) {
+                if (x.status == 200 || x.status == 0) {
                     return x.responseText;
                 }
+                console.log('error status code: ' + x.status);
                 throw Error(x.responseText);
             }
             //TODO: hapus
