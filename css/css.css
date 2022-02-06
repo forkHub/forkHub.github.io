@@ -15,6 +15,10 @@ div.demo div.snipet {
     margin: 5px;
 }
 
+div.section {
+    margin-bottom: 16px;
+}
+
 @media only screen and (orientation:landscape) {
     div.demo {
         display: flex;
