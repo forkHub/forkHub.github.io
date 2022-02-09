@@ -242,7 +242,14 @@ const ImageCollide = (img1, x1, y1, img2, x2, y2) => {
     ha.blitz.image.rectToImageTransform(img2, x2, y2);
     return ha.rect.collide(img1.rect, img2.rect);
 };
-const ImageBoundtOverlap = () => { };
+const ImageDotCollide = (img1, x1, y1, x2, y2) => {
+    ha.blitz.image.resetImageRect(img1);
+    ha.blitz.image.rectToImageTransform(img1, x1, y1);
+    return ha.rect.collideDot(img1.rect, x2, y2);
+};
+const ImageBoundtOverlap = () => {
+    return false;
+};
 const MidHandle = (img) => {
     img.handleX = Math.floor((img.frameW * img.scaleX) / 2);
     img.handleY = Math.floor((img.frameH * img.scaleY) / 2);
@@ -364,7 +371,9 @@ const Prompt = (m, def) => {
     return hasil;
 };
 const InputHit = () => {
-    return ha.input.inputGlobal.hit;
+    let hit = ha.input.inputGlobal.hit;
+    ha.input.inputGlobal.hit = 0;
+    return hit;
 };
 const WaitInput = async () => {
     while (true) {
@@ -380,10 +389,10 @@ const InputY = () => {
     return ha.input.inputGlobal.y;
 };
 const InputDragX = () => {
-    return ha.input.inputGlobal.yDrag;
+    return ha.input.inputGlobal.xDrag;
 };
 const InputDragY = () => {
-    return ha.input.inputGlobal.xDrag;
+    return ha.input.inputGlobal.yDrag;
 };
 const FlushInput = () => {
     ha.input.flush();

@@ -133,6 +133,8 @@ declare namespace ha {
         copyInfo(r1: IRect, r2: IRect): void;
         collideBound(r1: IRect, r2: IRect): boolean;
         collide(r1: IRect, r2: IRect): boolean;
+        collideDotBound(r: IRect, d: IV2D): boolean;
+        collideDot(r: IRect, x: number, y: number): boolean;
         minX(r: IRect): number;
         maxX(r: IRect): number;
         minY(r: IRect): number;

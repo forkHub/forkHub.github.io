@@ -322,7 +322,9 @@ var ha;
             return r;
         }
         copy(r) {
-            return ha.rect.create(r.vs[0].x, r.vs[0].y, r.vs[3].x, r.vs[3].y);
+            let hasil = this.create();
+            this.copyInfo(r, hasil);
+            return hasil;
         }
         copyInfo(r1, r2) {
             for (let i = 0; i < r1.segs.length; i++) {
@@ -356,6 +358,36 @@ var ha;
                 }
             }
             return false;
+        }
+        collideDotBound(r, d) {
+            if (d.x < this.minX(r)) {
+                return false;
+            }
+            if (d.x > this.maxX(r)) {
+                return false;
+            }
+            if (d.y < this.minY(r)) {
+                return false;
+            }
+            if (d.y > this.maxY(r)) {
+                return false;
+            }
+            return true;
+        }
+        collideDot(r, x, y) {
+            let r2 = ha.rect.copy(r);
+            let p = ha.point.create(x, y);
+            let d = ha.segment.deg(r2.segs[0]);
+            let pRot = r2.vs[0];
+            if (!this.collideDotBound(r, p)) {
+                return false;
+            }
+            ha.rect.rotate(r2, -d, pRot.x, pRot.y);
+            ha.point.rotateRel(p, pRot.x, pRot.y, -d);
+            if (!this.collideDotBound(r2, p)) {
+                return false;
+            }
+            return true;
         }
         minX(r) {
             let x = r.vs[0].x;
