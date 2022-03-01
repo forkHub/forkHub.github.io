@@ -1,0 +1,44 @@
+* {
+    font-family: 'Courier New', Courier, monospace;
+}
+
+div.demo iframe {
+    overflow: hidden;
+    margin: 5px;
+}
+
+div.demo div.snipet {
+    overflow: auto;
+    white-space: pre;
+    border: 1px solid;
+    padding: 8px;
+    margin: 5px;
+}
+
+div.section {
+    margin-bottom: 16px;
+}
+
+@media only screen and (orientation:landscape) {
+    div.demo {
+        display: flex;
+    }
+
+    div.demo iframe {
+        overflow: hidden;
+        width: 50%;
+        height: 100vh;
+        margin: 5px;
+    }
+
+    div.demo div.snipet {
+        overflow: auto;
+        white-space: pre;
+    }
+}
+
+@media only screen and (orientation:portrait) {
+
+}
+
+
