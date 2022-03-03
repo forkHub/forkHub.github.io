@@ -1,4 +1,4 @@
-Graphics(300, 300)
+Graphics 300, 300
 
 Global img
 Global frame = 0
