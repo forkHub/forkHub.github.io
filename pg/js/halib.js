@@ -78,7 +78,6 @@ var ha;
                     ha.input.event.up(ha.input.mouseGlobal);
             };
             window.onkeydown = (e) => {
-                e.stopPropagation();
                 let input = ha.input.baru(e.key + '', 'keyb');
                 ha.input.event.down(input, e.key, 'keyb', ha.point.create());
                 ha.input.event.down(this.inputGlobal, e.key, 'keyb', ha.point.create());
@@ -86,7 +85,6 @@ var ha;
                 console.log('keydown');
             };
             window.onkeyup = (e) => {
-                e.stopPropagation();
                 let input = ha.input.baru(e.key + '', 'keyb');
                 ha.input.event.up(input);
                 ha.input.event.up(this.inputGlobal);
