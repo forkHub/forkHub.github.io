@@ -4,10 +4,6 @@ var ha;
     var comp;
     (function (comp) {
         class Util {
-            static sUserId = 'user_id';
-            static sLevel = 'level';
-            static sFilter = 'filter';
-            static storageId = 'xyz.hagarden.tugas';
             static getEl(query, parent = null, err = true) {
                 let el;
                 if (!parent)
@@ -116,6 +112,10 @@ var ha;
                 });
             }
         }
+        Util.sUserId = 'user_id';
+        Util.sLevel = 'level';
+        Util.sFilter = 'filter';
+        Util.storageId = 'xyz.hagarden.tugas';
         comp.Util = Util;
     })(comp = ha.comp || (ha.comp = {}));
 })(ha || (ha = {}));

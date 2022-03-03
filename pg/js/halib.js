@@ -1,13 +1,18 @@
 var ha;
 (function (ha) {
     class Input {
-        _inputs = [];
-        _touchGlobal;
-        _mouseGlobal;
-        _keybGlobal;
-        _inputGlobal;
-        _event = new Event();
         constructor() {
+            this._inputs = [];
+            this._event = new Event();
+            this.pos = (cx, cy, buffer, canvasScaleX, canvasScaleY) => {
+                let rect = buffer.canvas.getBoundingClientRect();
+                let poslx = Math.floor((cx - rect.x) / canvasScaleX);
+                let posly = Math.floor((cy - rect.y) / canvasScaleY);
+                return {
+                    x: poslx,
+                    y: posly
+                };
+            };
             this._touchGlobal = this.def();
             this._mouseGlobal = this.def();
             this._keybGlobal = this.def();
@@ -180,15 +185,6 @@ var ha;
             }
             return inputBaru;
         }
-        pos = (cx, cy, buffer, canvasScaleX, canvasScaleY) => {
-            let rect = buffer.canvas.getBoundingClientRect();
-            let poslx = Math.floor((cx - rect.x) / canvasScaleX);
-            let posly = Math.floor((cy - rect.y) / canvasScaleY);
-            return {
-                x: poslx,
-                y: posly
-            };
-        };
         get inputs() {
             return this._inputs;
         }
@@ -549,10 +545,12 @@ var ha;
 var ha;
 (function (ha) {
     class Transform {
-        RAD2DEG = 180.0 / Math.PI;
-        DEG2RAD = Math.PI / 180.0;
-        _lastX = 0;
-        _lastY = 0;
+        constructor() {
+            this.RAD2DEG = 180.0 / Math.PI;
+            this.DEG2RAD = Math.PI / 180.0;
+            this._lastX = 0;
+            this._lastY = 0;
+        }
         get lastX() {
             return this._lastX;
         }
