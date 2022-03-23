@@ -8,7 +8,7 @@ pipeline {
             steps {
                 script {
                     gv = load "script.groovy"
-                    // gv.buildApp();
+                    gv.buildApp();
                 }
             }
         }
