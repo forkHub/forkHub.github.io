@@ -1,9 +1,14 @@
+dev gv = load "script.groovy";
+
 pipeline {
     agent any
+
     stages {
         stage('build') {
             steps {
-                echo "build"
+                script {
+                    gv.buildApp();
+                }
             }
         }
 
@@ -19,4 +24,6 @@ pipeline {
             }
         }
     }
+
+    
 }
