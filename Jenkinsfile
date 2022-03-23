@@ -10,7 +10,7 @@ pipeline {
                     gv = load "script.groovy"
                     gv.buildApp();
 
-                    com.thycotic:devops-secrets-vault-sdk:1.0.0
+                    // com.thycotic:devops-secrets-vault-sdk:1.0.0
                 }
             }
         }
