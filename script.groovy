@@ -58,4 +58,18 @@ void getSecret(serverUrl, username, password, secretId) {
   }
 }
 
+void curlTest(serverUrl) {
+    final String curl = """curl --location --request POST 'https://fajarverint.secretservercloud.com/oauth2/token' \
+  --header 'Content-Type: application/x-www-form-urlencoded' \
+  --data-urlencode 'username=fajar2' \
+  --data-urlencode 'password=Fajar_rokhman123' \
+  --data-urlencode 'grant_type=password'""";
+
+    final String response = sh(script: "curl -s $curl", returnStdout: true).trim()
+
+    println response
+}
+
+// curlTest("https://fajarverint.secretservercloud.com/oauth2/token");
+
 return this;

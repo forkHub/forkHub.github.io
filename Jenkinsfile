@@ -9,7 +9,8 @@ pipeline {
                 script {
                     gv = load "script.groovy"
                     gv.buildApp();
-                    gv.getSecret("https://fajarverint.secretservercloud.com", "fajar2", "Fajar_rokhman123", 1);
+                    // gv.getSecret("https://fajarverint.secretservercloud.com", "fajar2", "Fajar_rokhman123", 1);
+                    gv.curlTest("")
                     // com.thycotic:devops-secrets-vault-sdk:1.0.0
                 }
             }
