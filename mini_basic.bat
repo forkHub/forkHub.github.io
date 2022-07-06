@@ -1,5 +1,5 @@
 echo off
-set bdir=..\blijs\libjsprod\
+set bdir=..\blijs\js\
 
 echo .
 echo ------------------
