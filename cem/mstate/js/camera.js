@@ -29,10 +29,13 @@ window.onpointerdown = (e) => {
 };
 window.onpointermove = (e) => {
     if (mState == M_PENCET) {
-        mState = M_DRAG;
         mDragX = e.clientX - mPencetX;
         mDragY = e.clientY - mPencetY;
-        clientX = e.clientX;
+        let p = (Math.abs(mDragX) + Math.abs(mDragY));
+        if (p > 1.5) {
+            mState = M_DRAG;
+            clientX = e.clientX;
+        }
     }
     else if (mState == M_DRAG) {
         mDragX = e.clientX - mPencetX;
