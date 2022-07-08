@@ -5,7 +5,13 @@ const M_GERAK = 'gerak';
 const M_DRAG = 'drag';
 const M_TAP = 'tap';
 let mState = M_IDLE;
+let mPencetX = 0;
+let mPencetY = 0;
+let mDragX = 0;
+let mDragY = 0;
+let clientX = 0;
 function debug(msg) {
+    log = [];
     ha.comp.Util.getEl('div.debug').innerHTML = msg;
 }
 function debugTambah(msg) {
@@ -16,12 +22,22 @@ function debugTambah(msg) {
     });
     ha.comp.Util.getEl('div.debug').innerHTML = str;
 }
-window.onpointerdown = () => {
+window.onpointerdown = (e) => {
     mState = M_PENCET;
+    mPencetX = e.clientX;
+    mPencetY = e.clientY;
 };
-window.onpointermove = () => {
+window.onpointermove = (e) => {
     if (mState == M_PENCET) {
         mState = M_DRAG;
+        mDragX = e.clientX - mPencetX;
+        mDragY = e.clientY - mPencetY;
+        clientX = e.clientX;
+    }
+    else if (mState == M_DRAG) {
+        mDragX = e.clientX - mPencetX;
+        mDragY = e.clientY - mPencetY;
+        clientX = e.clientX;
     }
     else if (mState == M_IDLE) {
         mState = M_GERAK;
@@ -45,7 +61,10 @@ window.onpointerup = () => {
 };
 window.onload = () => {
     setInterval(() => {
-        debug('m state: ' + mState);
+        debug('');
+        debugTambah('m state: ' + mState);
+        debugTambah('m drag, x: ' + mDragX + '/y: ' + mDragY);
+        debugTambah('client, x: ' + clientX);
     }, 100);
 };
 var ha;
