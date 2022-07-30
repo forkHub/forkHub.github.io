@@ -110,6 +110,7 @@ class HalDepan extends ha.comp.BaseComponent {
             else {
                 NoteItem.filterHapus();
             }
+            Kosong.inst.update();
         };
     }
     static get inst() {
@@ -137,10 +138,10 @@ class HalEdit extends ha.comp.BaseComponent {
                 <div class='padding'></div>
                 <div class='disp-flex flex-dir-col flex-grow-1'>
                     <label for='judul'>Judul:</label>
-                    <input type='text' name='judul' class='judul'/>
+                    <input type='text' name='judul' class='judul padding'/>
                     <div class='padding'></div>
                     <label for='judul'>Isi:</label>
-                    <textarea class='flex-grow-1 isi' name='isi' rows='20' cols='80'/></textarea>
+                    <textarea class='flex-grow-1 isi padding' name='isi' rows='20' cols='80'/></textarea>
                 </div>
             </div>
         `;
@@ -155,9 +156,12 @@ class HalEdit extends ha.comp.BaseComponent {
             this.note.isi = this.isiEl.value;
         };
         this.backTbl.onclick = () => {
-            this.detach();
-            this.selesai();
+            this.klikBack();
         };
+    }
+    klikBack() {
+        this.detach();
+        this.selesai();
     }
     static get Inst() {
         if (this.instObj)
@@ -178,14 +182,49 @@ class HalEdit extends ha.comp.BaseComponent {
 }
 window.onload = () => {
     HalDepan.inst.attach(document.body);
+    Kosong.inst.attach(HalDepan.inst.listCont);
     TambahTbl.inst.attach(document.body);
     Note.load();
+    Kosong.inst.update();
 };
 function debug() {
     for (let i = 0; i < 100; i++) {
         Note.buat(Date.now(), 'judul' + i, 'isi' + i);
     }
     Note.renderAll();
+}
+window.onunload = () => {
+    if (HalEdit.Inst.elHtml.parentElement) {
+        HalEdit.Inst.klikBack();
+        return false;
+    }
+    return true;
+};
+class Kosong extends ha.comp.BaseComponent {
+    static instObj;
+    constructor() {
+        super();
+        this._template = `
+            <div class='kosong padding'>
+                Tidak Ada Data
+            </div>
+        `;
+        this.build();
+    }
+    update() {
+        if (NoteItem.checkKosong()) {
+            this.elHtml.style.display = 'block';
+        }
+        else {
+            this.elHtml.style.display = 'none';
+        }
+    }
+    static get inst() {
+        if (this.instObj)
+            return this.instObj;
+        this.instObj = new Kosong();
+        return this.instObj;
+    }
 }
 class Note {
     static daftarNote = [];
@@ -244,6 +283,9 @@ class Note {
             ha.comp.dialog.tampil('Ada kesalahan');
         }
     }
+    static jml() {
+        return this.daftarNote.length;
+    }
     static hapusSemua() {
         while (this.daftarNote.length > 0) {
             let note;
@@ -276,13 +318,16 @@ class NoteItem extends ha.comp.BaseComponent {
         this.tglEl = this.getEl('div.tgl');
         this.judulEl = this.getEl('div.judul');
         this.hapusTbl = this.getEl('button.hapus');
+        this.tglEl.style.fontSize = 'smaller';
         this.item = item;
         this.refresh();
         this._elHtml.onclick = () => {
             HalDepan.inst.detach();
+            TambahTbl.inst.detach();
             HalEdit.Inst.edit(this.item, () => {
                 this.refresh();
                 HalDepan.inst.attach(document.body);
+                TambahTbl.inst.attach(document.body);
                 Note.simpan();
             });
         };
@@ -295,8 +340,19 @@ class NoteItem extends ha.comp.BaseComponent {
                 this.item = null;
                 this.destroy();
                 Note.simpan();
+                Kosong.inst.update();
             }
         };
+    }
+    static checkKosong() {
+        if (this.daftar.length == 0)
+            return true;
+        for (let i = 0; i < this.daftar.length; i++) {
+            if (this.daftar[i].elHtml.style.display != 'none') {
+                return false;
+            }
+        }
+        return true;
     }
     refresh() {
         this.tglEl.innerText = this.renderTanggal(this.item.tgl);
@@ -357,7 +413,9 @@ class TambahTbl extends ha.comp.BaseComponent {
                 HalDepan.inst.attach(document.body);
                 this.attach(document.body);
                 Note.simpan();
+                Kosong.inst.update();
             });
+            Kosong.inst.update();
         };
     }
     static get inst() {
