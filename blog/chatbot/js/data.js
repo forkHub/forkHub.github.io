@@ -1,3 +1,6 @@
+/**
+ * data untuk chatbot
+ */
 const data = [
     //menu utama
     {

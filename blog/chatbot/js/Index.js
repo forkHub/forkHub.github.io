@@ -138,11 +138,13 @@ class Chat {
 const chatCont = ha.comp.Util.getEl('div.chat-cont');
 const kirimTbl = ha.comp.Util.getEl('button.kirim');
 const jawabTxt = ha.comp.Util.getEl('input.jawab');
+const formBalas = ha.comp.Util.getEl('form.balas');
 Chat.chatAktif = data[0];
 Chat.render(data[0]);
 // Chat.render(data[1]);
-kirimTbl.onclick = async (e) => {
+formBalas.onsubmit = async (e) => {
     e.stopPropagation();
+    e.preventDefault();
     await Chat.kirim(jawabTxt.value);
     jawabTxt.value = '';
     chatCont.scrollTop = chatCont.scrollHeight;
