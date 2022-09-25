@@ -4,9 +4,10 @@ var ha;
     var comp;
     (function (comp) {
         class BaseComponent {
-            _template = '';
-            _elHtml = document.createElement('div');
-            _parent;
+            constructor() {
+                this._template = '';
+                this._elHtml = document.createElement('div');
+            }
             async loadTemplate(f) {
                 let http = await comp.Util.Ajax('get', f, '');
                 if (200 == http.status) {
@@ -79,12 +80,6 @@ var ha;
     })(comp = ha.comp || (ha.comp = {}));
 })(ha || (ha = {}));
 class HalDepan extends ha.comp.BaseComponent {
-    static instObj;
-    _listCont;
-    cariEl;
-    get listCont() {
-        return this._listCont;
-    }
     constructor() {
         super();
         this._template = `
@@ -103,6 +98,12 @@ class HalDepan extends ha.comp.BaseComponent {
         this._listCont = this.getEl('div.list-cont');
         this.cariEl = this.getEl('input.cari-note');
         this.listCont.style.paddingBottom = '72px';
+        this.tambahTbl = new TambahTbl(() => {
+            this.tambahKlik();
+        });
+        this.tambahTbl.attach(this._elHtml);
+        this.kosong = new Kosong();
+        this.kosong.attach(this.listCont);
         this.cariEl.oninput = () => {
             if (this.cariEl.value.length > 0) {
                 NoteItem.filter(this.cariEl.value);
@@ -110,8 +111,43 @@ class HalDepan extends ha.comp.BaseComponent {
             else {
                 NoteItem.filterHapus();
             }
-            Kosong.inst.update();
+            this.updateKosong();
         };
+    }
+    get listCont() {
+        return this._listCont;
+    }
+    tambahKlik() {
+        console.log('tambah note');
+        let note;
+        note = Note.buat(Date.now(), '', '');
+        HalDepan.inst.detach();
+        HalEdit.Inst.edit(note, () => {
+            Note.push(note);
+            simpan();
+            NoteItem.buat(note).attach(this.listCont);
+            HalDepan.inst.attach(document.body);
+            HalDepan.inst.updateKosong();
+        }, () => {
+            HalDepan.inst.attach(document.body);
+            HalDepan.inst.updateKosong();
+        });
+    }
+    itemKlik(item) {
+        HalDepan.inst.detach();
+        let copy = Note.clone(item.item);
+        HalEdit.Inst.edit(copy, () => {
+            item.item.isi = copy.isi;
+            item.item.judul = copy.judul;
+            item.refresh();
+            HalDepan.inst.attach(document.body);
+            simpan();
+        }, () => {
+            HalDepan.inst.attach(document.body);
+        });
+    }
+    updateKosong() {
+        this.kosong.update();
     }
     static get inst() {
         if (this.instObj)
@@ -121,12 +157,6 @@ class HalDepan extends ha.comp.BaseComponent {
     }
 }
 class HalEdit extends ha.comp.BaseComponent {
-    static instObj;
-    judulEl;
-    isiEl;
-    backTbl;
-    selesai;
-    note;
     constructor() {
         super();
         this._template = `
@@ -142,6 +172,14 @@ class HalEdit extends ha.comp.BaseComponent {
                     <div class='padding'></div>
                     <label for='judul'>Isi:</label>
                     <textarea class='flex-grow-1 isi padding' name='isi' rows='20' cols='80'/></textarea>
+                    <div class='disp-table padding'>
+                        <div class='disp-cell text-align-center'>
+                            <button class='simpan'>simpan</button>
+                        </div>
+                        <div class='disp-cell text-align-center'>
+                            <button class='batal'>batal</button>
+                        </div>
+                    </div>
                 </div>
             </div>
         `;
@@ -149,6 +187,8 @@ class HalEdit extends ha.comp.BaseComponent {
         this.judulEl = this.getEl('input.judul');
         this.isiEl = this.getEl('textarea.isi');
         this.backTbl = this.getEl('button.kembali');
+        this.simpanTbl = this.getEl('button.simpan');
+        this.batalTbl = this.getEl('button.batal');
         this.judulEl.onchange = () => {
             this.note.judul = this.judulEl.value;
         };
@@ -158,10 +198,17 @@ class HalEdit extends ha.comp.BaseComponent {
         this.backTbl.onclick = () => {
             this.klikBack();
         };
+        this.batalTbl.onclick = () => {
+            this.klikBack();
+        };
+        this.simpanTbl.onclick = () => {
+            this.detach();
+            this.selesai();
+        };
     }
     klikBack() {
         this.detach();
-        this.selesai();
+        this.batal();
     }
     static get Inst() {
         if (this.instObj)
@@ -173,35 +220,45 @@ class HalEdit extends ha.comp.BaseComponent {
         this.judulEl.value = this.note.judul;
         this.isiEl.value = this.note.isi;
     }
-    edit(note, f) {
+    edit(note, ok, batal) {
         this.note = note;
         this.updateView();
-        this.selesai = f;
+        this.selesai = ok;
+        this.batal = batal;
         this.attach(document.body);
     }
 }
 window.onload = () => {
     HalDepan.inst.attach(document.body);
-    Kosong.inst.attach(HalDepan.inst.listCont);
-    TambahTbl.inst.attach(document.body);
-    Note.load();
-    Kosong.inst.update();
+    load();
 };
-function debug() {
-    for (let i = 0; i < 100; i++) {
-        Note.buat(Date.now(), 'judul' + i, 'isi' + i);
-    }
-    Note.renderAll();
+function simpan() {
+    window.localStorage.setItem('ha.note.data', JSON.stringify(Note.slice()));
 }
-window.onunload = () => {
-    if (HalEdit.Inst.elHtml.parentElement) {
-        HalEdit.Inst.klikBack();
-        return false;
+function load() {
+    Note.hapusSemua();
+    NoteItem.hapusSemua();
+    try {
+        let str;
+        str = window.localStorage.getItem('ha.note.data');
+        if (str) {
+            let note = JSON.parse(str);
+            note.forEach((item) => {
+                Note.push(item);
+                NoteItem.buat(item).attach(HalDepan.inst.listCont);
+            });
+        }
+        else {
+            console.log('data belum ada');
+        }
     }
-    return true;
-};
+    catch (e) {
+        console.error(e);
+        ha.comp.dialog.tampil('Ada kesalahan');
+    }
+    HalDepan.inst.updateKosong();
+}
 class Kosong extends ha.comp.BaseComponent {
-    static instObj;
     constructor() {
         super();
         this._template = `
@@ -219,15 +276,8 @@ class Kosong extends ha.comp.BaseComponent {
             this.elHtml.style.display = 'none';
         }
     }
-    static get inst() {
-        if (this.instObj)
-            return this.instObj;
-        this.instObj = new Kosong();
-        return this.instObj;
-    }
 }
 class Note {
-    static daftarNote = [];
     static buat(tgl, judul, isi) {
         let hasil;
         hasil = {
@@ -236,7 +286,26 @@ class Note {
             judul: judul,
             isi: isi
         };
-        this.daftarNote.push(hasil);
+        return hasil;
+    }
+    static push(note) {
+        this.daftarNote.push(note);
+    }
+    static clone(note) {
+        return {
+            id: note.id,
+            judul: note.judul,
+            isi: note.isi,
+            tgl: note.tgl
+        };
+    }
+    static get(id) {
+        let hasil;
+        this.daftarNote.forEach((item) => {
+            if (item.id == id) {
+                hasil = item;
+            }
+        });
         return hasil;
     }
     static hapus(id) {
@@ -254,57 +323,24 @@ class Note {
             return true;
         return false;
     }
-    static renderAll() {
-        this.daftarNote.forEach((note) => {
-            NoteItem.buat(note).attach(HalDepan.inst.listCont);
-        });
-    }
-    static simpan() {
-        window.localStorage.setItem('ha.note.data', JSON.stringify(this.daftarNote));
-    }
-    static load() {
-        let str;
-        this.hapusSemua();
-        try {
-            str = window.localStorage.getItem('ha.note.data');
-            if (str) {
-                let note = JSON.parse(str);
-                note.forEach((item) => {
-                    this.daftarNote.push(item);
-                });
-                this.renderAll();
-            }
-            else {
-                console.log('data belum ada');
-            }
-        }
-        catch (e) {
-            console.error(e);
-            ha.comp.dialog.tampil('Ada kesalahan');
-        }
-    }
     static jml() {
         return this.daftarNote.length;
     }
     static hapusSemua() {
         while (this.daftarNote.length > 0) {
-            let note;
-            note = this.daftarNote[0];
-            NoteItem.hapus(note);
-            this.hapus(note.id);
+            this.daftarNote.pop();
         }
     }
+    static slice() {
+        return this.daftarNote.slice();
+    }
 }
+Note.daftarNote = [];
 class NoteItem extends ha.comp.BaseComponent {
-    item;
-    tglEl;
-    judulEl;
-    hapusTbl;
-    static daftar = [];
     constructor(item) {
         super();
         this._template = `
-            <div class='note-item padding'>
+            <div class='note-item padding user-select-none'>
                 <div class='tgl text-align-right'></div>
                 <div class='disp-flex'>
                     <div class='judul flex-grow-1 disp-flex align-items-center'></div>
@@ -319,17 +355,32 @@ class NoteItem extends ha.comp.BaseComponent {
         this.judulEl = this.getEl('div.judul');
         this.hapusTbl = this.getEl('button.hapus');
         this.tglEl.style.fontSize = 'smaller';
-        this.item = item;
+        this._item = item;
         this.refresh();
+        this._elHtml.onpointerdown = (e) => {
+            e.stopPropagation();
+            this.timer = setTimeout(() => {
+                console.log('on hold event');
+                this._elHtml.setAttribute('fase', 'idle');
+            }, 1000);
+            this.downTime = Date.now();
+            console.log('down');
+            this._elHtml.setAttribute('fase', 'pencet');
+        };
+        this._elHtml.onpointerup = (e) => {
+            e.stopPropagation();
+            clearTimeout(this.timer);
+            if ((Date.now() - this.downTime) > 500) {
+                console.log('click cancel');
+                this._elHtml.setAttribute('fase', 'idle');
+            }
+            else {
+                this._elHtml.setAttribute('fase', 'click');
+                this.klik();
+            }
+        };
         this._elHtml.onclick = () => {
-            HalDepan.inst.detach();
-            TambahTbl.inst.detach();
-            HalEdit.Inst.edit(this.item, () => {
-                this.refresh();
-                HalDepan.inst.attach(document.body);
-                TambahTbl.inst.attach(document.body);
-                Note.simpan();
-            });
+            console.log('on click');
         };
         this.hapusTbl.onclick = (e) => {
             e.stopPropagation();
@@ -337,12 +388,28 @@ class NoteItem extends ha.comp.BaseComponent {
             if (ok) {
                 Note.hapus(this.item.id);
                 NoteItem.hapus(this.item);
-                this.item = null;
+                this._item = null;
                 this.destroy();
-                Note.simpan();
-                Kosong.inst.update();
+                simpan();
+                HalDepan.inst.updateKosong();
             }
         };
+    }
+    get item() {
+        return this._item;
+    }
+    klik() {
+        HalDepan.inst.detach();
+        let copy = Note.clone(this.item);
+        HalEdit.Inst.edit(copy, () => {
+            this.item.isi = copy.isi;
+            this.item.judul = copy.judul;
+            this.refresh();
+            HalDepan.inst.attach(document.body);
+            simpan();
+        }, () => {
+            HalDepan.inst.attach(document.body);
+        });
     }
     static checkKosong() {
         if (this.daftar.length == 0)
@@ -390,10 +457,17 @@ class NoteItem extends ha.comp.BaseComponent {
             view.elHtml.style.display = 'block';
         });
     }
+    static hapusSemua() {
+        while (this.daftar.length > 0) {
+            let item = this.daftar.pop();
+            item._item = null;
+            item.destroy();
+        }
+    }
 }
+NoteItem.daftar = [];
 class TambahTbl extends ha.comp.BaseComponent {
-    static instObj;
-    constructor() {
+    constructor(klik) {
         super();
         this._template = `
             <div class='tambah-user-tbl user-select-none cursor-pointer'>+</div>
@@ -401,28 +475,8 @@ class TambahTbl extends ha.comp.BaseComponent {
         this.build();
         this._elHtml.onclick = (e) => {
             e.stopPropagation();
-            console.log('tambah note');
-            let note;
-            note = Note.buat(Date.now(), '', '');
-            let item = NoteItem.buat(note);
-            item.attach(HalDepan.inst.listCont);
-            HalDepan.inst.detach();
-            this.detach();
-            HalEdit.Inst.edit(note, () => {
-                item.refresh();
-                HalDepan.inst.attach(document.body);
-                this.attach(document.body);
-                Note.simpan();
-                Kosong.inst.update();
-            });
-            Kosong.inst.update();
+            klik();
         };
-    }
-    static get inst() {
-        if (this.instObj)
-            return this.instObj;
-        this.instObj = new TambahTbl();
-        return this.instObj;
     }
 }
 var ha;
@@ -467,7 +521,6 @@ var ha;
     })(comp = ha.comp || (ha.comp = {}));
 })(ha || (ha = {}));
 class Id {
-    static _base = 0;
     static get id() {
         if (this._base <= 0) {
             this._base = ha.comp.Util.id();
@@ -476,6 +529,7 @@ class Id {
         return this._base;
     }
 }
+Id._base = 0;
 var ha;
 (function (ha) {
     var comp;
@@ -507,8 +561,8 @@ var ha;
     var comp;
     (function (comp) {
         class MenuKontek {
-            view = new View();
             constructor() {
+                this.view = new View();
             }
             buatTombol(t) {
                 let button = document.createElement('button');
@@ -545,8 +599,8 @@ var ha;
     var comp;
     (function (comp) {
         class MenuPopup {
-            view = new View();
             constructor() {
+                this.view = new View();
             }
             destroy() {
                 this.view.destroy();
@@ -601,10 +655,6 @@ var ha;
     var comp;
     (function (comp) {
         class Util {
-            static sUserId = 'user_id';
-            static sLevel = 'level';
-            static sFilter = 'filter';
-            static storageId = 'xyz.hagarden.tugas';
             static createEl(str) {
                 let div = document.createElement('div');
                 let el;
@@ -758,6 +808,10 @@ var ha;
                 });
             }
         }
+        Util.sUserId = 'user_id';
+        Util.sLevel = 'level';
+        Util.sFilter = 'filter';
+        Util.storageId = 'xyz.hagarden.tugas';
         comp.Util = Util;
     })(comp = ha.comp || (ha.comp = {}));
 })(ha || (ha = {}));
