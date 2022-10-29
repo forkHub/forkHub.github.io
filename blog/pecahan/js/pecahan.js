@@ -7,26 +7,36 @@ class Pecahan {
         this.pembilang = bilang;
         this.penyebut = sebut;
     }
-    //skala pecahan
+    static clone(p) {
+        return {
+            angka: p.angka,
+            pembilang: p.pembilang,
+            penyebut: p.penyebut
+        };
+    }
     static skala(p, n) {
-        if (p.angka <= 0) {
+        if (!this.checkCampuran(p)) {
             p.pembilang *= n;
             p.penyebut *= n;
         }
         else {
-            //TODO: skala pecahan campuran tidak bisa
-            console.warn('pecahan campuran tidak bisa di skala');
+            this.keBentukBiasa(p);
+            p.pembilang *= n;
+            p.penyebut *= n;
+            this.keBentukCampuran(p);
         }
+        return p;
     }
     static checkCampuran(p) {
         return (p.angka > 0);
     }
+    static toDesimal(p) {
+        return p.pembilang / p.penyebut;
+    }
     static checkSama(p1, p2) {
-        if (p1.pembilang != p2.pembilang)
-            return false;
-        if (p1.penyebut != p2.penyebut)
-            return false;
-        if (p1.angka != p2.angka)
+        this.keBentukBiasa(p1);
+        this.keBentukBiasa(p2);
+        if (this.toDesimal(p1) != this.toDesimal(p2))
             return false;
         return true;
     }
@@ -58,12 +68,8 @@ class Pecahan {
         return view;
     }
     static lebihBesar(p1, p2) {
-        if (this.checkCampuran(p1)) {
-            throw Error(JSON.stringify(p1));
-        }
-        if (this.checkCampuran(p2)) {
-            throw Error(JSON.stringify(p2));
-        }
+        this.keBentukBiasa(p1);
+        this.keBentukBiasa(p2);
         let a1 = p1.pembilang * p2.penyebut;
         let a2 = p2.pembilang * p1.penyebut;
         return a1 > a2;
@@ -71,15 +77,31 @@ class Pecahan {
     static buatAcak(mak = 100) {
         let pembilang;
         let penyebut;
-        pembilang = Math.floor(Math.random() * mak) + 1;
-        penyebut = Math.floor(Math.random() * mak) + 1;
+        pembilang = Math.floor(Math.random() * (mak - 1)) + 1;
+        penyebut = Math.floor(Math.random() * (mak - 1)) + 1;
         return this.buat(0, pembilang, penyebut);
     }
-    static kecampuran(p) {
+    static toString(p) {
+        return p.angka + " " + p.pembilang + '/' + p.penyebut;
+    }
+    static keBentukCampuran(p) {
         if (p.angka > 0)
             return p;
+        console.log(this.toString(p));
         p.angka = Math.floor(p.pembilang / p.penyebut);
         p.pembilang = p.pembilang % p.penyebut;
+        console.log(this.toString(p));
+        console.log('');
+        return p;
+    }
+    static keBentukBiasa(p) {
+        if (p.angka == 0)
+            return p;
+        console.log(this.toString(p));
+        p.pembilang = (p.penyebut * p.angka) + p.pembilang;
+        p.angka = 0;
+        console.log(this.toString(p));
+        console.log('');
         return p;
     }
     static buatCampuran(mak = 30) {

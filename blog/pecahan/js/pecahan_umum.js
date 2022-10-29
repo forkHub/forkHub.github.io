@@ -1,13 +1,30 @@
-function buatSoal() {
+function tombolTutupKlik() {
+    window.top.location.href = urlHalUtama;
+}
+function buatSoal(soal1Pecahan = false, soal2Pecahan = false) {
     let soal = {
         pecahan: []
     };
-    soal.pecahan.push(Pecahan.buatAcak(maks));
-    soal.pecahan.push(Pecahan.buatAcak(maks));
-    if (Pecahan.checkSama(soal.pecahan[0], soal.pecahan[1])) {
+    if (soal1Pecahan) {
+        let p = Pecahan.buatCampuran(angkMaks);
+        Pecahan.keBentukCampuran(p);
+        soal.pecahan.push(p);
+    }
+    else {
+        soal.pecahan.push(Pecahan.buatAcak(angkMaks));
+    }
+    if (soal2Pecahan) {
+        let p = Pecahan.buatCampuran(angkMaks);
+        Pecahan.keBentukCampuran(p);
+        soal.pecahan.push(p);
+    }
+    else {
+        soal.pecahan.push(Pecahan.buatAcak(angkMaks));
+    }
+    if (Pecahan.checkSama(Pecahan.clone(soal.pecahan[0]), Pecahan.clone(soal.pecahan[1]))) {
         soal.jawaban = '=';
     }
-    else if (Pecahan.lebihBesar(soal.pecahan[0], soal.pecahan[1])) {
+    else if (Pecahan.lebihBesar(Pecahan.clone(soal.pecahan[0]), Pecahan.clone(soal.pecahan[1]))) {
         soal.jawaban = '>';
     }
     else {
@@ -26,7 +43,7 @@ function soalMaju() {
     if (soalIdx >= soals.length) {
         //render halaman akhir
         el.parentElement.removeChild(el);
-        HalSelesai.tampil(document.body, Math.floor((nilai / soals.length) * 100)).catch((e) => {
+        HalSelesai.tampil(document.body, Math.floor((jmlBenar / (jmlBenar + jmlSalah)) * 100)).catch((e) => {
             console.error(e);
         });
     }
@@ -44,7 +61,7 @@ function checkSoal(jawaban) {
 		`);
         ha.comp.dialog.okTbl.onclick = () => {
             ha.comp.dialog.detach();
-            nilai++;
+            jmlBenar++;
             soalMaju();
         };
     }
@@ -56,7 +73,9 @@ function checkSoal(jawaban) {
 		`);
         ha.comp.dialog.okTbl.onclick = () => {
             ha.comp.dialog.detach();
-            soalMaju();
+            renderSoal(soals[soalIdx]);
+            pg.progress(Math.floor((soalIdx / soals.length) * 100));
+            jmlSalah++;
         };
     }
 }
@@ -69,18 +88,11 @@ function tombolSamaDenganKlik() {
 function tombolKurangDariKlik() {
     checkSoal('<');
 }
-let nilai = 0;
 let pg = new ProgressBar();
 let soals = [];
 let soalIdx = 0;
 let el = ha.comp.Util.getEl('div.hal-soal');
-let maks = 20;
-let jmlSoal = 2;
+let jmlBenar = 0;
+let jmlSalah = 0;
 let soal1Cont = ha.comp.Util.getEl('div.soal-1');
 let soal2Cont = ha.comp.Util.getEl('div.soal-2');
-document.body.querySelector('div.progress-cont').appendChild(pg.el);
-for (let i = 0; i < jmlSoal; i++) {
-    soals.push(buatSoal());
-}
-renderSoal(soals[0]);
-pg.progress(0);
