@@ -12,6 +12,8 @@
 		iframe {
 			width: 240px;
 			height: 320px;
+			margin: auto;
+			display: inherit;
 		}
 
 		pre {
@@ -22,10 +24,12 @@
 
 <body>
 	<div class="container">
-		<a href="https://forkhub.github.io/blitz_edu/">&larr; Beranda </a> |
+		<a href="https://forkhub.github.io/blitz_edu/">&larr; Beranda</a> |
+		<p></p>
 		<iframe src="index.html"></iframe>
+		<p style="text-align:center"><small>Demo drag-drop, geser kotak merah dengan mouse/jari</small></p>
 		<p>
-			Ada banyak cara untuk menggunkan Blitz Edu. salah satunya adalah dengan mendownload template dan
+			Ada banyak cara untuk menggunkan Blitz Edu. Salah satunya adalah dengan mendownload template dan
 			mengeditnya.
 		</p>
 		<p>
@@ -54,20 +58,19 @@ function Loop() {
 		</p>
 		<p>
 			Ini adalah pintu masuk dari BE. Fungsi ini harus dipanggil di awal, untuk mengeset
-			kanvas.<br />
-			BE bekerja di kanvas dan butuh kanvas untuk bisa berfungsi. <br />
-			Fungsi ini memiliki dua parameter utama: panjang dan lebar.<br />
-			panjang dan lebar menentukan panjang dan lebar kanvas.<br />
+			kanvas, dan mengatur semuanya agar bisa berjalan dengan baik dan benar.<br />
+			Fungsi ini memiliki dua parameter utama: <code>panjang</code> dan <code>lebar</code>.<br />
+			keduanya menentukan panjang dan lebar kanvas.<br />
 			Parameter sisanya bisa Anda baca di <a href="">sini</a>
 		</p>
 		<p><code>let spr = Muat("./gbr/box.png", true);</code>
 		</p>
 		<p>
-			Fungsi Muat() berfungsi untuk memuat gambar dan di konvert ke dalam bentuk Sprite. <br />
+			Fungsi Muat() berfungsi untuk memuat gambar dan mengkonvertnya ke dalam bentuk Sprite. <br />
 			Sprite adalah tokoh utama dari BE. Tanpa Sprite maka tidak akan ada yang ditampilkan di layar.<br />
-			Kita memuat Sprite dari URL, bisa lokal ataupun online.<br /> Bila Anda meload gambar dari online, pastikan
+			Parameter pertama adalah URL, bisa lokal ataupun online.<br /> Bila Anda meload gambar dari online, pastikan
 			Anda
-			mendapatkan ijin dulu.
+			mendapatkan dari yang punya gambar.
 			Parameter kedua dari fungsi ini adalah untuk menentukan apakah Sprite bisa di drag atau tidak.<br />
 			Drag-Drop adalah fitur bawaan dari Sprite. <br />
 			BE fokus pada interaksi, dan sepertinya drag-drop adalah feature yang
@@ -75,7 +78,7 @@ function Loop() {
 			Maka dari itulah Saya memutuskan bahwa drag-drop harus ada secara default.
 		</p>
 		<p><code>Posisi(spr, 160, 120);</code></p>
-		Fungsi ini untuk menentukan posisi Sprite.
+		Fungsi ini untuk menentukan posisi Sprite. Parameternya adalah object Sprite dan posisi X serta Y.
 		<p>
 			<code>
 		<pre>
@@ -87,7 +90,7 @@ function Loop() {
 		</code>
 		</p>
 		<p>
-			Fungsi Loop() adalah fungsi untuk perulangan, akan dipanggil 60 kali per detiknya, atau 60 fps, tergantung
+			Fungsi Loop() adalah fungsi untuk perulangan, akan dipanggil 60 kali per detiknya (60 fps) -- tergantung
 			kecepatan
 			device. Dalam fungsi ini kita memanggil dua fungsi lainnya:
 		</p>
