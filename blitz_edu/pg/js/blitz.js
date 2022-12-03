@@ -1,6 +1,27 @@
 var ha;
 (function (ha) {
     class Main {
+        static _fps = 0;
+        static _origin;
+        static _canvasAr = [];
+        static _canvasAktif;
+        static _skalaOtomatis = true;
+        static _merah = 0;
+        static _hijau = 0;
+        static _biru = 0;
+        static _transparan = 0;
+        static warnaBackup = {
+            m: 0,
+            b: 0,
+            h: 0,
+            t: 1
+        };
+        static kontek(spr) {
+            if (spr && spr.buffer.ctx) {
+                return spr.buffer.ctx;
+            }
+            return ha.Main.canvasAktif.ctx;
+        }
         static Fps(n) {
             ha.Main.fps = Math.floor(1000 / n);
             if (n >= 60) {
@@ -37,16 +58,33 @@ var ha;
             ha.Main._canvasAr.push(canvas);
             ha.Main.canvasAktif = canvas;
         }
-        static Bersih() {
+        static backupWarna() {
+            ha.Main.warnaBackup.b = ha.Main.biru;
+            ha.Main.warnaBackup.h = ha.Main.hijau;
+            ha.Main.warnaBackup.m = ha.Main.merah;
+            ha.Main.warnaBackup.t = ha.Main.transparan;
+        }
+        static restoreWarna() {
+            ha.Main.biru = ha.Main.warnaBackup.b;
+            ha.Main.hijau = ha.Main.warnaBackup.h;
+            ha.Main.merah = ha.Main.warnaBackup.m;
+            ha.Main.transparan = ha.Main.warnaBackup.t;
+            ha.Main.updateStyleWarna();
+        }
+        static Bersih(m = 0, h = 0, b = 0, t = 1) {
             let ctx = ha.Main.canvasAktif.ctx;
+            ha.Main.backupWarna();
+            ctx.fillStyle = `rgba(${m}, ${h}, ${b}, ${t})`;
             ctx.fillRect(0, 0, ha.Main.canvasAktif.panjang, ha.Main.canvasAktif.lebar);
+            ha.Main.restoreWarna();
         }
         static warna(r = 0, g = 0, b = 0, a = 1) {
-            ha.Main.merah = r;
-            ha.Main.biru = b;
-            ha.Main.hijau = g;
-            ha.Main.transparan = a;
-            ha.Main.updateStyleWarna();
+            let h = ha.Main;
+            h.merah = r;
+            h.biru = b;
+            h.hijau = g;
+            h.transparan = a;
+            h.updateStyleWarna();
         }
         static updateStyleWarna() {
             let ctx = ha.Main.canvasAktif.ctx;
@@ -101,6 +139,17 @@ var ha;
             if (garis) {
                 ctx.strokeRect(x1, y1, x2 - x1, y2 - y1);
             }
+        }
+        static Oval(x = 0, y = 0, radius, skalaX = 1, skalaY = .5, rotasi = 0) {
+            let ctx = ha.Main.canvasAktif.ctx;
+            ctx.save();
+            ctx.translate(x, y);
+            ctx.rotate(rotasi * (Math.PI / 180));
+            ctx.scale(skalaX, skalaY);
+            ctx.beginPath();
+            ctx.arc(0, 0, radius, 0, 2 * Math.PI, false);
+            ctx.restore();
+            ctx.stroke();
         }
         static SetBuffer(buffer) {
             ha.Main.canvasAktif = buffer;
@@ -160,20 +209,12 @@ var ha;
             Main._transparan = value;
         }
     }
-    Main._fps = 0;
-    Main._canvasAr = [];
-    Main._skalaOtomatis = true;
-    Main._merah = 0;
-    Main._hijau = 0;
-    Main._biru = 0;
-    Main._transparan = 0;
     ha.Main = Main;
 })(ha || (ha = {}));
 var ha;
 (function (ha) {
     class Image {
-        static buat(w = 32, h = 32, frameW = 32, frameH = 32) {
-            let canvas = document.createElement('canvas');
+        static buatBagiCanvas(canvas, w = 32, h = 32, frameW = 32, frameH = 32) {
             let img;
             canvas.width = w;
             canvas.height = h;
@@ -198,6 +239,10 @@ var ha;
             };
             return img;
         }
+        static buat(w = 32, h = 32, frameW = 32, frameH = 32) {
+            let canvas = document.createElement('canvas');
+            return ha.Image.buatBagiCanvas(canvas, w, h, frameW, frameH);
+        }
         static panjang(gbr) { return gbr.panjang; }
         ;
         static lebar(gbr) { return gbr.lebar; }
@@ -221,8 +266,11 @@ var ha;
         }
         ;
         static muatAnimAsync(url, fw = 32, fh = 32) {
-            let img = document.createElement('img');
             let canvas = document.createElement('canvas');
+            return ha.Image.muatAnimAsyncCanvas(url, fw, fh, canvas);
+        }
+        static muatAnimAsyncCanvas(url, fw = 32, fh = 32, canvas) {
+            let img = document.createElement('img');
             let ctx = canvas.getContext('2d');
             let rect;
             rect = ha.Rect.create(0, 0, fw, fh);
@@ -265,8 +313,11 @@ var ha;
             return gbr;
         }
         static muatAsync(url) {
-            let img = document.createElement('img');
             let canvas = document.createElement('canvas');
+            return ha.Image.muatAsyncKanvas(url, canvas);
+        }
+        static muatAsyncKanvas(url, canvas) {
+            let img = document.createElement('img');
             let ctx = canvas.getContext('2d');
             let rect;
             rect = ha.Rect.create(0, 0, img.naturalWidth, img.naturalHeight);
@@ -289,11 +340,25 @@ var ha;
                 lebarDiSet: false
             };
             img.onload = () => {
+                imgOnLoad(img);
+            };
+            img.onerror = () => {
+                console.log('gagal load image, url ' + url);
+            };
+            let img2 = ha.cache.getGbr(url);
+            if (img2) {
+                imgOnLoad(img2);
+            }
+            else {
+                img.src = url;
+            }
+            function imgOnLoad(img) {
                 canvas.width = img.naturalWidth;
                 canvas.height = img.naturalHeight;
                 ctx.drawImage(img, 0, 0);
                 gbr.rect = ha.Rect.create(0, 0, img.naturalWidth, img.naturalHeight);
                 gbr.load = true;
+                gbr.img = img;
                 if (!gbr.panjangDiSet) {
                     gbr.panjangDiSet = true;
                     gbr.panjang = img.naturalWidth;
@@ -304,12 +369,8 @@ var ha;
                 }
                 gbr.frameH = img.naturalHeight;
                 gbr.frameW = img.naturalWidth;
-                console.log('gambar di load');
-            };
-            img.onerror = () => {
-                console.log('gagal load image, url ' + url);
-            };
-            img.src = url;
+                ha.cache.setFile(url, img);
+            }
             return gbr;
         }
         static gambarUbin(gbr, x = 0, y = 0, frame = 0) {
@@ -405,7 +466,7 @@ var ha;
                 ctx.restore();
             }
         }
-        static ukuran(gbr, w, h) {
+        static ukuran(gbr, w = 32, h = 32) {
             gbr.panjang = w;
             gbr.lebar = h;
             gbr.panjangDiSet = true;
@@ -451,17 +512,40 @@ var ha;
 var ha;
 (function (ha) {
     class Sprite {
+        static daftar = [];
+        _buff;
+        _x = 0;
+        _y = 0;
+        _dragged = false;
+        _down = false;
+        _hit = 0;
+        _dragStartY = 0;
+        _dragStartX = 0;
+        _dragable = false;
+        _url;
+        get url() {
+            return this._url;
+        }
+        set url(value) {
+            this._url = value;
+        }
         constructor(buffer, dragable = false) {
-            this._x = 0;
-            this._y = 0;
-            this._dragged = false;
-            this._down = false;
-            this._hit = 0;
-            this._dragStartY = 0;
-            this._dragStartX = 0;
-            this._dragable = false;
             this.buffer = buffer;
             this.dragable = dragable;
+        }
+        static copy(sprS) {
+            if (sprS.buffer.isAnim) {
+                return ha.Sprite.muatAnimasiAsyncKanvas(sprS.url, sprS.buffer.frameW, sprS.buffer.frameH, sprS.dragable, sprS.buffer.canvas);
+            }
+            else {
+                return ha.Sprite.muatAsyncBerbagiKanvas(sprS.url, sprS.dragable, sprS.buffer.canvas);
+            }
+        }
+        static panjang(spr) {
+            return ha.Image.panjang(spr.buffer);
+        }
+        static lebar(spr) {
+            return ha.Image.lebar(spr.buffer);
         }
         static alpha(spr, alpha) {
             if (typeof (alpha) == 'number') {
@@ -507,21 +591,29 @@ var ha;
         static tabrakan(spr, spr2) {
             return ha.Image.tabrakan(spr.buffer, ha.Sprite.posisiX(spr), ha.Sprite.posisiY(spr), spr2.buffer, ha.Sprite.posisiX(spr2), ha.Sprite.posisiY(spr2));
         }
+        static muatAnimasiAsyncKanvas(url, pf, lf, bisaDiDrag = false, canvas) {
+            let img = ha.Image.muatAnimAsyncCanvas(url, pf, lf, canvas);
+            return ha.Sprite.buat(img, bisaDiDrag, url);
+        }
         static muatAnimasiAsync(url, pf, lf, bisaDiDrag = false) {
             let img = ha.Image.muatAnimAsync(url, pf, lf);
-            return ha.Sprite.buat(img, bisaDiDrag);
+            return ha.Sprite.buat(img, bisaDiDrag, url);
+        }
+        static muatAsyncBerbagiKanvas(url, dragable = false, canvas) {
+            let img = ha.Image.muatAsyncKanvas(url, canvas);
+            return ha.Sprite.buat(img, dragable, url);
         }
         static muatAsync(url, dragable = false) {
             let img = ha.Image.muatAsync(url);
-            console.log(img);
-            return ha.Sprite.buat(img, dragable);
+            return ha.Sprite.buat(img, dragable, url);
         }
         static ukuranGambar(gbr, w, h) {
             ha.Image.ukuran(gbr.buffer, w, h);
         }
-        static buat(image, dragable = false) {
+        static buat(image, dragable = false, url) {
             let hasil;
             hasil = new Sprite(image, dragable);
+            hasil.url = url;
             this.daftar.push(hasil);
             console.log('buat sprite');
             return hasil;
@@ -562,13 +654,28 @@ var ha;
         static gambar(sprite, frame) {
             ha.Image.gambar(sprite.buffer, sprite.x, sprite.y, frame);
         }
-        static posisiPolar(sprite, sudut, jarak, x2, y2) {
+        static posisiPolar(sprite, sudut, jarak, x2, y2, skalaX = 1, skalaY = 1) {
             let p = ha.Point.posPolar(jarak, sudut, x2, y2);
+            p.y -= y2;
+            p.y *= skalaY;
+            p.y += y2;
+            p.x -= x2;
+            p.x *= skalaX;
+            p.x += x2;
             sprite.x = p.x;
             sprite.y = p.y;
         }
         static ubin(spr, x = 0, y = 0, frame = 0) {
             ha.Image.gambarUbin(spr.buffer, x, y, frame);
+        }
+        static semuaDiLoad() {
+            let hasil = true;
+            ha.Sprite.daftar.forEach((item) => {
+                if (!item.buffer.load) {
+                    hasil = false;
+                }
+            });
+            return hasil;
         }
         get dragStartX() {
             return this._dragStartX;
@@ -625,24 +732,18 @@ var ha;
             this._dragable = value;
         }
     }
-    Sprite.daftar = [];
     ha.Sprite = Sprite;
 })(ha || (ha = {}));
 var ha;
 (function (ha) {
     class Input {
+        _inputs = [];
+        _touchGlobal;
+        _mouseGlobal;
+        _keybGlobal;
+        _inputGlobal;
+        _event = new EventHandler();
         constructor() {
-            this._inputs = [];
-            this._event = new EventHandler();
-            this.pos = (cx, cy, buffer, canvasScaleX, canvasScaleY) => {
-                let rect = buffer.canvas.getBoundingClientRect();
-                let poslx = Math.floor((cx - rect.x) / canvasScaleX);
-                let posly = Math.floor((cy - rect.y) / canvasScaleY);
-                return {
-                    x: poslx,
-                    y: posly
-                };
-            };
             this._touchGlobal = this.buatInputDefault();
             this._mouseGlobal = this.buatInputDefault();
             this._keybGlobal = this.buatInputDefault();
@@ -830,6 +931,15 @@ var ha;
             }
             return input;
         }
+        pos = (cx, cy, buffer, canvasScaleX, canvasScaleY) => {
+            let rect = buffer.canvas.getBoundingClientRect();
+            let poslx = Math.floor((cx - rect.x) / canvasScaleX);
+            let posly = Math.floor((cy - rect.y) / canvasScaleY);
+            return {
+                x: poslx,
+                y: posly
+            };
+        };
         get inputs() {
             return this._inputs;
         }
@@ -1194,7 +1304,15 @@ var ha;
 var ha;
 (function (ha) {
     class Blijs {
-        static init(panjang = 320, lebar = 240, canvas = null, skalaOtomatis = true) {
+        static _skalaOtomatis = true;
+        static _inputStatus = true;
+        static get inputStatus() {
+            return Blijs._inputStatus;
+        }
+        static set inputStatus(value) {
+            Blijs._inputStatus = value;
+        }
+        static init(panjang = 320, lebar = 240, canvas = null, skalaOtomatis = true, input = true) {
             if (!canvas)
                 canvas = document.body.querySelector('canvas');
             if (!canvas) {
@@ -1202,6 +1320,7 @@ var ha;
                 return;
             }
             ha.Blijs.skalaOtomatis = skalaOtomatis;
+            ha.Blijs._inputStatus = input;
             if (ha.Main.canvasAktif) {
                 console.warn('init lebih dari sekali');
                 ha.Main.Grafis(panjang, lebar);
@@ -1210,12 +1329,17 @@ var ha;
                 console.log('inisialisasi');
                 ha.Main.init(canvas, canvas);
                 ha.Main.Grafis(panjang, lebar);
-                ha.input.init(ha.Main.canvasAktif);
+                if (input) {
+                    ha.input.init(ha.Main.canvasAktif);
+                }
                 window.onresize = () => {
                     if (ha.Blijs.skalaOtomatis) {
                         ha.Blijs.windowResize();
                     }
                 };
+                if (ha.Blijs.skalaOtomatis) {
+                    ha.Blijs.windowResize();
+                }
                 setTimeout(() => {
                     if (ha.Blijs.skalaOtomatis) {
                         ha.Blijs.windowResize();
@@ -1224,6 +1348,9 @@ var ha;
                 setTimeout(() => {
                     ha.Blijs.repeat();
                 }, 0);
+                ha.Teks.font("16px Arial");
+                ha.Teks.rata("center");
+                ha.Main.warna(255, 255, 255, 1);
             }
         }
         static loop() {
@@ -1232,15 +1359,13 @@ var ha;
                 _window.Loop();
             }
             else if (typeof (_window.Update) == 'function') {
-                _window.update();
+                _window.Update();
             }
         }
         static repeat() {
             ha.Blijs.loop();
             setTimeout(() => {
-                requestAnimationFrame(() => {
-                    ha.Blijs.repeat();
-                });
+                requestAnimationFrame(ha.Blijs.repeat);
             }, ha.Main.fps);
         }
         static windowResize() {
@@ -1268,12 +1393,15 @@ var ha;
             Blijs._skalaOtomatis = value;
         }
     }
-    Blijs._skalaOtomatis = true;
     ha.Blijs = Blijs;
 })(ha || (ha = {}));
 var ha;
 (function (ha) {
     class Transform {
+        static RAD2DEG = 180.0 / Math.PI;
+        static DEG2RAD = Math.PI / 180.0;
+        static _lastX = 0;
+        static _lastY = 0;
         static get lastX() {
             return ha.Transform._lastX;
         }
@@ -1394,11 +1522,43 @@ var ha;
             ha.Transform._lastY = y1 + yt;
         }
     }
-    Transform.RAD2DEG = 180.0 / Math.PI;
-    Transform.DEG2RAD = Math.PI / 180.0;
-    Transform._lastX = 0;
-    Transform._lastY = 0;
     ha.Transform = Transform;
+})(ha || (ha = {}));
+var ha;
+(function (ha) {
+    class Teks {
+        static get ctx() {
+            return ha.Main.canvasAktif.ctx;
+        }
+        static font(font = '30px Arial') {
+            ha.Teks.ctx.font = font;
+        }
+        static rata(rata = "left") {
+            ha.Teks.ctx.textAlign = rata;
+        }
+        static tulis(teks, x, y, warna = true, garis = false) {
+            if (warna) {
+                ha.Teks.ctx.fillText(teks, x, y);
+            }
+            if (garis) {
+                ha.Teks.ctx.strokeText(teks, x, y);
+            }
+        }
+    }
+    ha.Teks = Teks;
+})(ha || (ha = {}));
+var ha;
+(function (ha) {
+    class Route {
+        static ukuran(obj, w = 32, h = 32) {
+            if ("teks" == obj) {
+            }
+            else {
+                ha.Sprite.ukuranGambar(obj, w, h);
+            }
+        }
+    }
+    ha.Route = Route;
 })(ha || (ha = {}));
 const Prompt = (m, def) => {
     let hasil = window.prompt(m, def);
@@ -1501,8 +1661,10 @@ const Biru = ha.Main.Biru;
 const Transparan = ha.Main.Transparan;
 const AmbilPiksel = ha.Image.ambilPiksel;
 const SetPiksel = ha.Image.setPiksel;
+const Kontek = ha.Main.kontek;
 const Garis = ha.Main.Garis;
 const Kotak = ha.Main.Kotak;
+const Oval = ha.Main.Oval;
 const Sudut = ha.Transform.deg;
 const Buat = ha.Sprite.buat;
 const Muat = ha.Sprite.muatAsync;
@@ -1518,16 +1680,39 @@ const Rotasi = ha.Sprite.rotasi;
 const Alpha = ha.Sprite.alpha;
 const MuatAnimasi = ha.Sprite.muatAnimasiAsync;
 const Tabrakan = ha.Sprite.tabrakan;
-const PosisiJarakSprite = () => { };
-const Copy = () => { };
-const PosisiHandle = () => { };
-const Panjang = () => { };
-const Lebar = () => { };
-const HandleX = () => { };
-const HandleY = () => { };
-const Overlap = () => { };
-const DotDiDalam = () => { };
+const Panjang = ha.Sprite.panjang;
+const Lebar = ha.Sprite.lebar;
+const Copy = ha.Sprite.copy;
 const Ubin = ha.Sprite.ubin;
-const Skala = () => { };
-const Piksel = () => { };
 const FPS = ha.Main.Fps;
+var Font = ha.Teks.font;
+var Tulis = ha.Teks.tulis;
+var Rata = ha.Teks.rata;
+var ha;
+(function (ha) {
+    class Cache {
+        files = [];
+        getGbr(url) {
+            for (let i = 0; i < this.files.length; i++) {
+                if (this.files[i].url == url) {
+                    console.log('ambil dari cache: ' + url);
+                    return this.files[i].img;
+                }
+            }
+            return null;
+        }
+        setFile(url, img) {
+            let img2;
+            img2 = this.getGbr(url);
+            if (img2) {
+                return;
+            }
+            console.log('cache: ' + url);
+            this.files.push({
+                url: url,
+                img: img
+            });
+        }
+    }
+    ha.cache = new Cache();
+})(ha || (ha = {}));
