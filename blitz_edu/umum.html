@@ -21,7 +21,7 @@
 <body>
 	<div class="container">
 		<div class="navigasi">
-			<a href="./index.html">&larr; Beranda</a> |
+			<a href="./index.html">&larr; Beranda</a>
 		</div>
 		<h1>Umum</h1>
 		<a href="#grafis">Grafis</a><br />
@@ -32,11 +32,16 @@
 		<a href="#biru">Biru</a><br />
 		<a href="#transparan">Transparan</a><br />
 		<a href="#ambil_piksel">AmbilPiksel</a><br />
-		<a href="#set_piksel">SetPiksel</a><br />
+		<a href="#kontek">Kontek</a><br />
 
 		<!-- math -->
+		<a href="#sudut">Sudut</a><br />
+
 		<!-- sistem -->
+		<a href="#fps">FPS</a><br />
+
 		<!-- text -->
+		<a href="#tulis">Tulis</a><br />
 
 		<hr />
 
@@ -56,7 +61,6 @@
 
 		<h4 id="warna"><code>Warna(merah, hijau, biru, alpha)</code>
 		</h4>
-		<p>Mengeset warna yang dipakai untuk perintah-perintah berikutnya, seperti SetPiksel, Bersih() dll</p>
 		<p>Mengeset warna yang dipakai untuk perintah-perintah berikutnya, seperti SetPiksel, Bersih() dll</p>
 		<hr />
 
@@ -89,6 +93,35 @@
 		</h4>
 		<p>Mengeset Piksel pada layar pada posisi x dan y</p>
 		<p>Perintah ini akan otomatis menggunakan warna yang sedang aktif.</p>
+		<hr />
+
+		<h4 id="sudut"><code>Sudut(x, y)</code>
+		</h4>
+		<p>Menghitung sudut pada posisi x dan y</p>
+		<hr />
+
+		<h4 id="fps"><code>Fps(n)</code>
+		</h4>
+		<p>Mengubah kecepatn update dari aplikasi, dalam satuan frame/detik.
+			Normalnya adalah 60, artinya layar akan di update 60 kali perdetik.
+			Fungsi ini tidak akurat, dan tidak menjamin kecepatan akan stabil.</p>
+		<hr />
+
+		<h4 id="tulis"><code>Tulis(teks, x, y)</code>
+		</h4>
+		<p><code>Tulis(teks, x, y)</code></p>
+		<p><code>Tulis(teks, x, y, true)</code></p>
+		<p>Menulis pada posisi x, y, dengan warna</p>
+		<p><code>Tulis(teks, x, y, true, true)</code></p>
+		<p>Menulis pada posisi x, y, dengn warna dan garis pinggir</p>
+		<hr />
+
+		<h4 id="kontek"><code>Kontek()</code>
+		</h4>
+		<p><code>Kontek()</code></p>
+		<p>Mendapatkan drawing context, dari kanvas utama</p>
+		<p><code>Kontek(sprite)</code></p>
+		<p>Mendapatkan drawing context dari sprite, yang kemudian bisa dipakai untuk menggambar ke dalam kanvas</p>
 		<hr />
 	</div>
 </body>
