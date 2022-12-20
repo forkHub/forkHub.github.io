@@ -45,9 +45,18 @@
 
 		<hr />
 
-		<h4 id="grafis"><code>Grafis(panjang, lebar)</code>
-		</h4>
+		<h4 id="grafis"><code>Grafis(panjang, lebar, kanvas, skala, interaksi)</code></h4>
 		<p>Menyiapkan segala sesuatu untuk memulai BE.</p>
+		<p>Parameter:<br />
+			<code>panjang</code>: panjang kanvas <br />
+			<code>lebar</code>: lebar kanvas <br />
+			<code>kanvas</code>: (opsional, default null) objek kanvas. Gunakan parameter ini untuk memakai kanvas
+			pilihan selain default <br />
+			<code>skala</code>: (opsional, default true). Mengatur skala dari kanvas. Defaultnya adalah
+			<code>true</code>, artinya
+			kanvas akan selalu memenuhi layar. Bila di set ke <code>false</code> maka kanvas akan memiliki ukuran sesuai
+			dengan panjang dan lebar <br />
+		</p>
 		<p>Ini adalah perintah pertama yang harus dipanggil sebelum memanggil perintah-perintah yang lain.</p>
 		<p>Contoh Penggunaan:</p>
 		<p><code>Grafis(320, 240)</code></p>
