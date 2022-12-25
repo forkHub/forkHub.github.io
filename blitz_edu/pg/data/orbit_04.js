@@ -1,7 +1,7 @@
 Grafis(800, 500);
 
-let sudut = 10;
-let sudutBulan = 0;
+let sudutBumi = 10;
+let perubahanKec = 1;
 
 //matahari
 let matahari = Muat("./gbr/matahari.png", true);
@@ -14,38 +14,24 @@ let bumi = Muat("./gbr/bumi.png");
 Handle(bumi, 25, 25);
 Ukuran(bumi, 50, 50);
 
-//bulan
-let bulan = Muat("./gbr/bulan_32.png");
-Ukuran(bulan, 24, 24);
-Handle(bulan, 12, 12);
-
 function Loop() {
     Bersih();
 
     //perubahan sudut bumi
-    sudut += .5;
+    sudutBumi += (.5 * perubahanKec);
 
-    if (sudut > 360) {
-        sudut -= 360;
+    if (sudutBumi > 360) {
+        sudutBumi -= 360;
     }
-
-    //perubahan sudut bulan
-    sudutBulan += 6;
-
-    if (sudutBulan > 360) {
-        sudutBulan -= 360;
-    }
+    perubahanKec = (((180 - Math.abs(sudutBumi - 180)) / 180) * 5) + 1;
 
     //posisi bumi terhadap matahari
     //dengan skala vertikal .5
     //untuk membuat gerakan memutar oval
-    PosisiPolar(bumi, sudut, 350, PosisiX(matahari), PosisiY(matahari), 1, .5);
+    PosisiPolar(bumi, sudutBumi, 350, PosisiX(matahari), PosisiY(matahari), 1, .5);
 
     //geser posisi bumi agak ke kanan
     Posisi(bumi, PosisiX(bumi) + 180, PosisiY(bumi));
-
-    //posisi bulan terhadap bumi
-    PosisiPolar(bulan, sudutBulan, 60, PosisiX(bumi), PosisiY(bumi));
 
     //gambar oval
     Oval(PosisiX(matahari) + 180, PosisiY(matahari), 350, 1, .5);
