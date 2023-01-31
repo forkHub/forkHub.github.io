@@ -1,5 +1,7 @@
 Grafis(480, 480);
 
+
+
 let matahari;
 let bumi;
 let sudut = 10;
@@ -11,9 +13,13 @@ bumi = Muat("./gbr/bumi.png");
 Ukuran(bumi, 50, 50);
 Handle(bumi, 25, 25);
 
+
+
 function Loop() {
     Bersih();
     sudut++;
+
+
 
     if (sudut > 360) {
         sudut -= 360;
@@ -21,4 +27,3 @@ function Loop() {
     PosisiPolar(bumi, sudut, 160, PosisiX(matahari), PosisiY(matahari));
     GambarSemua();
 }
-
