@@ -48,14 +48,18 @@
 
 		<hr />
 
-		<h4 id="muat"><code>Muat(url, [true])</code></h4>
+		<h4 id="muat"><code>Muat(url: string, bisaDiDrag = false, tipeDrag: number = 0)</code></h4>
 		<p><code>Muat(url)</code></p>
 		<p>Memuat gambar dan menjadikannya sebgai sebuah Sprite. <code>url</code> bisa dari mana aja, local ataupun dari
 			internet.
 			Saat memuat
 			gambar dari internet, pastikan bahwa Anda memiliki ijin.</p>
-		<p><code>Muat(url, true)</code></p>
-		<p>Membuat Sprite bisa di drag</p>
+		<p><code>Muat("http://contoh.web.com/gambar.png")</code></p>
+		<p>Membuat Sprite saja</p>
+		<p><code>Muat("http://contoh.web.com/gambar.png", true)</code></p>
+		<p>Membuat Sprite bisa didrag</p>
+		<p><code>Muat("http://contoh.web.com/gambar.png", true, 2)</code></p>
+		<p>Membuat Sprite bisa diputar</p>
 		<hr />
 
 		<h4 id="muat_animasi"><code>MuatAnimasi(url, panjang_frame, lebar_frame)</code></h4>
