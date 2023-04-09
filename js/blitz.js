@@ -1,21 +1,6 @@
 var ha;
 (function (ha) {
     class Main {
-        static _fps = 0;
-        static _origin;
-        static _canvasAr = [];
-        static _canvasAktif;
-        static _skalaOtomatis = true;
-        static _merah = 0;
-        static _hijau = 0;
-        static _biru = 0;
-        static _transparan = 0;
-        static warnaBackup = {
-            m: 0,
-            b: 0,
-            h: 0,
-            t: 1
-        };
         static kontek(spr) {
             let spr2 = spr;
             if (spr2 && spr2.buffer && spr2.buffer.ctx) {
@@ -216,29 +201,41 @@ var ha;
             Main._transparan = value;
         }
     }
+    Main._fps = 0;
+    Main._canvasAr = [];
+    Main._skalaOtomatis = true;
+    Main._merah = 0;
+    Main._hijau = 0;
+    Main._biru = 0;
+    Main._transparan = 0;
+    Main.warnaBackup = {
+        m: 0,
+        b: 0,
+        h: 0,
+        t: 1
+    };
     ha.Main = Main;
 })(ha || (ha = {}));
 var ha;
 (function (ha) {
     class Gambar {
-        img;
-        canvas;
-        ctx;
-        frameW = 32;
-        frameH = 32;
-        _rotasi = 0;
-        alpha = 100;
-        isAnim = false;
-        rect = new ha.Rect();
-        load = false;
-        panjang = 0;
-        lebar = 0;
-        panjangDiSet = false;
-        lebarDiSet = false;
-        handleX = 0;
-        handleY = 0;
-        ratioX = 1;
-        ratioY = 1;
+        constructor() {
+            this.frameW = 32;
+            this.frameH = 32;
+            this._rotasi = 0;
+            this.alpha = 100;
+            this.isAnim = false;
+            this.rect = new ha.Rect();
+            this.load = false;
+            this.panjang = 0;
+            this.lebar = 0;
+            this.panjangDiSet = false;
+            this.lebarDiSet = false;
+            this.handleX = 0;
+            this.handleY = 0;
+            this.ratioX = 1;
+            this.ratioY = 1;
+        }
         get rotasi() {
             return this._rotasi;
         }
@@ -583,30 +580,23 @@ var ha;
 var ha;
 (function (ha) {
     class Sprite {
-        static daftar = [];
-        _buff;
-        _x = 0;
-        _y = 0;
-        _dragged = false;
-        _down = false;
-        _hit = 0;
-        _dragStartY = 0;
-        _dragStartX = 0;
-        _dragable = false;
-        _url;
-        _tipeDrag;
-        _sudutTekanAwal;
-        _sudutAwal;
-        _inputId;
+        constructor(buffer, dragable = false) {
+            this._x = 0;
+            this._y = 0;
+            this._dragged = false;
+            this._down = false;
+            this._hit = 0;
+            this._dragStartY = 0;
+            this._dragStartX = 0;
+            this._dragable = false;
+            this.buffer = buffer;
+            this.dragable = dragable;
+        }
         get inputId() {
             return this._inputId;
         }
         set inputId(value) {
             this._inputId = value;
-        }
-        constructor(buffer, dragable = false) {
-            this.buffer = buffer;
-            this.dragable = dragable;
         }
         static copy(sprS) {
             if (sprS.buffer.isAnim) {
@@ -822,6 +812,7 @@ var ha;
             this._url = value;
         }
     }
+    Sprite.daftar = [];
     ha.Sprite = Sprite;
 })(ha || (ha = {}));
 var EInput;
@@ -834,13 +825,18 @@ var EInput;
 var ha;
 (function (ha) {
     class Input {
-        _inputs = [];
-        _touchGlobal;
-        _mouseGlobal;
-        _keybGlobal;
-        _inputGlobal;
-        _event = new EventHandler();
         constructor() {
+            this._inputs = [];
+            this._event = new EventHandler();
+            this.pos = (cx, cy, buffer, canvasScaleX, canvasScaleY) => {
+                let rect = buffer.canvas.getBoundingClientRect();
+                let poslx = Math.floor((cx - rect.x) / canvasScaleX);
+                let posly = Math.floor((cy - rect.y) / canvasScaleY);
+                return {
+                    x: poslx,
+                    y: posly
+                };
+            };
             this._touchGlobal = this.buatInputDefault();
             this._mouseGlobal = this.buatInputDefault();
             this._keybGlobal = this.buatInputDefault();
@@ -1059,15 +1055,6 @@ var ha;
             }
             return input;
         }
-        pos = (cx, cy, buffer, canvasScaleX, canvasScaleY) => {
-            let rect = buffer.canvas.getBoundingClientRect();
-            let poslx = Math.floor((cx - rect.x) / canvasScaleX);
-            let posly = Math.floor((cy - rect.y) / canvasScaleY);
-            return {
-                x: poslx,
-                y: posly
-            };
-        };
         get inputs() {
             return this._inputs;
         }
@@ -1432,8 +1419,6 @@ var ha;
 var ha;
 (function (ha) {
     class Blijs {
-        static _skalaOtomatis = true;
-        static _inputStatus = true;
         static get inputStatus() {
             return Blijs._inputStatus;
         }
@@ -1522,15 +1507,13 @@ var ha;
             Blijs._skalaOtomatis = value;
         }
     }
+    Blijs._skalaOtomatis = true;
+    Blijs._inputStatus = true;
     ha.Blijs = Blijs;
 })(ha || (ha = {}));
 var ha;
 (function (ha) {
     class Transform {
-        static RAD2DEG = 180.0 / Math.PI;
-        static DEG2RAD = Math.PI / 180.0;
-        static _lastX = 0;
-        static _lastY = 0;
         static get lastX() {
             return ha.Transform._lastX;
         }
@@ -1651,6 +1634,10 @@ var ha;
             ha.Transform._lastY = y1 + yt;
         }
     }
+    Transform.RAD2DEG = 180.0 / Math.PI;
+    Transform.DEG2RAD = Math.PI / 180.0;
+    Transform._lastX = 0;
+    Transform._lastY = 0;
     ha.Transform = Transform;
 })(ha || (ha = {}));
 var ha;
@@ -1773,7 +1760,9 @@ var Rata = ha.Teks.rata;
 var ha;
 (function (ha) {
     class Cache {
-        files = [];
+        constructor() {
+            this.files = [];
+        }
         getGbr(url) {
             for (let i = 0; i < this.files.length; i++) {
                 if (this.files[i].url == url) {
