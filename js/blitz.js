@@ -648,7 +648,6 @@ var ha;
         }
         static posisiY(spr, y = null) {
             if (typeof (y) == 'number') {
-                debugger;
                 spr.y = y;
             }
             return spr.y;
@@ -1807,6 +1806,7 @@ var ha;
                     item.inputId = id;
                     item.sudutTekanAwal = ha.Transform.deg(pos.x - item.x, pos.y - item.y);
                     item.sudutAwal = item.buffer.rotasi;
+                    return;
                 }
             }
         }
