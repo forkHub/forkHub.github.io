@@ -1,7 +1,7 @@
 var ha;
 (function (ha) {
     class Main {
-        static kontek(spr) {
+        static Kontek(spr) {
             let spr2 = spr;
             if (spr2 && spr2.buffer && spr2.buffer.ctx) {
                 return spr2.buffer.ctx;
@@ -68,7 +68,7 @@ var ha;
             ctx.fillRect(0, 0, ha.Main.canvasAktif.panjang, ha.Main.canvasAktif.lebar);
             ha.Main.restoreWarna();
         }
-        static warna(r = 0, g = 0, b = 0, a = 100) {
+        static Warna(r = 0, g = 0, b = 0, a = 100) {
             let h = ha.Main;
             h.merah = r;
             h.biru = b;
@@ -468,7 +468,7 @@ var ha;
         static putarGambar(gbr, sudut = 0) {
             gbr.rotasi = sudut;
         }
-        static ambilPiksel(x = 0, y = 0) {
+        static AmbilPiksel(x = 0, y = 0) {
             try {
                 let data = ha.Main.canvasAktif.ctx.getImageData(x, y, 1, 1).data;
                 let hasil = [];
@@ -480,14 +480,14 @@ var ha;
                 ha.Main.hijau = data[1];
                 ha.Main.biru = data[2];
                 ha.Main.transparan = data[3];
-                ha.Main.warna(ha.Main.merah, ha.Main.hijau, ha.Main.biru, ha.Main.transparan);
+                ha.Main.Warna(ha.Main.merah, ha.Main.hijau, ha.Main.biru, ha.Main.transparan);
                 return hasil;
             }
             catch (e) {
             }
             return [0, 0, 0];
         }
-        static setPiksel(x = 0, y = 0) {
+        static SetPiksel(x = 0, y = 0) {
             ha.Main.canvasAktif.ctx.fillRect(Math.floor(x), Math.floor(y), 1, 1);
         }
         static handle(gbr, x = 0, y = 0) {
@@ -1424,7 +1424,7 @@ var ha;
         static set inputStatus(value) {
             Blijs._inputStatus = value;
         }
-        static init(panjang = 320, lebar = 240, canvas = null, skalaOtomatis = true, input = true) {
+        static Grafis(panjang = 320, lebar = 240, canvas = null, skalaOtomatis = true, input = true) {
             if (!canvas) {
                 canvas = document.body.querySelector('canvas');
             }
@@ -1462,7 +1462,7 @@ var ha;
                 }, 0);
                 ha.Teks.font("12px sans-serif");
                 ha.Teks.rata("center");
-                ha.Main.warna(255, 255, 255, 100);
+                ha.Main.Warna(255, 255, 255, 100);
                 ha.Main.canvasAktif.ctx.strokeStyle = "#ffffff";
             }
         }
@@ -1720,15 +1720,15 @@ const KeybHit = (key = '') => {
     }
 };
 const Bersih = ha.Main.Bersih;
-const Grafis = ha.Blijs.init;
-const Warna = ha.Main.warna;
+const Grafis = ha.Blijs.Grafis;
+const Warna = ha.Main.Warna;
 const Merah = ha.Main.Merah;
 const Hijau = ha.Main.Hijau;
 const Biru = ha.Main.Biru;
 const Transparan = ha.Main.Transparan;
-const AmbilPiksel = ha.Image.ambilPiksel;
-const SetPiksel = ha.Image.setPiksel;
-const Kontek = ha.Main.kontek;
+const AmbilPiksel = ha.Image.AmbilPiksel;
+const SetPiksel = ha.Image.SetPiksel;
+const Kontek = ha.Main.Kontek;
 const Garis = ha.Main.Garis;
 const Kotak = ha.Main.Kotak;
 const Oval = ha.Main.Oval;
