@@ -257,7 +257,9 @@ var ha;
             static hadapAtas(garis) {
                 if (Garis.maxY(garis) > Garis.minY(garis)) {
                     return true;
+                    // debugger;
                 }
+                // debugger;
                 return false;
             }
             /**
@@ -283,7 +285,11 @@ var ha;
                         return garis;
                     }
                 }
-                return Garis.tukarPosisi(garis, klon);
+                debugger;
+                let gc = garis;
+                if (klon)
+                    gc = Garis.klon(garis);
+                return Garis.tukarPosisi(gc, klon);
             }
             static boundCollide(seg1, seg2) {
                 if (Garis.maxX(seg1) < Garis.minX(seg2))
@@ -601,4 +607,3 @@ var ha;
         geom.Transform = Transform;
     })(geom = ha.geom || (ha.geom = {}));
 })(ha || (ha = {}));
-//# sourceMappingURL=geom.js.map

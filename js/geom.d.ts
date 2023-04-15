@@ -183,4 +183,3 @@ declare namespace ha.geom {
         inputId: number;
     }
 }
-//# sourceMappingURL=geom.d.ts.map
