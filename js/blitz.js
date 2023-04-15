@@ -107,11 +107,10 @@ var ha;
             if (ubahStyle) {
                 canvas.canvas.style.width = p + 'px';
                 canvas.canvas.style.height = l + 'px';
+                canvas.canvas.style.padding = '0px';
+                canvas.canvas.style.margin = '0px';
             }
             //TODO: coba di check
-            canvas.canvas.style.padding = '0px';
-            canvas.canvas.style.margin = '0px';
-            canvas.canvas.style.touchAction = 'none';
             canvas.panjang = p;
             canvas.lebar = l;
             setTimeout(() => {
@@ -1028,6 +1027,7 @@ var ha;
         }
         init(buffer) {
             console.log('input init');
+            buffer.canvas.style.touchAction = 'none';
             buffer.canvas.onpointerdown = (e) => {
                 e.stopPropagation();
                 e.preventDefault();
