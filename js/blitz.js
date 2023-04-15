@@ -970,8 +970,10 @@ var ha;
         constructor() {
             this._inputs = []; //any input,
             this._event = new EventHandler();
-            this.pos = (cx, cy, buffer, canvasScaleX, canvasScaleY) => {
+            this.pos = (cx, cy, buffer) => {
                 let rect = buffer.canvas.getBoundingClientRect();
+                let canvasScaleX = parseInt(window.getComputedStyle(buffer.canvas).width) / buffer.canvas.width;
+                let canvasScaleY = parseInt(window.getComputedStyle(buffer.canvas).height) / buffer.canvas.height;
                 let poslx = Math.floor((cx - rect.x) / canvasScaleX);
                 let posly = Math.floor((cy - rect.y) / canvasScaleY);
                 return {
@@ -1031,7 +1033,7 @@ var ha;
             buffer.canvas.onpointerdown = (e) => {
                 e.stopPropagation();
                 e.preventDefault();
-                let pos = ha.input.pos(e.clientX, e.clientY, buffer, buffer.ratioX, buffer.ratioY);
+                let pos = ha.input.pos(e.clientX, e.clientY, buffer);
                 let key = this.getMouseKeyId(e);
                 let input = ha.input.baru(key, e.pointerType);
                 ha.input.event.down(input, key, e.pointerType, pos);
@@ -1045,7 +1047,7 @@ var ha;
             buffer.canvas.onpointermove = (e) => {
                 e.stopPropagation();
                 e.preventDefault();
-                let pos = ha.input.pos(e.clientX, e.clientY, buffer, buffer.ratioX, buffer.ratioY);
+                let pos = ha.input.pos(e.clientX, e.clientY, buffer);
                 let key = this.getMouseKeyId(e);
                 let input = this.baru(key, e.pointerType);
                 ha.input.event.move(input, buffer, e);
@@ -1229,7 +1231,7 @@ var ha;
     }
     class EventHandler {
         move(input, buffer, e) {
-            let pos = ha.input.pos(e.clientX, e.clientY, buffer, buffer.ratioX, buffer.ratioY);
+            let pos = ha.input.pos(e.clientX, e.clientY, buffer);
             input.x = pos.x;
             input.y = pos.y;
             input.id = e.pointerId;

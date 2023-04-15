@@ -187,7 +187,7 @@ declare namespace ha {
         flushByInput(input: IInput): void;
         getInput(key: string, inputType: string): IInput;
         baru(keyId: string, inputType: EInput): IInput;
-        pos: (cx: number, cy: number, buffer: IGambar, canvasScaleX: number, canvasScaleY: number) => {
+        pos: (cx: number, cy: number, buffer: IGambar) => {
             x: number;
             y: number;
         };
