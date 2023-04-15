@@ -10,7 +10,7 @@ declare namespace ha.geom {
         static copyPosisi(ps: IPoint2D, pt: IPoint2D): void;
         static clone(p: IPoint2D): IPoint2D;
         static sama(p1: IPoint2D, p2: IPoint2D): boolean;
-        static putarPoros(p: IPoint2D, xc?: number, yc?: number, deg?: number): void;
+        static putarPoros(p: IPoint2D, xc: number, yc: number, deg: number, klon: boolean): IPoint2D;
         static posDist(p: IPoint2D, xt: number, yt: number, jrk: number): IPoint2D;
         static posPolar(jarak: number, sudut: number, xt: number, yt: number): IPoint2D;
     }
@@ -36,14 +36,15 @@ declare namespace ha.geom {
     class Garis {
         static create(v1?: IPoint2D, v2?: IPoint2D): IGaris;
         static destroy(g1: IGaris): void;
-        static hadapAtas(garis: IGaris): boolean;
+        static hadapAtas(g: IGaris): boolean;
         /**
          * tukar posisi point
-         * @param garis
+         * @param g
          * @param klon
          * @returns
          */
-        static tukarPosisi(garis: IGaris, klon: boolean): IGaris;
+        static tukarPosisi(g: IGaris, klon: boolean): IGaris;
+        static kananPos(g: IGaris, xt: number, yt: number): boolean;
         static keAtas(garis: IGaris, klon: boolean): IGaris;
         static boundCollide(seg1: IGaris, seg2: IGaris): boolean;
         static tabrakan(g1: IGaris, g2: IGaris): boolean;
@@ -93,12 +94,18 @@ declare namespace ha.geom {
         static vecJ(garis: IGaris): number;
         /**
          * memutar garis
-         * @param garis garis
-         * @param deg sudut perputaran
+         * @param g garis
+         * @param sdt sudut perputaran
          * @param xc posisi tengah x
          * @param yc posisi tengah y
          */
-        static putar(garis: IGaris, deg?: number, xc?: number, yc?: number): void;
+        static putar(g: IGaris, sdt: number, xc: number, yc: number, klon: boolean): IGaris;
+        /**
+         * putar garis agar sejajar sumbu X
+         * @param g garis
+         * @param klon apakah akan mengklone garis sebelum diputar
+         * @returns garis yang sudah di putar
+         */
         static putarKeHor(g: IGaris, klon: boolean): IGaris;
         static minX(garis: IGaris): number;
         static maxX(garis: IGaris): number;

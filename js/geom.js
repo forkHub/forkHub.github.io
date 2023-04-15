@@ -39,10 +39,15 @@ var ha;
                     return false;
                 return true;
             }
-            static putarPoros(p, xc = 0, yc = 0, deg = 0) {
-                geom.Transform.rotateRel(p.x, p.y, xc, yc, deg);
-                p.x = geom.Transform.lastX;
-                p.y = geom.Transform.lastY;
+            static putarPoros(p, xc = 0, yc = 0, deg = 0, klon) {
+                let p1;
+                p1 = p;
+                if (klon)
+                    p1 = Point.create(p.x, p.y);
+                geom.Transform.rotateRel(p1.x, p1.y, xc, yc, deg);
+                p1.x = geom.Transform.lastX;
+                p1.y = geom.Transform.lastY;
+                return p1;
             }
             //menghasilkan posisi pada jarak tertentu 
             static posDist(p, xt, yt, jrk) {
@@ -174,7 +179,7 @@ var ha;
                     return false;
                 }
                 Rect.rotate(r2, -d, pRot.x, pRot.y, false);
-                geom.Point.putarPoros(p, pRot.x, pRot.y, -d);
+                geom.Point.putarPoros(p, pRot.x, pRot.y, -d, false);
                 if (!Rect.collideDotBound(r2, p)) {
                     // console.log('collide bound 2 failed');
                     // console.log('deg ' + d);
@@ -234,7 +239,7 @@ var ha;
                     r2 = r;
                 }
                 r2.vs.forEach((p) => {
-                    geom.Point.putarPoros(p, xc, yc, deg);
+                    geom.Point.putarPoros(p, xc, yc, deg, false);
                 });
                 return r2;
             }
@@ -257,8 +262,8 @@ var ha;
                 g1.v1 = null;
                 g1.v2 = null;
             }
-            static hadapAtas(garis) {
-                return garis.v2.y > garis.v1.y;
+            static hadapAtas(g) {
+                return g.v2.y > g.v1.y;
                 // if (Garis.maxY(garis) > Garis.minY(garis)) {
                 // 	return true;
                 // 	// debugger;
@@ -268,17 +273,28 @@ var ha;
             }
             /**
              * tukar posisi point
-             * @param garis
+             * @param g
              * @param klon
              * @returns
              */
-            static tukarPosisi(garis, klon) {
-                let g1 = garis;
-                g1 = garis;
+            static tukarPosisi(g, klon) {
+                let g1 = g;
+                g1 = g;
                 if (klon)
                     g1 = Garis.klon(g1);
                 geom.Point.tukarPosisi(g1.v1, g1.v2);
                 return g1;
+            }
+            static kananPos(g, xt, yt) {
+                let gc = Garis.klon(g);
+                let p = geom.Point.create(xt, yt);
+                let sdt = 0;
+                gc = Garis.keAtas(gc, false);
+                sdt = Garis.sudut(gc);
+                gc = Garis.putar(gc, -sdt, gc.v1.x, gc.v1.y, false);
+                geom.Point.putarPoros(p, gc.v1.x, gc.v1.y, 0, false);
+                p;
+                return false;
             }
             static keAtas(garis, klon) {
                 if (this.hadapAtas(garis)) {
@@ -295,6 +311,16 @@ var ha;
                     gc = Garis.klon(garis);
                 return Garis.tukarPosisi(gc, klon);
             }
+            // static putarKeX(garis: IGaris, klon: boolean): IGaris {
+            // 	let gc: IGaris;
+            // 	let sudut: number;
+            // 	gc = garis;
+            // 	if (klon) gc = Garis.klon(gc);
+            // 	gc = Garis.keAtas(gc, false);
+            // 	sudut = Garis.sudut(gc);
+            // 	Garis.putar(gc, -sudut, gc.v1.x, gc.v1.y, false);
+            // 	return gc;
+            // }
             static boundCollide(seg1, seg2) {
                 if (Garis.maxX(seg1) < Garis.minX(seg2))
                     return false;
@@ -317,8 +343,8 @@ var ha;
                 g2c = Garis.klon(g2);
                 Garis.keAtas(g2c, false);
                 let sudut = Garis.sudut(g2c);
-                Garis.putar(g2c, -sudut, g2c.v1.x, g2c.v1.y);
-                Garis.putar(g1c, -sudut, g2c.v1.x, g2c.v2.y);
+                Garis.putar(g2c, -sudut, g2c.v1.x, g2c.v1.y, false);
+                Garis.putar(g1c, -sudut, g2c.v1.x, g2c.v2.y, false);
                 //g2 melewati horizontal saat diputar relatif ke g1
                 return false; //TODO:
             }
@@ -330,8 +356,8 @@ var ha;
                 let seg2Copy = Garis.klon(seg2);
                 let seg1Copy = Garis.klon(seg1);
                 let deg = Garis.sudut(seg2);
-                Garis.putar(seg2Copy, -deg, seg2.v1.x, seg2.v1.y);
-                Garis.putar(seg1Copy, -deg, seg2.v1.x, seg2.v1.y);
+                Garis.putar(seg2Copy, -deg, seg2.v1.x, seg2.v1.y, false);
+                Garis.putar(seg1Copy, -deg, seg2.v1.x, seg2.v1.y, false);
                 if (!Garis.boundCollide(seg1Copy, seg2Copy))
                     return false;
                 Garis.pindah(seg1Copy, -seg2.v1.x, -seg2.v1.y);
@@ -426,16 +452,26 @@ var ha;
             }
             /**
              * memutar garis
-             * @param garis garis
-             * @param deg sudut perputaran
+             * @param g garis
+             * @param sdt sudut perputaran
              * @param xc posisi tengah x
              * @param yc posisi tengah y
              */
-            static putar(garis, deg = 0, xc = 0, yc = 0) {
-                geom.Point.putarPoros(garis.v1, xc, yc, deg);
-                geom.Point.putarPoros(garis.v2, xc, yc, deg);
-                //TODO: copy
+            static putar(g, sdt = 0, xc = 0, yc = 0, klon) {
+                let gc;
+                gc = g;
+                if (klon)
+                    gc = Garis.klon(gc);
+                geom.Point.putarPoros(gc.v1, xc, yc, sdt, false);
+                geom.Point.putarPoros(gc.v2, xc, yc, sdt, false);
+                return gc;
             }
+            /**
+             * putar garis agar sejajar sumbu X
+             * @param g garis
+             * @param klon apakah akan mengklone garis sebelum diputar
+             * @returns garis yang sudah di putar
+             */
             static putarKeHor(g, klon) {
                 let sdt;
                 let gc;
@@ -444,7 +480,7 @@ var ha;
                     gc = Garis.klon(g);
                 Garis.keAtas(gc, false);
                 sdt = Garis.sudut(gc);
-                Garis.putar(gc, -sdt, gc.v1.x, gc.v1.y);
+                Garis.putar(gc, -sdt, gc.v1.x, gc.v1.y, false);
                 return gc;
             }
             static minX(garis) {
