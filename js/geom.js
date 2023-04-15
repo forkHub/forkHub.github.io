@@ -255,12 +255,13 @@ var ha;
                 g1.v2 = null;
             }
             static hadapAtas(garis) {
-                if (Garis.maxY(garis) > Garis.minY(garis)) {
-                    return true;
-                    // debugger;
-                }
-                // debugger;
-                return false;
+                return garis.v2.y > garis.v1.y;
+                // if (Garis.maxY(garis) > Garis.minY(garis)) {
+                // 	return true;
+                // 	// debugger;
+                // }
+                // // debugger;
+                // return false;
             }
             /**
              * tukar posisi point
