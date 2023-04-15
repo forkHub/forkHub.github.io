@@ -15,13 +15,16 @@ var ha;
              * @param p2
              */
             static tukarPosisi(p1, p2) {
-                let t = p1;
+                let t = Point.clone(p1);
                 p1.x = p2.x;
                 p1.y = p2.y;
                 p2.x = t.x;
                 p2.y = t.y;
+                // console.log(JSON.stringify(p1));
+                // console.log(JSON.stringify(p2));
+                // console.groupEnd();
             }
-            static copy(ps, pt) {
+            static copyPosisi(ps, pt) {
                 pt.x = ps.x;
                 pt.y = ps.y;
             }
@@ -286,7 +289,7 @@ var ha;
                         return garis;
                     }
                 }
-                debugger;
+                // debugger;
                 let gc = garis;
                 if (klon)
                     gc = Garis.klon(garis);
@@ -350,8 +353,8 @@ var ha;
              * @param gt garis target
              */
             static copy(gs, gt) {
-                geom.Point.copy(gs.v1, gt.v2);
-                geom.Point.copy(gs.v2, gt.v2);
+                geom.Point.copyPosisi(gs.v1, gt.v2);
+                geom.Point.copyPosisi(gs.v2, gt.v2);
             }
             /**
              * klone garis

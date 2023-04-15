@@ -7,7 +7,7 @@ declare namespace ha.geom {
          * @param p2
          */
         static tukarPosisi(p1: IPoint2D, p2: IPoint2D): void;
-        static copy(ps: IPoint2D, pt: IPoint2D): void;
+        static copyPosisi(ps: IPoint2D, pt: IPoint2D): void;
         static clone(p: IPoint2D): IPoint2D;
         static sama(p1: IPoint2D, p2: IPoint2D): boolean;
         static putarPoros(p: IPoint2D, xc?: number, yc?: number, deg?: number): void;
