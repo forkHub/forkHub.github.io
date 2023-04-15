@@ -23,7 +23,8 @@ declare namespace ha {
         static Merah(): number;
         static Biru(): number;
         static Transparan(): number;
-        static Grafis(p?: number, l?: number): void;
+        static Kanvas(): HTMLCanvasElement;
+        static Grafis(p: number, l: number, ubahStyle: boolean): void;
         static Garis(x1: number, y1: number, x2: number, y2: number): void;
         static Kotak(x1: number, y1: number, x2: number, y2: number, isi?: boolean, garis?: boolean, rotasi?: number): void;
         static Oval(x: number, y: number, radius: number, skalaX?: number, skalaY?: number, rotasi?: number): void;
@@ -70,11 +71,18 @@ declare namespace ha {
         static handle(gbr: IGambar, x?: number, y?: number): void;
         static grabGambar(gbr: IGambar, x?: number, y?: number): void;
         static gambar(gbr: IGambar, x?: number, y?: number, frame?: number): void;
+        /**
+         * Ubah Ukuran Gambar
+         * @param gbr
+         * @param w
+         * @param h
+         */
         static ukuran(gbr: IGambar, w?: number, h?: number): void;
         static resetRect(img: IGambar): void;
         private static rectToImageTransform;
     }
 }
+/** SPRITE.TS */
 declare namespace ha {
     class Sprite implements ISprite {
         static readonly daftar: ISprite[];
@@ -145,6 +153,7 @@ declare namespace ha {
         set url(value: string);
     }
 }
+/** INPUT.TS */
 declare enum EInput {
     TOUCH = "touch",
     MOUSE = "mouse",
@@ -247,12 +256,23 @@ declare namespace ha {
         static xHorIdx(seg: ISegment): number;
     }
 }
+/**
+ * BLIJS
+ */
 declare namespace ha {
     class Blijs {
         private static _skalaOtomatis;
         private static _inputStatus;
         static get inputStatus(): boolean;
         static set inputStatus(value: boolean);
+        /**
+         * Setup Blitz Edu
+         * @param panjang (angka) panjang dari kanvas
+         * @param lebar (angka) lebar dari kanvs
+         * @param canvas (HTMLCanvasElement) referensi ke kanvas
+         * @param skalaOtomatis (boolean) apakah akan men-skala kanvas mengikuti ukuran layar
+         * @returns
+         */
         static Grafis(panjang?: number, lebar?: number, canvas?: HTMLCanvasElement, skalaOtomatis?: boolean, input?: boolean): void;
         static loop(): void;
         static repeat(): void;
@@ -292,6 +312,10 @@ declare namespace ha {
         static ukuran(obj: ISprite | "teks", w?: number, h?: number): void;
     }
 }
+/**
+ * shortcut buat perintah input
+ * BLITZ-INPUT.TS
+ */
 declare const InputHit: () => number;
 declare const InputX: () => number;
 declare const InputY: () => number;
@@ -301,6 +325,9 @@ declare const FlushInput: () => void;
 declare const Pencet: () => boolean;
 declare const Geser: () => boolean;
 declare const InputType: () => EInput;
+/**
+ * 	KEYBOARD (di tunda/dihapus)
+ */
 declare const FlushKeys: () => void;
 declare const GetKey: () => string;
 declare const KeybDiPencet: (key?: string) => boolean;
@@ -315,10 +342,12 @@ declare const Transparan: typeof ha.Main.Transparan;
 declare const AmbilPiksel: typeof ha.Image.AmbilPiksel;
 declare const SetPiksel: typeof ha.Image.SetPiksel;
 declare const Kontek: typeof ha.Main.Kontek;
+declare const Kanvas: typeof ha.Main.Kanvas;
 declare const Garis: typeof ha.Main.Garis;
 declare const Kotak: typeof ha.Main.Kotak;
 declare const Oval: typeof ha.Main.Oval;
 declare const Sudut: typeof ha.Transform.deg;
+/** BLITZ-SPRITE.TS */
 declare const Muat: typeof ha.Sprite.muatAsync;
 declare const MuatAnimasi: typeof ha.Sprite.muatAnimasiAsync;
 declare const StatusMuat: typeof ha.Sprite.statusMuat;
@@ -339,6 +368,9 @@ declare const Lebar: typeof ha.Sprite.lebar;
 declare const Copy: typeof ha.Sprite.copy;
 declare const Ubin: typeof ha.Sprite.ubin;
 declare const FPS: typeof ha.Main.Fps;
+/**
+ * TEXTS
+ */
 declare var Font: typeof ha.Teks.font;
 declare var Tulis: typeof ha.Teks.tulis;
 declare var Rata: typeof ha.Teks.rata;
@@ -351,6 +383,9 @@ declare namespace ha {
     export const cache: Cache;
     export {};
 }
+/**
+ * INTERFACE
+*/
 interface IRect {
     vs?: IV2D[];
     segs?: ISegment[];
@@ -429,3 +464,4 @@ declare namespace ha {
     export const sprite2: Sprite2;
     export {};
 }
+//# sourceMappingURL=blitz.d.ts.map
