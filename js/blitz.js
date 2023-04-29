@@ -1,719 +1,725 @@
 var ha;
 (function (ha) {
-    class Main {
-        //TODOL ganti agar bisa gonta-ganti kontek
-        //parameternya adalah sprite/canvas/kontex
-        //tujuannya agar bisa diedit langsung oleh perintah kontek yang lain
-        static Kontek(spr) {
-            let spr2 = spr;
-            if (spr2 && spr2.buffer && spr2.buffer.ctx) {
-                return spr2.buffer.ctx;
-            }
-            let spr3 = spr;
-            if (spr3 && spr3.getContext instanceof Function) {
-                return spr3.getContext('2d');
-            }
-            return ha.Main.canvasAktif.ctx;
-        }
-        static Fps(n) {
-            ha.Main.fps = Math.floor(1000 / n);
-            if (n >= 60) {
-                ha.Main.fps = 0;
-            }
-        }
-        static buatCanvas(canvasEl) {
-            let canvas = {
-                canvas: canvasEl,
-                ctx: canvasEl.getContext('2d'),
-                lebar: canvasEl.height,
-                // scaleX: 1,
-                // scaleY: 1,
-                panjang: canvasEl.width,
-                frameH: canvasEl.height,
-                frameW: canvasEl.width,
-                handleX: 0,
-                handleY: 0,
-                img: null,
-                isAnim: false,
-                rotasi: 0,
-                alpha: 1,
-                rect: ha.Rect.create(),
-                load: true,
-                panjangDiSet: true,
-                lebarDiSet: true,
-                ratioX: 1,
-                ratioY: 1
-            };
-            return canvas;
-        }
-        static init(canvasBelakang, canvasDepan) {
-            let canvas = ha.Main.buatCanvas(canvasBelakang);
-            ha.Main._canvasAr.push(canvas);
-            canvas = ha.Main.buatCanvas(canvasDepan);
-            ha.Main._canvasAr.push(canvas);
-            ha.Main.canvasAktif = canvas;
-        }
-        static backupWarna() {
-            ha.Main.warnaBackup.b = ha.Main.biru;
-            ha.Main.warnaBackup.h = ha.Main.hijau;
-            ha.Main.warnaBackup.m = ha.Main.merah;
-            ha.Main.warnaBackup.t = ha.Main.transparan;
-        }
-        static restoreWarna() {
-            ha.Main.biru = ha.Main.warnaBackup.b;
-            ha.Main.hijau = ha.Main.warnaBackup.h;
-            ha.Main.merah = ha.Main.warnaBackup.m;
-            ha.Main.transparan = ha.Main.warnaBackup.t;
-            ha.Main.updateStyleWarna();
-        }
-        static Bersih(m = 0, h = 0, b = 0, t = 100) {
-            let ctx = ha.Main.canvasAktif.ctx;
-            ha.Main.backupWarna();
-            ctx.fillStyle = `rgba(${m}, ${h}, ${b}, ${t / 100})`;
-            ctx.fillRect(0, 0, ha.Main.canvasAktif.panjang, ha.Main.canvasAktif.lebar);
-            ha.Main.restoreWarna();
-        }
-        static Warna(r = 0, g = 0, b = 0, a = 100) {
-            let h = ha.Main;
-            h.merah = r;
-            h.biru = b;
-            h.hijau = g;
-            h.transparan = a / 100;
-            h.updateStyleWarna();
-        }
-        static updateStyleWarna() {
-            let ctx = ha.Main.canvasAktif.ctx;
-            ctx.fillStyle = `rgba(${ha.Main.merah}, ${ha.Main.hijau}, ${ha.Main.biru}, ${ha.Main.transparan})`;
-        }
-        static Hijau() {
-            return ha.Main.hijau;
-        }
-        static Merah() {
-            return ha.Main.merah;
-        }
-        static Biru() {
-            return ha.Main.biru;
-        }
-        static Transparan() {
-            return Math.floor(ha.Main.transparan * 100);
-        }
-        static Kanvas() {
-            return ha.Main.canvasAktif.canvas;
-        }
-        static Grafis(p = 320, l = 240, ubahStyle) {
-            let canvas = ha.Main.canvasAktif;
-            canvas.canvas.width = p;
-            canvas.canvas.height = l;
-            if (ubahStyle) {
-                canvas.canvas.style.width = p + 'px';
-                canvas.canvas.style.height = l + 'px';
-                canvas.canvas.style.padding = '0px';
-                canvas.canvas.style.margin = '0px';
-            }
-            //TODO: coba di check
-            canvas.panjang = p;
-            canvas.lebar = l;
-            setTimeout(() => {
-                if (ha.Blijs.skalaOtomatis) {
-                    ha.Blijs.windowResize();
+    var be;
+    (function (be) {
+        class Main {
+            //TODOL ganti agar bisa gonta-ganti kontek
+            //parameternya adalah sprite/canvas/kontex
+            //tujuannya agar bisa diedit langsung oleh perintah kontek yang lain
+            static Kontek(spr) {
+                let spr2 = spr;
+                if (spr2 && spr2.buffer && spr2.buffer.ctx) {
+                    return spr2.buffer.ctx;
                 }
-                else {
+                let spr3 = spr;
+                if (spr3 && spr3.getContext instanceof Function) {
+                    return spr3.getContext('2d');
                 }
-            }, 0);
-            // if (canvas2) {
-            // 	ha.Main.canvasAktif.canvas.classList.add('gl');
-            // }
-            // else {
-            // 	ha.Main.canvasAktif.canvas.classList.remove('gl');
-            // }
-            // if (skalaOtomatis) {
-            // 	ha.Main.canvasAktif.canvas.classList.add('pixel');
-            // }
-            // ha_blitz.Main.windowResize();
-        }
-        static Garis(x1, y1, x2, y2) {
-            let ctx = ha.Main.canvasAktif.ctx;
-            x1 = Math.floor(x1);
-            y1 = Math.floor(y1);
-            x2 = Math.floor(x2);
-            y2 = Math.floor(y2);
-            ctx.beginPath();
-            ctx.moveTo(x1, y1);
-            ctx.lineTo(x2, y2);
-            ctx.stroke();
-        }
-        //kotak
-        static Kotak(x1, y1, x2, y2, isi = false, garis = true, rotasi = 0) {
-            let ctx = ha.Main.canvasAktif.ctx;
-            //TODO: rotasi
-            rotasi;
-            if (isi) {
-                ctx.fillRect(x1, y1, x2 - x1, y2 - y1);
+                return Main.canvasAktif.ctx;
             }
-            if (garis) {
-                ctx.strokeRect(x1, y1, x2 - x1, y2 - y1);
+            static Fps(n) {
+                Main.fps = Math.floor(1000 / n);
+                if (n >= 60) {
+                    Main.fps = 0;
+                }
+            }
+            static buatCanvas(canvasEl) {
+                let canvas = {
+                    canvas: canvasEl,
+                    ctx: canvasEl.getContext('2d'),
+                    lebar: canvasEl.height,
+                    // scaleX: 1,
+                    // scaleY: 1,
+                    panjang: canvasEl.width,
+                    frameH: canvasEl.height,
+                    frameW: canvasEl.width,
+                    handleX: 0,
+                    handleY: 0,
+                    img: null,
+                    isAnim: false,
+                    rotasi: 0,
+                    alpha: 1,
+                    rect: be.Rect.create(),
+                    load: true,
+                    panjangDiSet: true,
+                    lebarDiSet: true,
+                    ratioX: 1,
+                    ratioY: 1
+                };
+                return canvas;
+            }
+            static init(canvasBelakang, canvasDepan) {
+                let canvas = Main.buatCanvas(canvasBelakang);
+                Main._canvasAr.push(canvas);
+                canvas = Main.buatCanvas(canvasDepan);
+                Main._canvasAr.push(canvas);
+                Main.canvasAktif = canvas;
+            }
+            static backupWarna() {
+                Main.warnaBackup.b = Main.biru;
+                Main.warnaBackup.h = Main.hijau;
+                Main.warnaBackup.m = Main.merah;
+                Main.warnaBackup.t = Main.transparan;
+            }
+            static restoreWarna() {
+                Main.biru = Main.warnaBackup.b;
+                Main.hijau = Main.warnaBackup.h;
+                Main.merah = Main.warnaBackup.m;
+                Main.transparan = Main.warnaBackup.t;
+                Main.updateStyleWarna();
+            }
+            static Bersih(m = 0, h = 0, b = 0, t = 100) {
+                let ctx = Main.canvasAktif.ctx;
+                Main.backupWarna();
+                ctx.fillStyle = `rgba(${m}, ${h}, ${b}, ${t / 100})`;
+                ctx.fillRect(0, 0, Main.canvasAktif.panjang, Main.canvasAktif.lebar);
+                Main.restoreWarna();
+            }
+            static Warna(r = 0, g = 0, b = 0, a = 100) {
+                let h = Main;
+                h.merah = r;
+                h.biru = b;
+                h.hijau = g;
+                h.transparan = a / 100;
+                h.updateStyleWarna();
+            }
+            static updateStyleWarna() {
+                let ctx = Main.canvasAktif.ctx;
+                ctx.fillStyle = `rgba(${Main.merah}, ${Main.hijau}, ${Main.biru}, ${Main.transparan})`;
+            }
+            static Hijau() {
+                return Main.hijau;
+            }
+            static Merah() {
+                return Main.merah;
+            }
+            static Biru() {
+                return Main.biru;
+            }
+            static Transparan() {
+                return Math.floor(Main.transparan * 100);
+            }
+            static Kanvas() {
+                return Main.canvasAktif.canvas;
+            }
+            static Grafis(p = 320, l = 240, ubahStyle) {
+                let canvas = Main.canvasAktif;
+                canvas.canvas.width = p;
+                canvas.canvas.height = l;
+                if (ubahStyle) {
+                    canvas.canvas.style.width = p + 'px';
+                    canvas.canvas.style.height = l + 'px';
+                    canvas.canvas.style.padding = '0px';
+                    canvas.canvas.style.margin = '0px';
+                }
+                //TODO: coba di check
+                canvas.panjang = p;
+                canvas.lebar = l;
+                setTimeout(() => {
+                    if (be.Blijs.skalaOtomatis) {
+                        be.Blijs.windowResize();
+                    }
+                    else {
+                    }
+                }, 0);
+                // if (canvas2) {
+                // 	Main.canvasAktif.canvas.classList.add('gl');
+                // }
+                // else {
+                // 	Main.canvasAktif.canvas.classList.remove('gl');
+                // }
+                // if (skalaOtomatis) {
+                // 	Main.canvasAktif.canvas.classList.add('pixel');
+                // }
+                // ha_blitz.Main.windowResize();
+            }
+            static Garis(x1, y1, x2, y2) {
+                let ctx = Main.canvasAktif.ctx;
+                x1 = Math.floor(x1);
+                y1 = Math.floor(y1);
+                x2 = Math.floor(x2);
+                y2 = Math.floor(y2);
+                ctx.beginPath();
+                ctx.moveTo(x1, y1);
+                ctx.lineTo(x2, y2);
+                ctx.stroke();
+            }
+            //kotak
+            static Kotak(x1, y1, x2, y2, isi = false, garis = true, rotasi = 0) {
+                let ctx = Main.canvasAktif.ctx;
+                //TODO: rotasi
+                rotasi;
+                if (isi) {
+                    ctx.fillRect(x1, y1, x2 - x1, y2 - y1);
+                }
+                if (garis) {
+                    ctx.strokeRect(x1, y1, x2 - x1, y2 - y1);
+                }
+            }
+            static Oval(x = 0, y = 0, radius, skalaX = 1, skalaY = .5, rotasi = 0) {
+                let ctx = Main.canvasAktif.ctx;
+                // save state
+                ctx.save();
+                // translate context
+                ctx.translate(x, y);
+                ctx.rotate(rotasi * (Math.PI / 180));
+                // scale context horizontally
+                ctx.scale(skalaX, skalaY);
+                // draw circle which will be stretched into an oval
+                ctx.beginPath();
+                ctx.arc(0, 0, radius, 0, 2 * Math.PI, false);
+                // restore to original state
+                ctx.restore();
+                // apply styling
+                // ctx.fillStyle = '#8ED6FF';
+                // ctx.fill();
+                // ctx.lineWidth = 5;
+                // ctx.strokeStyle = 'black';
+                ctx.stroke();
+                // ctx.beginPath();
+                // ctx.moveTo(x - w / 2, y);
+                // ctx.quadraticCurveTo(x - w / 2, y + h / 2, x, y + h / 2);
+                // ctx.quadraticCurveTo(x + w / 2, y + h / 2, x + w / 2, y);
+                // ctx.quadraticCurveTo(x + w / 2, y - h / 2, x, y - h / 2);
+                // ctx.quadraticCurveTo(x - w / 2, y - h / 2, x - w / 2, y);
+                // ctx.stroke();
+            }
+            static SetBuffer(buffer) {
+                Main.canvasAktif = buffer;
+            }
+            static get canvasAktif() {
+                return Main._canvasAktif;
+            }
+            static set canvasAktif(value) {
+                Main._canvasAktif = value;
+            }
+            static get canvasAr() {
+                return Main._canvasAr;
+            }
+            static set canvasAr(value) {
+                Main._canvasAr = value;
+            }
+            static get origin() {
+                return Main._origin;
+            }
+            static set origin(value) {
+                Main._origin = value;
+            }
+            static get fps() {
+                return Main._fps;
+            }
+            static set fps(value) {
+                Main._fps = value;
+            }
+            static get skalaOtomatis() {
+                return Main._skalaOtomatis;
+            }
+            static set skalaOtomatis(value) {
+                Main._skalaOtomatis = value;
+            }
+            static get merah() {
+                return Main._merah;
+            }
+            static set merah(value) {
+                Main._merah = value;
+            }
+            static get hijau() {
+                return Main._hijau;
+            }
+            static set hijau(value) {
+                Main._hijau = value;
+            }
+            static get biru() {
+                return Main._biru;
+            }
+            static set biru(value) {
+                Main._biru = value;
+            }
+            static get transparan() {
+                return Main._transparan;
+            }
+            static set transparan(value) {
+                Main._transparan = value;
             }
         }
-        static Oval(x = 0, y = 0, radius, skalaX = 1, skalaY = .5, rotasi = 0) {
-            let ctx = ha.Main.canvasAktif.ctx;
-            // save state
-            ctx.save();
-            // translate context
-            ctx.translate(x, y);
-            ctx.rotate(rotasi * (Math.PI / 180));
-            // scale context horizontally
-            ctx.scale(skalaX, skalaY);
-            // draw circle which will be stretched into an oval
-            ctx.beginPath();
-            ctx.arc(0, 0, radius, 0, 2 * Math.PI, false);
-            // restore to original state
-            ctx.restore();
-            // apply styling
-            // ctx.fillStyle = '#8ED6FF';
-            // ctx.fill();
-            // ctx.lineWidth = 5;
-            // ctx.strokeStyle = 'black';
-            ctx.stroke();
-            // ctx.beginPath();
-            // ctx.moveTo(x - w / 2, y);
-            // ctx.quadraticCurveTo(x - w / 2, y + h / 2, x, y + h / 2);
-            // ctx.quadraticCurveTo(x + w / 2, y + h / 2, x + w / 2, y);
-            // ctx.quadraticCurveTo(x + w / 2, y - h / 2, x, y - h / 2);
-            // ctx.quadraticCurveTo(x - w / 2, y - h / 2, x - w / 2, y);
-            // ctx.stroke();
-        }
-        static SetBuffer(buffer) {
-            ha.Main.canvasAktif = buffer;
-        }
-        static get canvasAktif() {
-            return ha.Main._canvasAktif;
-        }
-        static set canvasAktif(value) {
-            ha.Main._canvasAktif = value;
-        }
-        static get canvasAr() {
-            return ha.Main._canvasAr;
-        }
-        static set canvasAr(value) {
-            ha.Main._canvasAr = value;
-        }
-        static get origin() {
-            return ha.Main._origin;
-        }
-        static set origin(value) {
-            ha.Main._origin = value;
-        }
-        static get fps() {
-            return ha.Main._fps;
-        }
-        static set fps(value) {
-            ha.Main._fps = value;
-        }
-        static get skalaOtomatis() {
-            return Main._skalaOtomatis;
-        }
-        static set skalaOtomatis(value) {
-            Main._skalaOtomatis = value;
-        }
-        static get merah() {
-            return Main._merah;
-        }
-        static set merah(value) {
-            Main._merah = value;
-        }
-        static get hijau() {
-            return Main._hijau;
-        }
-        static set hijau(value) {
-            Main._hijau = value;
-        }
-        static get biru() {
-            return Main._biru;
-        }
-        static set biru(value) {
-            Main._biru = value;
-        }
-        static get transparan() {
-            return Main._transparan;
-        }
-        static set transparan(value) {
-            Main._transparan = value;
-        }
-    }
-    Main._fps = 0;
-    Main._canvasAr = [];
-    Main._skalaOtomatis = true;
-    Main._merah = 0;
-    Main._hijau = 0;
-    Main._biru = 0;
-    Main._transparan = 0;
-    Main.warnaBackup = {
-        m: 0,
-        b: 0,
-        h: 0,
-        t: 1
-    };
-    ha.Main = Main;
+        Main._fps = 0;
+        Main._canvasAr = [];
+        Main._skalaOtomatis = true;
+        Main._merah = 0;
+        Main._hijau = 0;
+        Main._biru = 0;
+        Main._transparan = 0;
+        Main.warnaBackup = {
+            m: 0,
+            b: 0,
+            h: 0,
+            t: 1
+        };
+        be.Main = Main;
+    })(be = ha.be || (ha.be = {}));
 })(ha || (ha = {}));
 var ha;
 (function (ha) {
-    class Gambar {
-        constructor() {
-            this.frameW = 32;
-            this.frameH = 32;
-            this._rotasi = 0;
-            this.alpha = 100;
-            this.isAnim = false;
-            this.rect = new ha.Rect();
-            this.load = false;
-            this.panjang = 0;
-            this.lebar = 0;
-            this.panjangDiSet = false;
-            this.lebarDiSet = false;
-            this.handleX = 0;
-            this.handleY = 0;
-            this.ratioX = 1;
-            this.ratioY = 1;
-        }
-        get rotasi() {
-            return this._rotasi;
-        }
-        set rotasi(value) {
-            console.debug('set value: ' + value);
-            this._rotasi = value;
-        }
-    }
-    class Image {
-        // private static buatObj(
-        // 	img: HTMLImageElement,
-        // 	w: number,
-        // 	h: number,
-        // 	frameH: number,
-        // 	frameW: number,
-        // 	canvas: HTMLCanvasElement,
-        // 	rect: IRect
-        // ): IGambar {
-        // 	let gbr: IGambar = new Gambar();
-        // 	gbr.panjang = w;
-        // 	gbr.lebar = h;
-        // 	gbr.img = img;
-        // 	gbr.frameH = frameH;
-        // 	gbr.frameW = frameW;
-        // 	gbr.handleX = 0;
-        // 	gbr.handleY = 0;
-        // 	gbr.alpha = 1;
-        // 	gbr.isAnim = false;
-        // 	gbr.canvas = canvas;
-        // 	gbr.ctx = canvas.getContext('2d');
-        // 	gbr.rect = rect;
-        // 	gbr.load = false;
-        // 	gbr.panjangDiSet = false;
-        // 	gbr.lebarDiSet = false;
-        // 	return gbr;
-        // }
-        static buatBagiCanvas(canvas, w = 32, h = 32, frameW = 32, frameH = 32) {
-            let img;
-            canvas.width = w;
-            canvas.height = h;
-            let rect = ha.Rect.create(0, 0, frameW, frameH);
-            img = new Gambar();
-            img.load = true;
-            img.panjang = w;
-            img.lebar = h;
-            img.img = null;
-            img.frameH = frameH;
-            img.frameW = frameW;
-            img.handleX = 0;
-            img.handleY = 0;
-            img.alpha = 1;
-            img.isAnim = false;
-            img.canvas = canvas;
-            img.ctx = canvas.getContext('2d');
-            img.rect = rect;
-            img.load = true;
-            img.panjangDiSet = true;
-            img.lebarDiSet = true;
-            // img = {
-            // 	set rotasi(n: number) {
-            // 		console.debug('[xxx] set rotasi: ' + n);
-            // 		this.rotasi = n;
-            // 	},
-            // 	get rotasi(): number {
-            // 		return this.rotasi;
-            // 	}
-            // }
-            return img;
-        }
-        static gambarRect(spr) {
-            ha.Image.resetRect(spr.buffer);
-            ha.Image.rectToImageTransform(spr.buffer, spr.x, spr.y);
-            let ctx = ha.Main.canvasAktif.ctx;
-            let rect = spr.buffer.rect;
-            ctx.beginPath();
-            ctx.strokeStyle = "#ffffff";
-            ctx.lineWidth = 5;
-            ctx.moveTo(rect.vs[0].x, rect.vs[0].y);
-            ctx.lineTo(rect.vs[1].x, rect.vs[1].y);
-            ctx.lineTo(rect.vs[2].x, rect.vs[2].y);
-            ctx.lineTo(rect.vs[3].x, rect.vs[3].y);
-            ctx.moveTo(rect.vs[0].x, rect.vs[0].y);
-            ctx.stroke();
-        }
-        static buat(w = 32, h = 32, frameW = 32, frameH = 32) {
-            let canvas = document.createElement('canvas');
-            return ha.Image.buatBagiCanvas(canvas, w, h, frameW, frameH);
-            // let img: IGambar;
-            // canvas.width = w;
-            // canvas.height = h;
-            // let rect: IRect = ha.Rect.create(0, 0, frameW, frameH);
-            // img = {
-            // 	panjang: w,
-            // 	lebar: h,
-            // 	img: null,
-            // 	frameH: frameH,
-            // 	frameW: frameW,
-            // 	handleX: 0,
-            // 	handleY: 0,
-            // 	rotasi: 0,
-            // 	alpha: 1,
-            // 	isAnim: false,
-            // 	// scaleX: 1,
-            // 	// scaleY: 1,
-            // 	canvas: canvas,
-            // 	ctx: canvas.getContext('2d'),
-            // 	rect: rect,
-            // 	load: true,
-            // 	panjangDiSet: true,
-            // 	lebarDiSet: true
-            // }
-            // return img;
-        }
-        static panjang(gbr, pj) {
-            if (typeof pj == 'number') {
-                gbr.panjang = pj;
-                gbr.panjangDiSet = true;
+    var be;
+    (function (be) {
+        class Gambar {
+            constructor() {
+                this.frameW = 32;
+                this.frameH = 32;
+                this._rotasi = 0;
+                this.alpha = 100;
+                this.isAnim = false;
+                this.rect = new be.Rect();
+                this.load = false;
+                this.panjang = 0;
+                this.lebar = 0;
+                this.panjangDiSet = false;
+                this.lebarDiSet = false;
+                this.handleX = 0;
+                this.handleY = 0;
+                this.ratioX = 1;
+                this.ratioY = 1;
             }
-            return gbr.panjang;
+            get rotasi() {
+                return this._rotasi;
+            }
+            set rotasi(value) {
+                console.debug('set value: ' + value);
+                this._rotasi = value;
+            }
         }
-        ;
-        static lebar(gbr, lb) {
-            if (typeof lb == 'number') {
-                gbr.lebar = lb;
+        class Image {
+            // private static buatObj(
+            // 	img: HTMLImageElement,
+            // 	w: number,
+            // 	h: number,
+            // 	frameH: number,
+            // 	frameW: number,
+            // 	canvas: HTMLCanvasElement,
+            // 	rect: IRect
+            // ): IGambar {
+            // 	let gbr: IGambar = new Gambar();
+            // 	gbr.panjang = w;
+            // 	gbr.lebar = h;
+            // 	gbr.img = img;
+            // 	gbr.frameH = frameH;
+            // 	gbr.frameW = frameW;
+            // 	gbr.handleX = 0;
+            // 	gbr.handleY = 0;
+            // 	gbr.alpha = 1;
+            // 	gbr.isAnim = false;
+            // 	gbr.canvas = canvas;
+            // 	gbr.ctx = canvas.getContext('2d');
+            // 	gbr.rect = rect;
+            // 	gbr.load = false;
+            // 	gbr.panjangDiSet = false;
+            // 	gbr.lebarDiSet = false;
+            // 	return gbr;
+            // }
+            static buatBagiCanvas(canvas, w = 32, h = 32, frameW = 32, frameH = 32) {
+                let img;
+                canvas.width = w;
+                canvas.height = h;
+                let rect = ha.be.Rect.create(0, 0, frameW, frameH);
+                img = new Gambar();
+                img.load = true;
+                img.panjang = w;
+                img.lebar = h;
+                img.img = null;
+                img.frameH = frameH;
+                img.frameW = frameW;
+                img.handleX = 0;
+                img.handleY = 0;
+                img.alpha = 1;
+                img.isAnim = false;
+                img.canvas = canvas;
+                img.ctx = canvas.getContext('2d');
+                img.rect = rect;
+                img.load = true;
+                img.panjangDiSet = true;
+                img.lebarDiSet = true;
+                // img = {
+                // 	set rotasi(n: number) {
+                // 		console.debug('[xxx] set rotasi: ' + n);
+                // 		this.rotasi = n;
+                // 	},
+                // 	get rotasi(): number {
+                // 		return this.rotasi;
+                // 	}
+                // }
+                return img;
+            }
+            static gambarRect(spr) {
+                Image.resetRect(spr.buffer);
+                Image.rectToImageTransform(spr.buffer, spr.x, spr.y);
+                let ctx = be.Main.canvasAktif.ctx;
+                let rect = spr.buffer.rect;
+                ctx.beginPath();
+                ctx.strokeStyle = "#ffffff";
+                ctx.lineWidth = 5;
+                ctx.moveTo(rect.vs[0].x, rect.vs[0].y);
+                ctx.lineTo(rect.vs[1].x, rect.vs[1].y);
+                ctx.lineTo(rect.vs[2].x, rect.vs[2].y);
+                ctx.lineTo(rect.vs[3].x, rect.vs[3].y);
+                ctx.moveTo(rect.vs[0].x, rect.vs[0].y);
+                ctx.stroke();
+            }
+            static buat(w = 32, h = 32, frameW = 32, frameH = 32) {
+                let canvas = document.createElement('canvas');
+                return Image.buatBagiCanvas(canvas, w, h, frameW, frameH);
+                // let img: IGambar;
+                // canvas.width = w;
+                // canvas.height = h;
+                // let rect: IRect = ha.be.Rect.create(0, 0, frameW, frameH);
+                // img = {
+                // 	panjang: w,
+                // 	lebar: h,
+                // 	img: null,
+                // 	frameH: frameH,
+                // 	frameW: frameW,
+                // 	handleX: 0,
+                // 	handleY: 0,
+                // 	rotasi: 0,
+                // 	alpha: 1,
+                // 	isAnim: false,
+                // 	// scaleX: 1,
+                // 	// scaleY: 1,
+                // 	canvas: canvas,
+                // 	ctx: canvas.getContext('2d'),
+                // 	rect: rect,
+                // 	load: true,
+                // 	panjangDiSet: true,
+                // 	lebarDiSet: true
+                // }
+                // return img;
+            }
+            static panjang(gbr, pj) {
+                if (typeof pj == 'number') {
+                    gbr.panjang = pj;
+                    gbr.panjangDiSet = true;
+                }
+                return gbr.panjang;
+            }
+            ;
+            static lebar(gbr, lb) {
+                if (typeof lb == 'number') {
+                    gbr.lebar = lb;
+                    gbr.lebarDiSet = true;
+                }
+                return gbr.lebar;
+            }
+            ;
+            static handleX(gbr) { return gbr.handleX; }
+            ;
+            static handleY(gbr) { return gbr.handleY; }
+            ;
+            static tabrakan(gbr1, x1, y1, gbr2, x2, y2) {
+                Image.resetRect(gbr1);
+                Image.rectToImageTransform(gbr1, x1, y1);
+                Image.resetRect(gbr2);
+                Image.rectToImageTransform(gbr2, x2, y2);
+                return ha.be.Rect.collide(gbr1.rect, gbr2.rect);
+            }
+            ;
+            static dotDidalamGambar(gbr1, x1, y1, x2, y2) {
+                Image.resetRect(gbr1);
+                Image.rectToImageTransform(gbr1, x1, y1);
+                return ha.be.Rect.collideDot(gbr1.rect, x2, y2);
+            }
+            ;
+            static muatAnimAsync(url, fw, fh) {
+                let canvas = document.createElement('canvas');
+                return Image.muatAnimAsyncCanvas(url, fw, fh, canvas);
+            }
+            static muatAnimAsyncCanvas(url, fw, fh, canvas) {
+                let img = document.createElement('img'); //;
+                let ctx = canvas.getContext('2d');
+                let rect;
+                rect = ha.be.Rect.create(0, 0, fw, fh);
+                let gbr = new Gambar();
+                gbr.isAnim = true;
+                gbr.img = img;
+                gbr.panjang = img.naturalWidth;
+                gbr.lebar = img.naturalHeight;
+                gbr.frameH = fh;
+                gbr.frameW = fw;
+                gbr.isAnim = true;
+                gbr.handleX = 0;
+                gbr.handleY = 0;
+                gbr.rotasi = 0;
+                gbr.alpha = 1;
+                gbr.ctx = ctx;
+                gbr.canvas = canvas;
+                gbr.rect = rect;
+                gbr.load = false;
+                gbr.panjangDiSet = false;
+                gbr.lebarDiSet = false;
+                // let gbr: IGambar = {
+                // 	img: img,
+                // 	panjang: img.naturalWidth,
+                // 	lebar: img.naturalHeight,
+                // 	frameH: fh,
+                // 	frameW: fw,
+                // 	isAnim: true,
+                // 	handleX: 0,
+                // 	handleY: 0,
+                // 	rotasi: 0,
+                // 	alpha: 1,
+                // 	ctx: ctx,
+                // 	canvas: canvas,
+                // 	rect: rect,
+                // 	load: false,
+                // 	panjangDiSet: false,
+                // 	lebarDiSet: false
+                // }
+                img.onload = () => {
+                    imgOnLoad(img);
+                };
+                img.onerror = () => {
+                    console.log('gagal load image, url ' + url);
+                    //TODO: default image
+                };
+                let img2 = ha.be.cache.getGbr(url);
+                if (img2) {
+                    imgOnLoad(img2);
+                }
+                else {
+                    img.src = url;
+                }
+                function imgOnLoad(img) {
+                    console.log('img anim load ' + url);
+                    canvas.width = img.naturalWidth;
+                    canvas.height = img.naturalHeight;
+                    ctx.drawImage(img, 0, 0);
+                    gbr.load = true;
+                    if (!gbr.panjangDiSet) {
+                        gbr.panjang = fw;
+                        gbr.panjangDiSet = true;
+                    }
+                    if (!gbr.lebarDiSet) {
+                        gbr.lebarDiSet = true;
+                        gbr.lebar = fh;
+                    }
+                    ha.be.cache.setFile(url, img);
+                }
+                return gbr;
+            }
+            static muatAsync(url) {
+                let canvas = document.createElement('canvas');
+                return Image.muatAsyncKanvas(url, canvas);
+            }
+            static muatAsyncKanvas(url, canvas) {
+                let img = document.createElement('img'); //ha_blitz.image.loadImageAsync(url, () => { }, () => { });
+                let ctx = canvas.getContext('2d');
+                let rect;
+                rect = ha.be.Rect.create(0, 0, img.naturalWidth, img.naturalHeight);
+                let gbr = {
+                    img: img,
+                    panjang: img.naturalWidth,
+                    lebar: img.naturalHeight,
+                    frameH: img.naturalHeight,
+                    frameW: img.naturalWidth,
+                    isAnim: false,
+                    handleX: 0,
+                    handleY: 0,
+                    rotasi: 0,
+                    alpha: 1,
+                    // scaleX: 1,
+                    // scaleY: 1,
+                    ctx: ctx,
+                    canvas: canvas,
+                    rect: rect,
+                    load: false,
+                    panjangDiSet: false,
+                    lebarDiSet: false
+                };
+                img.onload = () => {
+                    imgOnLoad(img);
+                };
+                img.onerror = () => {
+                    console.log('gagal load image, url ' + url);
+                    //TODO: default image
+                };
+                let img2 = ha.be.cache.getGbr(url);
+                if (img2) {
+                    imgOnLoad(img2);
+                }
+                else {
+                    img.src = url;
+                }
+                function imgOnLoad(img) {
+                    canvas.width = img.naturalWidth;
+                    canvas.height = img.naturalHeight;
+                    ctx.drawImage(img, 0, 0);
+                    gbr.rect = ha.be.Rect.create(0, 0, img.naturalWidth, img.naturalHeight);
+                    gbr.load = true;
+                    gbr.img = img;
+                    if (!gbr.panjangDiSet) {
+                        gbr.panjangDiSet = true;
+                        gbr.panjang = img.naturalWidth;
+                    }
+                    if (!gbr.lebarDiSet) {
+                        gbr.lebar = img.naturalHeight;
+                        gbr.lebarDiSet = true;
+                    }
+                    gbr.frameH = img.naturalHeight;
+                    gbr.frameW = img.naturalWidth;
+                    ha.be.cache.setFile(url, img);
+                }
+                return gbr;
+            }
+            static gambarUbin(gbr, x = 0, y = 0, frame = 0) {
+                let jmlH = 0;
+                let jmlV = 0;
+                if (gbr.load == false)
+                    return;
+                let w2 = Math.floor(gbr.panjang);
+                let h2 = Math.floor(gbr.lebar);
+                while (x < 0) {
+                    x += w2;
+                }
+                while (y < 0) {
+                    y += h2;
+                }
+                x -= w2;
+                y -= h2;
+                frame = Math.floor(frame);
+                jmlH = Math.ceil((be.Main.canvasAktif.panjang + Math.abs(x)) / w2);
+                jmlV = Math.ceil((be.Main.canvasAktif.lebar + Math.abs(y)) / h2);
+                for (let i = 0; i < jmlH; i++) {
+                    for (let j = 0; j < jmlV; j++) {
+                        Image.gambar(gbr, x + (i * w2), y + (j * h2), frame);
+                    }
+                }
+            }
+            static putarGambar(gbr, sudut = 0) {
+                gbr.rotasi = sudut;
+            }
+            static AmbilPiksel(x = 0, y = 0) {
+                try {
+                    let data = be.Main.canvasAktif.ctx.getImageData(x, y, 1, 1).data;
+                    let hasil = [];
+                    hasil.push(data[0]);
+                    hasil.push(data[1]);
+                    hasil.push(data[2]);
+                    hasil.push(data[3]);
+                    be.Main.merah = data[0];
+                    be.Main.hijau = data[1];
+                    be.Main.biru = data[2];
+                    be.Main.transparan = data[3];
+                    be.Main.Warna(be.Main.merah, be.Main.hijau, be.Main.biru, be.Main.transparan);
+                    return hasil;
+                }
+                catch (e) {
+                    // console.error(e);
+                }
+                return [0, 0, 0];
+            }
+            static SetPiksel(x = 0, y = 0) {
+                be.Main.canvasAktif.ctx.fillRect(Math.floor(x), Math.floor(y), 1, 1);
+            }
+            static handle(gbr, x = 0, y = 0) {
+                gbr.handleX = x;
+                gbr.handleY = y;
+            }
+            static grabGambar(gbr, x = 0, y = 0) {
+                gbr.ctx.drawImage(be.Main.canvasAktif.canvas, x, y, gbr.panjang, gbr.lebar, 0, 0, gbr.panjang, gbr.lebar);
+            }
+            static gambar(gbr, x = 0, y = 0, frame = 0) {
+                let ctx = be.Main.canvasAktif.ctx;
+                let jmlH = 0;
+                let jmlV = 0;
+                let frameX = 0;
+                let frameY = 0;
+                // let rect: IRect = img.rect;
+                if (gbr.load == false)
+                    return;
+                jmlH = Math.floor(gbr.img.naturalWidth / gbr.frameW);
+                jmlV = Math.floor(gbr.img.naturalHeight / gbr.frameH);
+                // console.log('jmlH ' + jmlH);
+                // console.log('nw: ' + gbr.img.naturalWidth);
+                // console.log('fw: ' + gbr.frameW);
+                // debugger;
+                frameX = (frame % jmlH);
+                frameY = Math.floor(frame / jmlV);
+                frameX *= gbr.frameW;
+                frameY *= gbr.frameH;
+                frameX = Math.floor(frameX);
+                frameY = Math.floor(frameY);
+                let x2 = Math.floor(x);
+                let y2 = Math.floor(y);
+                let w2 = Math.floor(gbr.panjang);
+                let h2 = Math.floor(gbr.lebar);
+                x2 -= (gbr.handleX);
+                y2 -= (gbr.handleY);
+                if (gbr.rotasi != 0) {
+                    ctx.save();
+                    ctx.translate(x, y);
+                    ctx.rotate(gbr.rotasi * (Math.PI / 180));
+                    ctx.globalAlpha = gbr.alpha;
+                    ctx.drawImage(gbr.img, frameX, frameY, gbr.frameW, gbr.frameH, -gbr.handleX, -gbr.handleY, w2, h2);
+                    ctx.restore();
+                }
+                else {
+                    ctx.save();
+                    ctx.globalAlpha = gbr.alpha;
+                    ctx.drawImage(gbr.canvas, frameX, frameY, gbr.frameW, gbr.frameH, x2, y2, w2, h2);
+                    ctx.restore();
+                }
+                // debugger;
+            }
+            /**
+             * Ubah Ukuran Gambar
+             * @param gbr
+             * @param w
+             * @param h
+             */
+            static ukuran(gbr, w = 32, h = 32) {
+                gbr.panjang = w;
+                gbr.lebar = h;
+                gbr.panjangDiSet = true;
                 gbr.lebarDiSet = true;
             }
-            return gbr.lebar;
-        }
-        ;
-        static handleX(gbr) { return gbr.handleX; }
-        ;
-        static handleY(gbr) { return gbr.handleY; }
-        ;
-        static tabrakan(gbr1, x1, y1, gbr2, x2, y2) {
-            ha.Image.resetRect(gbr1);
-            ha.Image.rectToImageTransform(gbr1, x1, y1);
-            ha.Image.resetRect(gbr2);
-            ha.Image.rectToImageTransform(gbr2, x2, y2);
-            return ha.Rect.collide(gbr1.rect, gbr2.rect);
-        }
-        ;
-        static dotDidalamGambar(gbr1, x1, y1, x2, y2) {
-            ha.Image.resetRect(gbr1);
-            ha.Image.rectToImageTransform(gbr1, x1, y1);
-            return ha.Rect.collideDot(gbr1.rect, x2, y2);
-        }
-        ;
-        static muatAnimAsync(url, fw, fh) {
-            let canvas = document.createElement('canvas');
-            return ha.Image.muatAnimAsyncCanvas(url, fw, fh, canvas);
-        }
-        static muatAnimAsyncCanvas(url, fw, fh, canvas) {
-            let img = document.createElement('img'); //;
-            let ctx = canvas.getContext('2d');
-            let rect;
-            rect = ha.Rect.create(0, 0, fw, fh);
-            let gbr = new Gambar();
-            gbr.isAnim = true;
-            gbr.img = img;
-            gbr.panjang = img.naturalWidth;
-            gbr.lebar = img.naturalHeight;
-            gbr.frameH = fh;
-            gbr.frameW = fw;
-            gbr.isAnim = true;
-            gbr.handleX = 0;
-            gbr.handleY = 0;
-            gbr.rotasi = 0;
-            gbr.alpha = 1;
-            gbr.ctx = ctx;
-            gbr.canvas = canvas;
-            gbr.rect = rect;
-            gbr.load = false;
-            gbr.panjangDiSet = false;
-            gbr.lebarDiSet = false;
-            // let gbr: IGambar = {
-            // 	img: img,
-            // 	panjang: img.naturalWidth,
-            // 	lebar: img.naturalHeight,
-            // 	frameH: fh,
-            // 	frameW: fw,
-            // 	isAnim: true,
-            // 	handleX: 0,
-            // 	handleY: 0,
-            // 	rotasi: 0,
-            // 	alpha: 1,
-            // 	ctx: ctx,
-            // 	canvas: canvas,
-            // 	rect: rect,
-            // 	load: false,
-            // 	panjangDiSet: false,
-            // 	lebarDiSet: false
-            // }
-            img.onload = () => {
-                imgOnLoad(img);
-            };
-            img.onerror = () => {
-                console.log('gagal load image, url ' + url);
-                //TODO: default image
-            };
-            let img2 = ha.cache.getGbr(url);
-            if (img2) {
-                imgOnLoad(img2);
+            static resetRect(img) {
+                let rect = img.rect;
+                let p;
+                p = rect.vs[0];
+                p.x = 0;
+                p.y = 0;
+                p = rect.vs[1];
+                p.x = img.frameW;
+                p.y = 0;
+                p = rect.vs[2];
+                p.x = img.frameW;
+                p.y = img.frameH;
+                p = rect.vs[3];
+                p.x = 0;
+                p.y = img.frameH;
             }
-            else {
-                img.src = url;
-            }
-            function imgOnLoad(img) {
-                console.log('img anim load ' + url);
-                canvas.width = img.naturalWidth;
-                canvas.height = img.naturalHeight;
-                ctx.drawImage(img, 0, 0);
-                gbr.load = true;
-                if (!gbr.panjangDiSet) {
-                    gbr.panjang = fw;
-                    gbr.panjangDiSet = true;
-                }
-                if (!gbr.lebarDiSet) {
-                    gbr.lebarDiSet = true;
-                    gbr.lebar = fh;
-                }
-                ha.cache.setFile(url, img);
-            }
-            return gbr;
-        }
-        static muatAsync(url) {
-            let canvas = document.createElement('canvas');
-            return ha.Image.muatAsyncKanvas(url, canvas);
-        }
-        static muatAsyncKanvas(url, canvas) {
-            let img = document.createElement('img'); //ha_blitz.image.loadImageAsync(url, () => { }, () => { });
-            let ctx = canvas.getContext('2d');
-            let rect;
-            rect = ha.Rect.create(0, 0, img.naturalWidth, img.naturalHeight);
-            let gbr = {
-                img: img,
-                panjang: img.naturalWidth,
-                lebar: img.naturalHeight,
-                frameH: img.naturalHeight,
-                frameW: img.naturalWidth,
-                isAnim: false,
-                handleX: 0,
-                handleY: 0,
-                rotasi: 0,
-                alpha: 1,
-                // scaleX: 1,
-                // scaleY: 1,
-                ctx: ctx,
-                canvas: canvas,
-                rect: rect,
-                load: false,
-                panjangDiSet: false,
-                lebarDiSet: false
-            };
-            img.onload = () => {
-                imgOnLoad(img);
-            };
-            img.onerror = () => {
-                console.log('gagal load image, url ' + url);
-                //TODO: default image
-            };
-            let img2 = ha.cache.getGbr(url);
-            if (img2) {
-                imgOnLoad(img2);
-            }
-            else {
-                img.src = url;
-            }
-            function imgOnLoad(img) {
-                canvas.width = img.naturalWidth;
-                canvas.height = img.naturalHeight;
-                ctx.drawImage(img, 0, 0);
-                gbr.rect = ha.Rect.create(0, 0, img.naturalWidth, img.naturalHeight);
-                gbr.load = true;
-                gbr.img = img;
-                if (!gbr.panjangDiSet) {
-                    gbr.panjangDiSet = true;
-                    gbr.panjang = img.naturalWidth;
-                }
-                if (!gbr.lebarDiSet) {
-                    gbr.lebar = img.naturalHeight;
-                    gbr.lebarDiSet = true;
-                }
-                gbr.frameH = img.naturalHeight;
-                gbr.frameW = img.naturalWidth;
-                ha.cache.setFile(url, img);
-            }
-            return gbr;
-        }
-        static gambarUbin(gbr, x = 0, y = 0, frame = 0) {
-            let jmlH = 0;
-            let jmlV = 0;
-            if (gbr.load == false)
-                return;
-            let w2 = Math.floor(gbr.panjang);
-            let h2 = Math.floor(gbr.lebar);
-            while (x < 0) {
-                x += w2;
-            }
-            while (y < 0) {
-                y += h2;
-            }
-            x -= w2;
-            y -= h2;
-            frame = Math.floor(frame);
-            jmlH = Math.ceil((ha.Main.canvasAktif.panjang + Math.abs(x)) / w2);
-            jmlV = Math.ceil((ha.Main.canvasAktif.lebar + Math.abs(y)) / h2);
-            for (let i = 0; i < jmlH; i++) {
-                for (let j = 0; j < jmlV; j++) {
-                    ha.Image.gambar(gbr, x + (i * w2), y + (j * h2), frame);
-                }
+            static rectToImageTransform(image, x, y) {
+                let rect = image.rect;
+                let p;
+                let x2 = image.panjang;
+                let y2 = image.lebar;
+                //scale
+                p = rect.vs[1];
+                p.x = x2;
+                p.y = 0;
+                p = rect.vs[2];
+                p.x = x2;
+                p.y = y2;
+                p = rect.vs[3];
+                p.x = 0;
+                p.y = y2;
+                //translate
+                ha.be.Rect.translate(rect, x, y);
+                ha.be.Rect.translate(rect, -image.handleX, -image.handleY);
+                //rotate
+                ha.be.Rect.rotate(rect, image.rotasi, x, y, false);
             }
         }
-        static putarGambar(gbr, sudut = 0) {
-            gbr.rotasi = sudut;
-        }
-        static AmbilPiksel(x = 0, y = 0) {
-            try {
-                let data = ha.Main.canvasAktif.ctx.getImageData(x, y, 1, 1).data;
-                let hasil = [];
-                hasil.push(data[0]);
-                hasil.push(data[1]);
-                hasil.push(data[2]);
-                hasil.push(data[3]);
-                ha.Main.merah = data[0];
-                ha.Main.hijau = data[1];
-                ha.Main.biru = data[2];
-                ha.Main.transparan = data[3];
-                ha.Main.Warna(ha.Main.merah, ha.Main.hijau, ha.Main.biru, ha.Main.transparan);
-                return hasil;
-            }
-            catch (e) {
-                // console.error(e);
-            }
-            return [0, 0, 0];
-        }
-        static SetPiksel(x = 0, y = 0) {
-            ha.Main.canvasAktif.ctx.fillRect(Math.floor(x), Math.floor(y), 1, 1);
-        }
-        static handle(gbr, x = 0, y = 0) {
-            gbr.handleX = x;
-            gbr.handleY = y;
-        }
-        static grabGambar(gbr, x = 0, y = 0) {
-            gbr.ctx.drawImage(ha.Main.canvasAktif.canvas, x, y, gbr.panjang, gbr.lebar, 0, 0, gbr.panjang, gbr.lebar);
-        }
-        static gambar(gbr, x = 0, y = 0, frame = 0) {
-            let ctx = ha.Main.canvasAktif.ctx;
-            let jmlH = 0;
-            let jmlV = 0;
-            let frameX = 0;
-            let frameY = 0;
-            // let rect: IRect = img.rect;
-            if (gbr.load == false)
-                return;
-            jmlH = Math.floor(gbr.img.naturalWidth / gbr.frameW);
-            jmlV = Math.floor(gbr.img.naturalHeight / gbr.frameH);
-            // console.log('jmlH ' + jmlH);
-            // console.log('nw: ' + gbr.img.naturalWidth);
-            // console.log('fw: ' + gbr.frameW);
-            // debugger;
-            frameX = (frame % jmlH);
-            frameY = Math.floor(frame / jmlV);
-            frameX *= gbr.frameW;
-            frameY *= gbr.frameH;
-            frameX = Math.floor(frameX);
-            frameY = Math.floor(frameY);
-            let x2 = Math.floor(x);
-            let y2 = Math.floor(y);
-            let w2 = Math.floor(gbr.panjang);
-            let h2 = Math.floor(gbr.lebar);
-            x2 -= (gbr.handleX);
-            y2 -= (gbr.handleY);
-            if (gbr.rotasi != 0) {
-                ctx.save();
-                ctx.translate(x, y);
-                ctx.rotate(gbr.rotasi * (Math.PI / 180));
-                ctx.globalAlpha = gbr.alpha;
-                ctx.drawImage(gbr.img, frameX, frameY, gbr.frameW, gbr.frameH, -gbr.handleX, -gbr.handleY, w2, h2);
-                ctx.restore();
-            }
-            else {
-                ctx.save();
-                ctx.globalAlpha = gbr.alpha;
-                ctx.drawImage(gbr.canvas, frameX, frameY, gbr.frameW, gbr.frameH, x2, y2, w2, h2);
-                ctx.restore();
-            }
-            // debugger;
-        }
-        /**
-         * Ubah Ukuran Gambar
-         * @param gbr
-         * @param w
-         * @param h
-         */
-        static ukuran(gbr, w = 32, h = 32) {
-            gbr.panjang = w;
-            gbr.lebar = h;
-            gbr.panjangDiSet = true;
-            gbr.lebarDiSet = true;
-        }
-        static resetRect(img) {
-            let rect = img.rect;
-            let p;
-            p = rect.vs[0];
-            p.x = 0;
-            p.y = 0;
-            p = rect.vs[1];
-            p.x = img.frameW;
-            p.y = 0;
-            p = rect.vs[2];
-            p.x = img.frameW;
-            p.y = img.frameH;
-            p = rect.vs[3];
-            p.x = 0;
-            p.y = img.frameH;
-        }
-        static rectToImageTransform(image, x, y) {
-            let rect = image.rect;
-            let p;
-            let x2 = image.panjang;
-            let y2 = image.lebar;
-            //scale
-            p = rect.vs[1];
-            p.x = x2;
-            p.y = 0;
-            p = rect.vs[2];
-            p.x = x2;
-            p.y = y2;
-            p = rect.vs[3];
-            p.x = 0;
-            p.y = y2;
-            //translate
-            ha.Rect.translate(rect, x, y);
-            ha.Rect.translate(rect, -image.handleX, -image.handleY);
-            //rotate
-            ha.Rect.rotate(rect, image.rotasi, x, y, false);
-        }
-    }
-    ha.Image = Image;
+        be.Image = Image;
+    })(be = ha.be || (ha.be = {}));
 })(ha || (ha = {}));
 ///<reference path="./Image.ts"/>
 /** SPRITE.TS */
@@ -760,10 +766,10 @@ var ha;
             return hasil;
         }
         static panjang(spr, pj) {
-            return ha.Image.panjang(spr.buffer, pj);
+            return ha.be.Image.panjang(spr.buffer, pj);
         }
         static lebar(spr, lb) {
-            return ha.Image.lebar(spr.buffer, lb);
+            return ha.be.Image.lebar(spr.buffer, lb);
         }
         static alpha(spr, alpha) {
             if (typeof (alpha) == 'number') {
@@ -808,27 +814,27 @@ var ha;
             }
         }
         static tabrakan(spr, spr2) {
-            return ha.Image.tabrakan(spr.buffer, ha.Sprite.posisiX(spr), ha.Sprite.posisiY(spr), spr2.buffer, ha.Sprite.posisiX(spr2), ha.Sprite.posisiY(spr2));
+            return ha.be.Image.tabrakan(spr.buffer, ha.Sprite.posisiX(spr), ha.Sprite.posisiY(spr), spr2.buffer, ha.Sprite.posisiX(spr2), ha.Sprite.posisiY(spr2));
         }
         static muatAnimasiAsyncKanvas(url, pf, lf, bisaDiDrag, canvas, tipeDrag) {
-            let img = ha.Image.muatAnimAsyncCanvas(url, pf, lf, canvas);
+            let img = ha.be.Image.muatAnimAsyncCanvas(url, pf, lf, canvas);
             return ha.Sprite.buatPrivate(img, bisaDiDrag, url, tipeDrag);
         }
         static muatAnimasiAsync(url, pf, lf, bisaDiDrag = false, tipeDrag = 0) {
-            let img = ha.Image.muatAnimAsync(url, pf, lf);
+            let img = ha.be.Image.muatAnimAsync(url, pf, lf);
             return ha.Sprite.buatPrivate(img, bisaDiDrag, url, tipeDrag);
         }
         static muatAsyncBerbagiKanvas(url, dragable = false, canvas, tipeDrag) {
-            let img = ha.Image.muatAsyncKanvas(url, canvas);
+            let img = ha.be.Image.muatAsyncKanvas(url, canvas);
             return ha.Sprite.buatPrivate(img, dragable, url, tipeDrag);
         }
         static muatAsync(url, bisaDiDrag = false, tipeDrag = 0) {
-            let img = ha.Image.muatAsync(url);
+            let img = ha.be.Image.muatAsync(url);
             let spr = ha.Sprite.buatPrivate(img, bisaDiDrag, url, tipeDrag);
             return spr;
         }
         static ukuran(gbr, w, h) {
-            ha.Image.ukuran(gbr.buffer, w, h);
+            ha.be.Image.ukuran(gbr.buffer, w, h);
         }
         static buatPrivate(image, dragable = false, url, tipeDrag) {
             let hasil;
@@ -846,10 +852,10 @@ var ha;
             return hasil;
         }
         static gambar(sprite, frame) {
-            ha.Image.gambar(sprite.buffer, sprite.x, sprite.y, frame);
+            ha.be.Image.gambar(sprite.buffer, sprite.x, sprite.y, frame);
         }
         static posisiPolar(sprite, sudut, jarak, x2, y2, skalaX = 1, skalaY = 1) {
-            let p = ha.Point.posPolar(jarak, sudut, x2, y2);
+            let p = ha.be.Point.posPolar(jarak, sudut, x2, y2);
             p.y -= y2;
             p.y *= skalaY;
             p.y += y2;
@@ -860,7 +866,7 @@ var ha;
             sprite.y = p.y;
         }
         static ubin(spr, x = 0, y = 0, frame = 0) {
-            ha.Image.gambarUbin(spr.buffer, x, y, frame);
+            ha.be.Image.gambarUbin(spr.buffer, x, y, frame);
         }
         static statusMuat(spr) {
             let hasil = true;
@@ -966,764 +972,779 @@ var EInput;
 })(EInput || (EInput = {}));
 var ha;
 (function (ha) {
-    class Input {
-        constructor() {
-            this._inputs = []; //any input,
-            this._event = new EventHandler();
-            this.pos = (cx, cy, buffer) => {
-                let rect = buffer.canvas.getBoundingClientRect();
-                let canvasScaleX = parseInt(window.getComputedStyle(buffer.canvas).width) / buffer.canvas.width;
-                let canvasScaleY = parseInt(window.getComputedStyle(buffer.canvas).height) / buffer.canvas.height;
-                let poslx = Math.floor((cx - rect.x) / canvasScaleX);
-                let posly = Math.floor((cy - rect.y) / canvasScaleY);
-                return {
-                    x: poslx,
-                    y: posly
+    var be;
+    (function (be) {
+        class Input {
+            constructor() {
+                this._inputs = []; //any input,
+                this._event = new EventHandler();
+                this.pos = (cx, cy, buffer) => {
+                    let rect = buffer.canvas.getBoundingClientRect();
+                    let canvasScaleX = parseInt(window.getComputedStyle(buffer.canvas).width) / buffer.canvas.width;
+                    let canvasScaleY = parseInt(window.getComputedStyle(buffer.canvas).height) / buffer.canvas.height;
+                    let poslx = Math.floor((cx - rect.x) / canvasScaleX);
+                    let posly = Math.floor((cy - rect.y) / canvasScaleY);
+                    return {
+                        x: poslx,
+                        y: posly
+                    };
                 };
-            };
-            this._touchGlobal = this.buatInputDefault();
-            this._mouseGlobal = this.buatInputDefault();
-            this._keybGlobal = this.buatInputDefault();
-            this._inputGlobal = this.buatInputDefault();
-            this._touchGlobal.type = EInput.TOUCH;
-            this._keybGlobal.type = EInput.KEYB;
-            this._mouseGlobal.type = EInput.MOUSE;
-        }
-        InputType() {
-            return ha.input.inputGlobal.type;
-        }
-        InputHit() {
-            let hit = ha.input.inputGlobal.hit;
-            ha.input.inputGlobal.hit = 0;
-            return hit;
-        }
-        InputX() {
-            return ha.input.inputGlobal.x;
-        }
-        InputY() {
-            return ha.input.inputGlobal.y;
-        }
-        GeserX() {
-            return ha.input.inputGlobal.xDrag;
-        }
-        GeserY() {
-            return ha.input.inputGlobal.yDrag;
-        }
-        FlushInput() {
-            ha.input.flush();
-        }
-        Pencet() {
-            return ha.input.inputGlobal.isDown;
-        }
-        Geser() {
-            return ha.input.inputGlobal.isDrag;
-        }
-        getMouseKeyId(e) {
-            if (e.pointerType == 'touch') {
-                return e.pointerId + '';
+                this._touchGlobal = this.buatInputDefault();
+                this._mouseGlobal = this.buatInputDefault();
+                this._keybGlobal = this.buatInputDefault();
+                this._inputGlobal = this.buatInputDefault();
+                this._touchGlobal.type = EInput.TOUCH;
+                this._keybGlobal.type = EInput.KEYB;
+                this._mouseGlobal.type = EInput.MOUSE;
             }
-            else if (e.pointerType == 'mouse') {
-                return e.button + '';
+            InputType() {
+                return be.input.inputGlobal.type;
             }
-            throw Error('');
-        }
-        init(buffer) {
-            console.log('input init');
-            buffer.canvas.style.touchAction = 'none';
-            buffer.canvas.onpointerdown = (e) => {
-                e.stopPropagation();
-                e.preventDefault();
-                let pos = ha.input.pos(e.clientX, e.clientY, buffer);
-                let key = this.getMouseKeyId(e);
-                let input = ha.input.baru(key, e.pointerType);
-                ha.input.event.down(input, key, e.pointerType, pos);
-                ha.input.event.down(this._inputGlobal, key, e.pointerType, pos);
-                if ("mouse" == e.pointerType)
-                    ha.input.event.down(this._mouseGlobal, key, EInput.MOUSE, pos);
-                if ("touch" == e.pointerType)
-                    ha.input.event.down(this._touchGlobal, key, EInput.TOUCH, pos);
-                ha.sprite2.inputDown(pos, e.pointerId);
-            };
-            buffer.canvas.onpointermove = (e) => {
-                e.stopPropagation();
-                e.preventDefault();
-                let pos = ha.input.pos(e.clientX, e.clientY, buffer);
-                let key = this.getMouseKeyId(e);
-                let input = this.baru(key, e.pointerType);
-                ha.input.event.move(input, buffer, e);
-                ha.input.event.move(this.inputGlobal, buffer, e);
-                if (e.pointerType == 'touch')
-                    ha.input.event.move(ha.input.touchGlobal, buffer, e);
-                if (e.pointerType == 'mouse')
-                    ha.input.event.move(ha.input.mouseGlobal, buffer, e);
-                //sprite
-                ha.sprite2.inputMove(pos, e.pointerId);
-            };
-            buffer.canvas.onpointerout = (e) => {
-                e.stopPropagation();
-                e.preventDefault();
-                let key = ha.input.getMouseKeyId(e);
-                let input = ha.input.baru(key, e.pointerType);
-                ha.input.event.up(input);
-                ha.input.event.up(ha.input.inputGlobal);
-                if (e.pointerType == 'touch')
-                    ha.input.event.up(ha.input.touchGlobal);
-                if (e.pointerType == 'mouse')
-                    ha.input.event.up(ha.input.mouseGlobal);
-            };
-            buffer.canvas.onpointercancel = (e) => {
-                e.stopPropagation();
-                e.preventDefault();
-            };
-            buffer.canvas.onpointerup = (e) => {
-                e.stopPropagation();
-                e.preventDefault();
-                let key = this.getMouseKeyId(e);
-                let input = this.baru(key, e.pointerType);
-                ha.input.event.up(input);
-                ha.input.event.up(this.inputGlobal);
-                if (e.pointerType == 'touch')
-                    ha.input.event.up(ha.input.touchGlobal);
-                if (e.pointerType == 'mouse')
-                    ha.input.event.up(ha.input.mouseGlobal);
-                //sprite up
-                //sprite hit
-                ha.Sprite.daftar.forEach((item) => {
-                    if (e.pointerId == item.inputId) {
-                        if (item.down) {
-                            item.hit++;
+            InputHit() {
+                let hit = be.input.inputGlobal.hit;
+                be.input.inputGlobal.hit = 0;
+                return hit;
+            }
+            InputX() {
+                return be.input.inputGlobal.x;
+            }
+            InputY() {
+                return be.input.inputGlobal.y;
+            }
+            GeserX() {
+                return be.input.inputGlobal.xDrag;
+            }
+            GeserY() {
+                return be.input.inputGlobal.yDrag;
+            }
+            FlushInput() {
+                be.input.flush();
+            }
+            Pencet() {
+                return be.input.inputGlobal.isDown;
+            }
+            Geser() {
+                return be.input.inputGlobal.isDrag;
+            }
+            getMouseKeyId(e) {
+                if (e.pointerType == 'touch') {
+                    return e.pointerId + '';
+                }
+                else if (e.pointerType == 'mouse') {
+                    return e.button + '';
+                }
+                throw Error('');
+            }
+            init(buffer) {
+                console.log('input init');
+                buffer.canvas.style.touchAction = 'none';
+                buffer.canvas.onpointerdown = (e) => {
+                    e.stopPropagation();
+                    e.preventDefault();
+                    let pos = ha.be.input.pos(e.clientX, e.clientY, buffer);
+                    let key = this.getMouseKeyId(e);
+                    let input = ha.be.input.baru(key, e.pointerType);
+                    ha.be.input.event.down(input, key, e.pointerType, pos);
+                    ha.be.input.event.down(this._inputGlobal, key, e.pointerType, pos);
+                    if ("mouse" == e.pointerType)
+                        ha.be.input.event.down(this._mouseGlobal, key, EInput.MOUSE, pos);
+                    if ("touch" == e.pointerType)
+                        ha.be.input.event.down(this._touchGlobal, key, EInput.TOUCH, pos);
+                    ha.sprite2.inputDown(pos, e.pointerId);
+                };
+                buffer.canvas.onpointermove = (e) => {
+                    e.stopPropagation();
+                    e.preventDefault();
+                    let pos = ha.be.input.pos(e.clientX, e.clientY, buffer);
+                    let key = this.getMouseKeyId(e);
+                    let input = this.baru(key, e.pointerType);
+                    ha.be.input.event.move(input, buffer, e);
+                    ha.be.input.event.move(this.inputGlobal, buffer, e);
+                    if (e.pointerType == 'touch')
+                        ha.be.input.event.move(ha.be.input.touchGlobal, buffer, e);
+                    if (e.pointerType == 'mouse')
+                        ha.be.input.event.move(ha.be.input.mouseGlobal, buffer, e);
+                    //sprite
+                    ha.sprite2.inputMove(pos, e.pointerId);
+                };
+                buffer.canvas.onpointerout = (e) => {
+                    e.stopPropagation();
+                    e.preventDefault();
+                    let key = ha.be.input.getMouseKeyId(e);
+                    let input = ha.be.input.baru(key, e.pointerType);
+                    ha.be.input.event.up(input);
+                    ha.be.input.event.up(ha.be.input.inputGlobal);
+                    if (e.pointerType == 'touch')
+                        ha.be.input.event.up(ha.be.input.touchGlobal);
+                    if (e.pointerType == 'mouse')
+                        ha.be.input.event.up(ha.be.input.mouseGlobal);
+                };
+                buffer.canvas.onpointercancel = (e) => {
+                    e.stopPropagation();
+                    e.preventDefault();
+                };
+                buffer.canvas.onpointerup = (e) => {
+                    e.stopPropagation();
+                    e.preventDefault();
+                    let key = this.getMouseKeyId(e);
+                    let input = this.baru(key, e.pointerType);
+                    ha.be.input.event.up(input);
+                    ha.be.input.event.up(this.inputGlobal);
+                    if (e.pointerType == 'touch')
+                        ha.be.input.event.up(ha.be.input.touchGlobal);
+                    if (e.pointerType == 'mouse')
+                        ha.be.input.event.up(ha.be.input.mouseGlobal);
+                    //sprite up
+                    //sprite hit
+                    ha.Sprite.daftar.forEach((item) => {
+                        if (e.pointerId == item.inputId) {
+                            if (item.down) {
+                                item.hit++;
+                            }
+                            item.down = false;
+                            item.dragged = false;
                         }
-                        item.down = false;
-                        item.dragged = false;
-                    }
-                });
-            };
-            window.onkeydown = (e) => {
-                // e.stopPropagation();
-                // e.preventDefault();
-                let input = ha.input.baru(e.key + '', EInput.KEYB);
-                ha.input.event.down(input, e.key, EInput.KEYB, ha.Point.create());
-                ha.input.event.down(this.inputGlobal, e.key, EInput.KEYB, ha.Point.create());
-                ha.input.event.down(this._keybGlobal, e.key, EInput.KEYB, ha.Point.create());
-                // console.log('keydown');
-            };
-            window.onkeyup = (e) => {
-                // e.stopPropagation();
-                let input = ha.input.baru(e.key + '', EInput.KEYB);
-                ha.input.event.up(input);
-                ha.input.event.up(this.inputGlobal);
-                ha.input.event.up(this._keybGlobal);
-            };
-        }
-        buatInputDefault() {
-            return {
-                id: 0,
-                isDown: false,
-                isDrag: false,
-                // isHit: false,
-                isTap: false,
-                key: '',
-                timerEnd: 0,
-                timerStart: 0,
-                type: EInput.DEF,
-                x: 0,
-                xDrag: 0,
-                xStart: 0,
-                y: 0,
-                yDrag: 0,
-                yStart: 0,
-                hit: 0
-            };
-        }
-        reset(input) {
-            input.id = 0;
-            input.isDown = false;
-            input.isDrag = false;
-            // input.isHit = false;
-            input.isTap = false;
-            input.key = '';
-            input.timerEnd = 0;
-            input.timerStart = 0;
-            input.type = EInput.DEF;
-            input.x = 0;
-            input.y = 0;
-            input.xDrag = 0;
-            input.yDrag = 0;
-            input.xStart = 0;
-            input.yStart = 0;
-        }
-        flush() {
-            while (this.inputs.length > 0) {
-                this.inputs.pop();
+                    });
+                };
+                window.onkeydown = (e) => {
+                    // e.stopPropagation();
+                    // e.preventDefault();
+                    let input = ha.be.input.baru(e.key + '', EInput.KEYB);
+                    ha.be.input.event.down(input, e.key, EInput.KEYB, ha.be.Point.create());
+                    ha.be.input.event.down(this.inputGlobal, e.key, EInput.KEYB, ha.be.Point.create());
+                    ha.be.input.event.down(this._keybGlobal, e.key, EInput.KEYB, ha.be.Point.create());
+                    // console.log('keydown');
+                };
+                window.onkeyup = (e) => {
+                    // e.stopPropagation();
+                    let input = ha.be.input.baru(e.key + '', EInput.KEYB);
+                    ha.be.input.event.up(input);
+                    ha.be.input.event.up(this.inputGlobal);
+                    ha.be.input.event.up(this._keybGlobal);
+                };
             }
-            this.flushByInput(this._inputGlobal);
-            this.flushByInput(this._mouseGlobal);
-            this.flushByInput(this._touchGlobal);
-            this.flushByInput(this._keybGlobal);
-        }
-        flushByType(type) {
-            this._inputs.forEach((input) => {
-                if (type == input.type) {
-                    this.flushByInput(input);
-                }
-            });
-        }
-        flushByInput(input) {
-            input.isDown = false;
-            input.isDrag = false;
-            // input.isHit = false;
-            input.isTap = false;
-            input.hit = 0;
-        }
-        getInput(key, inputType) {
-            let inputHasil;
-            for (let i = 0; i < this.inputs.length; i++) {
-                let input = this.inputs[i];
-                if (input.type == inputType && input.key == key) {
-                    inputHasil = input;
-                    return inputHasil;
-                }
-            }
-            return inputHasil;
-        }
-        baru(keyId, inputType) {
-            let input = this.getInput(keyId, inputType);
-            if (!input) {
-                input = {
-                    key: keyId,
-                    type: inputType,
+            buatInputDefault() {
+                return {
+                    id: 0,
                     isDown: false,
                     isDrag: false,
+                    // isHit: false,
                     isTap: false,
+                    key: '',
                     timerEnd: 0,
                     timerStart: 0,
+                    type: EInput.DEF,
                     x: 0,
                     xDrag: 0,
                     xStart: 0,
                     y: 0,
                     yDrag: 0,
                     yStart: 0,
-                    id: 0,
                     hit: 0
                 };
-                this.inputs.push(input);
             }
-            return input;
-        }
-        get inputs() {
-            return this._inputs;
-        }
-        get event() {
-            return this._event;
-        }
-        get touchGlobal() {
-            return this._touchGlobal;
-        }
-        get mouseGlobal() {
-            return this._mouseGlobal;
-        }
-        get keybGlobal() {
-            return this._keybGlobal;
-        }
-        get inputGlobal() {
-            return this._inputGlobal;
-        }
-    }
-    class EventHandler {
-        move(input, buffer, e) {
-            let pos = ha.input.pos(e.clientX, e.clientY, buffer);
-            input.x = pos.x;
-            input.y = pos.y;
-            input.id = e.pointerId;
-            if (input.isDown) {
-                input.isDrag = true;
-                input.xDrag = input.x - input.xStart;
-                input.yDrag = input.y - input.yStart;
+            reset(input) {
+                input.id = 0;
+                input.isDown = false;
+                input.isDrag = false;
+                // input.isHit = false;
+                input.isTap = false;
+                input.key = '';
+                input.timerEnd = 0;
+                input.timerStart = 0;
+                input.type = EInput.DEF;
+                input.x = 0;
+                input.y = 0;
+                input.xDrag = 0;
+                input.yDrag = 0;
+                input.xStart = 0;
+                input.yStart = 0;
+            }
+            flush() {
+                while (this.inputs.length > 0) {
+                    this.inputs.pop();
+                }
+                this.flushByInput(this._inputGlobal);
+                this.flushByInput(this._mouseGlobal);
+                this.flushByInput(this._touchGlobal);
+                this.flushByInput(this._keybGlobal);
+            }
+            flushByType(type) {
+                this._inputs.forEach((input) => {
+                    if (type == input.type) {
+                        this.flushByInput(input);
+                    }
+                });
+            }
+            flushByInput(input) {
+                input.isDown = false;
+                input.isDrag = false;
+                // input.isHit = false;
+                input.isTap = false;
+                input.hit = 0;
+            }
+            getInput(key, inputType) {
+                let inputHasil;
+                for (let i = 0; i < this.inputs.length; i++) {
+                    let input = this.inputs[i];
+                    if (input.type == inputType && input.key == key) {
+                        inputHasil = input;
+                        return inputHasil;
+                    }
+                }
+                return inputHasil;
+            }
+            baru(keyId, inputType) {
+                let input = this.getInput(keyId, inputType);
+                if (!input) {
+                    input = {
+                        key: keyId,
+                        type: inputType,
+                        isDown: false,
+                        isDrag: false,
+                        isTap: false,
+                        timerEnd: 0,
+                        timerStart: 0,
+                        x: 0,
+                        xDrag: 0,
+                        xStart: 0,
+                        y: 0,
+                        yDrag: 0,
+                        yStart: 0,
+                        id: 0,
+                        hit: 0
+                    };
+                    this.inputs.push(input);
+                }
+                return input;
+            }
+            get inputs() {
+                return this._inputs;
+            }
+            get event() {
+                return this._event;
+            }
+            get touchGlobal() {
+                return this._touchGlobal;
+            }
+            get mouseGlobal() {
+                return this._mouseGlobal;
+            }
+            get keybGlobal() {
+                return this._keybGlobal;
+            }
+            get inputGlobal() {
+                return this._inputGlobal;
             }
         }
-        down(input, key, type, pos) {
-            //TODO: refaktor 
-            if (!input.isDown) {
-                input.hit++;
+        class EventHandler {
+            move(input, buffer, e) {
+                let pos = ha.be.input.pos(e.clientX, e.clientY, buffer);
+                input.x = pos.x;
+                input.y = pos.y;
+                input.id = e.pointerId;
+                if (input.isDown) {
+                    input.isDrag = true;
+                    input.xDrag = input.x - input.xStart;
+                    input.yDrag = input.y - input.yStart;
+                }
             }
-            input.xStart = pos.x;
-            input.yStart = pos.y;
-            input.x = pos.x;
-            input.y = pos.y;
-            input.isDown = true;
-            input.isTap = false;
-            input.isDrag = false;
-            input.key = key;
-            input.type = type;
-            input.timerStart = Date.now();
+            down(input, key, type, pos) {
+                //TODO: refaktor 
+                if (!input.isDown) {
+                    input.hit++;
+                }
+                input.xStart = pos.x;
+                input.yStart = pos.y;
+                input.x = pos.x;
+                input.y = pos.y;
+                input.isDown = true;
+                input.isTap = false;
+                input.isDrag = false;
+                input.key = key;
+                input.type = type;
+                input.timerStart = Date.now();
+            }
+            up(input) {
+                input.isDown = false;
+                input.isDrag = false;
+                input.timerEnd = Date.now();
+                input.isTap = ((input.timerEnd - input.timerStart) < 500);
+            }
         }
-        up(input) {
-            input.isDown = false;
-            input.isDrag = false;
-            input.timerEnd = Date.now();
-            input.isTap = ((input.timerEnd - input.timerStart) < 500);
-        }
-    }
-    ha.input = new Input();
+        be.input = new Input();
+    })(be = ha.be || (ha.be = {}));
 })(ha || (ha = {}));
 var ha;
 (function (ha) {
-    class Point {
-        static create(x = 0, y = 0) {
-            return {
-                x: x,
-                y: y
-            };
+    var be;
+    (function (be) {
+        class Point {
+            static create(x = 0, y = 0) {
+                return {
+                    x: x,
+                    y: y
+                };
+            }
+            static copy(p1, p2) {
+                p2.x = p1.x;
+                p2.y = p1.y;
+            }
+            static clone(p) {
+                let h = Point.create(p.x, p.y);
+                return h;
+            }
+            static sama(p1, p2) {
+                if (false == ha.Transform.equal(p1.x, p2.x))
+                    return false;
+                if (false == ha.Transform.equal(p1.y, p2.y))
+                    return false;
+                return true;
+            }
+            static putarPoros(p, xc = 0, yc = 0, deg = 0) {
+                ha.Transform.rotateRel(p.x, p.y, xc, yc, deg);
+                p.x = ha.Transform.lastX;
+                p.y = ha.Transform.lastY;
+            }
+            static posDist(p, xt, yt, jrk) {
+                let jrkA;
+                let i;
+                let j;
+                let rasio;
+                let hasil = Point.create();
+                //jarak sekarang
+                jrkA = ha.Transform.jarak(p.x, p.y, xt, yt);
+                i = xt - p.x;
+                j = yt - p.y;
+                rasio = jrkA / jrk;
+                hasil.x = i * rasio;
+                hasil.y = j * rasio;
+                hasil.x = xt - hasil.x;
+                hasil.y = yt - hasil.y;
+                return hasil;
+            }
+            static posPolar(jarak, sudut, xt, yt) {
+                let hasil = Point.create();
+                hasil.x = jarak * Math.cos(sudut * ha.Transform.DEG2RAD);
+                hasil.y = jarak * Math.sin(sudut * ha.Transform.DEG2RAD);
+                hasil.x += xt;
+                hasil.y += yt;
+                return hasil;
+            }
         }
-        static copy(p1, p2) {
-            p2.x = p1.x;
-            p2.y = p1.y;
-        }
-        static clone(p) {
-            let h = ha.Point.create(p.x, p.y);
-            return h;
-        }
-        static sama(p1, p2) {
-            if (false == ha.Transform.equal(p1.x, p2.x))
-                return false;
-            if (false == ha.Transform.equal(p1.y, p2.y))
-                return false;
-            return true;
-        }
-        static putarPoros(p, xc = 0, yc = 0, deg = 0) {
-            ha.Transform.rotateRel(p.x, p.y, xc, yc, deg);
-            p.x = ha.Transform.lastX;
-            p.y = ha.Transform.lastY;
-        }
-        static posDist(p, xt, yt, jrk) {
-            let jrkA;
-            let i;
-            let j;
-            let rasio;
-            let hasil = Point.create();
-            //jarak sekarang
-            jrkA = ha.Transform.jarak(p.x, p.y, xt, yt);
-            i = xt - p.x;
-            j = yt - p.y;
-            rasio = jrkA / jrk;
-            hasil.x = i * rasio;
-            hasil.y = j * rasio;
-            hasil.x = xt - hasil.x;
-            hasil.y = yt - hasil.y;
-            return hasil;
-        }
-        static posPolar(jarak, sudut, xt, yt) {
-            let hasil = ha.Point.create();
-            hasil.x = jarak * Math.cos(sudut * ha.Transform.DEG2RAD);
-            hasil.y = jarak * Math.sin(sudut * ha.Transform.DEG2RAD);
-            hasil.x += xt;
-            hasil.y += yt;
-            return hasil;
-        }
-    }
-    ha.Point = Point;
+        be.Point = Point;
+    })(be = ha.be || (ha.be = {}));
 })(ha || (ha = {}));
 var ha;
 (function (ha) {
-    class Rect {
-        static create(x1 = 0, y1 = 0, x2 = 0, y2 = 0) {
-            let r = {};
-            r.vs = [];
-            r.vs.push(ha.Point.create(x1, y1));
-            r.vs.push(ha.Point.create(x2, y1));
-            r.vs.push(ha.Point.create(x2, y2));
-            r.vs.push(ha.Point.create(x1, y2));
-            r.segs = [];
-            r.segs.push(ha.Segment.create(r.vs[0], r.vs[1]));
-            r.segs.push(ha.Segment.create(r.vs[1], r.vs[2]));
-            r.segs.push(ha.Segment.create(r.vs[2], r.vs[3]));
-            r.segs.push(ha.Segment.create(r.vs[3], r.vs[0]));
-            return r;
-        }
-        static copy(r) {
-            // console.log('copy:');
-            // console.log(r.vs);
-            // let hasil: IRect = ha.Rect.create(r.vs[0].x, r.vs[0].y, r.vs[2].x, r.vs[2].y);
-            let hasil = ha.Rect.create();
-            ha.Rect.copyInfo(r, hasil);
-            // console.log(hasil.vs);
-            return hasil;
-        }
-        static copyInfo(r1, r2) {
-            for (let i = 0; i < r1.segs.length; i++) {
-                ha.Segment.copy(r1.segs[i], r2.segs[i]);
+    var be;
+    (function (be) {
+        class Rect {
+            static create(x1 = 0, y1 = 0, x2 = 0, y2 = 0) {
+                let r = {};
+                r.vs = [];
+                r.vs.push(be.Point.create(x1, y1));
+                r.vs.push(be.Point.create(x2, y1));
+                r.vs.push(be.Point.create(x2, y2));
+                r.vs.push(be.Point.create(x1, y2));
+                r.segs = [];
+                r.segs.push(be.Segment.create(r.vs[0], r.vs[1]));
+                r.segs.push(be.Segment.create(r.vs[1], r.vs[2]));
+                r.segs.push(be.Segment.create(r.vs[2], r.vs[3]));
+                r.segs.push(be.Segment.create(r.vs[3], r.vs[0]));
+                return r;
+            }
+            static copy(r) {
+                // console.log('copy:');
+                // console.log(r.vs);
+                // let hasil: IRect = Rect.create(r.vs[0].x, r.vs[0].y, r.vs[2].x, r.vs[2].y);
+                let hasil = Rect.create();
+                Rect.copyInfo(r, hasil);
+                // console.log(hasil.vs);
+                return hasil;
+            }
+            static copyInfo(r1, r2) {
+                for (let i = 0; i < r1.segs.length; i++) {
+                    be.Segment.copy(r1.segs[i], r2.segs[i]);
+                }
+            }
+            static collideBound(r1, r2) {
+                // console.debug('collide bound');
+                if (Rect.maxX(r1) < Rect.minX(r2)) {
+                    // console.debug('maxX gagal');
+                    return false;
+                }
+                // console.log('maxx ' + Rect.maxX(r1));
+                // console.log('minx ' + Rect.minX(r2));
+                if (Rect.minX(r1) > Rect.maxX(r2)) {
+                    // console.debug('min x gagal');
+                    return false;
+                }
+                if (Rect.maxY(r1) < Rect.minY(r2)) {
+                    // console.debug('max y gagal');
+                    return false;
+                }
+                if (Rect.minY(r1) > Rect.maxY(r2)) {
+                    // console.debug('min y gagal');
+                    return false;
+                }
+                return true;
+            }
+            static collide(r1, r2) {
+                let bound = Rect.collideBound(r1, r2);
+                if (!bound)
+                    return false;
+                for (let i = 0; i < r1.segs.length; i++) {
+                    for (let j = 0; j < r2.segs.length; j++) {
+                        if (be.Segment.collide(r1.segs[i], r2.segs[j])) {
+                            return true;
+                        }
+                    }
+                }
+                return false;
+            }
+            static collideDotBound(r, d) {
+                if (d.x < Rect.minX(r)) {
+                    // console.log('minx failed');
+                    return false;
+                }
+                if (d.x > Rect.maxX(r)) {
+                    // console.log('maxX failed');
+                    // console.log(d);
+                    // console.log(Rect.maxX(r));
+                    // console.log(r.vs);
+                    return false;
+                }
+                if (d.y < Rect.minY(r)) {
+                    // console.log('minY failed');
+                    return false;
+                }
+                if (d.y > Rect.maxY(r)) {
+                    // console.log('maxY failed');
+                    return false;
+                }
+                return true;
+            }
+            static collideDot(r, x, y) {
+                let r2 = Rect.copy(r);
+                let p = be.Point.create(x, y);
+                let d = be.Segment.deg(r2.segs[0]);
+                let pRot = r2.vs[0];
+                if (!Rect.collideDotBound(r, p)) {
+                    return false;
+                }
+                Rect.rotate(r2, -d, pRot.x, pRot.y, false);
+                be.Point.putarPoros(p, pRot.x, pRot.y, -d);
+                if (!Rect.collideDotBound(r2, p)) {
+                    // console.log('collide bound 2 failed');
+                    // console.log('deg ' + d);
+                    // console.log('rect');
+                    // console.log(r2);
+                    return false;
+                }
+                return true;
+            }
+            static minX(r) {
+                let x = r.vs[0].x;
+                r.vs.forEach((item) => {
+                    if (item.x < x)
+                        x = item.x;
+                });
+                return x;
+            }
+            static maxX(r) {
+                let x = r.vs[0].x;
+                r.vs.forEach((item) => {
+                    if (item.x > x)
+                        x = item.x;
+                });
+                return x;
+            }
+            static minY(r) {
+                let y = r.vs[0].y;
+                r.vs.forEach((item) => {
+                    if (item.y < y)
+                        y = item.y;
+                });
+                return y;
+            }
+            static maxY(r) {
+                let y = r.vs[0].y;
+                r.vs.forEach((item) => {
+                    if (item.y > y)
+                        y = item.y;
+                });
+                return y;
+            }
+            // static scale(r: IRect): void {
+            // 	r;
+            // }
+            static translate(rect, x, y) {
+                rect.vs.forEach((v) => {
+                    v.x += x;
+                    v.y += y;
+                });
+            }
+            static rotate(r, deg, xc = 0, yc, copy = true) {
+                let r2;
+                if (copy) {
+                    r2 = Rect.copy(r);
+                }
+                else {
+                    r2 = r;
+                }
+                r2.vs.forEach((p) => {
+                    be.Point.putarPoros(p, xc, yc, deg);
+                });
+                return r2;
             }
         }
-        static collideBound(r1, r2) {
-            // console.debug('collide bound');
-            if (ha.Rect.maxX(r1) < ha.Rect.minX(r2)) {
-                // console.debug('maxX gagal');
-                return false;
+        be.Rect = Rect;
+        // export var rect: Rect = new Rect();
+    })(be = ha.be || (ha.be = {}));
+})(ha || (ha = {}));
+var ha;
+(function (ha) {
+    var be;
+    (function (be) {
+        class Segment {
+            static create(v1 = { x: 0, y: 0 }, v2 = { x: 0, y: 0 }) {
+                return {
+                    v1: v1,
+                    v2: v2
+                };
             }
-            // console.log('maxx ' + ha.Rect.maxX(r1));
-            // console.log('minx ' + ha.Rect.minX(r2));
-            if (ha.Rect.minX(r1) > ha.Rect.maxX(r2)) {
-                // console.debug('min x gagal');
-                return false;
+            static boundCollide(seg1, seg2) {
+                if (Segment.maxX(seg1) < Segment.minX(seg2))
+                    return false;
+                if (Segment.minX(seg1) > Segment.maxX(seg2))
+                    return false;
+                if (Segment.maxY(seg1) < Segment.minY(seg2))
+                    return false;
+                if (Segment.minY(seg1) > Segment.maxY(seg2))
+                    return false;
+                return true;
             }
-            if (ha.Rect.maxY(r1) < ha.Rect.minY(r2)) {
-                // console.debug('max y gagal');
-                return false;
+            static collide(seg1, seg2) {
+                let bound = Segment.boundCollide(seg1, seg2);
+                if (!bound)
+                    return false;
+                // let deg: number = Segment.deg(seg2);
+                let seg2Copy = Segment.clone(seg2);
+                let seg1Copy = Segment.clone(seg1);
+                let deg = Segment.deg(seg2);
+                Segment.rotate(seg2Copy, -deg, seg2.v1.x, seg2.v1.y);
+                Segment.rotate(seg1Copy, -deg, seg2.v1.x, seg2.v1.y);
+                if (!Segment.boundCollide(seg1Copy, seg2Copy))
+                    return false;
+                Segment.translate(seg1Copy, -seg2.v1.x, -seg2.v1.y);
+                Segment.translate(seg2Copy, -seg2.v1.x, -seg2.v1.y);
+                if (!Segment.crossHor(seg1Copy)) {
+                    return false;
+                }
+                let idx = Segment.xHorIdx(seg1Copy);
+                let x = Segment.getXAtIdx(seg1Copy, idx);
+                if (x > Segment.maxX(seg2Copy))
+                    return false;
+                if (x < Segment.minX(seg2Copy))
+                    return false;
+                return true;
             }
-            if (ha.Rect.minY(r1) > ha.Rect.maxY(r2)) {
-                // console.debug('min y gagal');
-                return false;
+            static copy(seg1, seg2) {
+                be.Point.copy(seg1.v1, seg2.v2);
+                be.Point.copy(seg1.v2, seg2.v2);
             }
-            return true;
-        }
-        static collide(r1, r2) {
-            let bound = ha.Rect.collideBound(r1, r2);
-            if (!bound)
-                return false;
-            for (let i = 0; i < r1.segs.length; i++) {
-                for (let j = 0; j < r2.segs.length; j++) {
-                    if (ha.Segment.collide(r1.segs[i], r2.segs[j])) {
+            static clone(seg) {
+                return {
+                    v1: be.Point.clone(seg.v1),
+                    v2: be.Point.clone(seg.v2)
+                };
+            }
+            static crossHor(seg) {
+                if (Segment.maxY(seg) > 0) {
+                    if (Segment.minY(seg) < 0) {
                         return true;
                     }
                 }
-            }
-            return false;
-        }
-        static collideDotBound(r, d) {
-            if (d.x < ha.Rect.minX(r)) {
-                // console.log('minx failed');
                 return false;
             }
-            if (d.x > ha.Rect.maxX(r)) {
-                // console.log('maxX failed');
-                // console.log(d);
-                // console.log(ha.Rect.maxX(r));
-                // console.log(r.vs);
-                return false;
+            static deg(line) {
+                let j = line.v2.y - line.v1.y;
+                let i = line.v2.x - line.v1.x;
+                return ha.Transform.deg(i, j);
             }
-            if (d.y < ha.Rect.minY(r)) {
-                // console.log('minY failed');
-                return false;
+            static getXAtIdx(seg, idx) {
+                return seg.v1.x + (idx * Segment.vecI(seg));
             }
-            if (d.y > ha.Rect.maxY(r)) {
-                // console.log('maxY failed');
-                return false;
+            static getYAtIdx(seg, idx) {
+                return seg.v1.y + (idx * Segment.vecJ(seg));
             }
-            return true;
-        }
-        static collideDot(r, x, y) {
-            let r2 = Rect.copy(r);
-            let p = ha.Point.create(x, y);
-            let d = ha.Segment.deg(r2.segs[0]);
-            let pRot = r2.vs[0];
-            if (!ha.Rect.collideDotBound(r, p)) {
-                return false;
+            static vecI(seg) {
+                return seg.v2.x - seg.v1.x;
             }
-            Rect.rotate(r2, -d, pRot.x, pRot.y, false);
-            ha.Point.putarPoros(p, pRot.x, pRot.y, -d);
-            if (!ha.Rect.collideDotBound(r2, p)) {
-                // console.log('collide bound 2 failed');
-                // console.log('deg ' + d);
-                // console.log('rect');
-                // console.log(r2);
-                return false;
+            static vecJ(seg) {
+                return seg.v2.y - seg.v1.y;
             }
-            return true;
-        }
-        static minX(r) {
-            let x = r.vs[0].x;
-            r.vs.forEach((item) => {
-                if (item.x < x)
-                    x = item.x;
-            });
-            return x;
-        }
-        static maxX(r) {
-            let x = r.vs[0].x;
-            r.vs.forEach((item) => {
-                if (item.x > x)
-                    x = item.x;
-            });
-            return x;
-        }
-        static minY(r) {
-            let y = r.vs[0].y;
-            r.vs.forEach((item) => {
-                if (item.y < y)
-                    y = item.y;
-            });
-            return y;
-        }
-        static maxY(r) {
-            let y = r.vs[0].y;
-            r.vs.forEach((item) => {
-                if (item.y > y)
-                    y = item.y;
-            });
-            return y;
-        }
-        // static scale(r: IRect): void {
-        // 	r;
-        // }
-        static translate(rect, x, y) {
-            rect.vs.forEach((v) => {
-                v.x += x;
-                v.y += y;
-            });
-        }
-        static rotate(r, deg, xc = 0, yc, copy = true) {
-            let r2;
-            if (copy) {
-                r2 = Rect.copy(r);
+            static rotate(seg, deg = 0, xc = 0, yc = 0) {
+                be.Point.putarPoros(seg.v1, xc, yc, deg);
+                be.Point.putarPoros(seg.v2, xc, yc, deg);
             }
-            else {
-                r2 = r;
+            static minX(seg) {
+                return Math.min(seg.v1.x, seg.v2.x);
             }
-            r2.vs.forEach((p) => {
-                ha.Point.putarPoros(p, xc, yc, deg);
-            });
-            return r2;
-        }
-    }
-    ha.Rect = Rect;
-    // export var rect: Rect = new Rect();
-})(ha || (ha = {}));
-var ha;
-(function (ha) {
-    class Segment {
-        static create(v1 = { x: 0, y: 0 }, v2 = { x: 0, y: 0 }) {
-            return {
-                v1: v1,
-                v2: v2
-            };
-        }
-        static boundCollide(seg1, seg2) {
-            if (ha.Segment.maxX(seg1) < ha.Segment.minX(seg2))
-                return false;
-            if (ha.Segment.minX(seg1) > ha.Segment.maxX(seg2))
-                return false;
-            if (ha.Segment.maxY(seg1) < ha.Segment.minY(seg2))
-                return false;
-            if (ha.Segment.minY(seg1) > ha.Segment.maxY(seg2))
-                return false;
-            return true;
-        }
-        static collide(seg1, seg2) {
-            let bound = ha.Segment.boundCollide(seg1, seg2);
-            if (!bound)
-                return false;
-            // let deg: number = ha.Segment.deg(seg2);
-            let seg2Copy = ha.Segment.clone(seg2);
-            let seg1Copy = ha.Segment.clone(seg1);
-            let deg = ha.Segment.deg(seg2);
-            ha.Segment.rotate(seg2Copy, -deg, seg2.v1.x, seg2.v1.y);
-            ha.Segment.rotate(seg1Copy, -deg, seg2.v1.x, seg2.v1.y);
-            if (!ha.Segment.boundCollide(seg1Copy, seg2Copy))
-                return false;
-            ha.Segment.translate(seg1Copy, -seg2.v1.x, -seg2.v1.y);
-            ha.Segment.translate(seg2Copy, -seg2.v1.x, -seg2.v1.y);
-            if (!ha.Segment.crossHor(seg1Copy)) {
-                return false;
+            static maxX(seg) {
+                return Math.max(seg.v1.x, seg.v2.x);
             }
-            let idx = ha.Segment.xHorIdx(seg1Copy);
-            let x = ha.Segment.getXAtIdx(seg1Copy, idx);
-            if (x > ha.Segment.maxX(seg2Copy))
-                return false;
-            if (x < ha.Segment.minX(seg2Copy))
-                return false;
-            return true;
-        }
-        static copy(seg1, seg2) {
-            ha.Point.copy(seg1.v1, seg2.v2);
-            ha.Point.copy(seg1.v2, seg2.v2);
-        }
-        static clone(seg) {
-            return {
-                v1: ha.Point.clone(seg.v1),
-                v2: ha.Point.clone(seg.v2)
-            };
-        }
-        static crossHor(seg) {
-            if (ha.Segment.maxY(seg) > 0) {
-                if (ha.Segment.minY(seg) < 0) {
-                    return true;
-                }
+            static minY(seg) {
+                return Math.min(seg.v1.y, seg.v2.y);
             }
-            return false;
+            static maxY(seg) {
+                return Math.max(seg.v1.y, seg.v2.y);
+            }
+            static translate(seg, x = 0, y = 0) {
+                seg.v1.x += x;
+                seg.v1.y += y;
+                seg.v2.x += x;
+                seg.v2.y += y;
+            }
+            //tested
+            static xHorIdx(seg) {
+                if (!Segment.crossHor(seg))
+                    return NaN;
+                let idx = 0;
+                idx = (0 - seg.v1.y) / (seg.v2.y - seg.v1.y);
+                return idx;
+            }
         }
-        static deg(line) {
-            let j = line.v2.y - line.v1.y;
-            let i = line.v2.x - line.v1.x;
-            return ha.Transform.deg(i, j);
-        }
-        static getXAtIdx(seg, idx) {
-            return seg.v1.x + (idx * ha.Segment.vecI(seg));
-        }
-        static getYAtIdx(seg, idx) {
-            return seg.v1.y + (idx * ha.Segment.vecJ(seg));
-        }
-        static vecI(seg) {
-            return seg.v2.x - seg.v1.x;
-        }
-        static vecJ(seg) {
-            return seg.v2.y - seg.v1.y;
-        }
-        static rotate(seg, deg = 0, xc = 0, yc = 0) {
-            ha.Point.putarPoros(seg.v1, xc, yc, deg);
-            ha.Point.putarPoros(seg.v2, xc, yc, deg);
-        }
-        static minX(seg) {
-            return Math.min(seg.v1.x, seg.v2.x);
-        }
-        static maxX(seg) {
-            return Math.max(seg.v1.x, seg.v2.x);
-        }
-        static minY(seg) {
-            return Math.min(seg.v1.y, seg.v2.y);
-        }
-        static maxY(seg) {
-            return Math.max(seg.v1.y, seg.v2.y);
-        }
-        static translate(seg, x = 0, y = 0) {
-            seg.v1.x += x;
-            seg.v1.y += y;
-            seg.v2.x += x;
-            seg.v2.y += y;
-        }
-        //tested
-        static xHorIdx(seg) {
-            if (!ha.Segment.crossHor(seg))
-                return NaN;
-            let idx = 0;
-            idx = (0 - seg.v1.y) / (seg.v2.y - seg.v1.y);
-            return idx;
-        }
-    }
-    ha.Segment = Segment;
+        be.Segment = Segment;
+    })(be = ha.be || (ha.be = {}));
 })(ha || (ha = {}));
 /**
  * BLIJS
  */
 var ha;
 (function (ha) {
-    class Blijs {
-        static get inputStatus() {
-            return Blijs._inputStatus;
-        }
-        static set inputStatus(value) {
-            Blijs._inputStatus = value;
-        }
-        /**
-         * Setup Blitz Edu
-         * @param panjang (angka) panjang dari kanvas
-         * @param lebar (angka) lebar dari kanvs
-         * @param canvas (HTMLCanvasElement) referensi ke kanvas
-         * @param skalaOtomatis (boolean) apakah akan men-skala kanvas mengikuti ukuran layar
-         * @returns
-         */
-        static Grafis(panjang = 320, lebar = 240, canvas = null, skalaOtomatis = true, input = true) {
-            //coba cari canvas
-            if (!canvas) {
-                canvas = document.body.querySelector('canvas');
+    var be;
+    (function (be) {
+        class Blijs {
+            static get inputStatus() {
+                return Blijs._inputStatus;
             }
-            if (!canvas) {
-                document.body.appendChild(document.createElement('canvas'));
+            static set inputStatus(value) {
+                Blijs._inputStatus = value;
             }
-            ha.Blijs.skalaOtomatis = skalaOtomatis;
-            ha.Blijs._inputStatus = input;
-            //sudah diinisialisasi atau belum
-            if (ha.Main.canvasAktif) {
-                console.warn('init lebih dari sekali');
-                ha.Main.Grafis(panjang, lebar, ha.Blijs.skalaOtomatis);
-            }
-            else {
-                console.log('inisialisasi');
-                ha.Main.init(canvas, canvas);
-                ha.Main.Grafis(panjang, lebar, ha.Blijs.skalaOtomatis);
-                if (input) {
-                    ha.input.init(ha.Main.canvasAktif);
+            /**
+             * Setup Blitz Edu
+             * @param panjang (angka) panjang dari kanvas
+             * @param lebar (angka) lebar dari kanvs
+             * @param canvas (HTMLCanvasElement) referensi ke kanvas
+             * @param skalaOtomatis (boolean) apakah akan men-skala kanvas mengikuti ukuran layar
+             * @returns
+             */
+            static Grafis(panjang = 320, lebar = 240, canvas = null, skalaOtomatis = true, input = true) {
+                //coba cari canvas
+                if (!canvas) {
+                    canvas = document.body.querySelector('canvas');
                 }
-                if (ha.Blijs.skalaOtomatis) {
-                    window.onresize = () => {
-                        if (ha.Blijs.skalaOtomatis) {
-                            ha.Blijs.windowResize();
-                        }
-                    };
+                if (!canvas) {
+                    document.body.appendChild(document.createElement('canvas'));
                 }
-                if (ha.Blijs.skalaOtomatis) {
-                    ha.Blijs.windowResize();
+                ha.be.Blijs.skalaOtomatis = skalaOtomatis;
+                ha.be.Blijs._inputStatus = input;
+                //sudah diinisialisasi atau belum
+                if (ha.be.Main.canvasAktif) {
+                    console.warn('init lebih dari sekali');
+                    ha.be.Main.Grafis(panjang, lebar, ha.be.Blijs.skalaOtomatis);
                 }
-                setTimeout(() => {
-                    if (ha.Blijs.skalaOtomatis) {
-                        ha.Blijs.windowResize();
+                else {
+                    console.log('inisialisasi');
+                    ha.be.Main.init(canvas, canvas);
+                    ha.be.Main.Grafis(panjang, lebar, ha.be.Blijs.skalaOtomatis);
+                    if (input) {
+                        ha.be.input.init(ha.be.Main.canvasAktif);
                     }
-                }, 100);
+                    if (ha.be.Blijs.skalaOtomatis) {
+                        window.onresize = () => {
+                            if (ha.be.Blijs.skalaOtomatis) {
+                                ha.be.Blijs.windowResize();
+                            }
+                        };
+                    }
+                    if (ha.be.Blijs.skalaOtomatis) {
+                        ha.be.Blijs.windowResize();
+                    }
+                    setTimeout(() => {
+                        if (ha.be.Blijs.skalaOtomatis) {
+                            ha.be.Blijs.windowResize();
+                        }
+                    }, 100);
+                    setTimeout(() => {
+                        ha.be.Blijs.repeat();
+                    }, 0);
+                    //font default
+                    ha.be.Teks.font("12px sans-serif");
+                    ha.be.Teks.rata("center");
+                    ha.be.Main.Warna(255, 255, 255, 100);
+                    ha.be.Main.canvasAktif.ctx.strokeStyle = "#ffffff";
+                }
+            }
+            static loop() {
+                let _window = window;
+                if (typeof (_window.Loop) == 'function') {
+                    //TODO: pre loop
+                    _window.Loop();
+                    //TODO: post loop
+                }
+                else if (typeof (_window.Update) == 'function') {
+                    //TODO: pre loop
+                    _window.Update();
+                    //TODO: post loop
+                }
+            }
+            static repeat() {
+                //check semua image sudah diload
+                ha.be.Blijs.loop();
                 setTimeout(() => {
-                    ha.Blijs.repeat();
-                }, 0);
-                //font default
-                ha.Teks.font("12px sans-serif");
-                ha.Teks.rata("center");
-                ha.Main.Warna(255, 255, 255, 100);
-                ha.Main.canvasAktif.ctx.strokeStyle = "#ffffff";
+                    // requestAnimationFrame(() => {
+                    // 	ha.be.Blijs.repeat();
+                    // });
+                    requestAnimationFrame(ha.be.Blijs.repeat);
+                }, ha.be.Main.fps);
+            }
+            static windowResize() {
+                // console.debug('window on resize');
+                let canvas = ha.be.Main.canvasAktif.canvas;
+                let cp = ha.be.Main.canvasAktif.canvas.width;
+                let cl = ha.be.Main.canvasAktif.canvas.height;
+                let wp = window.innerWidth;
+                let wl = window.innerHeight;
+                let ratio = Math.min((wp / cp), (wl / cl));
+                let cp2 = Math.floor(cp * ratio);
+                let cl2 = Math.floor(cl * ratio);
+                ha.be.Main.canvasAktif.ratioX = ratio;
+                ha.be.Main.canvasAktif.ratioY = ratio;
+                canvas.style.position = 'fixed';
+                canvas.style.zIndex = '9999';
+                canvas.style.width = cp2 + 'px';
+                canvas.style.height = cl2 + 'px';
+                canvas.style.top = ((wl - cl2) / 2) + 'px';
+                canvas.style.left = ((wp - cp2) / 2) + 'px';
+                // console.debug('canvas w: ' + canvas.style.width + '/ratio: ' + ratio);
+            }
+            static get skalaOtomatis() {
+                return Blijs._skalaOtomatis;
+            }
+            static set skalaOtomatis(value) {
+                Blijs._skalaOtomatis = value;
             }
         }
-        static loop() {
-            let _window = window;
-            if (typeof (_window.Loop) == 'function') {
-                //TODO: pre loop
-                _window.Loop();
-                //TODO: post loop
-            }
-            else if (typeof (_window.Update) == 'function') {
-                //TODO: pre loop
-                _window.Update();
-                //TODO: post loop
-            }
-        }
-        static repeat() {
-            //check semua image sudah diload
-            ha.Blijs.loop();
-            setTimeout(() => {
-                // requestAnimationFrame(() => {
-                // 	ha.Blijs.repeat();
-                // });
-                requestAnimationFrame(ha.Blijs.repeat);
-            }, ha.Main.fps);
-        }
-        static windowResize() {
-            // console.debug('window on resize');
-            let canvas = ha.Main.canvasAktif.canvas;
-            let cp = ha.Main.canvasAktif.canvas.width;
-            let cl = ha.Main.canvasAktif.canvas.height;
-            let wp = window.innerWidth;
-            let wl = window.innerHeight;
-            let ratio = Math.min((wp / cp), (wl / cl));
-            let cp2 = Math.floor(cp * ratio);
-            let cl2 = Math.floor(cl * ratio);
-            ha.Main.canvasAktif.ratioX = ratio;
-            ha.Main.canvasAktif.ratioY = ratio;
-            canvas.style.position = 'fixed';
-            canvas.style.zIndex = '9999';
-            canvas.style.width = cp2 + 'px';
-            canvas.style.height = cl2 + 'px';
-            canvas.style.top = ((wl - cl2) / 2) + 'px';
-            canvas.style.left = ((wp - cp2) / 2) + 'px';
-            // console.debug('canvas w: ' + canvas.style.width + '/ratio: ' + ratio);
-        }
-        static get skalaOtomatis() {
-            return Blijs._skalaOtomatis;
-        }
-        static set skalaOtomatis(value) {
-            Blijs._skalaOtomatis = value;
-        }
-    }
-    Blijs._skalaOtomatis = true;
-    Blijs._inputStatus = true;
-    ha.Blijs = Blijs;
+        Blijs._skalaOtomatis = true;
+        Blijs._inputStatus = true;
+        be.Blijs = Blijs;
+    })(be = ha.be || (ha.be = {}));
 })(ha || (ha = {}));
 // setTimeout(() => {
-// 	ha.Blijs.init()
+// 	ha.be.Blijs.init()
 // }, 0);
 var ha;
 (function (ha) {
@@ -1856,40 +1877,46 @@ var ha;
 })(ha || (ha = {}));
 var ha;
 (function (ha) {
-    class Teks {
-        static get ctx() {
-            return ha.Main.canvasAktif.ctx;
-        }
-        static font(font = '30px Arial') {
-            ha.Teks.ctx.font = font;
-        }
-        static rata(rata = "left") {
-            ha.Teks.ctx.textAlign = rata;
-        }
-        static tulis(teks, x, y, warna = true, garis = false) {
-            if (warna) {
-                ha.Teks.ctx.fillText(teks, x, y);
+    var be;
+    (function (be) {
+        class Teks {
+            static get ctx() {
+                return be.Main.canvasAktif.ctx;
             }
-            if (garis) {
-                ha.Teks.ctx.strokeText(teks, x, y);
+            static font(font = '30px Arial') {
+                Teks.ctx.font = font;
+            }
+            static rata(rata = "left") {
+                Teks.ctx.textAlign = rata;
+            }
+            static tulis(teks, x, y, warna = true, garis = false) {
+                if (warna) {
+                    Teks.ctx.fillText(teks, x, y);
+                }
+                if (garis) {
+                    Teks.ctx.strokeText(teks, x, y);
+                }
             }
         }
-    }
-    ha.Teks = Teks;
+        be.Teks = Teks;
+    })(be = ha.be || (ha.be = {}));
 })(ha || (ha = {}));
 var ha;
 (function (ha) {
-    class Route {
-        static ukuran(obj, w = 32, h = 32) {
-            if ("teks" == obj) {
-                //TODO: ukuran teks
-            }
-            else {
-                ha.Sprite.ukuran(obj, w, h);
+    var be;
+    (function (be) {
+        class Route {
+            static ukuran(obj, w = 32, h = 32) {
+                if ("teks" == obj) {
+                    //TODO: ukuran teks
+                }
+                else {
+                    ha.Sprite.ukuran(obj, w, h);
+                }
             }
         }
-    }
-    ha.Route = Route;
+        be.Route = Route;
+    })(be = ha.be || (ha.be = {}));
 })(ha || (ha = {}));
 ///<reference path="../ha/Main.ts"/>
 ///<reference path="../ha/Image.ts"/>
@@ -1907,31 +1934,31 @@ var ha;
  * shortcut buat perintah input
  * BLITZ-INPUT.TS
  */
-const InputHit = ha.input.InputHit;
-const InputX = ha.input.InputX;
-const InputY = ha.input.InputY;
-const GeserX = ha.input.GeserX;
-const GeserY = ha.input.GeserY;
-const FlushInput = ha.input.FlushInput;
-const Pencet = ha.input.Pencet;
-const Geser = ha.input.Geser;
-const InputType = ha.input.InputType;
+const InputHit = ha.be.input.InputHit;
+const InputX = ha.be.input.InputX;
+const InputY = ha.be.input.InputY;
+const GeserX = ha.be.input.GeserX;
+const GeserY = ha.be.input.GeserY;
+const FlushInput = ha.be.input.FlushInput;
+const Pencet = ha.be.input.Pencet;
+const Geser = ha.be.input.Geser;
+const InputType = ha.be.input.InputType;
 /**
  * 	KEYBOARD (di tunda/dihapus)
  */
 const FlushKeys = () => {
-    ha.input.flushByInput(ha.input.keybGlobal);
-    ha.input.flushByType('keyb');
+    ha.be.input.flushByInput(ha.be.input.keybGlobal);
+    ha.be.input.flushByType('keyb');
 };
 const GetKey = () => {
-    return ha.input.keybGlobal.key;
+    return ha.be.input.keybGlobal.key;
 };
 const KeybDiPencet = (key = '') => {
     if ("" == key) {
-        return ha.input.keybGlobal.isDown;
+        return ha.be.input.keybGlobal.isDown;
     }
     else {
-        let input = ha.input.getInput(key, 'keyb');
+        let input = ha.be.input.getInput(key, 'keyb');
         if (input) {
             return input.isDown;
         }
@@ -1940,12 +1967,12 @@ const KeybDiPencet = (key = '') => {
 };
 const KeybHit = (key = '') => {
     if ("" == key) {
-        let n = ha.input.keybGlobal.hit;
-        ha.input.keybGlobal.hit = 0;
+        let n = ha.be.input.keybGlobal.hit;
+        ha.be.input.keybGlobal.hit = 0;
         return (n);
     }
     else {
-        let input = ha.input.getInput(key, 'keyb');
+        let input = ha.be.input.getInput(key, 'keyb');
         let n = 0;
         if (input) {
             n = input.hit;
@@ -2012,20 +2039,20 @@ const KeybHit = (key = '') => {
 /*
  * 	GRAPHICS
  */
-const Bersih = ha.Main.Bersih;
-const Grafis = ha.Blijs.Grafis;
-const Warna = ha.Main.Warna;
-const Merah = ha.Main.Merah;
-const Hijau = ha.Main.Hijau;
-const Biru = ha.Main.Biru;
-const Transparan = ha.Main.Transparan;
-const AmbilPiksel = ha.Image.AmbilPiksel;
-const SetPiksel = ha.Image.SetPiksel;
-const Kontek = ha.Main.Kontek;
-const Kanvas = ha.Main.Kanvas;
-const Garis = ha.Main.Garis;
-const Kotak = ha.Main.Kotak;
-const Oval = ha.Main.Oval;
+const Bersih = ha.be.Main.Bersih;
+const Grafis = ha.be.Blijs.Grafis;
+const Warna = ha.be.Main.Warna;
+const Merah = ha.be.Main.Merah;
+const Hijau = ha.be.Main.Hijau;
+const Biru = ha.be.Main.Biru;
+const Transparan = ha.be.Main.Transparan;
+const AmbilPiksel = ha.be.Image.AmbilPiksel;
+const SetPiksel = ha.be.Image.SetPiksel;
+const Kontek = ha.be.Main.Kontek;
+const Kanvas = ha.be.Main.Kanvas;
+const Garis = ha.be.Main.Garis;
+const Kotak = ha.be.Main.Kotak;
+const Oval = ha.be.Main.Oval;
 ///<reference path="../ha/Main.ts"/>
 ///<reference path="../ha/Image.ts"/>
 const Sudut = ha.Transform.deg;
@@ -2056,43 +2083,46 @@ const Ubin = ha.Sprite.ubin;
 ///<reference path="../ha/Main.ts"/>
 ///<reference path="../ha/Image.ts"/>
 ///<reference path="./Route.ts"/>
-const FPS = ha.Main.Fps;
+const FPS = ha.be.Main.Fps;
 ///<reference path="../ha/Route.ts"/>
 /**
  * TEXTS
  */
-var Font = ha.Teks.font;
-var Tulis = ha.Teks.tulis;
-var Rata = ha.Teks.rata;
+var Font = ha.be.Teks.font;
+var Tulis = ha.be.Teks.tulis;
+var Rata = ha.be.Teks.rata;
 var ha;
 (function (ha) {
-    class Cache {
-        constructor() {
-            this.files = [];
-        }
-        getGbr(url) {
-            for (let i = 0; i < this.files.length; i++) {
-                if (this.files[i].url == url) {
-                    console.log('ambil dari cache: ' + url);
-                    return this.files[i].img;
+    var be;
+    (function (be) {
+        class Cache {
+            constructor() {
+                this.files = [];
+            }
+            getGbr(url) {
+                for (let i = 0; i < this.files.length; i++) {
+                    if (this.files[i].url == url) {
+                        console.log('ambil dari cache: ' + url);
+                        return this.files[i].img;
+                    }
                 }
+                return null;
             }
-            return null;
-        }
-        setFile(url, img) {
-            let img2;
-            img2 = this.getGbr(url);
-            if (img2) {
-                return;
+            setFile(url, img) {
+                let img2;
+                img2 = this.getGbr(url);
+                if (img2) {
+                    return;
+                }
+                console.log('cache: ' + url);
+                this.files.push({
+                    url: url,
+                    img: img
+                });
             }
-            console.log('cache: ' + url);
-            this.files.push({
-                url: url,
-                img: img
-            });
         }
-    }
-    ha.cache = new Cache();
+        be.cache = new Cache();
+    })(be = ha.be || (ha.be = {}));
 })(ha || (ha = {}));
 /**
  * INTERFACE
@@ -2114,7 +2144,7 @@ var ha;
             for (let i = ha.Sprite.daftar.length - 1; i >= 0; i--) {
                 let item;
                 item = ha.Sprite.daftar[i];
-                if (ha.Image.dotDidalamGambar(item.buffer, item.x, item.y, pos.x, pos.y)) {
+                if (ha.be.Image.dotDidalamGambar(item.buffer, item.x, item.y, pos.x, pos.y)) {
                     item.down = true;
                     item.dragStartX = pos.x - item.x;
                     item.dragStartY = pos.y - item.y;

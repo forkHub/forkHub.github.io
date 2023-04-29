@@ -1,4 +1,4 @@
-declare namespace ha {
+declare namespace ha.be {
     class Main {
         private static _fps;
         private static _origin;
@@ -49,7 +49,7 @@ declare namespace ha {
         static set transparan(value: number);
     }
 }
-declare namespace ha {
+declare namespace ha.be {
     class Image {
         static buatBagiCanvas(canvas: HTMLCanvasElement, w?: number, h?: number, frameW?: number, frameH?: number): IGambar;
         static gambarRect(spr: ISprite): void;
@@ -160,7 +160,7 @@ declare enum EInput {
     KEYB = "keyb",
     DEF = ""
 }
-declare namespace ha {
+declare namespace ha.be {
     class Input {
         private _inputs;
         private _touchGlobal;
@@ -206,7 +206,7 @@ declare namespace ha {
     export const input: Input;
     export {};
 }
-declare namespace ha {
+declare namespace ha.be {
     class Point {
         static create(x?: number, y?: number): IPoint2D;
         static copy(p1: IPoint2D, p2: IPoint2D): void;
@@ -217,7 +217,7 @@ declare namespace ha {
         static posPolar(jarak: number, sudut: number, xt: number, yt: number): IPoint2D;
     }
 }
-declare namespace ha {
+declare namespace ha.be {
     class Rect {
         static create(x1?: number, y1?: number, x2?: number, y2?: number): IRect;
         static copy(r: IRect): IRect;
@@ -234,7 +234,7 @@ declare namespace ha {
         static rotate(r: IRect, deg: number, xc: number, yc: number, copy?: boolean): IRect;
     }
 }
-declare namespace ha {
+declare namespace ha.be {
     class Segment {
         static create(v1?: IPoint2D, v2?: IPoint2D): ISegment;
         static boundCollide(seg1: ISegment, seg2: ISegment): boolean;
@@ -259,7 +259,7 @@ declare namespace ha {
 /**
  * BLIJS
  */
-declare namespace ha {
+declare namespace ha.be {
     class Blijs {
         private static _skalaOtomatis;
         private static _inputStatus;
@@ -299,7 +299,7 @@ declare namespace ha {
         static rotateRel(x?: number, y?: number, xt?: number, yt?: number, deg?: number): void;
     }
 }
-declare namespace ha {
+declare namespace ha.be {
     class Teks {
         private static get ctx();
         static font(font?: string): void;
@@ -307,7 +307,7 @@ declare namespace ha {
         static tulis(teks: string, x: number, y: number, warna?: boolean, garis?: boolean): void;
     }
 }
-declare namespace ha {
+declare namespace ha.be {
     class Route {
         static ukuran(obj: ISprite | "teks", w?: number, h?: number): void;
     }
@@ -332,20 +332,20 @@ declare const FlushKeys: () => void;
 declare const GetKey: () => string;
 declare const KeybDiPencet: (key?: string) => boolean;
 declare const KeybHit: (key?: string) => number;
-declare const Bersih: typeof ha.Main.Bersih;
-declare const Grafis: typeof ha.Blijs.Grafis;
-declare const Warna: typeof ha.Main.Warna;
-declare const Merah: typeof ha.Main.Merah;
-declare const Hijau: typeof ha.Main.Hijau;
-declare const Biru: typeof ha.Main.Biru;
-declare const Transparan: typeof ha.Main.Transparan;
-declare const AmbilPiksel: typeof ha.Image.AmbilPiksel;
-declare const SetPiksel: typeof ha.Image.SetPiksel;
-declare const Kontek: typeof ha.Main.Kontek;
-declare const Kanvas: typeof ha.Main.Kanvas;
-declare const Garis: typeof ha.Main.Garis;
-declare const Kotak: typeof ha.Main.Kotak;
-declare const Oval: typeof ha.Main.Oval;
+declare const Bersih: typeof ha.be.Main.Bersih;
+declare const Grafis: typeof ha.be.Blijs.Grafis;
+declare const Warna: typeof ha.be.Main.Warna;
+declare const Merah: typeof ha.be.Main.Merah;
+declare const Hijau: typeof ha.be.Main.Hijau;
+declare const Biru: typeof ha.be.Main.Biru;
+declare const Transparan: typeof ha.be.Main.Transparan;
+declare const AmbilPiksel: typeof ha.be.Image.AmbilPiksel;
+declare const SetPiksel: typeof ha.be.Image.SetPiksel;
+declare const Kontek: typeof ha.be.Main.Kontek;
+declare const Kanvas: typeof ha.be.Main.Kanvas;
+declare const Garis: typeof ha.be.Main.Garis;
+declare const Kotak: typeof ha.be.Main.Kotak;
+declare const Oval: typeof ha.be.Main.Oval;
 declare const Sudut: typeof ha.Transform.deg;
 /** BLITZ-SPRITE.TS */
 declare const Muat: typeof ha.Sprite.muatAsync;
@@ -367,14 +367,14 @@ declare const Panjang: typeof ha.Sprite.panjang;
 declare const Lebar: typeof ha.Sprite.lebar;
 declare const Copy: typeof ha.Sprite.copy;
 declare const Ubin: typeof ha.Sprite.ubin;
-declare const FPS: typeof ha.Main.Fps;
+declare const FPS: typeof ha.be.Main.Fps;
 /**
  * TEXTS
  */
-declare var Font: typeof ha.Teks.font;
-declare var Tulis: typeof ha.Teks.tulis;
-declare var Rata: typeof ha.Teks.rata;
-declare namespace ha {
+declare var Font: typeof ha.be.Teks.font;
+declare var Tulis: typeof ha.be.Teks.tulis;
+declare var Rata: typeof ha.be.Teks.rata;
+declare namespace ha.be {
     class Cache {
         private files;
         getGbr(url: string): HTMLImageElement;

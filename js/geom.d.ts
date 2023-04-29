@@ -16,6 +16,16 @@ declare namespace ha.geom {
     }
 }
 declare namespace ha.geom {
+    class PolyObj {
+        private vs;
+        constructor(vs: IPoint2D[]);
+    }
+    class Poly {
+        private static pp;
+        static buat(p: IPoint2D[]): PolyObj;
+    }
+}
+declare namespace ha.geom {
     class Rect {
         static create(x1?: number, y1?: number, x2?: number, y2?: number): IRect;
         static copy(r: IRect): IRect;
@@ -34,9 +44,26 @@ declare namespace ha.geom {
 }
 declare namespace ha.geom {
     class Garis {
+        private static readonly gp;
+        /**
+         * buat garis object
+         * @param v1
+         * @param v2
+         * @returns
+         */
         static create(v1?: IPoint2D, v2?: IPoint2D): IGaris;
-        static destroy(g1: IGaris): void;
+        /**
+         * hapus garis dari memory
+         * @param g
+         */
+        static destroy(g: IGaris): void;
+        /**
+         * check apakah garis menghadap ke atas
+         * @param g
+         * @returns
+         */
         static hadapAtas(g: IGaris): boolean;
+        static posIdx(g: IGaris, idx?: number): IPoint2D;
         /**
          * tukar posisi point
          * @param g
@@ -44,31 +71,7 @@ declare namespace ha.geom {
          * @returns
          */
         static tukarPosisi(g: IGaris, klon: boolean): IGaris;
-        static kananPos(g: IGaris, xt: number, yt: number): boolean;
         static keAtas(garis: IGaris, klon: boolean): IGaris;
-        static boundCollide(seg1: IGaris, seg2: IGaris): boolean;
-        static tabrakan(g1: IGaris, g2: IGaris): boolean;
-        static collide2(seg1: IGaris, seg2: IGaris): boolean;
-        /**
-         * mengkopy dari garis sumber ke garis target
-         * @param gs garis sumber
-         * @param gt garis target
-         */
-        static copy(gs: IGaris, gt: IGaris): void;
-        /**
-         * klone garis
-         * @param garis
-         * @returns
-         */
-        static klon(garis: IGaris): IGaris;
-        static melewatiGarisX(seg: IGaris): boolean;
-        static melewatiGarisY(seg: IGaris): boolean;
-        /**
-         * menghitung sudut dari garis
-         * @param garis - garis
-         * @returns sudut
-         */
-        static sudut(garis: IGaris): number;
         /**
          * menghasilkan posisi x dari vecI(), pada idx tertentu
          *
@@ -86,18 +89,11 @@ declare namespace ha.geom {
          */
         static getYAtIdx(seg: IGaris, idx: number): number;
         /**
-         * menghasilkan panjang pada sumbu x
-         * @param garis garis
-         * @returns
-         */
-        static vecI(garis: IGaris): number;
-        static vecJ(garis: IGaris): number;
-        /**
          * memutar garis
          * @param g garis
          * @param sdt sudut perputaran
-         * @param xc posisi tengah x
-         * @param yc posisi tengah y
+         * @param xc posisi pusat putaran x
+         * @param yc posisi pusat putaran y
          */
         static putar(g: IGaris, sdt: number, xc: number, yc: number, klon: boolean): IGaris;
         /**
@@ -113,7 +109,57 @@ declare namespace ha.geom {
         static maxY(garis: IGaris): number;
         static pindah(garis: IGaris, x?: number, y?: number): void;
         static xHorIdx(garis: IGaris): number;
+        /**
+         * mengkopy dari garis sumber ke garis target
+         * @param gs garis sumber
+         * @param gt garis target
+         */
+        static copy(gs: IGaris, gt: IGaris): void;
+        /**
+         * klone garis
+         * @param garis
+         * @returns
+         */
+        static klon(garis: IGaris): IGaris;
+        /**
+         * menghitung sudut dari garis
+         * @param garis - garis
+         * @returns sudut
+         */
+        static sudut(garis: IGaris): number;
+        /**
+         * menghasilkan panjang pada sumbu x
+         * @param garis garis
+         * @returns
+         */
+        static vecI(garis: IGaris): number;
+        static vecJ(garis: IGaris): number;
+        /** putar garis
+         *
+         */
+        static putarGaris(gs: IGaris[], sdt: number, klon: boolean): void;
+        /** GARIS - POINT
+         * ==============
+        */
+        /**
+         * apakah sebuah garis berada di sebelah kanan titik
+         * @param g
+         * @param xt
+         * @param yt
+         * @returns
+         */
+        static kananPos(g: IGaris, xt: number, yt: number): boolean;
+        /** GARIS - GARIS
+         * ==============
+        */
+        static boundCollide(g1: IGaris, g2: IGaris): boolean;
+        static _tabrakan(g1: IGaris, g2: IGaris): boolean;
+        static tabrakan(g1: IGaris, g2: IGaris): boolean;
+        static collide2(g: IGaris, seg2: IGaris): boolean;
+        static melewatiGarisX(g: IGaris, y?: number): boolean;
+        static melewatiGarisY(g: IGaris): boolean;
     }
+    const G: typeof Garis;
 }
 declare namespace ha.geom {
     class Transform {
@@ -131,6 +177,7 @@ declare namespace ha.geom {
         static degDistMin(angleS: number, angleT: number): number;
         static jarak(x: number, y: number, xt: number, yt: number): number;
         static rotateRel(x?: number, y?: number, xt?: number, yt?: number, deg?: number): void;
+        static posPolar(jrk: number, sdt: number): void;
     }
 }
 declare namespace ha.geom {
