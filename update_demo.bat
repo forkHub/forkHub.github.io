@@ -1,2 +1,2 @@
-xcopy c:\tsmodule\*.* js /s /i /y
+xcopy ..\be\demo\web\*.* blitz_edu\demo /s /i /y
 pause
