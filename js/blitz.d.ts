@@ -16,11 +16,37 @@ declare namespace ha.be {
         static init(canvasBelakang: HTMLCanvasElement, canvasDepan: HTMLCanvasElement): void;
         static backupWarna(): void;
         static restoreWarna(): void;
+        /**
+         * Membersihkan layar dengan warna tertentu, default hitam
+         * @param m (number) merah
+         * @param h (number) hijau
+         * @param b (b) biru
+         * @param t (t) transparan (0-100)
+         */
         static Bersih(m?: number, h?: number, b?: number, t?: number): void;
+        /**
+         * Mengeset warna untuk dipakai pada perintah menggambar setelahnya
+         * @param r (number) merah
+         * @param g (number) hijau
+         * @param b (number) biru
+         * @param a (number) alpha (0-100)
+         */
         static Warna(r?: number, g?: number, b?: number, a?: number): void;
         private static updateStyleWarna;
+        /**
+         * Mengembalikan warna merah dari perintah AmbilPixel terakhir
+         * @returns (number) warna merah
+         */
         static Hijau(): number;
+        /**
+         * Mengembalikan warna merah dari perintah AmbilPixel terakhir
+         * @returns (number) warna merah
+         */
         static Merah(): number;
+        /**
+         * Mengembalikan warna biru dari perintah AmbilPixel terakhir
+         * @returns (number) warna biru
+         */
         static Biru(): number;
         static Transparan(): number;
         static Kanvas(): HTMLCanvasElement;
@@ -50,6 +76,11 @@ declare namespace ha.be {
     }
 }
 declare namespace ha.be {
+    /**
+     * Menghandle Image object
+     * Tidak untuk dipakai langsung
+     * Image object akan di wrap oleh Sprite
+     */
     class Image {
         static buatBagiCanvas(canvas: HTMLCanvasElement, w?: number, h?: number, frameW?: number, frameH?: number): IGambar;
         static gambarRect(spr: ISprite): void;
@@ -66,6 +97,12 @@ declare namespace ha.be {
         static muatAsyncKanvas(url: string, canvas: HTMLCanvasElement): IGambar;
         static gambarUbin(gbr: IGambar, x?: number, y?: number, frame?: number): void;
         static putarGambar(gbr: IGambar, sudut?: number): void;
+        /**
+         * mengambil pixel di layar
+         * @param x posisi x
+         * @param y posisi y
+         * @returns (Uint8ClampedArray)
+         */
         static AmbilPiksel(x?: number, y?: number): number[];
         static SetPiksel(x?: number, y?: number): void;
         static handle(gbr: IGambar, x?: number, y?: number): void;
@@ -274,8 +311,13 @@ declare namespace ha.be {
          * @returns
          */
         static Grafis(panjang?: number, lebar?: number, canvas?: HTMLCanvasElement, skalaOtomatis?: boolean, input?: boolean): void;
+        /** depecreated */
         static loop(): void;
+        /** depecreated */
         static repeat(): void;
+        /**
+         * Handle saat window di resize
+         */
         static windowResize(): void;
         static get skalaOtomatis(): boolean;
         static set skalaOtomatis(value: boolean);
@@ -291,7 +333,13 @@ declare namespace ha {
         static get lastY(): number;
         static equal(n1: number, n2: number, toleransi?: number): boolean;
         private static quadDeg2;
-        static deg(x: number, y: number): number;
+        /**
+         * Menghitung sudut dari posisi relative ke posisi 0,0
+         * @param x posisi x
+         * @param y posisi y
+         * @returns sudut relative ke posisi 0,0
+         */
+        static sudut(x: number, y: number): number;
         private static normalizeDeg;
         static degDistMax(angleS: number, angleT: number): number;
         static degDistMin(angleS: number, angleT: number): number;
@@ -312,10 +360,6 @@ declare namespace ha.be {
         static ukuran(obj: ISprite | "teks", w?: number, h?: number): void;
     }
 }
-/**
- * shortcut buat perintah input
- * BLITZ-INPUT.TS
- */
 declare const InputHit: () => number;
 declare const InputX: () => number;
 declare const InputY: () => number;
@@ -346,8 +390,10 @@ declare const Kanvas: typeof ha.be.Main.Kanvas;
 declare const Garis: typeof ha.be.Main.Garis;
 declare const Kotak: typeof ha.be.Main.Kotak;
 declare const Oval: typeof ha.be.Main.Oval;
-declare const Sudut: typeof ha.Transform.deg;
-/** BLITZ-SPRITE.TS */
+declare const Sudut: typeof ha.Transform.sudut;
+/**
+ * Shortcut untuk perintah-perintah Sprite
+ * */
 declare const Muat: typeof ha.Sprite.muatAsync;
 declare const MuatAnimasi: typeof ha.Sprite.muatAnimasiAsync;
 declare const StatusMuat: typeof ha.Sprite.statusMuat;
@@ -369,12 +415,15 @@ declare const Copy: typeof ha.Sprite.copy;
 declare const Ubin: typeof ha.Sprite.ubin;
 declare const FPS: typeof ha.be.Main.Fps;
 /**
- * TEXTS
+ * Shortcut buat perintah-perintah font
  */
 declare var Font: typeof ha.be.Teks.font;
 declare var Tulis: typeof ha.be.Teks.tulis;
 declare var Rata: typeof ha.be.Teks.rata;
 declare namespace ha.be {
+    /**
+     * Cache image yang diload
+     */
     class Cache {
         private files;
         getGbr(url: string): HTMLImageElement;

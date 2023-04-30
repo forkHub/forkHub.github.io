@@ -68,6 +68,13 @@ var ha;
                 Main.transparan = Main.warnaBackup.t;
                 Main.updateStyleWarna();
             }
+            /**
+             * Membersihkan layar dengan warna tertentu, default hitam
+             * @param m (number) merah
+             * @param h (number) hijau
+             * @param b (b) biru
+             * @param t (t) transparan (0-100)
+             */
             static Bersih(m = 0, h = 0, b = 0, t = 100) {
                 let ctx = Main.canvasAktif.ctx;
                 Main.backupWarna();
@@ -75,6 +82,13 @@ var ha;
                 ctx.fillRect(0, 0, Main.canvasAktif.panjang, Main.canvasAktif.lebar);
                 Main.restoreWarna();
             }
+            /**
+             * Mengeset warna untuk dipakai pada perintah menggambar setelahnya
+             * @param r (number) merah
+             * @param g (number) hijau
+             * @param b (number) biru
+             * @param a (number) alpha (0-100)
+             */
             static Warna(r = 0, g = 0, b = 0, a = 100) {
                 let h = Main;
                 h.merah = r;
@@ -87,12 +101,24 @@ var ha;
                 let ctx = Main.canvasAktif.ctx;
                 ctx.fillStyle = `rgba(${Main.merah}, ${Main.hijau}, ${Main.biru}, ${Main.transparan})`;
             }
+            /**
+             * Mengembalikan warna merah dari perintah AmbilPixel terakhir
+             * @returns (number) warna merah
+             */
             static Hijau() {
                 return Main.hijau;
             }
+            /**
+             * Mengembalikan warna merah dari perintah AmbilPixel terakhir
+             * @returns (number) warna merah
+             */
             static Merah() {
                 return Main.merah;
             }
+            /**
+             * Mengembalikan warna biru dari perintah AmbilPixel terakhir
+             * @returns (number) warna biru
+             */
             static Biru() {
                 return Main.biru;
             }
@@ -288,6 +314,11 @@ var ha;
                 this._rotasi = value;
             }
         }
+        /**
+         * Menghandle Image object
+         * Tidak untuk dipakai langsung
+         * Image object akan di wrap oleh Sprite
+         */
         class Image {
             // private static buatObj(
             // 	img: HTMLImageElement,
@@ -595,6 +626,12 @@ var ha;
             static putarGambar(gbr, sudut = 0) {
                 gbr.rotasi = sudut;
             }
+            /**
+             * mengambil pixel di layar
+             * @param x posisi x
+             * @param y posisi y
+             * @returns (Uint8ClampedArray)
+             */
             static AmbilPiksel(x = 0, y = 0) {
                 try {
                     let data = be.Main.canvasAktif.ctx.getImageData(x, y, 1, 1).data;
@@ -1571,7 +1608,7 @@ var ha;
             static deg(line) {
                 let j = line.v2.y - line.v1.y;
                 let i = line.v2.x - line.v1.x;
-                return ha.Transform.deg(i, j);
+                return ha.Transform.sudut(i, j);
             }
             static getXAtIdx(seg, idx) {
                 return seg.v1.x + (idx * Segment.vecI(seg));
@@ -1688,6 +1725,7 @@ var ha;
                     ha.be.Main.canvasAktif.ctx.strokeStyle = "#ffffff";
                 }
             }
+            /** depecreated */
             static loop() {
                 let _window = window;
                 if (typeof (_window.Loop) == 'function') {
@@ -1701,6 +1739,7 @@ var ha;
                     //TODO: post loop
                 }
             }
+            /** depecreated */
             static repeat() {
                 //check semua image sudah diload
                 ha.be.Blijs.loop();
@@ -1711,6 +1750,9 @@ var ha;
                     requestAnimationFrame(ha.be.Blijs.repeat);
                 }, ha.be.Main.fps);
             }
+            /**
+             * Handle saat window di resize
+             */
             static windowResize() {
                 // console.debug('window on resize');
                 let canvas = ha.be.Main.canvasAktif.canvas;
@@ -1796,7 +1838,13 @@ var ha;
             }
             throw Error();
         }
-        static deg(x, y) {
+        /**
+         * Menghitung sudut dari posisi relative ke posisi 0,0
+         * @param x posisi x
+         * @param y posisi y
+         * @returns sudut relative ke posisi 0,0
+         */
+        static sudut(x, y) {
             let l;
             let sin;
             l = Math.sqrt(x * x + y * y);
@@ -1930,7 +1978,7 @@ var ha;
 ///<reference path="../ha/Teks.ts"/>
 ///<reference path="../ha/Route.ts"/>
 ///<reference path="./Route.ts"/>
-/**
+/*
  * shortcut buat perintah input
  * BLITZ-INPUT.TS
  */
@@ -2037,7 +2085,7 @@ const KeybHit = (key = '') => {
 // }
 ///<reference path="./Route.ts"/>
 /*
- * 	GRAPHICS
+ * 	Shortcut untuk perintah-perintah utama
  */
 const Bersih = ha.be.Main.Bersih;
 const Grafis = ha.be.Blijs.Grafis;
@@ -2055,10 +2103,14 @@ const Kotak = ha.be.Main.Kotak;
 const Oval = ha.be.Main.Oval;
 ///<reference path="../ha/Main.ts"/>
 ///<reference path="../ha/Image.ts"/>
-const Sudut = ha.Transform.deg;
+/*
+ *	Shortcut untuk perintah matematika
+ */
+const Sudut = ha.Transform.sudut;
 ///<reference path="./Route.ts"/>
-/** BLITZ-SPRITE.TS */
-// const Buat = ha.Sprite.buat;
+/**
+ * Shortcut untuk perintah-perintah Sprite
+ * */
 const Muat = ha.Sprite.muatAsync;
 const MuatAnimasi = ha.Sprite.muatAnimasiAsync;
 const StatusMuat = ha.Sprite.statusMuat;
@@ -2086,7 +2138,7 @@ const Ubin = ha.Sprite.ubin;
 const FPS = ha.be.Main.Fps;
 ///<reference path="../ha/Route.ts"/>
 /**
- * TEXTS
+ * Shortcut buat perintah-perintah font
  */
 var Font = ha.be.Teks.font;
 var Tulis = ha.be.Teks.tulis;
@@ -2095,6 +2147,9 @@ var ha;
 (function (ha) {
     var be;
     (function (be) {
+        /**
+         * Cache image yang diload
+         */
         class Cache {
             constructor() {
                 this.files = [];
@@ -2149,7 +2204,7 @@ var ha;
                     item.dragStartX = pos.x - item.x;
                     item.dragStartY = pos.y - item.y;
                     item.inputId = id;
-                    item.sudutTekanAwal = ha.Transform.deg(pos.x - item.x, pos.y - item.y);
+                    item.sudutTekanAwal = ha.Transform.sudut(pos.x - item.x, pos.y - item.y);
                     item.sudutAwal = item.buffer.rotasi;
                     return;
                 }
@@ -2165,7 +2220,7 @@ var ha;
                     }
                     else if (item.tipeDrag == TypeDrag.rotasi) {
                         //TODO: peruban sudut
-                        let sudut2 = ha.Transform.deg(pos.x - item.x, pos.y - item.y);
+                        let sudut2 = ha.Transform.sudut(pos.x - item.x, pos.y - item.y);
                         let perbedaan = sudut2 - item.sudutTekanAwal;
                         item.buffer.rotasi = item.sudutAwal + perbedaan;
                         // console.debug('item drag move');
