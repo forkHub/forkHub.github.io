@@ -2,7 +2,6 @@ window.onload = () => {
     let img;
     let frame = 0;
     Grafis(300, 300);
-    FPS(20);
     img = MuatAnimasi('https://forkhub.github.io/gbr/exp2_0.png', 64, 64);
     Ukuran(img, 256, 256);
     window.requestAnimationFrame(update);

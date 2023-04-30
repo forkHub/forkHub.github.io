@@ -1,7 +1,5 @@
 declare namespace ha.be {
     class Main {
-        private static _fps;
-        private static _origin;
         private static _canvasAr;
         private static _canvasAktif;
         private static _skalaOtomatis;
@@ -11,7 +9,6 @@ declare namespace ha.be {
         private static _transparan;
         private static warnaBackup;
         static Kontek(spr?: ISprite | HTMLCanvasElement): CanvasRenderingContext2D;
-        static Fps(n: number): void;
         static buatCanvas(canvasEl: HTMLCanvasElement): IGambar;
         static init(canvasBelakang: HTMLCanvasElement, canvasDepan: HTMLCanvasElement): void;
         static backupWarna(): void;
@@ -54,15 +51,10 @@ declare namespace ha.be {
         static Garis(x1: number, y1: number, x2: number, y2: number): void;
         static Kotak(x1: number, y1: number, x2: number, y2: number, isi?: boolean, garis?: boolean, rotasi?: number): void;
         static Oval(x: number, y: number, radius: number, skalaX?: number, skalaY?: number, rotasi?: number): void;
-        static SetBuffer(buffer: IGambar): void;
         static get canvasAktif(): IGambar;
         static set canvasAktif(value: IGambar);
         static get canvasAr(): IGambar[];
         static set canvasAr(value: IGambar[]);
-        static get origin(): IV2D;
-        static set origin(value: IV2D);
-        static get fps(): number;
-        static set fps(value: number);
         static get skalaOtomatis(): boolean;
         static set skalaOtomatis(value: boolean);
         static get merah(): number;
@@ -119,8 +111,11 @@ declare namespace ha.be {
         private static rectToImageTransform;
     }
 }
-/** SPRITE.TS */
 declare namespace ha {
+    /**
+     * Sprite
+     * Wrapper dari image agar bisa interaksi
+    */
     class Sprite implements ISprite {
         static readonly daftar: ISprite[];
         private _buff;
@@ -190,7 +185,6 @@ declare namespace ha {
         set url(value: string);
     }
 }
-/** INPUT.TS */
 declare enum EInput {
     TOUCH = "touch",
     MOUSE = "mouse",
@@ -207,7 +201,7 @@ declare namespace ha.be {
         private _event;
         constructor();
         /**
-         * type input dari event terkhir
+         * (depecreated) type input dari event terkhir
          * @returns (EInput)
          */
         InputType(): EInput;
@@ -236,18 +230,27 @@ declare namespace ha.be {
          * @returns (number)
          */
         GeserY(): number;
+        /**
+         * menghapus data input
+         */
         FlushInput(): void;
+        /**
+         * mengecek apakah pointer sedang ditekan
+         * @returns (boolean)
+         */
         Pencet(): boolean;
+        /**
+         * mengecheck apakah pointer sedang di drag
+         * @returns (boolean)
+         */
         Geser(): boolean;
-        getMouseKeyId(e: PointerEvent): string;
+        private getMouseKeyId;
         init(buffer: IGambar): void;
-        buatInputDefault(): IInput;
-        reset(input: IInput): void;
-        flush(): void;
-        flushByType(type: string): void;
-        flushByInput(input: IInput): void;
-        getInput(key: string, inputType: string): IInput;
-        baru(keyId: string, inputType: EInput): IInput;
+        private buatInputDefault;
+        private flush;
+        private flushByInput;
+        private getInput;
+        private baru;
         pos: (cx: number, cy: number, buffer: IGambar) => {
             x: number;
             y: number;
@@ -265,6 +268,10 @@ declare namespace ha.be {
     export {};
 }
 declare namespace ha.be {
+    /** internal class untuk menghandle geometri
+     * Point
+     *
+     */
     class Point {
         static create(x?: number, y?: number): IPoint2D;
         static copy(p1: IPoint2D, p2: IPoint2D): void;
@@ -276,23 +283,31 @@ declare namespace ha.be {
     }
 }
 declare namespace ha.be {
+    /** internal class untuk menghandle geometri
+     * Kotak
+     *
+     */
     class Rect {
         static create(x1?: number, y1?: number, x2?: number, y2?: number): IRect;
-        static copy(r: IRect): IRect;
-        static copyInfo(r1: IRect, r2: IRect): void;
-        static collideBound(r1: IRect, r2: IRect): boolean;
+        private static copy;
+        private static copyInfo;
+        private static collideBound;
         static collide(r1: IRect, r2: IRect): boolean;
-        static collideDotBound(r: IRect, d: IPoint2D): boolean;
+        private static collideDotBound;
         static collideDot(r: IRect, x: number, y: number): boolean;
-        static minX(r: IRect): number;
-        static maxX(r: IRect): number;
-        static minY(r: IRect): number;
-        static maxY(r: IRect): number;
+        private static minX;
+        private static maxX;
+        private static minY;
+        private static maxY;
         static translate(rect: IRect, x: number, y: number): void;
         static rotate(r: IRect, deg: number, xc: number, yc: number, copy?: boolean): IRect;
     }
 }
 declare namespace ha.be {
+    /**
+     * internal class untuk menghandle geometri:
+     * garis
+     */
     class Segment {
         static create(v1?: IPoint2D, v2?: IPoint2D): ISegment;
         static boundCollide(seg1: ISegment, seg2: ISegment): boolean;
@@ -314,28 +329,23 @@ declare namespace ha.be {
         static xHorIdx(seg: ISegment): number;
     }
 }
-/**
- * BLIJS
- */
 declare namespace ha.be {
+    /**
+     * Depecreated dan akan digabung ke Main
+     * */
     class Blijs {
         private static _skalaOtomatis;
-        private static _inputStatus;
-        static get inputStatus(): boolean;
-        static set inputStatus(value: boolean);
         /**
          * Setup Blitz Edu
          * @param panjang (angka) panjang dari kanvas
          * @param lebar (angka) lebar dari kanvs
          * @param canvas (HTMLCanvasElement) referensi ke kanvas
-         * @param skalaOtomatis (boolean) apakah akan men-skala kanvas mengikuti ukuran layar
+         * @param fullScreen (boolean) apakah akan men-skala kanvas mengikuti ukuran layar/fullscreen
          * @returns
          */
-        static Grafis(panjang?: number, lebar?: number, canvas?: HTMLCanvasElement, skalaOtomatis?: boolean, input?: boolean): void;
+        static Grafis(panjang?: number, lebar?: number, canvas?: HTMLCanvasElement, fullScreen?: boolean, input?: boolean): void;
         /** depecreated */
-        static loop(): void;
         /** depecreated */
-        static repeat(): void;
         /**
          * Handle saat window di resize
          */
@@ -373,14 +383,45 @@ declare namespace ha.be {
         private static get ctx();
         static font(font?: string): void;
         static rata(rata?: CanvasTextAlign): void;
+        /**
+         * menulis teks di kanvas
+         * @param teks (string)
+         * @param x (number)
+         * @param y (number)
+         * @param warna (boolean=true) apakah akan mengisi teks dengan warna
+         * @param garis (boolean=false) apakah akan menggunakan outline
+         */
         static tulis(teks: string, x: number, y: number, warna?: boolean, garis?: boolean): void;
     }
 }
-declare namespace ha.be {
-    class Route {
-        static ukuran(obj: ISprite | "teks", w?: number, h?: number): void;
+declare namespace ha {
+    /**
+     * handle untuk interaksi sprite
+     */
+    class SpriteInteraksi {
+        inputDown(pos: any, id: number): void;
+        inputMove(pos: any, pointerId: number): void;
+        inputUp(): void;
     }
+    export const sprInteraksi: SpriteInteraksi;
+    export {};
 }
+declare namespace ha.be {
+    /**
+     * Cache image yang diload
+     */
+    class Cache {
+        private files;
+        getGbr(url: string): HTMLImageElement;
+        setFile(url: string, img: HTMLImageElement): void;
+    }
+    export const cache: Cache;
+    export {};
+}
+/**
+ * shortcut buat perintah input
+ * BLITZ-INPUT.TS
+ */
 declare const InputHit: () => number;
 declare const InputX: () => number;
 declare const InputY: () => number;
@@ -391,7 +432,7 @@ declare const Pencet: () => boolean;
 declare const Geser: () => boolean;
 declare const InputType: () => EInput;
 /**
- * 	KEYBOARD (depecreated)
+ * 	Shortcut untuk perintah-perintah utama
  */
 declare const Bersih: typeof ha.be.Main.Bersih;
 declare const Grafis: typeof ha.be.Blijs.Grafis;
@@ -430,25 +471,12 @@ declare const Panjang: typeof ha.Sprite.panjang;
 declare const Lebar: typeof ha.Sprite.lebar;
 declare const Copy: typeof ha.Sprite.copy;
 declare const Ubin: typeof ha.Sprite.ubin;
-declare const FPS: typeof ha.be.Main.Fps;
 /**
  * Shortcut buat perintah-perintah font
  */
 declare var Font: typeof ha.be.Teks.font;
 declare var Tulis: typeof ha.be.Teks.tulis;
 declare var Rata: typeof ha.be.Teks.rata;
-declare namespace ha.be {
-    /**
-     * Cache image yang diload
-     */
-    class Cache {
-        private files;
-        getGbr(url: string): HTMLImageElement;
-        setFile(url: string, img: HTMLImageElement): void;
-    }
-    export const cache: Cache;
-    export {};
-}
 /**
  * INTERFACE
 */
@@ -521,13 +549,3 @@ interface ISprite {
     sudutAwal: number;
     inputId: number;
 }
-declare namespace ha {
-    class Sprite2 {
-        inputDown(pos: any, id: number): void;
-        inputMove(pos: any, pointerId: number): void;
-        inputUp(): void;
-    }
-    export const sprite2: Sprite2;
-    export {};
-}
-//# sourceMappingURL=blitz.d.ts.map
