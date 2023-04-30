@@ -198,19 +198,43 @@ declare enum EInput {
     DEF = ""
 }
 declare namespace ha.be {
+    /**
+     * Input
+     */
     class Input {
         private _inputs;
-        private _touchGlobal;
-        private _mouseGlobal;
-        private _keybGlobal;
         private _inputGlobal;
         private _event;
         constructor();
+        /**
+         * type input dari event terkhir
+         * @returns (EInput)
+         */
         InputType(): EInput;
+        /**
+         * berapa kali pointer di tap sejak terakhir kali perintah dipanggil
+         * @returns (number)
+         */
         InputHit(): number;
+        /**
+         * posisi x pointer
+         * @returns (number)
+         */
         InputX(): number;
+        /**
+         * posisi y pointer
+         * @returns
+         */
         InputY(): number;
+        /**
+         * berapa jauh pointer digeser sejajar sumbu x
+         * @returns (number)
+         */
         GeserX(): number;
+        /**
+         * berapa jauh pointer di drag sejajar sumbu y
+         * @returns (number)
+         */
         GeserY(): number;
         FlushInput(): void;
         Pencet(): boolean;
@@ -230,9 +254,6 @@ declare namespace ha.be {
         };
         get inputs(): IInput[];
         get event(): EventHandler;
-        get touchGlobal(): IInput;
-        get mouseGlobal(): IInput;
-        get keybGlobal(): IInput;
         get inputGlobal(): IInput;
     }
     class EventHandler {
@@ -370,12 +391,8 @@ declare const Pencet: () => boolean;
 declare const Geser: () => boolean;
 declare const InputType: () => EInput;
 /**
- * 	KEYBOARD (di tunda/dihapus)
+ * 	KEYBOARD (depecreated)
  */
-declare const FlushKeys: () => void;
-declare const GetKey: () => string;
-declare const KeybDiPencet: (key?: string) => boolean;
-declare const KeybHit: (key?: string) => number;
 declare const Bersih: typeof ha.be.Main.Bersih;
 declare const Grafis: typeof ha.be.Blijs.Grafis;
 declare const Warna: typeof ha.be.Main.Warna;
