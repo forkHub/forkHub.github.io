@@ -8,6 +8,10 @@ declare namespace ha.be {
         private static _biru;
         private static _transparan;
         private static warnaBackup;
+        /**
+         * Handle saat window di resize
+         */
+        private static windowResize;
         static Kontek(spr?: ISprite | HTMLCanvasElement): CanvasRenderingContext2D;
         static buatCanvas(canvasEl: HTMLCanvasElement): IGambar;
         static init(canvasBelakang: HTMLCanvasElement, canvasDepan: HTMLCanvasElement): void;
@@ -47,7 +51,16 @@ declare namespace ha.be {
         static Biru(): number;
         static Transparan(): number;
         static Kanvas(): HTMLCanvasElement;
-        static Grafis(p: number, l: number, ubahStyle: boolean): void;
+        /**
+         * Setup Blitz Edu
+         * @param panjang (angka) panjang dari kanvas
+         * @param lebar (angka) lebar dari kanvs
+         * @param canvas (HTMLCanvasElement) referensi ke kanvas
+         * @param fullScreen (boolean) apakah akan men-skala kanvas mengikuti ukuran layar/fullscreen
+         * @returns
+         */
+        static Grafis(panjang?: number, lebar?: number, canvas?: HTMLCanvasElement, fullScreen?: boolean, input?: boolean): void;
+        static Grafis2(p: number, l: number, ubahStyle: boolean): void;
         static Garis(x1: number, y1: number, x2: number, y2: number): void;
         static Kotak(x1: number, y1: number, x2: number, y2: number, isi?: boolean, garis?: boolean, rotasi?: number): void;
         static Oval(x: number, y: number, radius: number, skalaX?: number, skalaY?: number, rotasi?: number): void;
@@ -329,31 +342,6 @@ declare namespace ha.be {
         static xHorIdx(seg: ISegment): number;
     }
 }
-declare namespace ha.be {
-    /**
-     * Depecreated dan akan digabung ke Main
-     * */
-    class Blijs {
-        private static _skalaOtomatis;
-        /**
-         * Setup Blitz Edu
-         * @param panjang (angka) panjang dari kanvas
-         * @param lebar (angka) lebar dari kanvs
-         * @param canvas (HTMLCanvasElement) referensi ke kanvas
-         * @param fullScreen (boolean) apakah akan men-skala kanvas mengikuti ukuran layar/fullscreen
-         * @returns
-         */
-        static Grafis(panjang?: number, lebar?: number, canvas?: HTMLCanvasElement, fullScreen?: boolean, input?: boolean): void;
-        /** depecreated */
-        /** depecreated */
-        /**
-         * Handle saat window di resize
-         */
-        static windowResize(): void;
-        static get skalaOtomatis(): boolean;
-        static set skalaOtomatis(value: boolean);
-    }
-}
 declare namespace ha {
     class Transform {
         static readonly RAD2DEG: number;
@@ -435,7 +423,7 @@ declare const InputType: () => EInput;
  * 	Shortcut untuk perintah-perintah utama
  */
 declare const Bersih: typeof ha.be.Main.Bersih;
-declare const Grafis: typeof ha.be.Blijs.Grafis;
+declare const Grafis: typeof ha.be.Main.Grafis;
 declare const Warna: typeof ha.be.Main.Warna;
 declare const Merah: typeof ha.be.Main.Merah;
 declare const Hijau: typeof ha.be.Main.Hijau;

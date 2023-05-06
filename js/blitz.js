@@ -3,7 +3,30 @@ var ha;
     var be;
     (function (be) {
         class Main {
-            //TODOL ganti agar bisa gonta-ganti kontek
+            /**
+             * Handle saat window di resize
+             */
+            static windowResize() {
+                // console.debug('window on resize');
+                let canvas = Main.canvasAktif.canvas;
+                let cp = Main.canvasAktif.canvas.width;
+                let cl = Main.canvasAktif.canvas.height;
+                let wp = window.innerWidth;
+                let wl = window.innerHeight;
+                let ratio = Math.min((wp / cp), (wl / cl));
+                let cp2 = Math.floor(cp * ratio);
+                let cl2 = Math.floor(cl * ratio);
+                Main.canvasAktif.ratioX = ratio;
+                Main.canvasAktif.ratioY = ratio;
+                canvas.style.position = 'fixed';
+                canvas.style.zIndex = '9999';
+                canvas.style.width = cp2 + 'px';
+                canvas.style.height = cl2 + 'px';
+                canvas.style.top = ((wl - cl2) / 2) + 'px';
+                canvas.style.left = ((wp - cp2) / 2) + 'px';
+                // console.debug('canvas w: ' + canvas.style.width + '/ratio: ' + ratio);
+            }
+            //TODO: ganti agar bisa gonta-ganti kontek
             //parameternya adalah sprite/canvas/kontex
             //tujuannya agar bisa diedit langsung oleh perintah kontek yang lain
             static Kontek(spr) {
@@ -128,7 +151,62 @@ var ha;
             static Kanvas() {
                 return Main.canvasAktif.canvas;
             }
-            static Grafis(p = 320, l = 240, ubahStyle) {
+            /**
+             * Setup Blitz Edu
+             * @param panjang (angka) panjang dari kanvas
+             * @param lebar (angka) lebar dari kanvs
+             * @param canvas (HTMLCanvasElement) referensi ke kanvas
+             * @param fullScreen (boolean) apakah akan men-skala kanvas mengikuti ukuran layar/fullscreen
+             * @returns
+             */
+            static Grafis(panjang = 320, lebar = 240, canvas = null, fullScreen = true, input = true) {
+                //coba cari canvas
+                if (!canvas) {
+                    canvas = document.body.querySelector('canvas');
+                }
+                if (!canvas) {
+                    document.body.appendChild(document.createElement('canvas'));
+                }
+                Main.skalaOtomatis = fullScreen;
+                // ha.be.Blijs._inputStatus = input
+                //sudah diinisialisasi atau belum
+                if (Main.canvasAktif) {
+                    console.warn('init lebih dari sekali');
+                    Main.Grafis2(panjang, lebar, Main.skalaOtomatis);
+                }
+                else {
+                    console.log('inisialisasi');
+                    Main.init(canvas, canvas);
+                    Main.Grafis2(panjang, lebar, Main.skalaOtomatis);
+                    if (input) {
+                        ha.be.input.init(Main.canvasAktif);
+                    }
+                    if (Main.skalaOtomatis) {
+                        window.onresize = () => {
+                            if (Main.skalaOtomatis) {
+                                Main.windowResize();
+                            }
+                        };
+                    }
+                    if (Main.skalaOtomatis) {
+                        Main.windowResize();
+                    }
+                    setTimeout(() => {
+                        if (Main.skalaOtomatis) {
+                            Main.windowResize();
+                        }
+                    }, 100);
+                    // setTimeout(() => {
+                    // 	ha.be.Blijs.repeat();
+                    // }, 0);
+                    //font default
+                    ha.be.Teks.font("12px sans-serif");
+                    ha.be.Teks.rata("center");
+                    Main.Warna(255, 255, 255, 100);
+                    Main.canvasAktif.ctx.strokeStyle = "#ffffff";
+                }
+            }
+            static Grafis2(p = 320, l = 240, ubahStyle) {
                 let canvas = Main.canvasAktif;
                 canvas.canvas.width = p;
                 canvas.canvas.height = l;
@@ -141,8 +219,8 @@ var ha;
                 canvas.panjang = p;
                 canvas.lebar = l;
                 setTimeout(() => {
-                    if (be.Blijs.skalaOtomatis) {
-                        be.Blijs.windowResize();
+                    if (Main.skalaOtomatis) {
+                        Main.windowResize();
                     }
                     else {
                     }
@@ -267,6 +345,7 @@ var ha;
                 Main._transparan = value;
             }
         }
+        // private static _skalaOtomatis: boolean = true;
         // private static _fps: number = 0;
         // private static _origin: IV2D;
         Main._canvasAr = [];
@@ -1701,138 +1780,132 @@ var ha;
         be.Segment = Segment;
     })(be = ha.be || (ha.be = {}));
 })(ha || (ha = {}));
-var ha;
-(function (ha) {
-    var be;
-    (function (be) {
-        /**
-         * Depecreated dan akan digabung ke Main
-         * */
-        class Blijs {
-            // private static _inputStatus: boolean = true;
-            // public static get inputStatus(): boolean {
-            // 	return Blijs._inputStatus;
-            // }
-            // public static set inputStatus(value: boolean) {
-            // 	Blijs._inputStatus = value;
-            // }
-            /**
-             * Setup Blitz Edu
-             * @param panjang (angka) panjang dari kanvas
-             * @param lebar (angka) lebar dari kanvs
-             * @param canvas (HTMLCanvasElement) referensi ke kanvas
-             * @param fullScreen (boolean) apakah akan men-skala kanvas mengikuti ukuran layar/fullscreen
-             * @returns
-             */
-            static Grafis(panjang = 320, lebar = 240, canvas = null, fullScreen = true, input = true) {
-                //coba cari canvas
-                if (!canvas) {
-                    canvas = document.body.querySelector('canvas');
-                }
-                if (!canvas) {
-                    document.body.appendChild(document.createElement('canvas'));
-                }
-                ha.be.Blijs.skalaOtomatis = fullScreen;
-                // ha.be.Blijs._inputStatus = input
-                //sudah diinisialisasi atau belum
-                if (ha.be.Main.canvasAktif) {
-                    console.warn('init lebih dari sekali');
-                    ha.be.Main.Grafis(panjang, lebar, ha.be.Blijs.skalaOtomatis);
-                }
-                else {
-                    console.log('inisialisasi');
-                    ha.be.Main.init(canvas, canvas);
-                    ha.be.Main.Grafis(panjang, lebar, ha.be.Blijs.skalaOtomatis);
-                    if (input) {
-                        ha.be.input.init(ha.be.Main.canvasAktif);
-                    }
-                    if (ha.be.Blijs.skalaOtomatis) {
-                        window.onresize = () => {
-                            if (ha.be.Blijs.skalaOtomatis) {
-                                ha.be.Blijs.windowResize();
-                            }
-                        };
-                    }
-                    if (ha.be.Blijs.skalaOtomatis) {
-                        ha.be.Blijs.windowResize();
-                    }
-                    setTimeout(() => {
-                        if (ha.be.Blijs.skalaOtomatis) {
-                            ha.be.Blijs.windowResize();
-                        }
-                    }, 100);
-                    // setTimeout(() => {
-                    // 	ha.be.Blijs.repeat();
-                    // }, 0);
-                    //font default
-                    ha.be.Teks.font("12px sans-serif");
-                    ha.be.Teks.rata("center");
-                    ha.be.Main.Warna(255, 255, 255, 100);
-                    ha.be.Main.canvasAktif.ctx.strokeStyle = "#ffffff";
-                }
-            }
-            /** depecreated */
-            // static loop(): void {
-            // 	let _window: any = window;
-            // 	if (typeof (_window.Loop) == 'function') {
-            // 		//TODO: pre loop
-            // 		_window.Loop();
-            // 		//TODO: post loop
-            // 	}
-            // 	else if (typeof (_window.Update) == 'function') {
-            // 		//TODO: pre loop
-            // 		_window.Update();
-            // 		//TODO: post loop
-            // 	}
-            // }
-            /** depecreated */
-            // static repeat() {
-            // 	//check semua image sudah diload
-            // 	ha.be.Blijs.loop();
-            // 	setTimeout(() => {
-            // 		// requestAnimationFrame(() => {
-            // 		// 	ha.be.Blijs.repeat();
-            // 		// });
-            // 		requestAnimationFrame(ha.be.Blijs.repeat);
-            // 	}, ha.be.Main.fps);
-            // }
-            /**
-             * Handle saat window di resize
-             */
-            static windowResize() {
-                // console.debug('window on resize');
-                let canvas = ha.be.Main.canvasAktif.canvas;
-                let cp = ha.be.Main.canvasAktif.canvas.width;
-                let cl = ha.be.Main.canvasAktif.canvas.height;
-                let wp = window.innerWidth;
-                let wl = window.innerHeight;
-                let ratio = Math.min((wp / cp), (wl / cl));
-                let cp2 = Math.floor(cp * ratio);
-                let cl2 = Math.floor(cl * ratio);
-                ha.be.Main.canvasAktif.ratioX = ratio;
-                ha.be.Main.canvasAktif.ratioY = ratio;
-                canvas.style.position = 'fixed';
-                canvas.style.zIndex = '9999';
-                canvas.style.width = cp2 + 'px';
-                canvas.style.height = cl2 + 'px';
-                canvas.style.top = ((wl - cl2) / 2) + 'px';
-                canvas.style.left = ((wp - cp2) / 2) + 'px';
-                // console.debug('canvas w: ' + canvas.style.width + '/ratio: ' + ratio);
-            }
-            static get skalaOtomatis() {
-                return Blijs._skalaOtomatis;
-            }
-            static set skalaOtomatis(value) {
-                Blijs._skalaOtomatis = value;
-            }
-        }
-        Blijs._skalaOtomatis = true;
-        be.Blijs = Blijs;
-    })(be = ha.be || (ha.be = {}));
-})(ha || (ha = {}));
-// setTimeout(() => {
-// 	ha.be.Blijs.init()
-// }, 0);
+// namespace ha.be {
+// 	/**
+// 	 * Depecreated dan akan digabung ke Main
+// 	 * */
+// 	export class Blijs {
+// 		// private static _inputStatus: boolean = true;
+// 		// public static get inputStatus(): boolean {
+// 		// 	return Blijs._inputStatus;
+// 		// }
+// 		// public static set inputStatus(value: boolean) {
+// 		// 	Blijs._inputStatus = value;
+// 		// }
+// 		/**
+// 		 * Setup Blitz Edu
+// 		 * @param panjang (angka) panjang dari kanvas
+// 		 * @param lebar (angka) lebar dari kanvs
+// 		 * @param canvas (HTMLCanvasElement) referensi ke kanvas
+// 		 * @param fullScreen (boolean) apakah akan men-skala kanvas mengikuti ukuran layar/fullscreen
+// 		 * @returns
+// 		 */
+// 		// static Grafis(panjang: number = 320, lebar: number = 240, canvas: HTMLCanvasElement = null, fullScreen: boolean = true, input: boolean = true) {
+// 		// 	//coba cari canvas
+// 		// 	if (!canvas) {
+// 		// 		canvas = document.body.querySelector('canvas') as HTMLCanvasElement;
+// 		// 	}
+// 		// 	if (!canvas) {
+// 		// 		document.body.appendChild(document.createElement('canvas'));
+// 		// 	}
+// 		// 	ha.be.Blijs.skalaOtomatis = fullScreen;
+// 		// 	// ha.be.Blijs._inputStatus = input
+// 		// 	//sudah diinisialisasi atau belum
+// 		// 	if (ha.be.Main.canvasAktif) {
+// 		// 		console.warn('init lebih dari sekali');
+// 		// 		ha.be.Main.Grafis2(panjang, lebar, ha.be.Blijs.skalaOtomatis);
+// 		// 	}
+// 		// 	else {
+// 		// 		console.log('inisialisasi');
+// 		// 		ha.be.Main.init(canvas, canvas);
+// 		// 		ha.be.Main.Grafis2(panjang, lebar, ha.be.Blijs.skalaOtomatis);
+// 		// 		if (input) {
+// 		// 			ha.be.input.init(ha.be.Main.canvasAktif);
+// 		// 		}
+// 		// 		if (ha.be.Blijs.skalaOtomatis) {
+// 		// 			window.onresize = (): void => {
+// 		// 				if (ha.be.Blijs.skalaOtomatis) {
+// 		// 					ha.be.Blijs.windowResize();
+// 		// 				}
+// 		// 			}
+// 		// 		}
+// 		// 		if (ha.be.Blijs.skalaOtomatis) {
+// 		// 			ha.be.Blijs.windowResize();
+// 		// 		}
+// 		// 		setTimeout(() => {
+// 		// 			if (ha.be.Blijs.skalaOtomatis) {
+// 		// 				ha.be.Blijs.windowResize();
+// 		// 			}
+// 		// 		}, 100);
+// 		// 		// setTimeout(() => {
+// 		// 		// 	ha.be.Blijs.repeat();
+// 		// 		// }, 0);
+// 		// 		//font default
+// 		// 		ha.be.Teks.font("12px sans-serif");
+// 		// 		ha.be.Teks.rata("center");
+// 		// 		ha.be.Main.Warna(255, 255, 255, 100);
+// 		// 		ha.be.Main.canvasAktif.ctx.strokeStyle = "#ffffff";
+// 		// 	}
+// 		// }
+// 		/** depecreated */
+// 		// static loop(): void {
+// 		// 	let _window: any = window;
+// 		// 	if (typeof (_window.Loop) == 'function') {
+// 		// 		//TODO: pre loop
+// 		// 		_window.Loop();
+// 		// 		//TODO: post loop
+// 		// 	}
+// 		// 	else if (typeof (_window.Update) == 'function') {
+// 		// 		//TODO: pre loop
+// 		// 		_window.Update();
+// 		// 		//TODO: post loop
+// 		// 	}
+// 		// }
+// 		/** depecreated */
+// 		// static repeat() {
+// 		// 	//check semua image sudah diload
+// 		// 	ha.be.Blijs.loop();
+// 		// 	setTimeout(() => {
+// 		// 		// requestAnimationFrame(() => {
+// 		// 		// 	ha.be.Blijs.repeat();
+// 		// 		// });
+// 		// 		requestAnimationFrame(ha.be.Blijs.repeat);
+// 		// 	}, ha.be.Main.fps);
+// 		// }
+// 		/**
+// 		 * Handle saat window di resize
+// 		 */
+// 		static windowResize(): void {
+// 			// console.debug('window on resize');
+// 			let canvas: HTMLCanvasElement = ha.be.Main.canvasAktif.canvas;
+// 			let cp = ha.be.Main.canvasAktif.canvas.width;
+// 			let cl = ha.be.Main.canvasAktif.canvas.height;
+// 			let wp = window.innerWidth;
+// 			let wl = window.innerHeight;
+// 			let ratio = Math.min((wp / cp), (wl / cl));
+// 			let cp2 = Math.floor(cp * ratio);
+// 			let cl2 = Math.floor(cl * ratio);
+// 			ha.be.Main.canvasAktif.ratioX = ratio;
+// 			ha.be.Main.canvasAktif.ratioY = ratio;
+// 			canvas.style.position = 'fixed';
+// 			canvas.style.zIndex = '9999';
+// 			canvas.style.width = cp2 + 'px';
+// 			canvas.style.height = cl2 + 'px';
+// 			canvas.style.top = ((wl - cl2) / 2) + 'px';
+// 			canvas.style.left = ((wp - cp2) / 2) + 'px';
+// 			// console.debug('canvas w: ' + canvas.style.width + '/ratio: ' + ratio);
+// 		}
+// 		// public static get skalaOtomatis(): boolean {
+// 		// return Blijs._skalaOtomatis;
+// 		// }
+// 		// public static set skalaOtomatis(value: boolean) {
+// 		// Blijs._skalaOtomatis = value;
+// 		// }
+// 	}
+// }
+// // setTimeout(() => {
+// // 	ha.be.Blijs.init()
+// // }, 0);
 var ha;
 (function (ha) {
     class Transform {
@@ -2238,7 +2311,7 @@ const InputType = ha.be.input.InputType;
  * 	Shortcut untuk perintah-perintah utama
  */
 const Bersih = ha.be.Main.Bersih;
-const Grafis = ha.be.Blijs.Grafis;
+const Grafis = ha.be.Main.Grafis;
 const Warna = ha.be.Main.Warna;
 const Merah = ha.be.Main.Merah;
 const Hijau = ha.be.Main.Hijau;
