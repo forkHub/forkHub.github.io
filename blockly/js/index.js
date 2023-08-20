@@ -1,14 +1,47 @@
 "use strict";
+var ha;
+(function (ha) {
+    var blockly;
+    (function (blockly) {
+        class ObjectParser {
+            static parse(obj, depth = 0) {
+                depth++;
+                console.log('parse obj, d ' + depth);
+                if (depth > 2)
+                    return;
+                for (let i in obj) {
+                    console.log(i + '/' + typeof (i));
+                    let j = i;
+                    if (obj[j] instanceof Object) {
+                        ObjectParser.parse(obj[j], depth);
+                    }
+                }
+            }
+        }
+        blockly.ObjectParser = ObjectParser;
+    })(blockly = ha.blockly || (ha.blockly = {}));
+})(ha || (ha = {}));
+var ha;
+(function (ha) {
+    var blockly;
+    (function (blockly) {
+        class WorkSpace {
+        }
+        blockly.WorkSpace = WorkSpace;
+    })(blockly = ha.blockly || (ha.blockly = {}));
+})(ha || (ha = {}));
 var EOutput;
 (function (EOutput) {
     EOutput["Boolean"] = "Boolean";
     EOutput["Number"] = "Number";
     EOutput["String"] = "String";
     EOutput["Array"] = "Array";
+    EOutput["Dummy"] = "dummy";
 })(EOutput || (EOutput = {}));
 var EArgType;
 (function (EArgType) {
     EArgType["inputValue"] = "input_value";
+    EArgType["inputDummy"] = "input_dummy";
 })(EArgType || (EArgType = {}));
 var ToolBoxKind;
 (function (ToolBoxKind) {
@@ -24,19 +57,22 @@ var ha;
         var BDef;
         (function (BDef) {
             function defValue(t) {
+                console.group("defValue");
+                console.log(t);
                 if (t.output) {
                 }
                 else {
                     t.previousStatement = null;
                     t.nextStatement = null;
                 }
-                if (t.inputsInline == undefined) {
+                if (!Object.hasOwn(t, "inputsInline")) {
                     t.inputsInline = false;
                 }
-                ;
                 t.colour = 230;
                 t.tooltip = t.tooltip || "";
                 t.helpUrl = t.helpUrl || "";
+                console.log(t);
+                console.groupEnd();
             }
             function createShadow(t) {
                 if (EOutput.String == t.check) {
@@ -69,6 +105,8 @@ var ha;
                         }
                     };
                 }
+                else if (EOutput.Dummy) {
+                }
                 throw Error('not supported: ' + t.check);
             }
             function addArg(t) {
@@ -83,12 +121,19 @@ var ha;
                 }
                 t.args0 = [];
                 for (let i in t.args) {
-                    t.args0.push({
-                        check: getCheck(t.args[i]),
-                        type: EArgType.inputValue,
-                        default: t.args[i] + '',
-                        name: i + ''
-                    });
+                    if ("dummy" == i.toLocaleLowerCase()) {
+                        t.args0.push({
+                            type: EArgType.inputDummy
+                        });
+                    }
+                    else {
+                        t.args0.push({
+                            check: getCheck(t.args[i]),
+                            type: EArgType.inputValue,
+                            default: t.args[i] + '',
+                            name: i + ''
+                        });
+                    }
                 }
             }
             function addInput(t) {
@@ -96,7 +141,11 @@ var ha;
                     return;
                 let inputs = {};
                 t.args0.forEach((item) => {
-                    inputs[item.name] = createShadow(item);
+                    if (item.type == EArgType.inputDummy) {
+                    }
+                    else {
+                        inputs[item.name] = createShadow(item);
+                    }
                 });
                 t.inputs = inputs;
             }
@@ -105,56 +154,107 @@ var ha;
                 addArg(t);
                 addInput(t);
             }
-            function init() {
-                normal(blockly.BlizData.Grafis);
-                normal(blockly.BlizData.Muat);
-                blockly.BlizData.list.forEach((item) => {
-                    normal(item);
-                });
+            function normalizeAllBlock() {
+                blockly.BlitzData.list.forEach((item) => { normal(item); });
+                blockly.ImageBlockData.list.forEach((item) => { normal(item); });
+                blockly.debugData.list.forEach((item) => { normal(item); });
             }
-            BDef.init = init;
+            BDef.normalizeAllBlock = normalizeAllBlock;
         })(BDef = blockly.BDef || (blockly.BDef = {}));
     })(blockly = ha.blockly || (ha.blockly = {}));
 })(ha || (ha = {}));
-///<reference path="./toolboxType.ts"/>
 var ha;
 (function (ha) {
     var blockly;
     (function (blockly) {
-        var BlizData;
-        (function (BlizData) {
-            BlizData.Grafis = {
-                type: "Grafis",
-                message0: "Graphics width: %1 height: %2",
-                args: {
-                    width: 320,
-                    height: 240
-                }
-            };
-            BlizData.Muat = {
-                type: "Muat",
-                message0: 'Load Sprite from url: %1',
-                inputsInline: false,
-                args: {
-                    url: "block.png"
-                },
-                output: EOutput.Number
-            };
-            BlizData.list = [];
-            BlizData.list.push(BlizData.Grafis);
-            BlizData.list.push(BlizData.Muat);
-            BlizData.list.push({
-                type: "Cls",
-                message0: 'Clear Screen',
-            });
-            BlizData.list.push({
-                type: "DrawSprite",
-                message0: "Draw sprite: %1",
-                args: {
-                    sprite: 0
-                }
-            });
-        })(BlizData = blockly.BlizData || (blockly.BlizData = {}));
+        class Export {
+            static data = `
+            <!DOCTYPE html>
+            <html>
+
+            <head>
+                <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+                <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0,
+                    target-densityDpi=device-dpi">
+                <title>Blitz Blockly</title>
+            </head>
+
+            <body>
+                <canvas></canvas>
+                <!-- script ref  -->
+                <script src="./js/be.js" defer></script>
+                <script src="./js/bbjs.js" defer></script>
+
+                <!-- main  -->
+                <script>
+                    "use strict";
+                    window.onload = () => {
+                        console.log('start');
+                        /** script here **/
+                        let __update; // = update || Update || UPDATE as any;
+                        if (typeof update === "function")
+                            __update = update;
+                        if (typeof Update === "function")
+                            __update = Update;
+                        if (typeof UPDATE === "function")
+                            __update = UPDATE;
+                        console.log(__update);
+                        let __updater = () => {
+                            if (__update) {
+                                __update();
+                            }
+                            requestAnimationFrame(__updater);
+                        };
+                        requestAnimationFrame(__updater);
+                    };
+                </script>
+            </body>
+
+            </html>
+        `;
+            static export(code) {
+                // console.log('code', code);
+                // let win = window.open('about:blank', '_blank');
+                let data2 = this.data.replace('/** script here **/', code);
+                return data2;
+                // let iframe = document.body.querySelector('iframe') as HTMLIFrameElement;
+                // let doc = iframe.contentWindow.document;
+                // doc.open();
+                // doc.write(data2);
+                // doc.close();
+                // console.log('data2', data2);
+                // setTimeout(() => {
+                //     win.document.open();
+                //     win.document.write(data2);
+                //     win.document.close();
+                //     console.log('writing');
+                // }, 100);
+                // let link = (document.body.querySelector('a.run') as HTMLLinkElement);
+                // link.href = './play.html?code=' +
+                //     encodeURIComponent(data2);
+                // window.open('data:text/html;charset=utf-8,' +
+                //     encodeURIComponent(data2)
+                // );
+            }
+        }
+        blockly.Export = Export;
+    })(blockly = ha.blockly || (ha.blockly = {}));
+})(ha || (ha = {}));
+var ha;
+(function (ha) {
+    var blockly;
+    (function (blockly) {
+        class Iframe {
+            static init() {
+                let simpan = window.localStorage.getItem("blocklycode");
+                let iframe = document.querySelector('iframe');
+                let doc = iframe.contentWindow.document;
+                doc.open();
+                doc.write(simpan);
+                doc.close();
+            }
+        }
+        blockly.Iframe = Iframe;
     })(blockly = ha.blockly || (ha.blockly = {}));
 })(ha || (ha = {}));
 ///<reference path="./toolboxType.ts"/>
@@ -164,39 +264,76 @@ var ha;
     (function (blockly) {
         var toolbox;
         (function (toolbox_1) {
-            function ToolBoxCreateJSDef(t) {
-                console.log("test: " + t.type);
-                javascript.javascriptGenerator.forBlock[t.type] = function (block, generator) {
-                    let code = '';
-                    code = t.type + '(';
-                    t.args0.forEach((item, idx) => {
-                        let value = generator.valueToCode(block, item.name, javascript.Order.ATOMIC);
-                        console.log('value to code >>', "item name:", item.name, "value", value);
-                        code += value;
-                        if (idx < t.args0.length - 1) {
-                            code += ',';
-                        }
-                    });
-                    code += ');\n';
-                    console.log("code", code);
-                    return code;
-                };
-            }
-            toolbox_1.ToolBoxCreateJSDef = ToolBoxCreateJSDef;
+            // export function ToolBoxCreateJSDef(t: TBlockDef) {
+            //     console.log("test: " + t.type);
+            //     javascript.javascriptGenerator.forBlock[t.type] = function (block: any, generator: any) {
+            //         let code = '';
+            //         code = t.type + '('
+            //         t.args0.forEach((item, idx) => {
+            //             console.log('item type: ', item.type);
+            //             if (item.type == EArgType.inputDummy) {
+            //             }
+            //             else {
+            //                 let value = generator.valueToCode(block, item.name, javascript.Order.ATOMIC);
+            //                 console.log('value to code >>', "item name:", item.name, "value", value);
+            //                 code += value;
+            //                 if (idx < t.args0.length - 1) {
+            //                     code += ','
+            //                 }
+            //             }
+            //         });
+            //         code += ');\n';
+            //         console.log("code", code);
+            //         return code;
+            //     };
+            // }
             function init() {
-                blockly.BDef.init();
-                blockly.BlizData.list.forEach((item) => {
-                    blockData.push(item);
-                });
-                Blockly.common.defineBlocksWithJsonArray(blockData);
-                //register blitz
-                let blitz = {
+                blockly.BDef.normalizeAllBlock();
+                let allToolBoxDef = populateToolBox();
+                Blockly.common.defineBlocksWithJsonArray(allToolBoxDef);
+                toolbox_1.toolbox.contents.push(getCategory("Blitz", blockly.BlitzData.list)); //registerBlitz());
+                toolbox_1.toolbox.contents.push(getCategory("Image", blockly.ImageBlockData.list));
+                toolbox_1.toolbox.contents.push(getCategory(blockly.debugData.group, blockly.debugData.list));
+                js(allToolBoxDef);
+            }
+            toolbox_1.init = init;
+            function getCategory(nama, l) {
+                let h = {
                     kind: "category",
-                    name: "Blitz",
-                    contents: []
+                    name: nama,
+                    contents: getToolBoxContentDef(l)
                 };
+                return h;
+            }
+            /*
+            function registerImage(): TToolbokContentDef {
+                let h: TToolbokContentDef = {
+                    kind: "category",
+                    name: "Image",
+                    contents: getToolBoxContentDef(ImageBlockData.list)
+                }
+        
+                // //register blitz content
+                // ImageBlockData.list.forEach((item) => {
+                //     let def: TToolbokContentDef = {
+                //         name: item.type,
+                //         kind: ToolBoxKind.block,
+                //         type: item.type
+                //     }
+                //     if (item.inputs) {
+                //         def.inputs = item.inputs
+                //     }
+        
+                //     h.contents.push(def);
+                // })
+        
+                return h;
+            }
+            */
+            function getToolBoxContentDef(l) {
                 //register blitz content 
-                blockData.forEach((item) => {
+                let h = [];
+                l.forEach((item) => {
                     let def = {
                         name: item.type,
                         kind: ToolBoxKind.block,
@@ -205,22 +342,68 @@ var ha;
                     if (item.inputs) {
                         def.inputs = item.inputs;
                     }
-                    blitz.contents.push(def);
+                    h.push(def);
                 });
-                toolbox_1.toolbox.contents.push(blitz);
+                return h;
+            }
+            /*
+            function registerBlitz(): TToolbokContentDef {
+                let blitz: TToolbokContentDef =
+                {
+                    kind: "category",
+                    name: "Blitz",
+                    contents: []
+                }
+        
+                //register blitz content
+                BlitzData.list.forEach((item) => {
+                    let def: TToolbokContentDef = {
+                        name: item.type,
+                        kind: ToolBoxKind.block,
+                        type: item.type
+                    }
+                    if (item.inputs) {
+                        def.inputs = item.inputs
+                    }
+        
+                    blitz.contents.push(def);
+                })
+        
+        
+                return blitz;
+            }
+            */
+            function populateToolBox() {
+                let blockData = [];
+                blockly.BlitzData.list.forEach((item) => {
+                    blockData.push(item);
+                });
+                blockly.ImageBlockData.list.forEach((item) => {
+                    blockData.push(item);
+                });
+                blockly.debugData.list.forEach((item) => {
+                    blockData.push(item);
+                });
+                return blockData;
+            }
+            function js(blockData) {
                 for (let i = 0; i < blockData.length; i++) {
                     let itemBlockData = blockData[i];
                     console.log('type: ' + itemBlockData.type);
                     javascript.javascriptGenerator.forBlock[itemBlockData.type] = (block, generator) => {
                         let code = '';
                         console.group("");
-                        code = itemBlockData.type + '(';
+                        code = itemBlockData.type.split('_')[0] + '(';
                         itemBlockData.args0.forEach((item, idx) => {
-                            let value = generator.valueToCode(block, item.name, javascript.Order.ATOMIC);
-                            console.log('value to code >>', "item name:", item.name, "value", value);
-                            code += value;
-                            if (idx < itemBlockData.args0.length - 1) {
-                                code += ',';
+                            if (item.type == EArgType.inputDummy) {
+                            }
+                            else {
+                                let value = generator.valueToCode(block, item.name, javascript.Order.ATOMIC);
+                                console.log('value to code >>', "item name:", item.name, "value", value);
+                                code += value;
+                                if (idx < itemBlockData.args0.length - 1) {
+                                    code += ',';
+                                }
                             }
                         });
                         code += ')';
@@ -235,8 +418,7 @@ var ha;
                     };
                 }
             }
-            toolbox_1.init = init;
-            let blockData = [];
+            // let blockData: TBlockDef[] = [];
             //default toolbox
             toolbox_1.toolbox = {
                 kind: ToolBoxKind.categoryToolbox,
@@ -468,71 +650,199 @@ var ha;
     })(blockly = ha.blockly || (ha.blockly = {}));
 })(ha || (ha = {}));
 ///<reference path="./toobox.ts"/>
-ha.blockly.toolbox.init();
-var options = {
-    toolbox: ha.blockly.toolbox.toolbox,
-    collapse: true,
-    comments: true,
-    disable: true,
-    maxBlocks: Infinity,
-    trashcan: true,
-    horizontalLayout: false,
-    toolboxPosition: 'start',
-    css: true,
-    media: 'https://blockly-demo.appspot.com/static/media/',
-    rtl: false,
-    scrollbars: true,
-    sounds: true,
-    oneBasedIndex: true
-};
-/* Inject your workspace */
-const workspace = Blockly.inject("blocklyDiv", options);
-workspace;
-/* Load Workspace Blocks from XML to workspace. Remove all code below if no blocks to load */
-/* TODO: Change workspace blocks XML ID if necessary. Can export workspace blocks XML from Workspace Factory. */
-// var workspaceBlocks = document.getElementById("workspaceBlocks");
-/* Load blocks to workspace. */
-// Blockly.Xml.domToWorkspace(workspaceBlocks, workspace);
-let w = window;
-w.test = () => {
-    let simpan = Blockly.serialization.workspaces.save(workspace);
-    window.localStorage.setItem("blocklytest", JSON.stringify(simpan));
-    console.log(simpan);
-};
-w.load = () => {
-    let simpan = window.localStorage.getItem("blocklytest");
-    let code = JSON.parse(simpan);
-    Blockly.serialization.workspaces.load(code, workspace);
-};
-w.code = () => {
-    let code = javascript.javascriptGenerator.workspaceToCode(workspace);
-    console.log(code);
-};
-w.tambahVar = () => {
-    let var1 = prompt('variable baru');
-    let simpan = Blockly.serialization.workspaces.save(workspace);
-    if (!simpan.variables) {
-        simpan.variables = [];
-    }
-    simpan.variables.push({
-        id: 'random_id' + Math.floor(Math.random() * 1000),
-        name: var1
-    });
-    Blockly.serialization.workspaces.load(simpan, workspace);
-};
-// console.log(window);
-window.onload = () => {
-    // console.log('test');
-    // console.log(w.test);
-    // console.log("=================");
-};
-// javascript.javascriptGenerator.forBlock['blitz_graphics'] = function (block: any, generator: any) {
-// 	var value_width = generator.valueToCode(block, 'width', javascript.Order.ATOMIC) || 240;
-// 	var value_height = generator.valueToCode(block, 'height', javascript.Order.ATOMIC) || 320;
-// 	var checkbox_name = block.getFieldValue('fullScreen') === 'TRUE';
-// 	var checkbox_name2 = block.getFieldValue('handleInput') === 'TRUE';
-// 	// TODO: Assemble javascript into code variable.
-// 	var code = `Graphics (${value_width}, ${value_height}, ${checkbox_name}, ${checkbox_name2} )\n`;
-// 	return code;
-// };
-console.log(Blockly);
+var ha;
+(function (ha) {
+    var blockly;
+    (function (blockly) {
+        class Index {
+            static init() {
+                ha.blockly.toolbox.init();
+                //
+                Blockly.Msg["VARIABLES_SET"] = "%1 = %2";
+                Blockly.Msg["MATH_CHANGE_TITLE"] = "%1 += %2";
+                var options = {
+                    toolbox: ha.blockly.toolbox.toolbox,
+                    collapse: true,
+                    comments: true,
+                    disable: true,
+                    maxBlocks: Infinity,
+                    trashcan: true,
+                    horizontalLayout: true,
+                    toolboxPosition: 'start',
+                    css: true,
+                    media: 'https://blockly-demo.appspot.com/static/media/',
+                    rtl: false,
+                    scrollbars: true,
+                    sounds: true,
+                    oneBasedIndex: true
+                };
+                /* Inject your workspace */
+                const workspace = Blockly.inject("blocklyDiv", options);
+                workspace;
+                /* Load Workspace Blocks from XML to workspace. Remove all code below if no blocks to load */
+                /* TODO: Change workspace blocks XML ID if necessary. Can export workspace blocks XML from Workspace Factory. */
+                // var workspaceBlocks = document.getElementById("workspaceBlocks");
+                /* Load blocks to workspace. */
+                // Blockly.Xml.domToWorkspace(workspaceBlocks, workspace);
+                let w = window;
+                w.simpan = () => {
+                    let simpan = Blockly.serialization.workspaces.save(workspace);
+                    let code = javascript.javascriptGenerator.workspaceToCode(workspace);
+                    window.localStorage.setItem("blocklytest", JSON.stringify(simpan));
+                    window.localStorage.setItem("blocklycode", code);
+                    console.log(simpan);
+                };
+                w.load = () => {
+                    let simpan = window.localStorage.getItem("blocklytest");
+                    let code = JSON.parse(simpan);
+                    console.log(code);
+                    Blockly.serialization.workspaces.load(code, workspace);
+                };
+                w.code = () => {
+                    let code = javascript.javascriptGenerator.workspaceToCode(workspace);
+                    // let link = (document.body.querySelector('a.run') as HTMLLinkElement);
+                    // link.href = '';
+                    console.log(code);
+                };
+                w.tambahVar = () => {
+                    let var1 = prompt('variable baru');
+                    let simpan = Blockly.serialization.workspaces.save(workspace);
+                    if (!simpan.variables) {
+                        simpan.variables = [];
+                    }
+                    simpan.variables.push({
+                        id: 'random_id' + Math.floor(Math.random() * 1000),
+                        name: var1
+                    });
+                    Blockly.serialization.workspaces.load(simpan, workspace);
+                };
+                w.run = () => {
+                    let code = ha.blockly.Export.export(javascript.javascriptGenerator.workspaceToCode(workspace));
+                    w.simpan();
+                    window.localStorage.setItem("blocklycode", code);
+                    window.top.location.href = ('./play.html');
+                };
+                // console.log(window);
+                window.onload = () => {
+                    // let link = (document.body.querySelector('a.run') as HTMLLinkElement);
+                    // link.href = '';
+                    // console.log('test');
+                    // console.log(w.test);
+                    // console.log("=================");
+                };
+                // javascript.javascriptGenerator.forBlock['blitz_graphics'] = function (block: any, generator: any) {
+                // 	var value_width = generator.valueToCode(block, 'width', javascript.Order.ATOMIC) || 240;
+                // 	var value_height = generator.valueToCode(block, 'height', javascript.Order.ATOMIC) || 320;
+                // 	var checkbox_name = block.getFieldValue('fullScreen') === 'TRUE';
+                // 	var checkbox_name2 = block.getFieldValue('handleInput') === 'TRUE';
+                // 	// TODO: Assemble javascript into code variable.
+                // 	var code = `Graphics (${value_width}, ${value_height}, ${checkbox_name}, ${checkbox_name2} )\n`;
+                // 	return code;
+                // };
+                console.log(Blockly);
+                // ObjectParser.parse(Blockly);
+            }
+        }
+        blockly.Index = Index;
+    })(blockly = ha.blockly || (ha.blockly = {}));
+})(ha || (ha = {}));
+///<reference path="../toolboxType.ts"/>
+var ha;
+(function (ha) {
+    var blockly;
+    (function (blockly) {
+        var BlitzData;
+        (function (BlitzData) {
+            BlitzData.Grafis = {
+                type: "Grafis",
+                message0: "Graphics %1 width: %2 height: %3",
+                // inputsInline: false,
+                args: {
+                    dummy: '',
+                    width: 320,
+                    height: 240
+                }
+            };
+            BlitzData.list = [];
+            BlitzData.list.push(BlitzData.Grafis);
+            // ha.bbjs.General.Graphics full
+            BlitzData.list.push({
+                type: "Grafis_full",
+                message0: "Graphics %1 width: %2 height: %3 canvas id: %4 fullScreen: %5 handleInput: %6",
+                inputsInline: false,
+                args: {
+                    dummy: '',
+                    width: 320,
+                    height: 240,
+                    canvasId: "canvas_id",
+                    fullScreen: true,
+                    handleInput: true
+                }
+            });
+            BlitzData.list.push({
+                type: "ha.be.Main.Bersih",
+                message0: 'Cls',
+            });
+        })(BlitzData = blockly.BlitzData || (blockly.BlitzData = {}));
+    })(blockly = ha.blockly || (ha.blockly = {}));
+})(ha || (ha = {}));
+//TODO: next butuh alias type, buat backward compatibility
+var ha;
+(function (ha) {
+    var blockly;
+    (function (blockly) {
+        var debugData;
+        (function (debugData) {
+            debugData.list = [];
+            debugData.group = "Debug";
+            debugData.list.push({
+                type: 'ha.bbjs.Debug.Obj',
+                message0: "Debug %1 ",
+                args: {
+                    obj: 0
+                },
+            });
+        })(debugData = blockly.debugData || (blockly.debugData = {}));
+    })(blockly = ha.blockly || (ha.blockly = {}));
+})(ha || (ha = {}));
+var ha;
+(function (ha) {
+    var blockly;
+    (function (blockly) {
+        var ImageBlockData;
+        (function (ImageBlockData) {
+            ImageBlockData.list = [];
+            ImageBlockData.blitz_Muat = {
+                type: "ha.bbjs.Sprite.LoadSprite",
+                message0: 'Load Image %1 url: %2',
+                args: {
+                    dummy: '',
+                    url: "./imgs/box.png"
+                },
+                output: EOutput.Number
+            };
+            ImageBlockData.list.push(ImageBlockData.blitz_Muat);
+            //ha.bbjs.Sprite.LoadSprite full
+            ImageBlockData.list.push({
+                type: 'ha.bbjs.Sprite.LoadSprite_full',
+                message0: "Load Image %1 url: %2 drag mode: %3",
+                args: {
+                    dummy: '',
+                    url: './imgs/box.png',
+                    dragMode: 1
+                },
+                output: EOutput.Number
+            });
+            // ha.bbjs.Sprite.DrawSprite 
+            //depecrated
+            ImageBlockData.list.push({
+                type: "ha.bbjs.Sprite.DrawSprite",
+                message0: "Draw %1 image: %2",
+                args: {
+                    dummy: '',
+                    sprite: 0
+                }
+            });
+        })(ImageBlockData = blockly.ImageBlockData || (blockly.ImageBlockData = {}));
+    })(blockly = ha.blockly || (ha.blockly = {}));
+})(ha || (ha = {}));
