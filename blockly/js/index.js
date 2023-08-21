@@ -678,7 +678,6 @@ var ha;
                 };
                 /* Inject your workspace */
                 const workspace = Blockly.inject("blocklyDiv", options);
-                workspace;
                 /* Load Workspace Blocks from XML to workspace. Remove all code below if no blocks to load */
                 /* TODO: Change workspace blocks XML ID if necessary. Can export workspace blocks XML from Workspace Factory. */
                 // var workspaceBlocks = document.getElementById("workspaceBlocks");
@@ -739,6 +738,14 @@ var ha;
                 // 	var code = `Graphics (${value_width}, ${value_height}, ${checkbox_name}, ${checkbox_name2} )\n`;
                 // 	return code;
                 // };
+                window.onresize = () => {
+                    setTimeout(() => {
+                        Blockly.svgResize(workspace);
+                    }, 100);
+                };
+                setTimeout(() => {
+                    Blockly.svgResize(workspace);
+                }, 100);
                 console.log(Blockly);
                 // ObjectParser.parse(Blockly);
             }
