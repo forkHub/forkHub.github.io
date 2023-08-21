@@ -803,7 +803,7 @@ var ha;
         var debugData;
         (function (debugData) {
             debugData.list = [];
-            debugData.group = "Debug1";
+            debugData.group = "Debug2";
             debugData.list.push({
                 type: 'ha.bbjs.Debug.Obj',
                 message0: "Debug %1 ",

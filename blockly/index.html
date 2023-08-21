@@ -11,17 +11,17 @@
 </head>
 
 <body>
-    <div class="hal main" style="position: relative; width: 100%; height: 100%; display: flex; flex-direction: column;">
-        <div id="blocklyArea" class="block-cont" style="flex-grow: 1; position: relative;">
-        </div>
-        <div>
-            <div style="padding:8px 8px 8px 8px">
-                <button onclick="simpan()">simpan</button>
-                <button onclick="load()">load</button>
-                <button onclick="code()">kode</button>
-                <button onclick="tambahVar()">varBaru</button>
-                <button onclick="run()">run</button>
+    <div class="hal main" style="position: relative; width: 100%; height: 100%; display: table;">
+        <div class="block-cont" style="position: relative; display: table-row;">
+            <div id="blocklyArea" class="block-cont" style="position: relative; display: table-cell; height: 100%;">
             </div>
+        </div>
+        <div style="display: table-row;">
+            <button onclick="simpan()">simpan</button>
+            <button onclick="load()">load</button>
+            <button onclick="code()">kode</button>
+            <button onclick="tambahVar()">varBaru</button>
+            <button onclick="run()">run</button>
         </div>
     </div>
     <div id="blocklyDiv" style="position: absolute;"></div>
