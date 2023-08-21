@@ -12,8 +12,7 @@
 
 <body>
     <div class="hal main" style="position: relative; width: 100%; height: 100%; display: flex; flex-direction: column;">
-        <div class="block-cont" style="flex-grow: 1; position: relative;">
-            <div id="blocklyDiv" style="width: 100%; height: 100%; left: 0px; top: 0px;"></div>
+        <div id="blocklyArea" class="block-cont" style="flex-grow: 1; position: relative;">
         </div>
         <div>
             <div style="padding:8px 8px 8px 8px">
@@ -25,6 +24,7 @@
             </div>
         </div>
     </div>
+    <div id="blocklyDiv" style="position: absolute;"></div>
 
     <script src="lib/blockly_compressed.js" defer></script>
     <script src="lib/blocks_compressed.js" defer></script>

@@ -721,32 +721,34 @@ var ha;
                     window.localStorage.setItem("blocklycode", code);
                     window.top.location.href = ('./play.html');
                 };
-                // console.log(window);
-                window.onload = () => {
-                    // let link = (document.body.querySelector('a.run') as HTMLLinkElement);
-                    // link.href = '';
-                    // console.log('test');
-                    // console.log(w.test);
-                    // console.log("=================");
+                let blocklyArea = document.body.querySelector('#blocklyArea');
+                let blocklyDiv = document.body.querySelector('#blocklyDiv');
+                const onresize = function () {
+                    // Compute the absolute coordinates and dimensions of blocklyArea.
+                    let element = blocklyArea;
+                    let x = 0;
+                    let y = 0;
+                    do {
+                        x += element.offsetLeft;
+                        y += element.offsetTop;
+                        element = element.offsetParent;
+                    } while (element);
+                    // Position blocklyDiv over blocklyArea.
+                    blocklyDiv.style.left = x + 'px';
+                    blocklyDiv.style.top = y + 'px';
+                    blocklyDiv.style.width = blocklyArea.offsetWidth + 'px';
+                    blocklyDiv.style.height = blocklyArea.offsetHeight + 'px';
+                    Blockly.svgResize(workspace);
                 };
-                // javascript.javascriptGenerator.forBlock['blitz_graphics'] = function (block: any, generator: any) {
-                // 	var value_width = generator.valueToCode(block, 'width', javascript.Order.ATOMIC) || 240;
-                // 	var value_height = generator.valueToCode(block, 'height', javascript.Order.ATOMIC) || 320;
-                // 	var checkbox_name = block.getFieldValue('fullScreen') === 'TRUE';
-                // 	var checkbox_name2 = block.getFieldValue('handleInput') === 'TRUE';
-                // 	// TODO: Assemble javascript into code variable.
-                // 	var code = `Graphics (${value_width}, ${value_height}, ${checkbox_name}, ${checkbox_name2} )\n`;
-                // 	return code;
-                // };
                 window.onresize = () => {
                     setTimeout(() => {
-                        Blockly.svgResize(workspace);
+                        onresize();
                     }, 100);
                 };
                 setTimeout(() => {
-                    Blockly.svgResize(workspace);
+                    onresize();
                 }, 100);
-                console.log(Blockly);
+                // console.log(Blockly);
                 // ObjectParser.parse(Blockly);
             }
         }
