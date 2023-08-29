@@ -10,3 +10,7 @@ html, body {
     margin: 0px;
     padding: 0px;
 }
+
+button {
+    padding: 4px;
+}
