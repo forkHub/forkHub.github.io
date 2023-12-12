@@ -21,15 +21,16 @@
 </head>
 
 <body style="height: 100%;">
-
-    <iframe style="width: 100%; height: 100%; padding: 8px;">
-
-    </iframe>
+    <h1>Export to Html</h1>
+    <p>
+        Copy content of textarea below and save as html file. You can run the file locally.
+    </p>
+    <textarea style="width: 100%; height: 100%; padding: 8px;"></textarea>
 
     <script src="js/index.js"></script>
     <script>
         window.onload = () => {
-            ha.blockly.Iframe.init();
+            ha.blockly.HalExport.init();
         }
     </script>
 </body>
