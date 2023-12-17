@@ -219,9 +219,24 @@ var ha;
                     blockly.Dialog.show("You are currently editing this project");
                     return;
                 }
-                let f = blockly.Entity.getByParentId(blockly.Store.selectedId);
-                let code = JSON.parse(f.wspace);
-                let project = blockly.Entity.getById(blockly.Store.selectedId);
+                let f;
+                let project;
+                let code;
+                if (this.isDemo) {
+                    f = blockly.Store.demo.find((item) => {
+                        return item.parentId == blockly.Store.selectedId;
+                    });
+                    console.log(f);
+                    code = JSON.parse(f.wspace);
+                    project = blockly.Store.demo.find((item) => {
+                        return item.id == blockly.Store.selectedId;
+                    });
+                }
+                else {
+                    f = blockly.Entity.getByParentId(blockly.Store.selectedId);
+                    code = JSON.parse(f.wspace);
+                    project = blockly.Entity.getById(blockly.Store.selectedId);
+                }
                 blockly.Store.idFile = f.id;
                 blockly.Store.projectId = project.id;
                 Blockly.serialization.workspaces.load(code, blockly.Index.workspace);
