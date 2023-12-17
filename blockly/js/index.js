@@ -3,6 +3,13 @@ var ha;
 (function (ha) {
     var blockly;
     (function (blockly) {
+        blockly.Demo = {};
+    })(blockly = ha.blockly || (ha.blockly = {}));
+})(ha || (ha = {}));
+var ha;
+(function (ha) {
+    var blockly;
+    (function (blockly) {
         class Dialog {
             static dlg;
             static show(msg) {
@@ -185,24 +192,36 @@ var ha;
         class HalListProject {
             static cont;
             static listCont;
-            static selectedId = '';
-            // private static project: IProject;
+            // private static selectedId: string = '';
+            static demoList;
+            static projekList;
+            static isDemo = false;
+            static DemoButtonKlik() {
+                this.isDemo = true;
+                this.render();
+                this.updateTombol();
+            }
+            static ProjectButtonKlik() {
+                this.isDemo = false;
+                this.render();
+                this.updateTombol();
+            }
             static openKlik() {
-                if (this.selectedId == '') {
+                if (blockly.Store.selectedId == '') {
                     //no selected
                     console.log('no selected');
                     blockly.Dialog.show("no item selected");
                     return;
                 }
-                if (blockly.Store.projectId == this.selectedId) {
+                if (blockly.Store.projectId == blockly.Store.selectedId) {
                     //already opened
                     console.log('already open');
                     blockly.Dialog.show("You are currently editing this project");
                     return;
                 }
-                let f = blockly.Entity.getByParentId(this.selectedId);
+                let f = blockly.Entity.getByParentId(blockly.Store.selectedId);
                 let code = JSON.parse(f.wspace);
-                let project = blockly.Entity.getById(this.selectedId);
+                let project = blockly.Entity.getById(blockly.Store.selectedId);
                 blockly.Store.idFile = f.id;
                 blockly.Store.projectId = project.id;
                 Blockly.serialization.workspaces.load(code, blockly.Index.workspace);
@@ -211,14 +230,18 @@ var ha;
             }
             static deleteKlik() {
                 console.group('delete klik');
-                if (this.selectedId == '') {
+                if (blockly.Store.selectedId == '') {
                     //TODO: dialog
                     console.log('no item selected');
                     console.groupEnd();
                     blockly.Dialog.show("no item selected");
                     return;
                 }
-                if (this.selectedId == blockly.Store.projectId) {
+                if (this.isDemo) {
+                    blockly.Dialog.show("The project is read only");
+                    return;
+                }
+                if (blockly.Store.selectedId == blockly.Store.projectId) {
                     //already opened
                     console.log("already opened");
                     console.groupEnd();
@@ -227,17 +250,17 @@ var ha;
                 }
                 let confirm = window.confirm("are you sure you ?");
                 if (confirm) {
-                    console.log('delete by id ' + this.selectedId);
-                    blockly.Entity.delete(this.selectedId);
+                    console.log('delete by id ' + blockly.Store.selectedId);
+                    blockly.Entity.delete(blockly.Store.selectedId);
                     blockly.Entity.commit();
                     console.log("get view to delete");
                     this.listCont.querySelectorAll('.project').forEach((item) => {
-                        if (item.getAttribute('data-id') == this.selectedId) {
+                        if (item.getAttribute('data-id') == blockly.Store.selectedId) {
                             item.parentElement.removeChild(item);
                             console.log("ok");
                         }
                     });
-                    this.selectedId = '';
+                    blockly.Store.selectedId = '';
                 }
                 else {
                     console.log('cancel');
@@ -247,34 +270,56 @@ var ha;
             }
             static closeKlik() {
                 this.cont.close();
-                this.selectedId = '';
+                blockly.Store.selectedId = '';
                 // this.project = null;
             }
-            static show(p) {
-                this.cont.showModal();
-                this.render(p);
-            }
             static renameKlik() {
-                if (this.selectedId == '') {
+                if (blockly.Store.selectedId == '') {
                     blockly.Dialog.show("no item selected");
                     return;
                 }
-                let w = window.prompt("renae", blockly.Entity.getById(this.selectedId).nama);
+                if (this.isDemo) {
+                    blockly.Dialog.show("the project is read only");
+                    return;
+                }
+                let w = window.prompt("renae", blockly.Entity.getById(blockly.Store.selectedId).nama);
                 if (w) {
-                    blockly.Entity.getById(this.selectedId).nama = w;
-                    this.updateItemView(this.listCont.querySelector(`div[data-id='${this.selectedId}']`), blockly.Entity.getById(this.selectedId));
+                    blockly.Entity.getById(blockly.Store.selectedId).nama = w;
                     blockly.Entity.commit();
+                    this.updateItemView(this.listCont.querySelector(`div[data-id='${blockly.Store.selectedId}']`), blockly.Entity.getById(blockly.Store.selectedId));
                 }
                 else {
                     blockly.Dialog.show("invalid name");
                 }
             }
+            static show() {
+                this.isDemo = false;
+                this.cont.showModal();
+                this.render();
+            }
+            static updateTombol() {
+                let cont = this.cont.querySelector('.button-cont');
+                cont.querySelectorAll('button').forEach((item) => {
+                    item.classList.remove('outline');
+                });
+                if (this.isDemo) {
+                    cont.querySelector('button.demo').classList.add('outline');
+                }
+                else {
+                    cont.querySelector('button.project').classList.add('outline');
+                }
+            }
             static init() {
                 this.cont = document.createElement('dialog');
+                this.cont.classList.add('project-list');
                 this.cont.innerHTML = `
-                <div style="display:flex; flex-direction:column">
+                <div style="display:flex; flex-direction:column; height:100%">
                     <h4>Project List:</h4>
-                    <div class='list-cont' style="flex-grow-1">
+                    <div class='button-cont'> 
+                        <button class="project outline" onclick="ha.blockly.HalListProject.ProjectButtonKlik()">My Project</button>
+                        <button class="demo" onclick="ha.blockly.HalListProject.DemoButtonKlik()">Demo</button>
+                    </div>
+                    <div class='list-cont' style="flex-grow:1; overflow-y:auto">
                     </div>
                     <div>
                         <button onclick="ha.blockly.HalListProject.openKlik()">open</button>
@@ -286,24 +331,40 @@ var ha;
             `;
                 this.listCont = this.cont.querySelector("div.list-cont");
                 document.body.append(this.cont);
+                this.demoList = new HalDemoList();
+                this.projekList = new HalProjekList();
             }
-            static buatItemViewIsi(item, cont) {
+            static updateItemView(el, item) {
+                el.innerHTML = '';
+                this.projekList.buatItemViewIsi(item, el);
+            }
+            static render() {
+                blockly.Store.selectedId = '';
+                this.listCont.innerHTML = '';
+                if (this.isDemo) {
+                    this.demoList.render(this.listCont);
+                }
+                else {
+                    this.projekList.render(this.listCont);
+                }
+            }
+        }
+        blockly.HalListProject = HalListProject;
+        class HalProjekList {
+            buatItemViewIsi(item, cont) {
                 cont.innerHTML = `
                 <span>${item.nama}</span>
             `;
             }
-            static updateItemView(el, item) {
-                el.innerHTML = '';
-                this.buatItemViewIsi(item, el);
-            }
-            static buatItemView(item) {
+            //TODO: buat shared method
+            buatItemView(item, cont) {
                 let hasil;
                 hasil = document.createElement('div');
                 hasil.classList.add('project');
                 hasil.setAttribute('data-id', item.id);
                 hasil.onclick = () => {
-                    this.selectedId = item.id;
-                    this.listCont.querySelectorAll(".project").forEach((item2) => {
+                    blockly.Store.selectedId = item.id;
+                    cont.querySelectorAll(".project").forEach((item2) => {
                         item2.classList.remove('selected');
                     });
                     hasil.classList.add('selected');
@@ -311,7 +372,8 @@ var ha;
                 this.buatItemViewIsi(item, hasil);
                 return hasil;
             }
-            static render(list) {
+            render(cont) {
+                let list = blockly.Entity.getByType(blockly.EEntity.PROJECT);
                 list = list.sort((item, item2) => {
                     if (item.nama < item2.nama)
                         return -1;
@@ -319,18 +381,52 @@ var ha;
                         return 1;
                     return 0;
                 });
-                this.listCont.innerHTML = '';
-                this.renderList(list);
-            }
-            static renderList(list) {
                 list.forEach((item) => {
-                    this.listCont.appendChild(this.buatItemView(item));
+                    cont.appendChild(this.buatItemView(item, cont));
                 });
             }
         }
-        blockly.HalListProject = HalListProject;
+        class HalDemoList {
+            buatItemViewIsi(item, cont) {
+                cont.innerHTML = `
+                <span>${item.nama}</span>
+            `;
+            }
+            buatItemView(item, cont) {
+                let hasil;
+                hasil = document.createElement('div');
+                hasil.classList.add('project');
+                hasil.setAttribute('data-id', item.id);
+                hasil.onclick = () => {
+                    blockly.Store.selectedId = item.id;
+                    cont.querySelectorAll(".project").forEach((item2) => {
+                        item2.classList.remove('selected');
+                    });
+                    hasil.classList.add('selected');
+                };
+                this.buatItemViewIsi(item, hasil);
+                return hasil;
+            }
+            render(cont) {
+                let list = blockly.Store.demo.filter((item) => {
+                    return item.type == "project";
+                });
+                list = list.sort((item, item2) => {
+                    if (item.nama < item2.nama)
+                        return -1;
+                    if (item.nama > item2.nama)
+                        return 1;
+                    return 0;
+                });
+                list.forEach((item) => {
+                    cont.appendChild(this.buatItemView(item, cont));
+                });
+            }
+        }
     })(blockly = ha.blockly || (ha.blockly = {}));
 })(ha || (ha = {}));
+// ha.blockly.HalListProject.DemoButtonKlik;
+// ha.blockly.HalListProject.ProjectButtonKlik;
 var ha;
 (function (ha) {
     var blockly;
@@ -389,7 +485,7 @@ var ha;
                     // console.log(simpan);
                 };
                 w.load = () => {
-                    Op.load();
+                    Op.loadKlik();
                     // let simpan = window.localStorage.getItem("blocklytest");
                     // let code = JSON.parse(simpan);
                     // console.log(code);
@@ -428,12 +524,12 @@ var ha;
                     Op.import();
                 };
             }
-            static load() {
-                let list = blockly.Entity.getByType(blockly.EEntity.PROJECT);
+            static loadKlik() {
+                // let list: IEntity[] = Entity.getByType(EEntity.PROJECT);
                 // let p: IProject = list[0] as IProject;
                 // let f: IFile = Entity.getByParentId(p.id) as IFile;
                 //develop ui
-                blockly.HalListProject.show(list);
+                blockly.HalListProject.show();
                 // let code = JSON.parse(f.wspace);
                 // console.log(code);
                 // Blockly.serialization.workspaces.load(code, Index.workspace);
@@ -568,6 +664,20 @@ var ha;
             static _idFile = '';
             static _projectId = '';
             static _defWSpace = '';
+            static _demo = [];
+            static _selectedId = '';
+            static get selectedId() {
+                return Store._selectedId;
+            }
+            static set selectedId(value) {
+                Store._selectedId = value;
+            }
+            static get demo() {
+                return Store._demo;
+            }
+            static set demo(value) {
+                Store._demo = value;
+            }
             static get defWSpace() {
                 return Store._defWSpace;
             }
@@ -589,6 +699,141 @@ var ha;
         }
         blockly.Store = Store;
         Store.defWSpace = "{\"blocks\":{\"languageVersion\":0,\"blocks\":[{\"type\":\"procedures_defnoreturn\",\"id\":\"@iZs`-A.)`GZTz%?Wh_j\",\"x\":607,\"y\":136,\"icons\":{\"comment\":{\"text\":\"Describe this function...\",\"pinned\":false,\"height\":80,\"width\":160}},\"fields\":{\"NAME\":\"update\"},\"inputs\":{\"STACK\":{\"block\":{\"type\":\"ha.be.Be.Bersih\",\"id\":\"(7d4VY9ISHI3=xQXw=c0\",\"next\":{\"block\":{\"type\":\"ha.be.Spr.Gambar\",\"id\":\"TKi]Pbe|YLS%b}yYe+1L\",\"inputs\":{\"sprite\":{\"block\":{\"type\":\"variables_get\",\"id\":\"Oxp^k?rAe(XG%z7DGmrI\",\"fields\":{\"VAR\":{\"id\":\"99*3xs_.J9FLSB`sp](v\"}}}},\"x\":{\"shadow\":{\"type\":\"math_number\",\"id\":\"iR^9X(~I02#.l.kt.[;:\",\"fields\":{\"NUM\":120}}},\"y\":{\"shadow\":{\"type\":\"math_number\",\"id\":\"Sn*[t/Kt[]3J~cg5t9-K\",\"fields\":{\"NUM\":100}}}}}}}}}},{\"type\":\"ha.be.Be.Grafis\",\"id\":\"HaDx$m%9L0)lj6v$4@k*\",\"x\":187,\"y\":160,\"inputs\":{\"width\":{\"shadow\":{\"type\":\"math_number\",\"id\":\"1Yjl.$%bS/5z=@5Qd]V~\",\"fields\":{\"NUM\":320}}},\"height\":{\"shadow\":{\"type\":\"math_number\",\"id\":\"?(lT9dOGdzVnQ.vcHAEI\",\"fields\":{\"NUM\":240}}}},\"next\":{\"block\":{\"type\":\"ha.be.Be.Bersih\",\"id\":\"P=3%M?Ud(^qXZB;*oeeA\",\"next\":{\"block\":{\"type\":\"variables_set\",\"id\":\"?BBuRH-xfVFsVL#ivCx)\",\"fields\":{\"VAR\":{\"id\":\"99*3xs_.J9FLSB`sp](v\"}},\"inputs\":{\"VALUE\":{\"block\":{\"type\":\"ha.be.Spr.Muat\",\"id\":\"-Wwr3nwkx~$;z$;b1tzu\",\"inputs\":{\"url\":{\"shadow\":{\"type\":\"text\",\"id\":\"tjz/~)*VQIRK@:47=aoI\",\"fields\":{\"TEXT\":\"./imgs/box.png\"}}}}}}}}}}}}]},\"variables\":[{\"name\":\"image\",\"id\":\"99*3xs_.J9FLSB`sp](v\"}]}";
+        Store.demo = [
+            {
+                "id": "1702695514572",
+                "type": "file",
+                "nama": "",
+                "parentId": "1702695514571",
+                "wspace": "{\"blocks\":{\"languageVersion\":0,\"blocks\":[{\"type\":\"ha.be.Be.Grafis\",\"id\":\"=~Z^4K/@YS?vy`~7_mri\",\"x\":160,\"y\":50,\"inputs\":{\"width\":{\"shadow\":{\"type\":\"math_number\",\"id\":\"3i#`otG44!%O3dK?dpFj\",\"fields\":{\"NUM\":320}}},\"height\":{\"shadow\":{\"type\":\"math_number\",\"id\":\"B.b@w3*tj%BV1R.$`7K%\",\"fields\":{\"NUM\":240}}}},\"next\":{\"block\":{\"type\":\"ha.be.Be.Bersih\",\"id\":\"GQw6--T)gA*/?G$;:#ma\",\"next\":{\"block\":{\"type\":\"variables_set\",\"id\":\"Z5KN#ZVs|T/tvMLw@-2_\",\"fields\":{\"VAR\":{\"id\":\"+THF*Wwgh/T7rj}$}R!O\"}},\"inputs\":{\"VALUE\":{\"block\":{\"type\":\"ha.be.Spr.Muat\",\"id\":\"d+O(1EMlgqiZyP]*aO}i\",\"inputs\":{\"url\":{\"shadow\":{\"type\":\"text\",\"id\":\"Wf4d%oy-2`wB{hiB*,-O\",\"fields\":{\"TEXT\":\"./imgs/box.png\"}}}}}}}}}}}}]},\"variables\":[{\"name\":\"img\",\"id\":\"+THF*Wwgh/T7rj}$}R!O\"}]}"
+            },
+            {
+                "id": "1702699321357",
+                "type": "project",
+                "nama": "001 draw image v1",
+                "parentId": "-1"
+            },
+            {
+                "id": "1702699321358",
+                "type": "file",
+                "nama": "",
+                "parentId": "1702699321357",
+                "wspace": "{\"blocks\":{\"languageVersion\":0,\"blocks\":[{\"type\":\"procedures_defnoreturn\",\"id\":\"@iZs`-A.)`GZTz%?Wh_j\",\"x\":607,\"y\":136,\"icons\":{\"comment\":{\"text\":\"Describe this function...\",\"pinned\":false,\"height\":80,\"width\":160}},\"fields\":{\"NAME\":\"update\"},\"inputs\":{\"STACK\":{\"block\":{\"type\":\"ha.be.Be.Bersih\",\"id\":\"(7d4VY9ISHI3=xQXw=c0\",\"next\":{\"block\":{\"type\":\"ha.be.Spr.Gambar\",\"id\":\"TKi]Pbe|YLS%b}yYe+1L\",\"inputs\":{\"sprite\":{\"block\":{\"type\":\"variables_get\",\"id\":\"Oxp^k?rAe(XG%z7DGmrI\",\"fields\":{\"VAR\":{\"id\":\"99*3xs_.J9FLSB`sp](v\"}}}},\"x\":{\"shadow\":{\"type\":\"math_number\",\"id\":\"iR^9X(~I02#.l.kt.[;:\",\"fields\":{\"NUM\":120}}},\"y\":{\"shadow\":{\"type\":\"math_number\",\"id\":\"Sn*[t/Kt[]3J~cg5t9-K\",\"fields\":{\"NUM\":100}}}}}}}}}},{\"type\":\"ha.be.Be.Grafis\",\"id\":\"HaDx$m%9L0)lj6v$4@k*\",\"x\":187,\"y\":160,\"inputs\":{\"width\":{\"shadow\":{\"type\":\"math_number\",\"id\":\"1Yjl.$%bS/5z=@5Qd]V~\",\"fields\":{\"NUM\":320}}},\"height\":{\"shadow\":{\"type\":\"math_number\",\"id\":\"?(lT9dOGdzVnQ.vcHAEI\",\"fields\":{\"NUM\":240}}}},\"next\":{\"block\":{\"type\":\"ha.be.Be.Bersih\",\"id\":\"P=3%M?Ud(^qXZB;*oeeA\",\"next\":{\"block\":{\"type\":\"variables_set\",\"id\":\"?BBuRH-xfVFsVL#ivCx)\",\"fields\":{\"VAR\":{\"id\":\"99*3xs_.J9FLSB`sp](v\"}},\"inputs\":{\"VALUE\":{\"block\":{\"type\":\"ha.be.Spr.Muat\",\"id\":\"-Wwr3nwkx~$;z$;b1tzu\",\"inputs\":{\"url\":{\"shadow\":{\"type\":\"text\",\"id\":\"tjz/~)*VQIRK@:47=aoI\",\"fields\":{\"TEXT\":\"./imgs/box.png\"}}}}}}}}}}}}]},\"variables\":[{\"name\":\"image\",\"id\":\"99*3xs_.J9FLSB`sp](v\"}]}"
+            },
+            {
+                "id": "1702699501929",
+                "type": "file",
+                "nama": "",
+                "parentId": "1702699501928",
+                "wspace": "{\"blocks\":{\"languageVersion\":0,\"blocks\":[{\"type\":\"ha.be.Be.Grafis\",\"id\":\"~TlYIq3#Om{-=*Tx0s!)\",\"x\":94,\"y\":93,\"inputs\":{\"width\":{\"shadow\":{\"type\":\"math_number\",\"id\":\"+Updxr[pybv?]u7,S(I_\",\"fields\":{\"NUM\":320}}},\"height\":{\"shadow\":{\"type\":\"math_number\",\"id\":\"m@`/`ndGLb-rlfJ[iA;{\",\"fields\":{\"NUM\":240}}}},\"next\":{\"block\":{\"type\":\"ha.be.Be.Bersih\",\"id\":\"~*lYR/ye*1G/BTco|bcp\"}}}]}}"
+            },
+            {
+                "id": "1702733784745",
+                "type": "project",
+                "nama": "004 drag rotate image",
+                "parentId": "-1"
+            },
+            {
+                "id": "1702733784746",
+                "type": "file",
+                "nama": "",
+                "parentId": "1702733784745",
+                "wspace": "{\"blocks\":{\"languageVersion\":0,\"blocks\":[{\"type\":\"procedures_defnoreturn\",\"id\":\"YAeHvg0folHqbP|w!o~O\",\"x\":482,\"y\":51,\"icons\":{\"comment\":{\"text\":\"Describe this function...\",\"pinned\":false,\"height\":80,\"width\":160}},\"fields\":{\"NAME\":\"update\"},\"inputs\":{\"STACK\":{\"block\":{\"type\":\"ha.be.Be.Bersih\",\"id\":\"(-Hw93,LiU7imvX*I;$%\",\"next\":{\"block\":{\"type\":\"ha.be.Spr.Gambar_no_frame\",\"id\":\"d5b{p_=eg*]UyFf5DM@9\",\"inputs\":{\"sprite\":{\"block\":{\"type\":\"variables_get\",\"id\":\"H0[o0!)W%Z/6{p2}A;zg\",\"fields\":{\"VAR\":{\"id\":\"U/P;57A.cj6i*`rQ:Wkm\"}}}}}}}}}}},{\"type\":\"ha.be.Be.Grafis\",\"id\":\"+0cX1W]m4NbL#=Srz!0M\",\"x\":34,\"y\":17,\"inputs\":{\"width\":{\"shadow\":{\"type\":\"math_number\",\"id\":\"pLz:_^C5wQ?SC*?o/tan\",\"fields\":{\"NUM\":320}}},\"height\":{\"shadow\":{\"type\":\"math_number\",\"id\":\":v-Gueqp;NeddO.fYkb/\",\"fields\":{\"NUM\":240}}}},\"next\":{\"block\":{\"type\":\"variables_set\",\"id\":\"g?Cp~3Fu590VYAhLs^Za\",\"fields\":{\"VAR\":{\"id\":\"U/P;57A.cj6i*`rQ:Wkm\"}},\"inputs\":{\"VALUE\":{\"block\":{\"type\":\"ha.be.Spr.Muat\",\"id\":\"vPfhzXl?GTZ@N~P+m3NC\",\"inputs\":{\"url\":{\"shadow\":{\"type\":\"text\",\"id\":\"pXgmitjH}Vj$av`a$Jn1\",\"fields\":{\"TEXT\":\"./imgs/box.png\"}}}}}}},\"next\":{\"block\":{\"type\":\"ha.be.Spr.DragMode\",\"id\":\"q3WCO0B]_`uxuyH9b/^;\",\"inputs\":{\"sprite\":{\"block\":{\"type\":\"variables_get\",\"id\":\"9qk,l~#6tZ@[9G1egxsZ\",\"fields\":{\"VAR\":{\"id\":\"U/P;57A.cj6i*`rQ:Wkm\"}}}},\"dragMode\":{\"shadow\":{\"type\":\"math_number\",\"id\":\":dId7|[V*VSg,ydUrw^_\",\"fields\":{\"NUM\":2}}}},\"next\":{\"block\":{\"type\":\"ha.be.Spr.Posisi\",\"id\":\"qX|j!kb7nyToCctsbxX#\",\"inputs\":{\"sprite\":{\"block\":{\"type\":\"variables_get\",\"id\":\",6,]t5YfA,j1|);-Ok$J\",\"fields\":{\"VAR\":{\"id\":\"U/P;57A.cj6i*`rQ:Wkm\"}}}},\"x\":{\"shadow\":{\"type\":\"math_number\",\"id\":\"}LjN/+0E]/xy3cDrL9g@\",\"fields\":{\"NUM\":160}}},\"y\":{\"shadow\":{\"type\":\"math_number\",\"id\":\"Y7N1PTUZ#u59/)BoxI`*\",\"fields\":{\"NUM\":120}}}},\"next\":{\"block\":{\"type\":\"ha.be.Spr.Handle\",\"id\":\"s7+_kPl}K*1WL6hM.g}Z\",\"inputs\":{\"sprite\":{\"block\":{\"type\":\"variables_get\",\"id\":\"QaU?5*zae.3WxF%+gb|*\",\"fields\":{\"VAR\":{\"id\":\"U/P;57A.cj6i*`rQ:Wkm\"}}}},\"x\":{\"shadow\":{\"type\":\"math_number\",\"id\":\"{Qp6nqBC(P9uE*ENXish\",\"fields\":{\"NUM\":16}}},\"y\":{\"shadow\":{\"type\":\"math_number\",\"id\":\"E-#LQl!V5ROxo^F3W*)}\",\"fields\":{\"NUM\":16}}}}}}}}}}}}}]},\"variables\":[{\"name\":\"img\",\"id\":\"U/P;57A.cj6i*`rQ:Wkm\"}]}"
+            },
+            {
+                "id": "1702737718630",
+                "type": "project",
+                "nama": "006 collision v1",
+                "parentId": "-1"
+            },
+            {
+                "id": "1702737718631",
+                "type": "file",
+                "nama": "",
+                "parentId": "1702737718630",
+                "wspace": "{\"blocks\":{\"languageVersion\":0,\"blocks\":[{\"type\":\"ha.be.Be.Grafis\",\"id\":\"A;e@.|QUk^%DE2Wr6c9Q\",\"x\":-92,\"y\":2,\"inputs\":{\"width\":{\"shadow\":{\"type\":\"math_number\",\"id\":\"9WA==wu6RE`1Nr.%61pq\",\"fields\":{\"NUM\":640}}},\"height\":{\"shadow\":{\"type\":\"math_number\",\"id\":\"T!Z_3t%]S(C#0`bfmDti\",\"fields\":{\"NUM\":480}}}},\"next\":{\"block\":{\"type\":\"variables_set\",\"id\":\"YBoGw+3Rg1cuPu)JolG5\",\"fields\":{\"VAR\":{\"id\":\"VkK%wOG:^w4r+jR3OSwl\"}},\"inputs\":{\"VALUE\":{\"block\":{\"type\":\"math_number\",\"id\":\"bJrtrVrtc4%NV9dI1Wq3\",\"fields\":{\"NUM\":45}}}},\"next\":{\"block\":{\"type\":\"ha.be.Teks.Goto\",\"id\":\"k9DLyzGc1_k#Os$XYkz*\",\"inputs\":{\"x\":{\"shadow\":{\"type\":\"math_number\",\"id\":\"|ma{5u-?y$g#_hweQ)x$\",\"fields\":{\"NUM\":320}}},\"y\":{\"shadow\":{\"type\":\"math_number\",\"id\":\"2+SV7hG]^$,RBfx8]1|_\",\"fields\":{\"NUM\":20}}}},\"next\":{\"block\":{\"type\":\"note\",\"id\":\"G%OY2#dt*Rz4qZ;Z^~U2\",\"inputs\":{\"comment\":{\"shadow\":{\"type\":\"text\",\"id\":\"v3087sp%gW4$n^~ucU@z\",\"fields\":{\"TEXT\":\"img #1\"}}}},\"next\":{\"block\":{\"type\":\"variables_set\",\"id\":\"X9|QK7pf:.KI1pjVBr@2\",\"fields\":{\"VAR\":{\"id\":\"A0k8Ck#PrIl*XMc%C6nq\"}},\"inputs\":{\"VALUE\":{\"block\":{\"type\":\"ha.be.Spr.Muat\",\"id\":\"N,2n_hb^fPOwr8DlO!*I\",\"inputs\":{\"url\":{\"shadow\":{\"type\":\"text\",\"id\":\")TQI_DPDerl)m](sER.K\",\"fields\":{\"TEXT\":\"./imgs/box.png\"}}}}}}},\"next\":{\"block\":{\"type\":\"ha.be.Spr.Handle\",\"id\":\"5:J*wMjGliCM^t03VG*C\",\"inputs\":{\"sprite\":{\"block\":{\"type\":\"variables_get\",\"id\":\"Yp`Bet]Ar)c?I@|;0k|n\",\"fields\":{\"VAR\":{\"id\":\"A0k8Ck#PrIl*XMc%C6nq\"}}}},\"x\":{\"shadow\":{\"type\":\"math_number\",\"id\":\"G6cFxu**`XNruep9MpB!\",\"fields\":{\"NUM\":320}}},\"y\":{\"shadow\":{\"type\":\"math_number\",\"id\":\"6Ns]nL?7f_A4NqZBg?]4\",\"fields\":{\"NUM\":32}}}},\"next\":{\"block\":{\"type\":\"ha.be.Spr.Ukuran\",\"id\":\"dHbX$*E0*9Z*5]W|deJm\",\"inputs\":{\"sprite\":{\"block\":{\"type\":\"variables_get\",\"id\":\"yretwz!G3N-d*:;EoROz\",\"fields\":{\"VAR\":{\"id\":\"A0k8Ck#PrIl*XMc%C6nq\"}}}},\"width\":{\"shadow\":{\"type\":\"math_number\",\"id\":\"`RxA]@U[8RNHCgjh+NJy\",\"fields\":{\"NUM\":640}}},\"height\":{\"shadow\":{\"type\":\"math_number\",\"id\":\"@3Y-8t%pPVw.BMCb,cdh\",\"fields\":{\"NUM\":64}}}},\"next\":{\"block\":{\"type\":\"note\",\"id\":\"|5{!gO]{dlwElR^d6K[I\",\"inputs\":{\"comment\":{\"shadow\":{\"type\":\"text\",\"id\":\"ENb@L[r3Aae`lTXs%(o}\",\"fields\":{\"TEXT\":\"img #2\"}}}},\"next\":{\"block\":{\"type\":\"variables_set\",\"id\":\".UQ/*_w,CBSIqMPI(Rgx\",\"fields\":{\"VAR\":{\"id\":\"3P(-*k,iL46@4$m:4]?+\"}},\"inputs\":{\"VALUE\":{\"block\":{\"type\":\"ha.be.Spr.Muat\",\"id\":\"M[ZZf;mRYmbmP*W6-l`M\",\"inputs\":{\"url\":{\"shadow\":{\"type\":\"text\",\"id\":\"tb_Gt@GP/=[w}i:S(MpB\",\"fields\":{\"TEXT\":\"./imgs/box.png\"}}}}}}},\"next\":{\"block\":{\"type\":\"ha.be.Spr.Ukuran\",\"id\":\"_a=s)|9SkqfLN^3vXN(-\",\"inputs\":{\"sprite\":{\"block\":{\"type\":\"variables_get\",\"id\":\"#2{mAR:kQ7{:^]O5SzZ@\",\"fields\":{\"VAR\":{\"id\":\"3P(-*k,iL46@4$m:4]?+\"}}}},\"width\":{\"shadow\":{\"type\":\"math_number\",\"id\":\";_56uv/c2J?I),uDG7hr\",\"fields\":{\"NUM\":120}}},\"height\":{\"shadow\":{\"type\":\"math_number\",\"id\":\"BQ/QMf=26dMvaqcR$BbN\",\"fields\":{\"NUM\":120}}}}}}}}}}}}}}}}}}}}}}},{\"type\":\"procedures_defnoreturn\",\"id\":\"tiLTEq`Rv!*_k(!M,VN)\",\"x\":483,\"y\":8,\"icons\":{\"comment\":{\"text\":\"Describe this function...\",\"pinned\":false,\"height\":80,\"width\":160}},\"fields\":{\"NAME\":\"update\"},\"inputs\":{\"STACK\":{\"block\":{\"type\":\"math_change\",\"id\":\"KRBqB8EgETwA]%)VMr0g\",\"fields\":{\"VAR\":{\"id\":\"VkK%wOG:^w4r+jR3OSwl\"}},\"inputs\":{\"DELTA\":{\"shadow\":{\"type\":\"math_number\",\"id\":\"FgtD*,GO6xMW`?v8Xumx\",\"fields\":{\"NUM\":1}}}},\"next\":{\"block\":{\"type\":\"ha.be.Spr.Rotasi\",\"id\":\"Osj,XwZ!%WtmRf}+rxsV\",\"inputs\":{\"sprite\":{\"block\":{\"type\":\"variables_get\",\"id\":\"!7WQR(S~--zTC)3B:fj2\",\"fields\":{\"VAR\":{\"id\":\"A0k8Ck#PrIl*XMc%C6nq\"}}}},\"angle\":{\"shadow\":{\"type\":\"math_number\",\"id\":\"m:E^C%|i:+XOeWLbmNw[\",\"fields\":{\"NUM\":0}},\"block\":{\"type\":\"variables_get\",\"id\":\"^7L[^l{LSudIG$G#{SK9\",\"fields\":{\"VAR\":{\"id\":\"VkK%wOG:^w4r+jR3OSwl\"}}}}},\"next\":{\"block\":{\"type\":\"variables_set\",\"id\":\"bR`e[i]y6OomcC;ucHR}\",\"fields\":{\"VAR\":{\"id\":\"/(Z|)5mME319$T[cI@SG\"}},\"inputs\":{\"VALUE\":{\"block\":{\"type\":\"ha.be.Spr.TabrakanXY\",\"id\":\"_mjvdsf.76n9,uc3g1u3\",\"inputs\":{\"sprite\":{\"block\":{\"type\":\"variables_get\",\"id\":\"@f`+TE*82|LE3WX^3ygv\",\"fields\":{\"VAR\":{\"id\":\"A0k8Ck#PrIl*XMc%C6nq\"}}}},\"x1\":{\"shadow\":{\"type\":\"math_number\",\"id\":\"oX^E@LFHS7YkYN:9#$z;\",\"fields\":{\"NUM\":200}}},\"y1\":{\"shadow\":{\"type\":\"math_number\",\"id\":\"oJM=bwYR+9p5[Z{]!Gjp\",\"fields\":{\"NUM\":240}}},\"sprite2\":{\"block\":{\"type\":\"variables_get\",\"id\":\"8jl}SEc!-)|g8Ztq40k?\",\"fields\":{\"VAR\":{\"id\":\"3P(-*k,iL46@4$m:4]?+\"}}}},\"x2\":{\"shadow\":{\"type\":\"math_number\",\"id\":\"d`QLgoIB)2nz0QpeQ*$p\",\"fields\":{\"NUM\":480}}},\"y2\":{\"shadow\":{\"type\":\"math_number\",\"id\":\"}*x/+|i/@D?Jji%,,;qh\",\"fields\":{\"NUM\":240}}}}}}},\"next\":{\"block\":{\"type\":\"note\",\"id\":\"_4,KD+3jC,KH7ctm|5I3\",\"inputs\":{\"comment\":{\"shadow\":{\"type\":\"text\",\"id\":\"kzm1RNB*N`Q(|XNA}|LJ\",\"fields\":{\"TEXT\":\"render\"}}}},\"next\":{\"block\":{\"type\":\"ha.be.Be.Bersih\",\"id\":\"w=[?@!uJYM;BE1l}IwBv\",\"next\":{\"block\":{\"type\":\"ha.be.Spr.Gambar\",\"id\":\"Y;nVsZ:mkO;Ic=/ptF_o\",\"inputs\":{\"sprite\":{\"block\":{\"type\":\"variables_get\",\"id\":\"FLC|ovT@!v4+ngvkZ_?S\",\"fields\":{\"VAR\":{\"id\":\"A0k8Ck#PrIl*XMc%C6nq\"}}}},\"x\":{\"shadow\":{\"type\":\"math_number\",\"id\":\"3zkk85CZoTYUgaZ!U,xk\",\"fields\":{\"NUM\":200}}},\"y\":{\"shadow\":{\"type\":\"math_number\",\"id\":\"Dj,A@l:)6CTSh:dVXnwJ\",\"fields\":{\"NUM\":240}}}},\"next\":{\"block\":{\"type\":\"ha.be.Spr.Gambar\",\"id\":\"Nw-$nL`8SObe|htVm:n=\",\"inputs\":{\"sprite\":{\"block\":{\"type\":\"variables_get\",\"id\":\"C/yB=`ta]TyAka+[L6IH\",\"fields\":{\"VAR\":{\"id\":\"3P(-*k,iL46@4$m:4]?+\"}}}},\"x\":{\"shadow\":{\"type\":\"math_number\",\"id\":\"Ve!!=inpzwLYsRHZpNTE\",\"fields\":{\"NUM\":480}}},\"y\":{\"shadow\":{\"type\":\"math_number\",\"id\":\"(AoM#T@+IG*,W1;=^XR2\",\"fields\":{\"NUM\":240}}}},\"next\":{\"block\":{\"type\":\"ha.be.Teks.Write\",\"id\":\"#e*iN4d((~HOq[2$uP6_\",\"inputs\":{\"text\":{\"shadow\":{\"type\":\"text\",\"id\":\"{9L3ji6|(|4Hj36|j#FK\",\"fields\":{\"TEXT\":\"collision status\"}},\"block\":{\"type\":\"text_join\",\"id\":\"SK~3!r4HLp-9/4Pm6U(*\",\"extraState\":{\"itemCount\":2},\"inputs\":{\"ADD0\":{\"block\":{\"type\":\"text\",\"id\":\"bQU!{3B:#tUArk!k`GRE\",\"fields\":{\"TEXT\":\"collision status:\"}}},\"ADD1\":{\"block\":{\"type\":\"variables_get\",\"id\":\"p_7e~BdibNM4`4AXZn#N\",\"fields\":{\"VAR\":{\"id\":\"/(Z|)5mME319$T[cI@SG\"}}}}}}}}}}}}}}}}}}}}}}}}}}]},\"variables\":[{\"name\":\"img\",\"id\":\"A0k8Ck#PrIl*XMc%C6nq\"},{\"name\":\"rotation\",\"id\":\"VkK%wOG:^w4r+jR3OSwl\"},{\"name\":\"img2\",\"id\":\"3P(-*k,iL46@4$m:4]?+\"},{\"name\":\"collisionStat\",\"id\":\"/(Z|)5mME319$T[cI@SG\"}]}"
+            },
+            {
+                "id": "1702739076683",
+                "type": "project",
+                "nama": "007 collision v2",
+                "parentId": "-1"
+            },
+            {
+                "id": "1702739076684",
+                "type": "file",
+                "nama": "1702737718631",
+                "parentId": "1702739076683",
+                "wspace": "{\"blocks\":{\"languageVersion\":0,\"blocks\":[{\"type\":\"ha.be.Be.Grafis\",\"id\":\"A;e@.|QUk^%DE2Wr6c9Q\",\"x\":38,\"y\":21,\"inputs\":{\"width\":{\"shadow\":{\"type\":\"math_number\",\"id\":\"9WA==wu6RE`1Nr.%61pq\",\"fields\":{\"NUM\":640}}},\"height\":{\"shadow\":{\"type\":\"math_number\",\"id\":\"T!Z_3t%]S(C#0`bfmDti\",\"fields\":{\"NUM\":480}}}},\"next\":{\"block\":{\"type\":\"variables_set\",\"id\":\"YBoGw+3Rg1cuPu)JolG5\",\"fields\":{\"VAR\":{\"id\":\"VkK%wOG:^w4r+jR3OSwl\"}},\"inputs\":{\"VALUE\":{\"block\":{\"type\":\"math_number\",\"id\":\"bJrtrVrtc4%NV9dI1Wq3\",\"fields\":{\"NUM\":45}}}},\"next\":{\"block\":{\"type\":\"variables_set\",\"id\":\"k;tBJ#cBag7(Zw#][ook\",\"fields\":{\"VAR\":{\"id\":\"/(Z|)5mME319$T[cI@SG\"}},\"inputs\":{\"VALUE\":{\"block\":{\"type\":\"logic_boolean\",\"id\":\"B3yb)A`kSlBP*s|wtU2p\",\"fields\":{\"BOOL\":\"TRUE\"}}}},\"next\":{\"block\":{\"type\":\"ha.be.Teks.Goto\",\"id\":\"k9DLyzGc1_k#Os$XYkz*\",\"inputs\":{\"x\":{\"shadow\":{\"type\":\"math_number\",\"id\":\"|ma{5u-?y$g#_hweQ)x$\",\"fields\":{\"NUM\":320}}},\"y\":{\"shadow\":{\"type\":\"math_number\",\"id\":\"2+SV7hG]^$,RBfx8]1|_\",\"fields\":{\"NUM\":20}}}},\"next\":{\"block\":{\"type\":\"note\",\"id\":\"p#VVS,I]6Pw#Xpehh;Xq\",\"inputs\":{\"comment\":{\"shadow\":{\"type\":\"text\",\"id\":\"h,;=wn!e:M-:lT-IjVHn\",\"fields\":{\"TEXT\":\"Image #1\"}}}},\"next\":{\"block\":{\"type\":\"variables_set\",\"id\":\"X9|QK7pf:.KI1pjVBr@2\",\"fields\":{\"VAR\":{\"id\":\"A0k8Ck#PrIl*XMc%C6nq\"}},\"inputs\":{\"VALUE\":{\"block\":{\"type\":\"ha.be.Spr.Muat\",\"id\":\"N,2n_hb^fPOwr8DlO!*I\",\"inputs\":{\"url\":{\"shadow\":{\"type\":\"text\",\"id\":\")TQI_DPDerl)m](sER.K\",\"fields\":{\"TEXT\":\"./imgs/box.png\"}}}}}}},\"next\":{\"block\":{\"type\":\"ha.be.Spr.Handle\",\"id\":\"5:J*wMjGliCM^t03VG*C\",\"inputs\":{\"sprite\":{\"block\":{\"type\":\"variables_get\",\"id\":\"Yp`Bet]Ar)c?I@|;0k|n\",\"fields\":{\"VAR\":{\"id\":\"A0k8Ck#PrIl*XMc%C6nq\"}}}},\"x\":{\"shadow\":{\"type\":\"math_number\",\"id\":\"G6cFxu**`XNruep9MpB!\",\"fields\":{\"NUM\":320}}},\"y\":{\"shadow\":{\"type\":\"math_number\",\"id\":\"6Ns]nL?7f_A4NqZBg?]4\",\"fields\":{\"NUM\":32}}}},\"next\":{\"block\":{\"type\":\"ha.be.Spr.Ukuran\",\"id\":\"dHbX$*E0*9Z*5]W|deJm\",\"inputs\":{\"sprite\":{\"block\":{\"type\":\"variables_get\",\"id\":\"yretwz!G3N-d*:;EoROz\",\"fields\":{\"VAR\":{\"id\":\"A0k8Ck#PrIl*XMc%C6nq\"}}}},\"width\":{\"shadow\":{\"type\":\"math_number\",\"id\":\"`RxA]@U[8RNHCgjh+NJy\",\"fields\":{\"NUM\":640}}},\"height\":{\"shadow\":{\"type\":\"math_number\",\"id\":\"@3Y-8t%pPVw.BMCb,cdh\",\"fields\":{\"NUM\":64}}}},\"next\":{\"block\":{\"type\":\"ha.be.Spr.Posisi\",\"id\":\"H|[Q67B#8)WxKlJ.{ybJ\",\"inputs\":{\"sprite\":{\"block\":{\"type\":\"variables_get\",\"id\":\"KA~CkZlu9bCsn_KSep:V\",\"fields\":{\"VAR\":{\"id\":\"A0k8Ck#PrIl*XMc%C6nq\"}}}},\"x\":{\"shadow\":{\"type\":\"math_number\",\"id\":\"N3boLkiZC)YQw1i//ERI\",\"fields\":{\"NUM\":200}}},\"y\":{\"shadow\":{\"type\":\"math_number\",\"id\":\"hv@u!0-+?v4f,8t{1kZ#\",\"fields\":{\"NUM\":240}}}},\"next\":{\"block\":{\"type\":\"note\",\"id\":\"Ob/8Uah9`;4K#:mvNy[;\",\"inputs\":{\"comment\":{\"shadow\":{\"type\":\"text\",\"id\":\"9(qw$5_^aWqbbd[E~$gw\",\"fields\":{\"TEXT\":\"Image #2\"}}}},\"next\":{\"block\":{\"type\":\"variables_set\",\"id\":\".UQ/*_w,CBSIqMPI(Rgx\",\"fields\":{\"VAR\":{\"id\":\"3P(-*k,iL46@4$m:4]?+\"}},\"inputs\":{\"VALUE\":{\"block\":{\"type\":\"ha.be.Spr.Muat\",\"id\":\"M[ZZf;mRYmbmP*W6-l`M\",\"inputs\":{\"url\":{\"shadow\":{\"type\":\"text\",\"id\":\"tb_Gt@GP/=[w}i:S(MpB\",\"fields\":{\"TEXT\":\"./imgs/box.png\"}}}}}}},\"next\":{\"block\":{\"type\":\"ha.be.Spr.Ukuran\",\"id\":\"_a=s)|9SkqfLN^3vXN(-\",\"inputs\":{\"sprite\":{\"block\":{\"type\":\"variables_get\",\"id\":\"#2{mAR:kQ7{:^]O5SzZ@\",\"fields\":{\"VAR\":{\"id\":\"3P(-*k,iL46@4$m:4]?+\"}}}},\"width\":{\"shadow\":{\"type\":\"math_number\",\"id\":\";_56uv/c2J?I),uDG7hr\",\"fields\":{\"NUM\":120}}},\"height\":{\"shadow\":{\"type\":\"math_number\",\"id\":\"BQ/QMf=26dMvaqcR$BbN\",\"fields\":{\"NUM\":120}}}},\"next\":{\"block\":{\"type\":\"ha.be.Spr.Posisi\",\"id\":\"y~+Mo8`)=Kp,F6qj8:Tg\",\"inputs\":{\"sprite\":{\"block\":{\"type\":\"variables_get\",\"id\":\"*KQ68BiF9B[j+Z-^(|KX\",\"fields\":{\"VAR\":{\"id\":\"3P(-*k,iL46@4$m:4]?+\"}}}},\"x\":{\"shadow\":{\"type\":\"math_number\",\"id\":\"-*$8#u*x-((?1SQdNNx`\",\"fields\":{\"NUM\":480}}},\"y\":{\"shadow\":{\"type\":\"math_number\",\"id\":\"yc#g1HYbc+QZR$NQ;|MT\",\"fields\":{\"NUM\":240}}}}}}}}}}}}}}}}}}}}}}}}}}}}},{\"type\":\"procedures_defnoreturn\",\"id\":\"tiLTEq`Rv!*_k(!M,VN)\",\"x\":521,\"y\":3,\"icons\":{\"comment\":{\"text\":\"Describe this function...\",\"pinned\":false,\"height\":80,\"width\":160}},\"fields\":{\"NAME\":\"update\"},\"inputs\":{\"STACK\":{\"block\":{\"type\":\"math_change\",\"id\":\"KRBqB8EgETwA]%)VMr0g\",\"fields\":{\"VAR\":{\"id\":\"VkK%wOG:^w4r+jR3OSwl\"}},\"inputs\":{\"DELTA\":{\"shadow\":{\"type\":\"math_number\",\"id\":\"FgtD*,GO6xMW`?v8Xumx\",\"fields\":{\"NUM\":1}}}},\"next\":{\"block\":{\"type\":\"ha.be.Spr.Rotasi\",\"id\":\"Osj,XwZ!%WtmRf}+rxsV\",\"inputs\":{\"sprite\":{\"block\":{\"type\":\"variables_get\",\"id\":\"!7WQR(S~--zTC)3B:fj2\",\"fields\":{\"VAR\":{\"id\":\"A0k8Ck#PrIl*XMc%C6nq\"}}}},\"angle\":{\"shadow\":{\"type\":\"math_number\",\"id\":\"m:E^C%|i:+XOeWLbmNw[\",\"fields\":{\"NUM\":0}},\"block\":{\"type\":\"variables_get\",\"id\":\"^7L[^l{LSudIG$G#{SK9\",\"fields\":{\"VAR\":{\"id\":\"VkK%wOG:^w4r+jR3OSwl\"}}}}},\"next\":{\"block\":{\"type\":\"variables_set\",\"id\":\"hSOZrjQ`CuX8-2%pi8eH\",\"fields\":{\"VAR\":{\"id\":\"/(Z|)5mME319$T[cI@SG\"}},\"inputs\":{\"VALUE\":{\"block\":{\"type\":\"ha.be.Spr.Tabrakan\",\"id\":\"1DBTb@!UzRaU1%fx]q#t\",\"inputs\":{\"sprite1\":{\"block\":{\"type\":\"variables_get\",\"id\":\"TRN#!(4g4(TCiqm6ACdl\",\"fields\":{\"VAR\":{\"id\":\"A0k8Ck#PrIl*XMc%C6nq\"}}}},\"sprite2\":{\"block\":{\"type\":\"variables_get\",\"id\":\"0,3e(8*X#}G=[;K9*e)l\",\"fields\":{\"VAR\":{\"id\":\"3P(-*k,iL46@4$m:4]?+\"}}}}}}}},\"next\":{\"block\":{\"type\":\"note\",\"id\":\"TnU!#mE8:T_8@^qFnz0c\",\"inputs\":{\"comment\":{\"shadow\":{\"type\":\"text\",\"id\":\"qwfy+@{N[2vI(FOO1G:c\",\"fields\":{\"TEXT\":\"render\"}}}},\"next\":{\"block\":{\"type\":\"ha.be.Be.Bersih\",\"id\":\"w=[?@!uJYM;BE1l}IwBv\",\"next\":{\"block\":{\"type\":\"ha.be.Spr.GambarSemua\",\"id\":\"=HKU#|TWzo9Fg:c_4uLr\",\"next\":{\"block\":{\"type\":\"ha.be.Teks.Write\",\"id\":\"#e*iN4d((~HOq[2$uP6_\",\"inputs\":{\"text\":{\"shadow\":{\"type\":\"text\",\"id\":\"{9L3ji6|(|4Hj36|j#FK\",\"fields\":{\"TEXT\":\"collision status\"}},\"block\":{\"type\":\"text_join\",\"id\":\"SK~3!r4HLp-9/4Pm6U(*\",\"extraState\":{\"itemCount\":2},\"inputs\":{\"ADD0\":{\"block\":{\"type\":\"text\",\"id\":\"bQU!{3B:#tUArk!k`GRE\",\"fields\":{\"TEXT\":\"collision status:\"}}},\"ADD1\":{\"block\":{\"type\":\"variables_get\",\"id\":\"p_7e~BdibNM4`4AXZn#N\",\"fields\":{\"VAR\":{\"id\":\"/(Z|)5mME319$T[cI@SG\"}}}}}}}}}}}}}}}}}}}}}}}}]},\"variables\":[{\"name\":\"img\",\"id\":\"A0k8Ck#PrIl*XMc%C6nq\"},{\"name\":\"rotation\",\"id\":\"VkK%wOG:^w4r+jR3OSwl\"},{\"name\":\"img2\",\"id\":\"3P(-*k,iL46@4$m:4]?+\"},{\"name\":\"collisionStat\",\"id\":\"/(Z|)5mME319$T[cI@SG\"}]}"
+            },
+            {
+                "id": "1702786373112",
+                "type": "file",
+                "nama": "",
+                "parentId": "1702786373111",
+                "wspace": "{\"blocks\":{\"languageVersion\":0,\"blocks\":[{\"type\":\"procedures_defnoreturn\",\"id\":\"@iZs`-A.)`GZTz%?Wh_j\",\"x\":560,\"y\":70,\"icons\":{\"comment\":{\"text\":\"Describe this function...\",\"pinned\":false,\"height\":80,\"width\":160}},\"fields\":{\"NAME\":\"update\"},\"inputs\":{\"STACK\":{\"block\":{\"type\":\"ha.be.Be.Bersih\",\"id\":\"(7d4VY9ISHI3=xQXw=c0\",\"next\":{\"block\":{\"type\":\"ha.be.Spr.Gambar\",\"id\":\"TKi]Pbe|YLS%b}yYe+1L\",\"inputs\":{\"sprite\":{\"block\":{\"type\":\"variables_get\",\"id\":\"Oxp^k?rAe(XG%z7DGmrI\",\"fields\":{\"VAR\":{\"id\":\"99*3xs_.J9FLSB`sp](v\"}}}},\"x\":{\"shadow\":{\"type\":\"math_number\",\"id\":\"iR^9X(~I02#.l.kt.[;:\",\"fields\":{\"NUM\":120}}},\"y\":{\"shadow\":{\"type\":\"math_number\",\"id\":\"Sn*[t/Kt[]3J~cg5t9-K\",\"fields\":{\"NUM\":100}}}}}}}}}},{\"type\":\"ha.be.Be.Grafis\",\"id\":\"HaDx$m%9L0)lj6v$4@k*\",\"x\":85,\"y\":50,\"inputs\":{\"width\":{\"shadow\":{\"type\":\"math_number\",\"id\":\"1Yjl.$%bS/5z=@5Qd]V~\",\"fields\":{\"NUM\":320}}},\"height\":{\"shadow\":{\"type\":\"math_number\",\"id\":\"?(lT9dOGdzVnQ.vcHAEI\",\"fields\":{\"NUM\":240}}}},\"next\":{\"block\":{\"type\":\"ha.be.Be.Bersih\",\"id\":\"P=3%M?Ud(^qXZB;*oeeA\",\"next\":{\"block\":{\"type\":\"variables_set\",\"id\":\"?BBuRH-xfVFsVL#ivCx)\",\"fields\":{\"VAR\":{\"id\":\"99*3xs_.J9FLSB`sp](v\"}},\"inputs\":{\"VALUE\":{\"block\":{\"type\":\"ha.be.Spr.Muat\",\"id\":\"-Wwr3nwkx~$;z$;b1tzu\",\"inputs\":{\"url\":{\"shadow\":{\"type\":\"text\",\"id\":\"tjz/~)*VQIRK@:47=aoI\",\"fields\":{\"TEXT\":\"./imgs/box.png\"}}}}}}}}}}}}]},\"variables\":[{\"name\":\"image\",\"id\":\"99*3xs_.J9FLSB`sp](v\"}]}"
+            },
+            {
+                "id": "1702786387196",
+                "type": "file",
+                "nama": "",
+                "parentId": "1702786387195",
+                "wspace": "{\"blocks\":{\"languageVersion\":0,\"blocks\":[{\"type\":\"procedures_defnoreturn\",\"id\":\"@iZs`-A.)`GZTz%?Wh_j\",\"x\":560,\"y\":70,\"icons\":{\"comment\":{\"text\":\"Describe this function...\",\"pinned\":false,\"height\":80,\"width\":160}},\"fields\":{\"NAME\":\"update\"},\"inputs\":{\"STACK\":{\"block\":{\"type\":\"ha.be.Be.Bersih\",\"id\":\"(7d4VY9ISHI3=xQXw=c0\",\"next\":{\"block\":{\"type\":\"ha.be.Spr.Gambar\",\"id\":\"TKi]Pbe|YLS%b}yYe+1L\",\"inputs\":{\"sprite\":{\"block\":{\"type\":\"variables_get\",\"id\":\"Oxp^k?rAe(XG%z7DGmrI\",\"fields\":{\"VAR\":{\"id\":\"99*3xs_.J9FLSB`sp](v\"}}}},\"x\":{\"shadow\":{\"type\":\"math_number\",\"id\":\"iR^9X(~I02#.l.kt.[;:\",\"fields\":{\"NUM\":120}}},\"y\":{\"shadow\":{\"type\":\"math_number\",\"id\":\"Sn*[t/Kt[]3J~cg5t9-K\",\"fields\":{\"NUM\":100}}}}}}}}}},{\"type\":\"ha.be.Be.Grafis\",\"id\":\"HaDx$m%9L0)lj6v$4@k*\",\"x\":85,\"y\":50,\"inputs\":{\"width\":{\"shadow\":{\"type\":\"math_number\",\"id\":\"1Yjl.$%bS/5z=@5Qd]V~\",\"fields\":{\"NUM\":320}}},\"height\":{\"shadow\":{\"type\":\"math_number\",\"id\":\"?(lT9dOGdzVnQ.vcHAEI\",\"fields\":{\"NUM\":240}}}},\"next\":{\"block\":{\"type\":\"ha.be.Be.Bersih\",\"id\":\"P=3%M?Ud(^qXZB;*oeeA\",\"next\":{\"block\":{\"type\":\"variables_set\",\"id\":\"?BBuRH-xfVFsVL#ivCx)\",\"fields\":{\"VAR\":{\"id\":\"99*3xs_.J9FLSB`sp](v\"}},\"inputs\":{\"VALUE\":{\"block\":{\"type\":\"ha.be.Spr.Muat\",\"id\":\"-Wwr3nwkx~$;z$;b1tzu\",\"inputs\":{\"url\":{\"shadow\":{\"type\":\"text\",\"id\":\"tjz/~)*VQIRK@:47=aoI\",\"fields\":{\"TEXT\":\"./imgs/box.png\"}}}}}}}}}}}}]},\"variables\":[{\"name\":\"image\",\"id\":\"99*3xs_.J9FLSB`sp](v\"}]}"
+            },
+            {
+                "id": "1702786438291",
+                "type": "file",
+                "nama": "",
+                "parentId": "1702786438290",
+                "wspace": "{\"blocks\":{\"languageVersion\":0,\"blocks\":[{\"type\":\"procedures_defnoreturn\",\"id\":\"@iZs`-A.)`GZTz%?Wh_j\",\"x\":616,\"y\":79,\"icons\":{\"comment\":{\"text\":\"Describe this function...\",\"pinned\":false,\"height\":80,\"width\":160}},\"fields\":{\"NAME\":\"update\"},\"inputs\":{\"STACK\":{\"block\":{\"type\":\"ha.be.Be.Bersih\",\"id\":\"(7d4VY9ISHI3=xQXw=c0\",\"next\":{\"block\":{\"type\":\"ha.be.Spr.Gambar\",\"id\":\"TKi]Pbe|YLS%b}yYe+1L\",\"inputs\":{\"sprite\":{\"block\":{\"type\":\"variables_get\",\"id\":\"Oxp^k?rAe(XG%z7DGmrI\",\"fields\":{\"VAR\":{\"id\":\"99*3xs_.J9FLSB`sp](v\"}}}},\"x\":{\"shadow\":{\"type\":\"math_number\",\"id\":\"iR^9X(~I02#.l.kt.[;:\",\"fields\":{\"NUM\":120}}},\"y\":{\"shadow\":{\"type\":\"math_number\",\"id\":\"Sn*[t/Kt[]3J~cg5t9-K\",\"fields\":{\"NUM\":100}}}}}}}}}},{\"type\":\"ha.be.Be.Grafis\",\"id\":\"HaDx$m%9L0)lj6v$4@k*\",\"x\":191,\"y\":95,\"inputs\":{\"width\":{\"shadow\":{\"type\":\"math_number\",\"id\":\"1Yjl.$%bS/5z=@5Qd]V~\",\"fields\":{\"NUM\":320}}},\"height\":{\"shadow\":{\"type\":\"math_number\",\"id\":\"?(lT9dOGdzVnQ.vcHAEI\",\"fields\":{\"NUM\":240}}}},\"next\":{\"block\":{\"type\":\"ha.be.Be.Bersih\",\"id\":\"P=3%M?Ud(^qXZB;*oeeA\",\"next\":{\"block\":{\"type\":\"variables_set\",\"id\":\"?BBuRH-xfVFsVL#ivCx)\",\"fields\":{\"VAR\":{\"id\":\"99*3xs_.J9FLSB`sp](v\"}},\"inputs\":{\"VALUE\":{\"block\":{\"type\":\"ha.be.Spr.Muat\",\"id\":\"-Wwr3nwkx~$;z$;b1tzu\",\"inputs\":{\"url\":{\"shadow\":{\"type\":\"text\",\"id\":\"tjz/~)*VQIRK@:47=aoI\",\"fields\":{\"TEXT\":\"./imgs/box.png\"}}}}}}}}}}}}]},\"variables\":[{\"name\":\"image\",\"id\":\"99*3xs_.J9FLSB`sp](v\"}]}"
+            },
+            {
+                "id": "1702786941238",
+                "type": "project",
+                "nama": "003 drag image",
+                "parentId": "-1"
+            },
+            {
+                "id": "1702786941239",
+                "type": "file",
+                "nama": "1702733784746",
+                "parentId": "1702786941238",
+                "wspace": "{\"blocks\":{\"languageVersion\":0,\"blocks\":[{\"type\":\"procedures_defnoreturn\",\"id\":\"YAeHvg0folHqbP|w!o~O\",\"x\":482,\"y\":51,\"icons\":{\"comment\":{\"text\":\"Describe this function...\",\"pinned\":false,\"height\":80,\"width\":160}},\"fields\":{\"NAME\":\"update\"},\"inputs\":{\"STACK\":{\"block\":{\"type\":\"ha.be.Be.Bersih\",\"id\":\"(-Hw93,LiU7imvX*I;$%\",\"next\":{\"block\":{\"type\":\"ha.be.Spr.GambarSemua\",\"id\":\".$2vnJV),.KPkOP$^`5H\"}}}}}},{\"type\":\"ha.be.Be.Grafis\",\"id\":\"+0cX1W]m4NbL#=Srz!0M\",\"x\":34,\"y\":17,\"inputs\":{\"width\":{\"shadow\":{\"type\":\"math_number\",\"id\":\"pLz:_^C5wQ?SC*?o/tan\",\"fields\":{\"NUM\":320}}},\"height\":{\"shadow\":{\"type\":\"math_number\",\"id\":\":v-Gueqp;NeddO.fYkb/\",\"fields\":{\"NUM\":240}}}},\"next\":{\"block\":{\"type\":\"variables_set\",\"id\":\"g?Cp~3Fu590VYAhLs^Za\",\"fields\":{\"VAR\":{\"id\":\"U/P;57A.cj6i*`rQ:Wkm\"}},\"inputs\":{\"VALUE\":{\"block\":{\"type\":\"ha.be.Spr.Muat\",\"id\":\"vPfhzXl?GTZ@N~P+m3NC\",\"inputs\":{\"url\":{\"shadow\":{\"type\":\"text\",\"id\":\"pXgmitjH}Vj$av`a$Jn1\",\"fields\":{\"TEXT\":\"./imgs/box.png\"}}}}}}},\"next\":{\"block\":{\"type\":\"ha.be.Spr.DragMode\",\"id\":\"q3WCO0B]_`uxuyH9b/^;\",\"inputs\":{\"sprite\":{\"block\":{\"type\":\"variables_get\",\"id\":\"9qk,l~#6tZ@[9G1egxsZ\",\"fields\":{\"VAR\":{\"id\":\"U/P;57A.cj6i*`rQ:Wkm\"}}}},\"dragMode\":{\"shadow\":{\"type\":\"math_number\",\"id\":\":dId7|[V*VSg,ydUrw^_\",\"fields\":{\"NUM\":1}}}},\"next\":{\"block\":{\"type\":\"ha.be.Spr.Posisi\",\"id\":\"qX|j!kb7nyToCctsbxX#\",\"inputs\":{\"sprite\":{\"block\":{\"type\":\"variables_get\",\"id\":\",6,]t5YfA,j1|);-Ok$J\",\"fields\":{\"VAR\":{\"id\":\"U/P;57A.cj6i*`rQ:Wkm\"}}}},\"x\":{\"shadow\":{\"type\":\"math_number\",\"id\":\"}LjN/+0E]/xy3cDrL9g@\",\"fields\":{\"NUM\":160}}},\"y\":{\"shadow\":{\"type\":\"math_number\",\"id\":\"Y7N1PTUZ#u59/)BoxI`*\",\"fields\":{\"NUM\":120}}}}}}}}}}}]},\"variables\":[{\"name\":\"img\",\"id\":\"U/P;57A.cj6i*`rQ:Wkm\"}]}"
+            },
+            {
+                "id": "1702787373422",
+                "type": "project",
+                "nama": "002 draw image v2",
+                "parentId": "-1"
+            },
+            {
+                "id": "1702787373423",
+                "type": "file",
+                "nama": "",
+                "parentId": "1702787373422",
+                "wspace": "{\"blocks\":{\"languageVersion\":0,\"blocks\":[{\"type\":\"procedures_defnoreturn\",\"id\":\"@iZs`-A.)`GZTz%?Wh_j\",\"x\":607,\"y\":136,\"icons\":{\"comment\":{\"text\":\"Describe this function...\",\"pinned\":false,\"height\":80,\"width\":160}},\"fields\":{\"NAME\":\"update\"},\"inputs\":{\"STACK\":{\"block\":{\"type\":\"ha.be.Be.Bersih\",\"id\":\"(7d4VY9ISHI3=xQXw=c0\",\"next\":{\"block\":{\"type\":\"ha.be.Spr.Gambar_no_frame\",\"id\":\":kEktmNw)h?c2[3u!fL0\",\"inputs\":{\"sprite\":{\"block\":{\"type\":\"variables_get\",\"id\":\";1C`O0Jr|:xxP@Zbjr5=\",\"fields\":{\"VAR\":{\"id\":\"99*3xs_.J9FLSB`sp](v\"}}}}}}}}}}},{\"type\":\"ha.be.Be.Grafis\",\"id\":\"HaDx$m%9L0)lj6v$4@k*\",\"x\":187,\"y\":160,\"inputs\":{\"width\":{\"shadow\":{\"type\":\"math_number\",\"id\":\"1Yjl.$%bS/5z=@5Qd]V~\",\"fields\":{\"NUM\":320}}},\"height\":{\"shadow\":{\"type\":\"math_number\",\"id\":\"?(lT9dOGdzVnQ.vcHAEI\",\"fields\":{\"NUM\":240}}}},\"next\":{\"block\":{\"type\":\"ha.be.Be.Bersih\",\"id\":\"P=3%M?Ud(^qXZB;*oeeA\",\"next\":{\"block\":{\"type\":\"variables_set\",\"id\":\"?BBuRH-xfVFsVL#ivCx)\",\"fields\":{\"VAR\":{\"id\":\"99*3xs_.J9FLSB`sp](v\"}},\"inputs\":{\"VALUE\":{\"block\":{\"type\":\"ha.be.Spr.Muat\",\"id\":\"-Wwr3nwkx~$;z$;b1tzu\",\"inputs\":{\"url\":{\"shadow\":{\"type\":\"text\",\"id\":\"tjz/~)*VQIRK@:47=aoI\",\"fields\":{\"TEXT\":\"./imgs/box.png\"}}}}}}},\"next\":{\"block\":{\"type\":\"ha.be.Spr.Posisi\",\"id\":\"qo2(},A;@#H-Z;YgF(xL\",\"inputs\":{\"sprite\":{\"block\":{\"type\":\"variables_get\",\"id\":\":Exf|Z^~.L=e7[h3jaVb\",\"fields\":{\"VAR\":{\"id\":\"99*3xs_.J9FLSB`sp](v\"}}}},\"x\":{\"shadow\":{\"type\":\"math_number\",\"id\":\"c(0$wroFAKXvuB~2[?VL\",\"fields\":{\"NUM\":100}}},\"y\":{\"shadow\":{\"type\":\"math_number\",\"id\":\"VN~B`rOccf5-r!TJdI.P\",\"fields\":{\"NUM\":100}}}}}}}}}}}]},\"variables\":[{\"name\":\"image\",\"id\":\"99*3xs_.J9FLSB`sp](v\"}]}"
+            },
+            {
+                "id": "1702788345640",
+                "type": "project",
+                "nama": "005 tile",
+                "parentId": "-1"
+            },
+            {
+                "id": "1702788345641",
+                "type": "file",
+                "nama": "",
+                "parentId": "1702788345640",
+                "wspace": "{\"blocks\":{\"languageVersion\":0,\"blocks\":[{\"type\":\"procedures_defnoreturn\",\"id\":\"@iZs`-A.)`GZTz%?Wh_j\",\"x\":607,\"y\":136,\"icons\":{\"comment\":{\"text\":\"Describe this function...\",\"pinned\":false,\"height\":80,\"width\":160}},\"fields\":{\"NAME\":\"update\"},\"inputs\":{\"STACK\":{\"block\":{\"type\":\"ha.be.Be.Bersih\",\"id\":\"(7d4VY9ISHI3=xQXw=c0\",\"next\":{\"block\":{\"type\":\"ha.be.Spr.Ubin\",\"id\":\"5=rhF0|B(~0#T71UJr;2\",\"inputs\":{\"sprite\":{\"block\":{\"type\":\"variables_get\",\"id\":\"01V2on##LigG~5V:^wX)\",\"fields\":{\"VAR\":{\"id\":\"99*3xs_.J9FLSB`sp](v\"}}}},\"x\":{\"shadow\":{\"type\":\"math_number\",\"id\":\"LuI!![saa}/6iFs;NB=]\",\"fields\":{\"NUM\":0}}},\"y\":{\"shadow\":{\"type\":\"math_number\",\"id\":\"d/Dbm}13j1g2;r2$S-dT\",\"fields\":{\"NUM\":0}}},\"frame\":{\"shadow\":{\"type\":\"math_number\",\"id\":\":c@8t]ujv0eaU$c4q4/x\",\"fields\":{\"NUM\":0}}}}}}}}}},{\"type\":\"ha.be.Be.Grafis\",\"id\":\"HaDx$m%9L0)lj6v$4@k*\",\"x\":187,\"y\":160,\"inputs\":{\"width\":{\"shadow\":{\"type\":\"math_number\",\"id\":\"1Yjl.$%bS/5z=@5Qd]V~\",\"fields\":{\"NUM\":320}}},\"height\":{\"shadow\":{\"type\":\"math_number\",\"id\":\"?(lT9dOGdzVnQ.vcHAEI\",\"fields\":{\"NUM\":240}}}},\"next\":{\"block\":{\"type\":\"ha.be.Be.Bersih\",\"id\":\"P=3%M?Ud(^qXZB;*oeeA\",\"next\":{\"block\":{\"type\":\"variables_set\",\"id\":\"?BBuRH-xfVFsVL#ivCx)\",\"fields\":{\"VAR\":{\"id\":\"99*3xs_.J9FLSB`sp](v\"}},\"inputs\":{\"VALUE\":{\"block\":{\"type\":\"ha.be.Spr.Muat\",\"id\":\"-Wwr3nwkx~$;z$;b1tzu\",\"inputs\":{\"url\":{\"shadow\":{\"type\":\"text\",\"id\":\"tjz/~)*VQIRK@:47=aoI\",\"fields\":{\"TEXT\":\"./imgs/box.png\"}}}}}}}}}}}}]},\"variables\":[{\"name\":\"image\",\"id\":\"99*3xs_.J9FLSB`sp](v\"}]}"
+            },
+            {
+                "id": "1702822414257",
+                "type": "file",
+                "nama": "",
+                "parentId": "1702822414256",
+                "wspace": "{\"blocks\":{\"languageVersion\":0,\"blocks\":[{\"type\":\"procedures_defnoreturn\",\"id\":\"@iZs`-A.)`GZTz%?Wh_j\",\"x\":607,\"y\":136,\"icons\":{\"comment\":{\"text\":\"Describe this function...\",\"pinned\":false,\"height\":80,\"width\":160}},\"fields\":{\"NAME\":\"update\"},\"inputs\":{\"STACK\":{\"block\":{\"type\":\"ha.be.Be.Bersih\",\"id\":\"(7d4VY9ISHI3=xQXw=c0\",\"next\":{\"block\":{\"type\":\"ha.be.Spr.Gambar\",\"id\":\"TKi]Pbe|YLS%b}yYe+1L\",\"inputs\":{\"sprite\":{\"block\":{\"type\":\"variables_get\",\"id\":\"Oxp^k?rAe(XG%z7DGmrI\",\"fields\":{\"VAR\":{\"id\":\"99*3xs_.J9FLSB`sp](v\"}}}},\"x\":{\"shadow\":{\"type\":\"math_number\",\"id\":\"iR^9X(~I02#.l.kt.[;:\",\"fields\":{\"NUM\":120}}},\"y\":{\"shadow\":{\"type\":\"math_number\",\"id\":\"Sn*[t/Kt[]3J~cg5t9-K\",\"fields\":{\"NUM\":100}}}}}}}}}},{\"type\":\"ha.be.Be.Grafis\",\"id\":\"HaDx$m%9L0)lj6v$4@k*\",\"x\":187,\"y\":160,\"inputs\":{\"width\":{\"shadow\":{\"type\":\"math_number\",\"id\":\"1Yjl.$%bS/5z=@5Qd]V~\",\"fields\":{\"NUM\":320}}},\"height\":{\"shadow\":{\"type\":\"math_number\",\"id\":\"?(lT9dOGdzVnQ.vcHAEI\",\"fields\":{\"NUM\":240}}}},\"next\":{\"block\":{\"type\":\"ha.be.Be.Bersih\",\"id\":\"P=3%M?Ud(^qXZB;*oeeA\",\"next\":{\"block\":{\"type\":\"variables_set\",\"id\":\"?BBuRH-xfVFsVL#ivCx)\",\"fields\":{\"VAR\":{\"id\":\"99*3xs_.J9FLSB`sp](v\"}},\"inputs\":{\"VALUE\":{\"block\":{\"type\":\"ha.be.Spr.Muat\",\"id\":\"-Wwr3nwkx~$;z$;b1tzu\",\"inputs\":{\"url\":{\"shadow\":{\"type\":\"text\",\"id\":\"tjz/~)*VQIRK@:47=aoI\",\"fields\":{\"TEXT\":\"./imgs/box.png\"}}}}}}}}}}}}]},\"variables\":[{\"name\":\"image\",\"id\":\"99*3xs_.J9FLSB`sp](v\"}]}"
+            }
+        ];
     })(blockly = ha.blockly || (ha.blockly = {}));
 })(ha || (ha = {}));
 var ha;
