@@ -3,67 +3,25 @@ var ha;
 (function (ha) {
     var blockly;
     (function (blockly) {
-        class Data {
-            static loaded = false;
-            static db = 'ha.blockly.data';
-            static data = {
-                files: []
-            };
-            static load() {
-                if (Data.loaded)
-                    return;
-                try {
-                    let str = window.localStorage.getItem(this.db);
-                    let obj = JSON.parse(str);
-                    Data.data.files = obj;
-                    Data.loaded = true;
-                    console.log("load:", str);
-                    console.log("obj ", obj);
-                }
-                catch (e) {
-                    Data.data.files = [];
-                    console.log('load error');
-                    console.warn(e);
-                    console.log(Data.data.files);
-                    console.log(Data);
-                }
+        class Dialog {
+            static dlg;
+            static show(msg) {
+                this.dlg = document.body.querySelector("dialog.alert");
+                this.dlg.querySelector('P').innerHTML = msg;
+                this.dlg.showModal();
             }
-            static baru(item) {
-                this.load();
-                this.data.files.push(item);
-            }
-            static semua() {
-                console.log("semua", Data.data);
-                this.load();
-                console.log("semua", Data.data);
-                return Data.data.files;
-            }
-            static simpan() {
-                try {
-                    window.localStorage.setItem(this.db, JSON.stringify(this.data.files));
-                }
-                catch (e) {
-                    console.warn(e);
-                }
-            }
-            static hapus(id) {
-                for (let i = 0; i < this.data.files.length; i++) {
-                    let item = this.data.files[i];
-                    if (item.id == id) {
-                        console.log('item deleted:", item.id ' + id, "item:", item);
-                        this.data.files.slice(i, 1);
-                    }
-                }
+            static klik() {
+                this.dlg.close();
             }
         }
-        blockly.Data = Data;
+        blockly.Dialog = Dialog;
     })(blockly = ha.blockly || (ha.blockly = {}));
 })(ha || (ha = {}));
 var ha;
 (function (ha) {
     var blockly;
     (function (blockly) {
-        class Dialog {
+        class DialogPublish {
             static dlg = document.querySelector('dialog');
             static onClick = () => { };
             static open(p, cont) {
@@ -71,12 +29,133 @@ var ha;
                 this.dlg.querySelector('textarea').value = cont;
                 this.dlg.showModal();
             }
+            static batal() {
+                this.dlg.close();
+            }
             static klik() {
                 this.dlg.close();
                 this.onClick();
             }
         }
-        blockly.Dialog = Dialog;
+        blockly.DialogPublish = DialogPublish;
+    })(blockly = ha.blockly || (ha.blockly = {}));
+})(ha || (ha = {}));
+var ha;
+(function (ha) {
+    var blockly;
+    (function (blockly) {
+        let EEntity;
+        (function (EEntity) {
+            EEntity["PROJECT"] = "project";
+            EEntity["FILE"] = "file";
+        })(EEntity = blockly.EEntity || (blockly.EEntity = {}));
+        class Entity {
+            static dbName = 'ha.blockly.data2';
+            static list = [];
+            static init() {
+                try {
+                    let str;
+                    let obj;
+                    while (this.list.length > 0) {
+                        this.list.pop();
+                    }
+                    str = window.localStorage.getItem(this.dbName);
+                    obj = JSON.parse(str);
+                    obj.forEach((item) => {
+                        this.list.push(item);
+                    });
+                }
+                catch (e) {
+                    console.log('load error');
+                    console.warn(e);
+                }
+            }
+            static getByType(ty) {
+                let hasil = [];
+                this.list.forEach((item) => {
+                    if (item.type == ty) {
+                        hasil.push(item);
+                    }
+                });
+                return hasil;
+            }
+            static getById(id) {
+                let hasil;
+                this.list.forEach((item) => {
+                    if (item.id == id) {
+                        hasil = item;
+                    }
+                });
+                return hasil;
+            }
+            static getByParentId(pId) {
+                let hasil;
+                this.list.forEach((item) => {
+                    if (item.parentId == pId) {
+                        hasil = item;
+                    }
+                });
+                return hasil;
+            }
+            static update(id, data) {
+                this.delete(id);
+                this.tambah(data);
+            }
+            static delete(id) {
+                console.group('delete by id ' + id);
+                for (let i = 0; i < this.list.length; i++) {
+                    if (this.list[i].id == id) {
+                        console.log('deleted ' + id);
+                        this.list.splice(i, 1);
+                        break;
+                    }
+                }
+                console.groupEnd();
+            }
+            static tambah(data) {
+                this.list.push(data);
+            }
+            static commit() {
+                try {
+                    window.localStorage.setItem(this.dbName, JSON.stringify(this.list));
+                }
+                catch (e) {
+                    console.error(e);
+                }
+            }
+        }
+        blockly.Entity = Entity;
+        class Project {
+            getById(id) {
+                return Entity.getById(id);
+            }
+            delete(id) {
+                Entity.delete(id);
+            }
+            update(data) {
+                Entity.update(data.id, data);
+            }
+            tambah(data) {
+                Entity.tambah(data);
+            }
+        }
+        blockly.Project = Project;
+        class File {
+            getById(id) {
+                id;
+                return null;
+            }
+            delete(id) {
+                id;
+            }
+            update(data) {
+                data;
+            }
+            tambah(data) {
+                data;
+            }
+        }
+        blockly.File = File;
     })(blockly = ha.blockly || (ha.blockly = {}));
 })(ha || (ha = {}));
 var ha;
@@ -103,11 +182,164 @@ var ha;
 (function (ha) {
     var blockly;
     (function (blockly) {
+        class HalListProject {
+            static cont;
+            static listCont;
+            static selectedId = '';
+            // private static project: IProject;
+            static openKlik() {
+                if (this.selectedId == '') {
+                    //no selected
+                    console.log('no selected');
+                    blockly.Dialog.show("no item selected");
+                    return;
+                }
+                if (blockly.Store.projectId == this.selectedId) {
+                    //already opened
+                    console.log('already open');
+                    blockly.Dialog.show("You are currently editing this project");
+                    return;
+                }
+                let f = blockly.Entity.getByParentId(this.selectedId);
+                let code = JSON.parse(f.wspace);
+                let project = blockly.Entity.getById(this.selectedId);
+                blockly.Store.idFile = f.id;
+                blockly.Store.projectId = project.id;
+                Blockly.serialization.workspaces.load(code, blockly.Index.workspace);
+                this.closeKlik();
+                blockly.Index.updateName();
+            }
+            static deleteKlik() {
+                console.group('delete klik');
+                if (this.selectedId == '') {
+                    //TODO: dialog
+                    console.log('no item selected');
+                    console.groupEnd();
+                    blockly.Dialog.show("no item selected");
+                    return;
+                }
+                if (this.selectedId == blockly.Store.projectId) {
+                    //already opened
+                    console.log("already opened");
+                    console.groupEnd();
+                    blockly.Dialog.show("You are currently editing this project");
+                    return;
+                }
+                let confirm = window.confirm("are you sure you ?");
+                if (confirm) {
+                    console.log('delete by id ' + this.selectedId);
+                    blockly.Entity.delete(this.selectedId);
+                    blockly.Entity.commit();
+                    console.log("get view to delete");
+                    this.listCont.querySelectorAll('.project').forEach((item) => {
+                        if (item.getAttribute('data-id') == this.selectedId) {
+                            item.parentElement.removeChild(item);
+                            console.log("ok");
+                        }
+                    });
+                    this.selectedId = '';
+                }
+                else {
+                    console.log('cancel');
+                }
+                console.groupEnd();
+                this.closeKlik();
+            }
+            static closeKlik() {
+                this.cont.close();
+                this.selectedId = '';
+                // this.project = null;
+            }
+            static show(p) {
+                this.cont.showModal();
+                this.render(p);
+            }
+            static renameKlik() {
+                if (this.selectedId == '') {
+                    blockly.Dialog.show("no item selected");
+                    return;
+                }
+                let w = window.prompt("renae", blockly.Entity.getById(this.selectedId).nama);
+                if (w) {
+                    blockly.Entity.getById(this.selectedId).nama = w;
+                    this.updateItemView(this.listCont.querySelector(`div[data-id='${this.selectedId}']`), blockly.Entity.getById(this.selectedId));
+                    blockly.Entity.commit();
+                }
+                else {
+                    blockly.Dialog.show("invalid name");
+                }
+            }
+            static init() {
+                this.cont = document.createElement('dialog');
+                this.cont.innerHTML = `
+                <div style="display:flex; flex-direction:column">
+                    <h4>Project List:</h4>
+                    <div class='list-cont' style="flex-grow-1">
+                    </div>
+                    <div>
+                        <button onclick="ha.blockly.HalListProject.openKlik()">open</button>
+                        <button onclick="ha.blockly.HalListProject.renameKlik()">rename</button>
+                        <button onclick="ha.blockly.HalListProject.deleteKlik()">delete</button>
+                        <button onclick="ha.blockly.HalListProject.closeKlik()">close</button>
+                    </div>
+                </div>
+            `;
+                this.listCont = this.cont.querySelector("div.list-cont");
+                document.body.append(this.cont);
+            }
+            static buatItemViewIsi(item, cont) {
+                cont.innerHTML = `
+                <span>${item.nama}</span>
+            `;
+            }
+            static updateItemView(el, item) {
+                el.innerHTML = '';
+                this.buatItemViewIsi(item, el);
+            }
+            static buatItemView(item) {
+                let hasil;
+                hasil = document.createElement('div');
+                hasil.classList.add('project');
+                hasil.setAttribute('data-id', item.id);
+                hasil.onclick = () => {
+                    this.selectedId = item.id;
+                    this.listCont.querySelectorAll(".project").forEach((item2) => {
+                        item2.classList.remove('selected');
+                    });
+                    hasil.classList.add('selected');
+                };
+                this.buatItemViewIsi(item, hasil);
+                return hasil;
+            }
+            static render(list) {
+                list = list.sort((item, item2) => {
+                    if (item.nama < item2.nama)
+                        return -1;
+                    if (item.nama > item2.nama)
+                        return 1;
+                    return 0;
+                });
+                this.listCont.innerHTML = '';
+                this.renderList(list);
+            }
+            static renderList(list) {
+                list.forEach((item) => {
+                    this.listCont.appendChild(this.buatItemView(item));
+                });
+            }
+        }
+        blockly.HalListProject = HalListProject;
+    })(blockly = ha.blockly || (ha.blockly = {}));
+})(ha || (ha = {}));
+var ha;
+(function (ha) {
+    var blockly;
+    (function (blockly) {
         class Id {
             static _id = Date.now();
             static get id() {
                 this._id++;
-                return this._id;
+                return this._id + '';
             }
         }
         blockly.Id = Id;
@@ -141,19 +373,27 @@ var ha;
     (function (blockly) {
         class Op {
             static op() {
+                //TODO: depecrated
                 let w = window;
                 w.simpan = () => {
-                    let simpan = Blockly.serialization.workspaces.save(blockly.Index.workspace);
-                    let code = javascript.javascriptGenerator.workspaceToCode(blockly.Index.workspace);
-                    window.localStorage.setItem("blocklytest", JSON.stringify(simpan));
-                    window.localStorage.setItem("blocklycode", code);
-                    console.log(simpan);
+                    Op.simpan();
+                    // if (Store.namaProject == "") {
+                    // }
+                    // else {
+                    //     let simpan = Blockly.serialization.workspaces.save(Index.workspace);
+                    // }
+                    // let simpan = Blockly.serialization.workspaces.save(Index.workspace);
+                    // let code = javascript.javascriptGenerator.workspaceToCode(Index.workspace);
+                    // window.localStorage.setItem("blocklytest", JSON.stringify(simpan));
+                    // window.localStorage.setItem("blocklycode", code);
+                    // console.log(simpan);
                 };
                 w.load = () => {
-                    let simpan = window.localStorage.getItem("blocklytest");
-                    let code = JSON.parse(simpan);
-                    console.log(code);
-                    Blockly.serialization.workspaces.load(code, blockly.Index.workspace);
+                    Op.load();
+                    // let simpan = window.localStorage.getItem("blocklytest");
+                    // let code = JSON.parse(simpan);
+                    // console.log(code);
+                    // Blockly.serialization.workspaces.load(code, Index.workspace);
                 };
                 w.code = () => {
                     let code = javascript.javascriptGenerator.workspaceToCode(blockly.Index.workspace);
@@ -173,7 +413,7 @@ var ha;
                 };
                 w.run = () => {
                     let codeHtml = ha.blockly.Export.export(javascript.javascriptGenerator.workspaceToCode(blockly.Index.workspace));
-                    w.simpan();
+                    // w.simpan();
                     window.localStorage.setItem("blocklycode", codeHtml);
                     window.open('./play.html', "_blank");
                     // window.location.href = "./play.html";
@@ -188,14 +428,34 @@ var ha;
                     Op.import();
                 };
             }
+            static load() {
+                let list = blockly.Entity.getByType(blockly.EEntity.PROJECT);
+                // let p: IProject = list[0] as IProject;
+                // let f: IFile = Entity.getByParentId(p.id) as IFile;
+                //develop ui
+                blockly.HalListProject.show(list);
+                // let code = JSON.parse(f.wspace);
+                // console.log(code);
+                // Blockly.serialization.workspaces.load(code, Index.workspace);
+                // Store.idFile = f.id;
+                // Store.namaProject = p.nama;
+                // console.log(list);
+            }
             static publish() {
                 let codeHtml = ha.blockly.Export.export(javascript.javascriptGenerator.workspaceToCode(blockly.Index.workspace));
-                window.localStorage.setItem("blocklycode", codeHtml);
-                window.open('./publish.html', "_blank");
+                blockly.DialogPublish.open(`
+                    <h1>Publish</h1>
+                    <p>
+                        Copy content of textarea below, and save it to a file with .html extension.
+                        You can run the file directly without setting up a web-server
+                    </p>
+            `, (codeHtml));
+                // window.localStorage.setItem("blocklycode", codeHtml);
+                // window.open('./publish.html', "_blank");
             }
             static export() {
                 let simpan = Blockly.serialization.workspaces.save(blockly.Index.workspace);
-                blockly.Dialog.open(`
+                blockly.DialogPublish.open(`
                     <h1>Export to JSON</h1>
                     <p>
                         Copy content of textarea below. You can save to file or import later.
@@ -205,7 +465,7 @@ var ha;
                 // window.open('./export.html', "_blank");
             }
             static import() {
-                blockly.Dialog.onClick = () => {
+                blockly.DialogPublish.onClick = () => {
                     try {
                         let value = document.querySelector('textarea').value;
                         let code = JSON.parse(value);
@@ -215,7 +475,7 @@ var ha;
                         console.error(e);
                     }
                 };
-                blockly.Dialog.open(`
+                blockly.DialogPublish.open(`
                     <h1>Import from JSON</h1>
                     <p>
                         Fill the text area below with content you have exported before.
@@ -249,18 +509,88 @@ var ha;
                     onresize();
                 }, 100);
             }
+            static simpanBaru() {
+                let id = blockly.Id.id;
+                let nama = window.prompt("project name", "def1");
+                //TOOD: validasi nama
+                //save new project
+                let p = {
+                    id: id,
+                    type: blockly.EEntity.PROJECT,
+                    nama: nama,
+                    parentId: "-1"
+                };
+                blockly.Entity.tambah(p);
+                let f = {
+                    id: blockly.Id.id,
+                    type: blockly.EEntity.FILE,
+                    nama: blockly.Store.idFile,
+                    parentId: p.id,
+                    wspace: JSON.stringify(Blockly.serialization.workspaces.save(blockly.Index.workspace))
+                };
+                //TODO: save file yang lain
+                blockly.Store.idFile = f.id;
+                blockly.Store.projectId = p.id;
+                blockly.Entity.tambah(f);
+                blockly.Entity.commit();
+                blockly.Index.updateName();
+            }
+            static simpan() {
+                // let id: string = Id.id;
+                if (blockly.Store.projectId == "") {
+                    this.simpanBaru();
+                }
+                else {
+                    let file = blockly.Entity.getById(blockly.Store.idFile);
+                    file.wspace = JSON.stringify(Blockly.serialization.workspaces.save(blockly.Index.workspace));
+                    blockly.Entity.commit();
+                }
+                blockly.Index.updateName();
+            }
         }
         blockly.Op = Op;
     })(blockly = ha.blockly || (ha.blockly = {}));
 })(ha || (ha = {}));
-function openFile(id) {
-    id;
-}
-function deleteFile(id) {
-    console.group('delete by id: ' + id);
-    ha.blockly.Data.hapus(id);
-    window.location.reload();
-}
+// function openFile(id: string): void {
+//     id;
+// }
+// function deleteFile(id: string): void {
+//     console.group('delete by id: ' + id);
+//     ha.blockly.Data.hapus(id);
+//     window.location.reload();
+// }
+var ha;
+(function (ha) {
+    var blockly;
+    (function (blockly) {
+        class Store {
+            // private static _namaProject: string = '';
+            static _idFile = '';
+            static _projectId = '';
+            static _defWSpace = '';
+            static get defWSpace() {
+                return Store._defWSpace;
+            }
+            static set defWSpace(value) {
+                Store._defWSpace = value;
+            }
+            static get projectId() {
+                return Store._projectId;
+            }
+            static set projectId(value) {
+                Store._projectId = value;
+            }
+            static get idFile() {
+                return Store._idFile;
+            }
+            static set idFile(value) {
+                Store._idFile = value;
+            }
+        }
+        blockly.Store = Store;
+        Store.defWSpace = "{\"blocks\":{\"languageVersion\":0,\"blocks\":[{\"type\":\"procedures_defnoreturn\",\"id\":\"@iZs`-A.)`GZTz%?Wh_j\",\"x\":607,\"y\":136,\"icons\":{\"comment\":{\"text\":\"Describe this function...\",\"pinned\":false,\"height\":80,\"width\":160}},\"fields\":{\"NAME\":\"update\"},\"inputs\":{\"STACK\":{\"block\":{\"type\":\"ha.be.Be.Bersih\",\"id\":\"(7d4VY9ISHI3=xQXw=c0\",\"next\":{\"block\":{\"type\":\"ha.be.Spr.Gambar\",\"id\":\"TKi]Pbe|YLS%b}yYe+1L\",\"inputs\":{\"sprite\":{\"block\":{\"type\":\"variables_get\",\"id\":\"Oxp^k?rAe(XG%z7DGmrI\",\"fields\":{\"VAR\":{\"id\":\"99*3xs_.J9FLSB`sp](v\"}}}},\"x\":{\"shadow\":{\"type\":\"math_number\",\"id\":\"iR^9X(~I02#.l.kt.[;:\",\"fields\":{\"NUM\":120}}},\"y\":{\"shadow\":{\"type\":\"math_number\",\"id\":\"Sn*[t/Kt[]3J~cg5t9-K\",\"fields\":{\"NUM\":100}}}}}}}}}},{\"type\":\"ha.be.Be.Grafis\",\"id\":\"HaDx$m%9L0)lj6v$4@k*\",\"x\":187,\"y\":160,\"inputs\":{\"width\":{\"shadow\":{\"type\":\"math_number\",\"id\":\"1Yjl.$%bS/5z=@5Qd]V~\",\"fields\":{\"NUM\":320}}},\"height\":{\"shadow\":{\"type\":\"math_number\",\"id\":\"?(lT9dOGdzVnQ.vcHAEI\",\"fields\":{\"NUM\":240}}}},\"next\":{\"block\":{\"type\":\"ha.be.Be.Bersih\",\"id\":\"P=3%M?Ud(^qXZB;*oeeA\",\"next\":{\"block\":{\"type\":\"variables_set\",\"id\":\"?BBuRH-xfVFsVL#ivCx)\",\"fields\":{\"VAR\":{\"id\":\"99*3xs_.J9FLSB`sp](v\"}},\"inputs\":{\"VALUE\":{\"block\":{\"type\":\"ha.be.Spr.Muat\",\"id\":\"-Wwr3nwkx~$;z$;b1tzu\",\"inputs\":{\"url\":{\"shadow\":{\"type\":\"text\",\"id\":\"tjz/~)*VQIRK@:47=aoI\",\"fields\":{\"TEXT\":\"./imgs/box.png\"}}}}}}}}}}}}]},\"variables\":[{\"name\":\"image\",\"id\":\"99*3xs_.J9FLSB`sp](v\"}]}";
+    })(blockly = ha.blockly || (ha.blockly = {}));
+})(ha || (ha = {}));
 var ha;
 (function (ha) {
     var blockly;
@@ -315,6 +645,9 @@ var ha;
                 }
                 if (!Object.hasOwn(t, "inputsInline")) {
                     t.inputsInline = false;
+                }
+                if (t.kurung == undefined) {
+                    t.kurung = true;
                 }
                 t.colour = 230;
                 t.tooltip = t.tooltip || "";
@@ -449,7 +782,10 @@ var ha;
             function normalizeAllBlock() {
                 blockly.BlitzData.list.forEach((item) => { normal(item); });
                 blockly.ImageBlockData.list.forEach((item) => { normal(item); });
+                blockly.ImageBlockData2.list.forEach((item) => { normal(item); });
                 blockly.debugData.list.forEach((item) => { normal(item); });
+                blockly.InputBlockData.list.forEach((item) => { normal(item); });
+                blockly.TextData.list.forEach((item) => { normal(item); });
             }
             BDef.normalizeAllBlock = normalizeAllBlock;
         })(BDef = blockly.BDef || (blockly.BDef = {}));
@@ -620,8 +956,11 @@ var ha;
                 let allToolBoxDef = populateToolBox();
                 Blockly.common.defineBlocksWithJsonArray(allToolBoxDef);
                 toolbox_1.toolbox.contents.push(getCategory("Blitz", blockly.BlitzData.list)); //registerBlitz());
-                toolbox_1.toolbox.contents.push(getCategory("Image", blockly.ImageBlockData.list));
+                toolbox_1.toolbox.contents.push(getCategory("Image v1", blockly.ImageBlockData.list));
+                toolbox_1.toolbox.contents.push(getCategory("Image v2", blockly.ImageBlockData2.list));
                 toolbox_1.toolbox.contents.push(getCategory(blockly.debugData.group, blockly.debugData.list));
+                toolbox_1.toolbox.contents.push(getCategory(blockly.InputBlockData.group, blockly.InputBlockData.list));
+                toolbox_1.toolbox.contents.push(getCategory(blockly.TextData.group, blockly.TextData.list));
                 js(allToolBoxDef);
             }
             toolbox_1.init = init;
@@ -709,7 +1048,16 @@ var ha;
                 blockly.ImageBlockData.list.forEach((item) => {
                     blockData.push(item);
                 });
+                blockly.ImageBlockData2.list.forEach((item) => {
+                    blockData.push(item);
+                });
                 blockly.debugData.list.forEach((item) => {
+                    blockData.push(item);
+                });
+                blockly.InputBlockData.list.forEach((item) => {
+                    blockData.push(item);
+                });
+                blockly.TextData.list.forEach((item) => {
                     blockData.push(item);
                 });
                 return blockData;
@@ -721,20 +1069,24 @@ var ha;
                     javascript.javascriptGenerator.forBlock[itemBlockData.type] = (block, generator) => {
                         let code = '';
                         console.group("");
-                        code = itemBlockData.type.split('_')[0] + '(';
+                        code += itemBlockData.perintah.split('_')[0];
+                        if (itemBlockData.kurung) {
+                            code += '(';
+                        }
                         itemBlockData.args0.forEach((item, idx) => {
                             if (item.type == EArgType.inputDummy) {
                             }
                             else {
                                 let value = generator.valueToCode(block, item.name, javascript.Order.ATOMIC);
-                                console.log('value to code >>', "item name:", item.name, "value", value);
                                 code += value;
                                 if (idx < itemBlockData.args0.length - 1) {
                                     code += ',';
                                 }
                             }
                         });
-                        code += ')';
+                        if (itemBlockData.kurung) {
+                            code += ')';
+                        }
                         console.log("code", code);
                         console.groupEnd();
                         if (itemBlockData.output != null) {
@@ -986,6 +1338,15 @@ var ha;
             static workspace;
             static blocklyArea;
             static blocklyDiv;
+            static updateName() {
+                let spanNama = document.body.querySelector("span.judul_file");
+                if (blockly.Store.projectId) {
+                    spanNama.innerHTML = blockly.Entity.getById(blockly.Store.projectId).nama;
+                }
+                else {
+                    spanNama.innerHTML = "untitled";
+                }
+            }
             static initWorkSpace() {
                 Blockly.Msg["VARIABLES_SET"] = "%1 = %2";
                 Blockly.Msg["MATH_CHANGE_TITLE"] = "%1 += %2";
@@ -1013,13 +1374,209 @@ var ha;
                 //TODO:
             }
             static init() {
+                blockly.HalListProject.init();
+                ha.blockly.Entity.init();
                 ha.blockly.toolbox.init();
                 Index.initWorkSpace();
                 blockly.Op.resize();
                 blockly.Op.op();
+                try {
+                    Blockly.serialization.workspaces.load(JSON.parse(blockly.Store.defWSpace), Index.workspace);
+                }
+                catch (e) {
+                    console.error(e);
+                }
+                this.updateName();
             }
         }
         blockly.Index = Index;
+    })(blockly = ha.blockly || (ha.blockly = {}));
+})(ha || (ha = {}));
+var ha;
+(function (ha) {
+    var blockly;
+    (function (blockly) {
+        var InputBlockData;
+        (function (InputBlockData) {
+            InputBlockData.list = [];
+            InputBlockData.group = "Input";
+            // ha.be.Input.InputHit;
+            // InputHit
+            InputBlockData.list.push({
+                type: "ha.be.Input.InputHit",
+                perintah: "InputHit",
+                message0: "InputHit",
+                tooltip: "return how many time an input is pressed since the last call",
+                output: EOutput.Number
+            });
+            // ha.be.Input.InputX;
+            InputBlockData.list.push({
+                type: "ha.be.Input.InputX",
+                perintah: "InputX",
+                message0: "InputX",
+                tooltip: "return the x position of input",
+                output: EOutput.Number
+            });
+            // ha.be.Input.InputY
+            InputBlockData.list.push({
+                type: "ha.be.Input.InputY",
+                perintah: "InputY",
+                message0: "InputY",
+                tooltip: "return the y position of input",
+                output: EOutput.Number
+            });
+            //Input extended
+            // ===========
+            // ha.be.Input.Pencet
+            InputBlockData.list.push({
+                type: "ha.be.Input.Pencet",
+                perintah: "InputIsDown",
+                message0: "InputIsDown",
+                tooltip: "return true if an input is pressed",
+                output: EOutput.Boolean
+            });
+            // const GeserX = ha.be.Input.GeserX;
+            InputBlockData.list.push({
+                type: "ha.be.Input.GeserX",
+                perintah: "DragX",
+                message0: "InputDragX",
+                tooltip: "return how much input is dragged in x axis",
+                output: EOutput.Boolean
+            });
+            // const DragY = ha.be.Input.GeserY;
+            InputBlockData.list.push({
+                type: "ha.be.Input.GeserY",
+                perintah: "DragY",
+                message0: "DragY",
+                tooltip: "return how much input is dragged in y axis",
+                output: EOutput.Number
+            });
+            // const IsDragged = ha.be.Input.Geser;
+            InputBlockData.list.push({
+                type: "ha.be.Input.Geser",
+                perintah: "InputIsDragged",
+                message0: "InputIsDragged",
+                tooltip: "return true if input is dragged",
+                output: EOutput.Boolean
+            });
+            // const InputType = ha.be.Input.InputType;
+            // const TapCount = ha.be.Input.JmlTap;
+            // const DragStartCount = ha.be.Input.JmlDragMulai;
+            // const DragEndCount = ha.be.Input.JmlDragSelesai;
+            // const DragStartX = ha.be.Input.InputXAwal;
+            // const DragStartY = ha.be.Input.InputYAwal;
+        })(InputBlockData = blockly.InputBlockData || (blockly.InputBlockData = {}));
+    })(blockly = ha.blockly || (ha.blockly = {}));
+})(ha || (ha = {}));
+var ha;
+(function (ha) {
+    var blockly;
+    (function (blockly) {
+        var TextData;
+        (function (TextData) {
+            TextData.list = [];
+            TextData.group = "Text 2";
+            // Shortcut buat perintah-perintah font
+            // FontName
+            TextData.list.push({
+                type: "ha.be.Teks.Font",
+                perintah: "FontName",
+                message0: "Set Font Name to %1",
+                args: {
+                    name: "cursive"
+                }
+            });
+            // ha.be.Teks.FontSize
+            // FontSize 
+            TextData.list.push({
+                type: "ha.be.Teks.FontSize",
+                perintah: "FontSize",
+                message0: "Set Font Size to %1",
+                args: {
+                    size: 14
+                }
+            });
+            // const Align = ha.be.Teks.Rata;
+            TextData.list.push({
+                type: "ha.be.Teks.Rata",
+                perintah: "Align",
+                message0: "Set Font Alignment to %1",
+                args: {
+                    align: "left"
+                }
+            });
+            // ha.be.Teks.Goto;
+            TextData.list.push({
+                type: "ha.be.Teks.Goto",
+                perintah: "ha.be.Teks.Goto",
+                message0: "Set Text position to x %1 y %2",
+                inputsInline: true,
+                args: {
+                    x: 0,
+                    y: 0
+                }
+            });
+            // ha.be.Teks.fill
+            TextData.list.push({
+                type: "ha.be.Teks.fill",
+                perintah: "ha.be.Teks.fill",
+                message0: "Use Font Color Fill is %1",
+                args: {
+                    fill: true
+                }
+            });
+            // ha.be.Teks.stroke;
+            TextData.list.push({
+                type: "ha.be.Teks.stroke",
+                perintah: "ha.be.Teks.stroke",
+                message0: "Use Font Color stroke is %1",
+                args: {
+                    stroke: false
+                }
+            });
+            // ha.be.Teks.jarak
+            TextData.list.push({
+                type: "ha.be.Teks.jarak",
+                perintah: "ha.be.Teks.jarak",
+                message0: "Set line-height to %1",
+                args: {
+                    height: 40
+                }
+            });
+            // ha.be.Teks.Write;
+            TextData.list.push({
+                type: "ha.be.Teks.Write",
+                perintah: "ha.be.Teks.Write",
+                message0: "Write %1",
+                args: {
+                    text: ""
+                }
+            });
+            // ha.be.Teks.WriteLn;
+            TextData.list.push({
+                type: "ha.be.Teks.WriteLn",
+                perintah: "ha.be.Teks.WriteLn",
+                message0: "WriteLn %1",
+                args: {
+                    text: ""
+                },
+                tooltip: "Write text and move position to next line"
+            });
+            // const Print = ha.be.Teks.Tulis;
+            TextData.list.push({
+                type: "ha.be.Teks.Tulis",
+                perintah: "Print",
+                message0: "Write %1 text %2 x: %3 y: %4 use fill: %5 use stroke: %6",
+                args: {
+                    dummy: "",
+                    text: "",
+                    x: 0,
+                    y: 0,
+                    fill: true,
+                    stroke: false
+                }
+            });
+        })(TextData = blockly.TextData || (blockly.TextData = {}));
     })(blockly = ha.blockly || (ha.blockly = {}));
 })(ha || (ha = {}));
 ///<reference path="../toolboxType.ts"/>
@@ -1033,8 +1590,9 @@ var ha;
             // ha.be.Be.Grafis
             BlitzData.Grafis = {
                 type: "ha.be.Be.Grafis",
+                perintah: "ha.be.Be.Grafis",
                 message0: "Graphics %1 width: %2 height: %3",
-                // inputsInline: false,
+                inputsInline: true,
                 args: {
                     dummy: '',
                     width: 320,
@@ -1045,6 +1603,7 @@ var ha;
             // ha.be.Be.Bersih
             BlitzData.list.push({
                 type: "ha.be.Be.Bersih",
+                perintah: "ha.be.Be.Bersih",
                 message0: 'Cls',
             });
         })(BlitzData = blockly.BlitzData || (blockly.BlitzData = {}));
@@ -1057,7 +1616,33 @@ var ha;
         var debugData;
         (function (debugData) {
             debugData.list = [];
-            debugData.group = "Debug3";
+            debugData.group = "Debug";
+            debugData.list.push({
+                type: "console.log",
+                perintah: "console.log",
+                message0: "Log %1",
+                args: {
+                    log: ""
+                },
+                tooltip: "console log",
+            });
+            debugData.list.push({
+                type: "debugger",
+                perintah: "debugger",
+                message0: "Pause",
+                tooltip: "pause a program when developer tool is open",
+                kurung: false
+            });
+            debugData.list.push({
+                type: "note",
+                perintah: "//",
+                kurung: false,
+                message0: "📝 %1",
+                args: {
+                    comment: ""
+                },
+                tooltip: "Note",
+            });
         })(debugData = blockly.debugData || (blockly.debugData = {}));
     })(blockly = ha.blockly || (ha.blockly = {}));
 })(ha || (ha = {}));
@@ -1071,11 +1656,13 @@ var ha;
             // ha.be.Spr.Muat
             ImageBlockData.blitz_Muat = {
                 type: "ha.be.Spr.Muat",
-                message0: 'Load Image %1 url: %2',
+                message0: 'LoadImage %1 url: %2',
+                perintah: "ha.be.Spr.Muat",
                 args: {
                     dummy: '',
                     url: "./imgs/box.png"
                 },
+                inputsInline: true,
                 output: EOutput.Any
             };
             ImageBlockData.list.push(ImageBlockData.blitz_Muat);
@@ -1083,20 +1670,24 @@ var ha;
             // ha.be.Spr.MuatAnimasi
             ImageBlockData.list.push({
                 type: "ha.be.Spr.MuatAnimasi",
-                message0: "LoadAnimImage %1 image: %2 frame width: %3 frame height: %4",
+                message0: "LoadAnimImage %1 url: %2 frame width: %3 frame height: %4",
+                perintah: "ha.be.Spr.MuatAnimasi",
                 args: {
                     dummy: '',
                     sprite: {},
                     fw: 32,
                     fh: 32
                 },
+                inputsInline: true,
                 output: EOutput.Any
             });
             // DrawImage
-            // ha.be.Spr.Gambar
+            // ha.be.Spr.GambarXY
             ImageBlockData.list.push({
                 type: "ha.be.Spr.Gambar",
                 message0: "DrawImage: %4 image %1 x: %2 y: %3",
+                perintah: "ha.be.Spr.GambarXY",
+                inputsInline: true,
                 args: {
                     sprite: {},
                     x: 0,
@@ -1104,11 +1695,13 @@ var ha;
                     dummy: ""
                 }
             });
-            // DrawImage
+            // DrawImageAnim
             // ha.be.Spr.Gambar animasi
             ImageBlockData.list.push({
                 type: "ha.be.Spr.Gambar_animasi",
-                message0: "DrawImageAnim: %5 image %1 x: %2 y: %3 frame: %4",
+                message0: "DrawImage %5 image %1 x: %2 y: %3 frame: %4",
+                perintah: "ha.be.Spr.Gambar",
+                inputsInline: true,
                 args: {
                     sprite: {},
                     x: 0,
@@ -1122,6 +1715,8 @@ var ha;
             ImageBlockData.list.push({
                 type: "ha.be.Spr.Ubin",
                 message0: "TileImage: %5 image %1 x: %2 y: %3 frame: %4",
+                perintah: "ha.be.Spr.Ubin",
+                inputsInline: true,
                 args: {
                     sprite: {},
                     x: 0,
@@ -1135,6 +1730,8 @@ var ha;
             ImageBlockData.list.push({
                 type: "ha.be.Spr.Handle",
                 message0: "HandleImage: %1 image %2 x: %3 y: %4",
+                perintah: "ha.be.Spr.Handle",
+                inputsInline: true,
                 args: {
                     dummy: '',
                     sprite: {},
@@ -1146,7 +1743,9 @@ var ha;
             // ha.be.Spr.Ukuran;
             ImageBlockData.list.push({
                 type: "ha.be.Spr.Ukuran",
+                perintah: "ha.be.Spr.Ukuran",
                 message0: "ResizeImage: %1 image %2 width: %3 height: %4",
+                inputsInline: true,
                 args: {
                     dummy: '',
                     sprite: {},
@@ -1158,7 +1757,9 @@ var ha;
             // ha.be.Spr.Rotasi;
             ImageBlockData.list.push({
                 type: "ha.be.Spr.Rotasi",
+                perintah: "ha.be.Spr.Rotasi",
                 message0: "RotateImage: %1 image %2 value (0-360): %3",
+                inputsInline: true,
                 args: {
                     dummy: '',
                     sprite: {},
@@ -1166,6 +1767,7 @@ var ha;
                 }
             });
             // CopyImage
+            //TODO
             /**
              * INFO
              * ====
@@ -1174,7 +1776,9 @@ var ha;
             // ha.be.Spr.Panjang;
             ImageBlockData.list.push({
                 type: "ha.be.Spr.Panjang",
+                perintah: "ha.be.Spr.Panjang",
                 message0: "ImageWidth: %1 image %2",
+                inputsInline: true,
                 args: {
                     dummy: '',
                     sprite: {},
@@ -1185,6 +1789,7 @@ var ha;
             // ha.be.Spr.Lebar;
             ImageBlockData.list.push({
                 type: "ha.be.Spr.Lebar",
+                perintah: "ha.be.Spr.Lebar",
                 message0: "ImageHeight: %1 image %2",
                 args: {
                     dummy: '',
@@ -1196,6 +1801,7 @@ var ha;
             // ha.be.Spr.HandleX
             ImageBlockData.list.push({
                 type: "ha.be.Spr.HandleX",
+                perintah: "ha.be.Spr.HandleX",
                 message0: "ImageXHandle: %1 image %2",
                 args: {
                     dummy: '',
@@ -1208,6 +1814,7 @@ var ha;
             // ha.be.Spr.HandleY
             ImageBlockData.list.push({
                 type: "ha.be.Spr.HandleY",
+                perintah: "ha.be.Spr.HandleY",
                 message0: "ImageYHandle: %1 image %2",
                 args: {
                     dummy: '',
@@ -1216,11 +1823,12 @@ var ha;
                 tooltip: "return the image-handle Y coordinate",
                 output: EOutput.Number
             });
-            // ImagesCollide
+            // ImagesCollideXY
             // ha.be.Spr.TabrakanXY;
             ImageBlockData.list.push({
                 type: "ha.be.Spr.TabrakanXY",
                 message0: "ImagesCollide: %1 image1: %2 x1: %3 y1: %4 image2: %5 x2: %6 y2: %7",
+                perintah: "ha.be.Spr.TabrakanXY",
                 args: {
                     dummy: '',
                     sprite: {},
@@ -1230,12 +1838,28 @@ var ha;
                     x2: 0,
                     y2: 0
                 },
+                inputsInline: true,
                 tooltip: "return true if two images are collided at position",
-                output: EOutput.Boolean
+                output: EOutput.Boolean,
             });
         })(ImageBlockData = blockly.ImageBlockData || (blockly.ImageBlockData = {}));
     })(blockly = ha.blockly || (ha.blockly = {}));
 })(ha || (ha = {}));
+//next
+// const Loaded = ha.be.Spr.Dimuat;
+// const StatusMuat = ha.be.Spr.StatusMuat;
+// const Posisi = ha.be.Spr.Posisi;
+// const PosisiPolar = ha.be.Spr.posisiPolar;
+// const GambarSemua = ha.be.Spr.GambarSemua;
+// const PosisiX = ha.be.Spr.PosisiX;
+// const PosisiY = ha.be.Spr.PosisiY;
+// const Alpha = ha.be.Spr.Alpha;
+// const StatusDrag = ha.be.Spr.StatusDrag;
+// const Copy = ha.be.Spr.Copy;
+// const Bound = ha.be.Spr.Bound;
+//next 2
+// const SpriteKontek = ha.be.Spr.kontek;
+//not supported
 // CreateImage
 // FreeImage
 // SaveImage
@@ -1259,39 +1883,169 @@ var ha;
 (function (ha) {
     var blockly;
     (function (blockly) {
-        class HalProject {
-            static list(cont) {
-                //get data;
-                let hasil = '';
-                console.log(blockly.Data.semua());
-                blockly.Data.semua().forEach((item) => {
-                    hasil += (`<div>
-                        <span>${item.nama}</span>
-                        |
-                        <span>
-                            <button onclick="openFile(${item.id})">open</button>
-                            <button onclick="deleteFile(${item.id})">delete</button>
-                        </span>
-                    </div>`);
-                });
-                cont.innerHTML = hasil;
-                return hasil;
-            }
-            static init() {
-                HalProject.list(document.body.querySelector('.list'));
-                document.body.querySelector('button.baru').onclick = () => {
-                    console.log('baru klik');
-                    let file = {
-                        id: 1 + '',
-                        data: '',
-                        nama: 'file1'
-                    };
-                    blockly.Data.baru(file);
-                    blockly.Data.simpan();
-                    document.location.reload();
-                };
-            }
-        }
-        blockly.HalProject = HalProject;
+        var ImageBlockData2;
+        (function (ImageBlockData2) {
+            ImageBlockData2.list = [];
+            // DrawImage
+            ImageBlockData2.list.push({
+                type: "ha.be.Spr.Gambar_no_frame",
+                perintah: "DrawImage",
+                message0: "Draw Image %1",
+                inputsInline: true,
+                args: {
+                    sprite: {},
+                },
+                tooltip: "Draw image to screen"
+            });
+            // DrawImage w frame
+            ImageBlockData2.list.push({
+                type: "ha.be.Spr.Gambar_frame",
+                perintah: "DrawImage",
+                message0: "Draw Image %1, frame no: %2",
+                inputsInline: true,
+                args: {
+                    sprite: {},
+                    frame: 0
+                },
+                tooltip: "Draw image to screen at a specific frame"
+            });
+            // ha.be.Spr.DragMode();
+            ImageBlockData2.list.push({
+                type: "ha.be.Spr.DragMode",
+                perintah: "ha.be.Spr.DragMode",
+                message0: "Image %1 set drag mode to %2",
+                inputsInline: true,
+                args: {
+                    sprite: {},
+                    dragMode: 1
+                }
+            });
+            // const ImageLoaded = ha.be.Spr.Dimuat;
+            // ImageLoaded
+            ImageBlockData2.list.push({
+                type: "ha.be.Spr.Dimuat",
+                perintah: "ImageLoaded",
+                message0: "Image %1 loaded",
+                inputsInline: true,
+                args: {
+                    sprite: {},
+                },
+                output: EOutput.Boolean
+            });
+            // const AllImageLoaded = ha.be.Spr.StatusMuat;
+            ImageBlockData2.list.push({
+                type: "ha.be.Spr.StatusMuat",
+                perintah: "AllImageLoaded",
+                message0: "All Images Loaded",
+                output: EOutput.Boolean,
+                tooltip: 'Check if All Images have been loaded'
+            });
+            // const PositionImageXY = ha.be.Spr.Posisi;
+            // PositionImageXY
+            ImageBlockData2.list.push({
+                type: "ha.be.Spr.Posisi",
+                perintah: "PositionImageXY",
+                message0: "Image %1 set position to x %2 y %3",
+                inputsInline: true,
+                args: {
+                    sprite: {},
+                    x: 0,
+                    y: 0
+                },
+                tooltip: 'Position image at x,y'
+            });
+            // const PositionImagePolar = ha.be.Spr.posisiPolar;
+            // PositionImagePolar
+            ImageBlockData2.list.push({
+                type: "ha.be.Spr.posisiPolar",
+                perintah: "PositionImagePolar",
+                message0: "Image %1 set position relative to x %4 y %5 by angle %2 at dist %3 scale x %6 scale y %7",
+                inputsInline: true,
+                args: {
+                    sprite: {},
+                    angle: 0,
+                    dist: 100,
+                    x: 0,
+                    y: 0,
+                    scaleX: 1,
+                    scaleY: 1
+                },
+                tooltip: 'Position image relative to certain position'
+            });
+            // const DrawAllImage = ha.be.Spr.GambarSemua;
+            ImageBlockData2.list.push({
+                type: "ha.be.Spr.GambarSemua",
+                perintah: "DrawAllImage",
+                message0: "DrawAllImage",
+                tooltip: 'Draw All Images, ordered by created time'
+            });
+            // const ImageXPosition = ha.be.Spr.PosisiX;
+            // ImageXPosition
+            ImageBlockData2.list.push({
+                type: "ha.be.Spr.PosisiX",
+                perintah: "ImageXPosition",
+                message0: "ImageXPosition %1",
+                args: {
+                    sprite: {},
+                },
+                output: EOutput.Number,
+                tooltip: 'Return Image x position'
+            });
+            // const ImageYPosition = ha.be.Spr.PosisiY;
+            // ImageYPosition
+            ImageBlockData2.list.push({
+                type: "ha.be.Spr.PosisiY",
+                perintah: "ImageYPosition",
+                message0: "ImageYPosition %1",
+                args: {
+                    sprite: {},
+                },
+                output: EOutput.Number,
+                tooltip: 'Return Image y position'
+            });
+            // const ImageAlpha = ha.be.Spr.Alpha;
+            // ImageAlpha
+            ImageBlockData2.list.push({
+                type: "ha.be.Spr.Alpha",
+                perintah: "ImageAlpha",
+                message0: "Image %1 set alpha to (0-100) %2",
+                args: {
+                    sprite: {},
+                    alpha: 100
+                },
+                inputsInline: true,
+                tooltip: 'set image alpha '
+            });
+            // const ImageIsDragged = ha.be.Spr.StatusDrag;
+            ImageBlockData2.list.push({
+                type: "ha.be.Spr.StatusDrag",
+                perintah: "ImageIsDragged",
+                message0: "Image %1 is dragged",
+                args: {
+                    sprite: {},
+                },
+                inputsInline: true,
+                tooltip: 'return true if image is dragged'
+            });
+            // ha.be.Spr.Tabrakan
+            //Collide
+            ImageBlockData2.list.push({
+                type: "ha.be.Spr.Tabrakan",
+                perintah: "Collide",
+                message0: "check Image %1 is collided with Image %2",
+                args: {
+                    sprite1: {},
+                    sprite2: {},
+                },
+                output: EOutput.Boolean,
+                inputsInline: true,
+                tooltip: 'return true if two images is collided'
+            });
+        })(ImageBlockData2 = blockly.ImageBlockData2 || (blockly.ImageBlockData2 = {}));
     })(blockly = ha.blockly || (ha.blockly = {}));
 })(ha || (ha = {}));
+//next
+// const CopyImage = ha.be.Spr.Copy;
+// const ImageBound = ha.be.Spr.Bound;
+//next 2
+// const SpriteKontek = ha.be.Spr.kontek;

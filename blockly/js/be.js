@@ -1,102 +1,3 @@
-// ///<reference path="./Route.ts"/>
-// /**
-//  * Membersihkan layar dengan warna tertentu, default hitam
-//  * @param merah {angka} opsional, merah, default = 0
-//  * @param hijau {angka} opsional, hijau,, default = 0
-//  * @param biru {angka} opsional, biru, default = 0
-//  * @param transparan {angka} opsional, transparan (0-100)
-//  */
-// const Bersih = (merah?: number, hijau?: number, biru?: number, transparan?: number) => {
-//     ha.be.Be.Bersih(merah, hijau, biru, transparan);
-// }
-// /**
-//  * Setup Blitz Edu
-//  * @param panjang (angka) panjang dari kanvas
-//  * @param lebar (angka) lebar dari kanvs
-//  * @param canvas (HTMLCanvasElement) referensi ke kanvas
-//  * @param fullScreen (boolean) apakah akan men-skala kanvas mengikuti ukuran layar/fullscreen
-//  * @returns
-//  */
-// const Grafis = (panjang: number = 240, lebar: number = 320, canvas: HTMLCanvasElement = null, fullScreen: boolean = true, input: boolean = true) => {
-//     ha.be.Be.Grafis(panjang, lebar, canvas, fullScreen, input);
-// }
-// /**
-//  * Mengeset warna untuk dipakai pada perintah menggambar berikutnya
-//  * @param r (number) merah
-//  * @param g (number) hijau
-//  * @param b (number) biru
-//  * @param a (number) alpha (0-100)
-//  */
-// const Warna = (r: number = 0, g: number = 0, b: number = 0, a: number = 100) => {
-//     ha.be.Be.Warna(r, g, b, a);
-// }
-// /**
-//  * Mengembalikan warna merah dari perintah AmbilPixel terakhir
-//  * @returns (number) warna merah
-//  */
-// const Merah = (): number => {
-//     return ha.be.Be.Merah()
-// };
-// const Hijau = ha.be.Be.Hijau;
-// const Biru = ha.be.Be.Biru;
-// const Transparan = ha.be.Be.Transparan;
-// const AmbilPiksel = ha.be.Image.AmbilPiksel;
-// const SetPiksel = ha.be.Image.SetPiksel;
-// const Kontek = ha.be.Be.Kontek;
-// const Kanvas = ha.be.Be.Kanvas;
-// const Garis = ha.be.Be.Garis;
-// const Kotak = ha.be.Be.Kotak;
-// const Oval = ha.be.Be.Oval;
-// ///<reference path="./Route.ts"/>
-// const InputHit = ha.be.Input.InputHit;
-// const InputX = ha.be.Input.InputX;
-// const InputY = ha.be.Input.InputY;
-// const InputXAwal = ha.be.Input.InputXAwal;
-// const InputYAwal = ha.be.Input.InputYAwal;
-// const GeserX = ha.be.Input.GeserX;
-// const GeserY = ha.be.Input.GeserY;
-// const FlushInput = ha.be.Input.FlushInput;
-// const Pencet = ha.be.Input.Pencet;
-// const Geser = ha.be.Input.Geser;
-// const InputType = ha.be.Input.InputType;
-// const JmlTap = ha.be.Input.JmlTap;
-// const JmlDragMulai = ha.be.Input.JmlDragMulai;
-// const JmlDragSelesai = ha.be.Input.JmlDragSelesai;
-// // const FlushKeys = () => {
-// // 	// ha.be.input.flushByInput(ha.be.input.keybGlobal);
-// // 	ha.be.input.flushByType('keyb');
-// // }
-// // const GetKey = (): string => {
-// // 	return ha.be.input.keybGlobal.key;
-// // }
-// // const KeybDiPencet = (key: string = ''): boolean => {
-// // 	if ("" == key) {
-// // 		return ha.be.input.keybGlobal.isDown;
-// // 	}
-// // 	else {
-// // 		let input: IInput = ha.be.input.getInput(key, 'keyb');
-// // 		if (input) {
-// // 			return input.isDown;
-// // 		}
-// // 		return false;
-// // 	}
-// // }
-// // const KeybHit = (key: string = ''): number => {
-// // 	if ("" == key) {
-// // 		let n: number = ha.be.input.keybGlobal.hit;
-// // 		ha.be.input.keybGlobal.hit = 0;
-// // 		return (n);
-// // 	}
-// // 	else {
-// // 		let input: IInput = ha.be.input.getInput(key, 'keyb');
-// // 		let n: number = 0;
-// // 		if (input) {
-// // 			n = input.hit;
-// // 			input.hit = 0;
-// // 		}
-// // 		return n;
-// // 	}
-// // }
 /**
  *  @namespace ha
  */
@@ -125,6 +26,9 @@ var ha;
                 h: 0,
                 t: 1
             };
+            static Pause() {
+                debugger;
+            }
             /**
              * Handle saat window di resize
              * @private
@@ -222,6 +126,13 @@ var ha;
                 ctx.fillRect(0, 0, Be.canvasAktif.panjang, Be.canvasAktif.lebar);
                 Be.restoreWarna();
             }
+            /**
+             * Update style warna
+             * @param r (0-255)
+             * @param g (0-255)
+             * @param b (0-255)
+             * @param a (0-100)
+             */
             static Warna(r = 0, g = 0, b = 0, a = 100) {
                 let h = Be;
                 h.merah = r;
@@ -229,6 +140,10 @@ var ha;
                 h.hijau = g;
                 h.transparan = a / 100;
                 h.updateStyleWarna();
+            }
+            static StrokeColor(r = 0, g = 0, b = 0, a = 100) {
+                let ctx = Be.canvasAktif.ctx;
+                ctx.strokeStyle = `rgba(${r}, ${g}, ${b}, ${a})`;
             }
             static updateStyleWarna() {
                 let ctx = Be.canvasAktif.ctx;
@@ -952,9 +867,6 @@ var ha;
         be.Img = Img;
     })(be = ha.be || (ha.be = {}));
 })(ha || (ha = {}));
-///<reference path="../ha/Be.ts"/>
-///<reference path="../ha/Image.ts"/>
-// const Sudut = ha.be.Mat.Sudut;
 ///<reference path="./Image.ts"/>
 var ha;
 (function (ha) {
@@ -963,12 +875,6 @@ var ha;
         class Spr {
             static daftar = [];
             static _ctrDraw = 0;
-            static get ctrDraw() {
-                return Spr._ctrDraw;
-            }
-            static set ctrDraw(value) {
-                Spr._ctrDraw = value;
-            }
             _buff;
             _x = 0;
             _y = 0;
@@ -983,15 +889,15 @@ var ha;
             _sudutTekanAwal;
             _sudutAwal;
             _inputId;
-            get inputId() {
-                return this._inputId;
-            }
-            set inputId(value) {
-                this._inputId = value;
-            }
             constructor(buffer, dragable = false) {
                 this.buff = buffer;
                 this.dragable = dragable;
+            }
+            static DragMode(s, n) {
+                s.tipeDrag = n;
+                if (n > 0) {
+                    s.dragable = true;
+                }
             }
             /**
              *
@@ -1262,6 +1168,8 @@ var ha;
              * @returns
              */
             static GambarXY(sprite, x, y, frame) {
+                sprite.x = x;
+                sprite.y = y;
                 be.Img.gambar(sprite.buff, x, y, frame);
             }
             /**
@@ -1348,10 +1256,10 @@ var ha;
             set y(value) {
                 this._y = value;
             }
-            get hit() {
+            get jmlHit() {
                 return this._hit;
             }
-            set hit(value) {
+            set jmlHit(value) {
                 this._hit = value;
             }
             get down() {
@@ -1389,6 +1297,18 @@ var ha;
             }
             set url(value) {
                 this._url = value;
+            }
+            static get ctrDraw() {
+                return Spr._ctrDraw;
+            }
+            static set ctrDraw(value) {
+                Spr._ctrDraw = value;
+            }
+            get inputId() {
+                return this._inputId;
+            }
+            set inputId(value) {
+                this._inputId = value;
             }
         }
         be.Spr = Spr;
@@ -1473,7 +1393,7 @@ var ha;
             }
         }
         class Input {
-            static _inputs = []; //any input,
+            static _inputs = []; //any input, todo: clean up
             static _debug = false;
             static get debug() {
                 return Input._debug;
@@ -1677,7 +1597,7 @@ var ha;
                     be.Spr.daftar.forEach((item) => {
                         if (e.pointerId == item.inputId) {
                             if (item.down) {
-                                item.hit++;
+                                item.jmlHit++;
                             }
                             item.down = false;
                             item.dragged = false;
@@ -1824,6 +1744,45 @@ var ha;
         // export const input: Input = new Input();
     })(be = ha.be || (ha.be = {}));
 })(ha || (ha = {}));
+// Input
+//======
+// KeyDown
+// KeyHit
+// GetKey
+// WaitKey
+// FlushKeys
+// MoveMouse
+// MouseDown
+// MouseHit
+// GetMouse
+// WaitMouse
+// MouseX
+// MouseY
+// MouseZ
+// MouseXSpeed
+// MouseYSpeed
+// MouseZSpeed
+// FlushMouse
+// JoyType
+// JoyDown
+// JoyHit
+// GetJoy
+// WaitJoy
+// JoyX
+// JoyY
+// JoyZ
+// JoyU
+// JoyV
+// JoyXDir
+// JoyYDir
+// JoyZDir
+// JoyUDir
+// JoyVDir
+// JoyYaw
+// JoyPitch
+// JoyRoll
+// JoyHat
+// FlushJoy
 var ha;
 (function (ha) {
     var be;
@@ -2311,15 +2270,56 @@ var ha;
     var be;
     (function (be) {
         class Teks {
+            static nama = 'cursive';
+            static ukuran = 30;
+            static x = 0;
+            static y = 0;
+            static _stroke = false;
+            static _jarak = 40;
+            static _fill = true;
+            static get stroke() {
+                return Teks._stroke;
+            }
+            static set stroke(value) {
+                Teks._stroke = value;
+            }
+            static get fill() {
+                return Teks._fill;
+            }
+            static set fill(value) {
+                Teks._fill = value;
+            }
+            static get jarak() {
+                return Teks._jarak;
+            }
+            static set jarak(value) {
+                Teks._jarak = value;
+            }
             static get ctx() {
                 return be.Be.canvasAktif.ctx;
             }
+            static Goto(x, y) {
+                this.x = x;
+                this.y = y;
+            }
+            static Write(str) {
+                this.Tulis(str, this.x, this.y, this.fill, this.stroke);
+            }
+            static WriteLn(str) {
+                this.Tulis(str, this.x, this.y, this.fill, this.stroke);
+                this.y += this.jarak;
+            }
             /**
              *
-             * @param font
+             * @param nama
              */
-            static Font(font = '30px Arial') {
-                Teks.ctx.font = font;
+            static Font(nama = 'cursive') {
+                this.nama = nama;
+                Teks.ctx.font = this.nama + this.ukuran + 'px';
+            }
+            static FontSize(n = 30) {
+                this.ukuran = n;
+                Teks.ctx.font = this.nama + this.ukuran + 'px';
             }
             /**
              *
@@ -2381,6 +2381,7 @@ var ha;
                     lastSprite.dragStartX = pos.x - lastSprite.x;
                     lastSprite.dragStartY = pos.y - lastSprite.y;
                     lastSprite.inputId = id;
+                    lastSprite.jmlHit++;
                     lastSprite.sudutTekanAwal = be.Transform.sudut(pos.x - lastSprite.x, pos.y - lastSprite.y);
                     lastSprite.sudutAwal = lastSprite.buff.rotasi;
                     return;
@@ -2410,7 +2411,7 @@ var ha;
             inputUp() {
                 be.Spr.daftar.forEach((item) => {
                     if (item.down) {
-                        item.hit++;
+                        // item.hit++;
                     }
                     if (item.dragged) {
                         console.log('input up: item rotasi ' + item.buff.rotasi);
@@ -2468,6 +2469,25 @@ var ha;
             static Sudut(x, y) {
                 return be.Transform.sudut(x, y);
             }
+            static Pi() { return Math.PI; }
+            static Int(n) { return parseInt(n); }
+            static Float(n) { return parseFloat(n); }
+            static Floor(n) { return Math.floor(n); }
+            static Ceil(n) { return Math.ceil(n); }
+            static Sgn(n) {
+                if (n > 0)
+                    return 1;
+                if (n < 0)
+                    return -1;
+                return 0;
+            }
+            static Abs(n) { return Math.abs(n); }
+            ;
+            static Mod(a, b) { return a % b; }
+            static Sqr(n) { return Math.sqrt(n); }
+            static Sin(n) { return Math.sin(n * Math.PI / 180); }
+            static Cos(n) { return Math.cos(n * Math.PI / 180); }
+            static Tan(n) { return Math.tan(n * Math.PI / 180); }
         }
         be.Mat = Mat;
     })(be = ha.be || (ha.be = {}));
@@ -2486,34 +2506,113 @@ var ha;
 ///<reference path="../ha/Cache.ts"/>
 ///<reference path="../ha/Mat.ts"/>
 ///<reference path="./Route.ts"/>
-// const Muat = ha.be.Sprite.Muat;
-// const MuatAsync = ha.be.Sprite.MuatAsync;
-// const Dimuat = ha.be.Sprite.Dimuat;
-// const MuatAnimasi = ha.be.Sprite.MuatAnimasi;
-// const StatusMuat = ha.be.Sprite.StatusMuat;
-// const Posisi = ha.be.Sprite.Posisi;
-// const Ukuran = ha.be.Sprite.Ukuran;
-// const PosisiPolar = ha.be.Sprite.posisiPolar;
-// const Gambar = ha.be.Sprite.Gambar;
-// const GambarSemua = ha.be.Sprite.GambarSemua;
-// const PosisiX = ha.be.Sprite.PosisiX;
-// const PosisiY = ha.be.Sprite.PosisiY;
-// const Handle = ha.be.Sprite.Handle;
-// const Rotasi = ha.be.Sprite.Rotasi;
-// const Alpha = ha.be.Sprite.Alpha;
-// const Tabrakan = ha.be.Sprite.Tabrakan;
-// const StatusDrag = ha.be.Sprite.StatusDrag;
-// const SpriteKontek = ha.be.Sprite.kontek;
-// const Panjang = ha.be.Sprite.Panjang;
-// const Lebar = ha.be.Sprite.Lebar;
-// const Copy = ha.be.Sprite.Copy;
-// const Ubin = ha.be.Sprite.Ubin;
-// const Bound = ha.be.Sprite.Bound;
+const Cls = ha.be.Be.Bersih;
+const Graphics = ha.be.Be.Grafis;
+const Color = ha.be.Be.Warna;
+// /**
+//  * Mengembalikan warna merah dari perintah AmbilPixel terakhir
+//  * @returns (number) warna merah
+//  */
+// const Merah = (): number => {
+//     return ha.be.Be.Merah()
+// };
+// const Hijau = ha.be.Be.Hijau;
+// const Biru = ha.be.Be.Biru;
+// const Transparan = ha.be.Be.Transparan;
+// const AmbilPiksel = ha.be.Image.AmbilPiksel;
+// const SetPiksel = ha.be.Image.SetPiksel;
+// const Kontek = ha.be.Be.Kontek;
+// const Kanvas = ha.be.Be.Kanvas;
+// const Garis = ha.be.Be.Garis;
+// const Kotak = ha.be.Be.Kotak;
+// const Oval = ha.be.Be.Oval;
+///<reference path="./Route.ts"/>
+const InputHit = ha.be.Input.InputHit;
+const InputX = ha.be.Input.InputX;
+const InputY = ha.be.Input.InputY;
+const InputIsDown = ha.be.Input.Pencet;
+// //extended
+const FlushInput = ha.be.Input.FlushInput;
+const DragX = ha.be.Input.GeserX;
+const DragY = ha.be.Input.GeserY;
+const InputIsDragged = ha.be.Input.Geser;
+const InputType = ha.be.Input.InputType;
+const TapCount = ha.be.Input.JmlTap;
+const DragStartCount = ha.be.Input.JmlDragMulai;
+const DragEndCount = ha.be.Input.JmlDragSelesai;
+const DragStartX = ha.be.Input.InputXAwal;
+const DragStartY = ha.be.Input.InputYAwal;
+//TODO: input id
+// // const FlushKeys = () => {
+// // 	// ha.be.input.flushByInput(ha.be.input.keybGlobal);
+// // 	ha.be.input.flushByType('keyb');
+// // }
+// // const GetKey = (): string => {
+// // 	return ha.be.input.keybGlobal.key;
+// // }
+// // const KeybDiPencet = (key: string = ''): boolean => {
+// // 	if ("" == key) {
+// // 		return ha.be.input.keybGlobal.isDown;
+// // 	}
+// // 	else {
+// // 		let input: IInput = ha.be.input.getInput(key, 'keyb');
+// // 		if (input) {
+// // 			return input.isDown;
+// // 		}
+// // 		return false;
+// // 	}
+// // }
+// // const KeybHit = (key: string = ''): number => {
+// // 	if ("" == key) {
+// // 		let n: number = ha.be.input.keybGlobal.hit;
+// // 		ha.be.input.keybGlobal.hit = 0;
+// // 		return (n);
+// // 	}
+// // 	else {
+// // 		let input: IInput = ha.be.input.getInput(key, 'keyb');
+// // 		let n: number = 0;
+// // 		if (input) {
+// // 			n = input.hit;
+// // 			input.hit = 0;
+// // 		}
+// // 		return n;
+// // 	}
+// // }
+///<reference path="../ha/Be.ts"/>
+///<reference path="../ha/Image.ts"/>
+// const Sudut = ha.be.Mat.Sudut;
+///<reference path="./Route.ts"/>
+const Muat = ha.be.Spr.Muat; //
+const MuatAsync = ha.be.Spr.MuatAsync;
+const MuatAnimasi = ha.be.Spr.MuatAnimasi;
+const Ukuran = ha.be.Spr.Ukuran;
+const DrawImage = ha.be.Spr.Gambar;
+const Handle = ha.be.Spr.Handle;
+const Rotasi = ha.be.Spr.Rotasi;
+const Collide = ha.be.Spr.Tabrakan;
+const CollideXY = ha.be.Spr.TabrakanXY;
+const SpriteKontek = ha.be.Spr.kontek;
+const Panjang = ha.be.Spr.Panjang;
+const Lebar = ha.be.Spr.Lebar;
+const Ubin = ha.be.Spr.Ubin;
+//next:
+const ImageLoaded = ha.be.Spr.Dimuat;
+const AllImageLoaded = ha.be.Spr.StatusMuat;
+const PositionImageXY = ha.be.Spr.Posisi;
+const PositionImagePolar = ha.be.Spr.posisiPolar;
+const DrawAllImage = ha.be.Spr.GambarSemua;
+const ImageXPosition = ha.be.Spr.PosisiX;
+const ImageYPosition = ha.be.Spr.PosisiY;
+const ImageAlpha = ha.be.Spr.Alpha;
+const ImageIsDragged = ha.be.Spr.StatusDrag;
+const CopyImage = ha.be.Spr.Copy;
+const ImageBound = ha.be.Spr.Bound;
 ///<reference path="../ha/Route.ts"/>
 // Shortcut buat perintah-perintah font
-// var Font = ha.be.Teks.Font;
-// var Tulis = ha.be.Teks.Tulis;
-// var Rata = ha.be.Teks.Rata;
+const FontName = ha.be.Teks.Font;
+const FontSize = ha.be.Teks.FontSize;
+const Print = ha.be.Teks.Tulis;
+const Align = ha.be.Teks.Rata;
 /**
  * INTERFACE
 */
