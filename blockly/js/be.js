@@ -221,8 +221,9 @@ var ha;
                     // 	ha.be.Blijs.repeat();
                     // }, 0);
                     //font default
-                    ha.be.Teks.Font("12px sans-serif");
-                    ha.be.Teks.Rata("center");
+                    be.Teks.Font("12px cursive");
+                    be.Teks.Rata("left");
+                    be.Teks.Goto(0, 10);
                     Be.Warna(255, 255, 255, 100);
                     Be.canvasAktif.ctx.strokeStyle = "#ffffff";
                 }
@@ -941,7 +942,7 @@ var ha;
              */
             static StatusDrag(spr) {
                 let hasil = false;
-                this.daftar.forEach((item) => {
+                Spr.daftar.forEach((item) => {
                     if (spr == item) {
                         hasil = spr.dragged;
                         return;
@@ -989,7 +990,7 @@ var ha;
                 if (spr && (typeof (sudut) == 'number')) {
                     spr.buff.rotasi = sudut;
                 }
-                return spr.buff.rotasi;
+                return be.Transform.normalizeDeg(spr.buff.rotasi);
             }
             /**
              *
@@ -1142,7 +1143,7 @@ var ha;
                         hasil.tipeDrag = 1;
                     }
                 }
-                this.daftar.push(hasil);
+                Spr.daftar.push(hasil);
                 // console.debug('buat sprite');
                 // console.debug(hasil);
                 return hasil;
@@ -1154,7 +1155,7 @@ var ha;
              */
             static Gambar(sprite, frame) {
                 if (sprite == null) {
-                    this.GambarSemua();
+                    Spr.GambarSemua();
                     return;
                 }
                 be.Img.gambar(sprite.buff, sprite.x, sprite.y, frame);
@@ -2273,9 +2274,9 @@ var ha;
             static nama = 'cursive';
             static ukuran = 30;
             static x = 0;
-            static y = 0;
+            static y = 10;
             static _stroke = false;
-            static _jarak = 40;
+            static _jarak = 15;
             static _fill = true;
             static get stroke() {
                 return Teks._stroke;
@@ -2582,19 +2583,20 @@ const DragStartY = ha.be.Input.InputYAwal;
 ///<reference path="../ha/Image.ts"/>
 // const Sudut = ha.be.Mat.Sudut;
 ///<reference path="./Route.ts"/>
-const Muat = ha.be.Spr.Muat; //
+const LoadImage = ha.be.Spr.Muat; //
 const MuatAsync = ha.be.Spr.MuatAsync;
-const MuatAnimasi = ha.be.Spr.MuatAnimasi;
-const Ukuran = ha.be.Spr.Ukuran;
+const LoadAnimImage = ha.be.Spr.MuatAnimasi;
+const ResizeImage = ha.be.Spr.Ukuran;
 const DrawImage = ha.be.Spr.Gambar;
+const DrawImageXY = ha.be.Spr.GambarXY;
 const Handle = ha.be.Spr.Handle;
-const Rotasi = ha.be.Spr.Rotasi;
+const Rotation = ha.be.Spr.Rotasi;
 const Collide = ha.be.Spr.Tabrakan;
 const CollideXY = ha.be.Spr.TabrakanXY;
 const SpriteKontek = ha.be.Spr.kontek;
-const Panjang = ha.be.Spr.Panjang;
-const Lebar = ha.be.Spr.Lebar;
-const Ubin = ha.be.Spr.Ubin;
+const Width = ha.be.Spr.Panjang;
+const Height = ha.be.Spr.Lebar;
+const Tile = ha.be.Spr.Ubin;
 //next:
 const ImageLoaded = ha.be.Spr.Dimuat;
 const AllImageLoaded = ha.be.Spr.StatusMuat;
