@@ -1,1 +1,0 @@
-open the index.html to start the app
