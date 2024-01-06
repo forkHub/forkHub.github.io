@@ -674,6 +674,7 @@ var ha;
                 img.onerror = () => {
                     console.warn('gagal load image, url ' + url);
                     //TODO: default image
+                    imgOnLoadDefault();
                 };
                 let img2 = ha.be.cache.getGbr(url);
                 if (img2) {
@@ -682,24 +683,51 @@ var ha;
                 else {
                     img.src = url;
                 }
-                function imgOnLoad(img) {
-                    canvas.width = img.naturalWidth;
-                    canvas.height = img.naturalHeight;
-                    ctx.drawImage(img, 0, 0);
-                    gbr.rect = ha.be.Kotak.buat(0, 0, img.naturalWidth, img.naturalHeight);
+                function imgOnLoad(imgP) {
+                    canvas.width = imgP.naturalWidth;
+                    canvas.height = imgP.naturalHeight;
+                    ctx.drawImage(imgP, 0, 0);
+                    gbr.rect = ha.be.Kotak.buat(0, 0, imgP.naturalWidth, imgP.naturalHeight);
                     gbr.load = true;
-                    gbr.img = img;
+                    gbr.img = imgP;
                     if (!gbr.panjangDiSet) {
                         gbr.panjangDiSet = true;
-                        gbr.panjang = img.naturalWidth;
+                        gbr.panjang = imgP.naturalWidth;
                     }
                     if (!gbr.lebarDiSet) {
-                        gbr.lebar = img.naturalHeight;
+                        gbr.lebar = imgP.naturalHeight;
                         gbr.lebarDiSet = true;
                     }
-                    gbr.frameH = img.naturalHeight;
-                    gbr.frameW = img.naturalWidth;
-                    ha.be.cache.setFile(url, img);
+                    gbr.frameH = imgP.naturalHeight;
+                    gbr.frameW = imgP.naturalWidth;
+                    ha.be.cache.setFile(url, imgP);
+                }
+                function imgOnLoadDefault() {
+                    canvas.width = 32;
+                    canvas.height = 32;
+                    //TODO: draw rectangle, broken image
+                    ctx = canvas.getContext('2d');
+                    gbr.rect = ha.be.Kotak.buat(0, 0, 32, 32);
+                    ctx.beginPath();
+                    ctx.rect(0, 0, 32, 32);
+                    ctx.moveTo(0, 0);
+                    ctx.lineTo(31, 31);
+                    ctx.moveTo(0, 31);
+                    ctx.lineTo(31, 0);
+                    ctx.stroke();
+                    gbr.load = true;
+                    gbr.img = document.createElement('img');
+                    if (!gbr.panjangDiSet) {
+                        gbr.panjangDiSet = true;
+                        gbr.panjang = 32;
+                    }
+                    if (!gbr.lebarDiSet) {
+                        gbr.lebar = 32;
+                        gbr.lebarDiSet = true;
+                    }
+                    gbr.frameH = 32;
+                    gbr.frameW = 32;
+                    ha.be.cache.setFile(url, gbr.img);
                 }
                 return gbr;
             }
@@ -713,8 +741,15 @@ var ha;
                 while (x < 0) {
                     x += w2;
                 }
+                while (x > 0) {
+                    x -= w2;
+                }
+                //posisi gambar dimulai dari sebelum titik 0,0
                 while (y < 0) {
                     y += h2;
+                }
+                while (y > 0) {
+                    y -= h2;
                 }
                 x -= w2;
                 y -= h2;
@@ -896,8 +931,8 @@ var ha;
                 this.dragable = dragable;
             }
             static DragMode(s, n) {
-                s.tipeDrag = n;
                 if (n > 0) {
+                    s.tipeDrag = n;
                     s.dragable = true;
                 }
             }
@@ -2367,7 +2402,15 @@ var ha;
          * Handle interaksi sprite
          */
         class SpriteInteraksi {
-            //TODO: validasi sprite ada di stage
+            spriteDown(lastSprite, pos, id) {
+                lastSprite.down = true;
+                lastSprite.dragStartX = pos.x - lastSprite.x;
+                lastSprite.dragStartY = pos.y - lastSprite.y;
+                lastSprite.inputId = id;
+                lastSprite.jmlHit++;
+                lastSprite.sudutTekanAwal = be.Transform.sudut(pos.x - lastSprite.x, pos.y - lastSprite.y);
+                lastSprite.sudutAwal = lastSprite.buff.rotasi;
+            }
             inputDown(pos, id) {
                 //sprite down
                 let lastIdx = -1;
@@ -2381,28 +2424,34 @@ var ha;
                             lastSprite = item;
                         }
                     }
+                    else {
+                        if (item.tipeDrag == 3 || item.tipeDrag == 4) {
+                            this.spriteDown(item, pos, id);
+                        }
+                    }
                 }
+                //
                 if (lastSprite) {
-                    lastSprite.down = true;
-                    lastSprite.dragStartX = pos.x - lastSprite.x;
-                    lastSprite.dragStartY = pos.y - lastSprite.y;
-                    lastSprite.inputId = id;
-                    lastSprite.jmlHit++;
-                    lastSprite.sudutTekanAwal = be.Transform.sudut(pos.x - lastSprite.x, pos.y - lastSprite.y);
-                    lastSprite.sudutAwal = lastSprite.buff.rotasi;
-                    return;
+                    this.spriteDown(lastSprite, pos, id);
+                    // lastSprite.down = true;
+                    // lastSprite.dragStartX = pos.x - lastSprite.x;
+                    // lastSprite.dragStartY = pos.y - lastSprite.y;
+                    // lastSprite.inputId = id;
+                    // lastSprite.jmlHit++;
+                    // lastSprite.sudutTekanAwal = Transform.sudut(pos.x - lastSprite.x, pos.y - lastSprite.y);
+                    // lastSprite.sudutAwal = lastSprite.buff.rotasi;
                 }
+                //
             }
             inputMove(pos, pointerId) {
                 be.Spr.daftar.forEach((item) => {
                     if (item.down && item.dragable && (item.inputId == pointerId)) {
                         item.dragged = true;
-                        if (item.tipeDrag == TypeDrag.drag) {
+                        if (item.tipeDrag == TypeDrag.drag || (item.tipeDrag == 3)) {
                             item.x = pos.x - item.dragStartX;
                             item.y = pos.y - item.dragStartY;
                         }
-                        else if (item.tipeDrag == TypeDrag.rotasi) {
-                            //TODO: peruban sudut
+                        else if (item.tipeDrag == TypeDrag.rotasi || (item.tipeDrag == 4)) {
                             let sudut2 = be.Transform.sudut(pos.x - item.x, pos.y - item.y);
                             let perbedaan = sudut2 - item.sudutTekanAwal;
                             item.buff.rotasi = item.sudutAwal + perbedaan;
@@ -2504,8 +2553,20 @@ var ha;
     (function (be) {
         class Dict {
             list = [];
+            _id = '';
+            set id(value) {
+                this._id = value;
+            }
+            get id() {
+                return this._id;
+            }
             static Create() {
-                return new Dict();
+                let d = new Dict();
+                d.id = be.Id.id();
+                return d;
+            }
+            static Id(d) {
+                return d.id;
             }
             static AddAttr(d, key, value) {
                 d.addAttr(new Attr(key, value));
@@ -2700,6 +2761,20 @@ const FontName = ha.be.Teks.Font;
 const FontSize = ha.be.Teks.FontSize;
 const Print = ha.be.Teks.Tulis;
 const Align = ha.be.Teks.Rata;
+var ha;
+(function (ha) {
+    var be;
+    (function (be) {
+        class Id {
+            static _id = Date.now();
+            static id() {
+                Id._id++;
+                return Id._id + '';
+            }
+        }
+        be.Id = Id;
+    })(be = ha.be || (ha.be = {}));
+})(ha || (ha = {}));
 /**
  * INTERFACE
 */
