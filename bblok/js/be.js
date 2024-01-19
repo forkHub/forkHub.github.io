@@ -433,7 +433,7 @@ var ha;
             // 	canvas: HTMLCanvasElement,
             // 	rect: IRect
             // ): IGambar {
-            // 	let gbr: IGambar = new Gambar();
+            // 	let gbr: IGambar = new Gambar();defaut 
             // 	gbr.panjang = w;
             // 	gbr.lebar = h;
             // 	gbr.img = img;
@@ -700,14 +700,29 @@ var ha;
                     }
                     gbr.frameH = imgP.naturalHeight;
                     gbr.frameW = imgP.naturalWidth;
+                    // ctx.fillStyle = 'rgba(255, 255, 255, 100)';
+                    // ctx.strokeStyle = 'rgba(255, 0, 0, 100)';
+                    // ctx.beginPath();
+                    // ctx.rect(0, 0, 32, 32);
+                    // ctx.moveTo(0, 0);
+                    // ctx.lineTo(31, 31);
+                    // ctx.moveTo(0, 31);
+                    // ctx.lineTo(31, 0);
+                    // ctx.stroke();
+                    // ctx.fillRect(0, 0, 32, 32);
                     ha.be.cache.setFile(url, imgP);
                 }
                 function imgOnLoadDefault() {
+                    console.log("img on load default");
                     canvas.width = 32;
                     canvas.height = 32;
                     //TODO: draw rectangle, broken image
-                    ctx = canvas.getContext('2d');
+                    // ctx = canvas.getContext('2d');
+                    gbr.img = document.createElement('img');
+                    // ctx.drawImage(gbr.img, 0, 0);
                     gbr.rect = ha.be.Kotak.buat(0, 0, 32, 32);
+                    ctx.fillStyle = 'rgba(255, 255, 255, 100)';
+                    ctx.strokeStyle = 'rgba(255, 0, 0, 100)';
                     ctx.beginPath();
                     ctx.rect(0, 0, 32, 32);
                     ctx.moveTo(0, 0);
@@ -715,8 +730,9 @@ var ha;
                     ctx.moveTo(0, 31);
                     ctx.lineTo(31, 0);
                     ctx.stroke();
+                    // ctx.setf
+                    // ctx.fillRect(0, 0, 32, 32);
                     gbr.load = true;
-                    gbr.img = document.createElement('img');
                     if (!gbr.panjangDiSet) {
                         gbr.panjangDiSet = true;
                         gbr.panjang = 32;
@@ -729,6 +745,7 @@ var ha;
                     gbr.frameW = 32;
                     ha.be.cache.setFile(url, gbr.img);
                 }
+                console.log(gbr);
                 return gbr;
             }
             static gambarUbin(gbr, x = 0, y = 0, frame = 0) {
@@ -840,7 +857,7 @@ var ha;
                     ctx.translate(x, y);
                     ctx.rotate(gbr.rotasi * (Math.PI / 180));
                     ctx.globalAlpha = gbr.alpha;
-                    ctx.drawImage(gbr.img, frameX, frameY, gbr.frameW, gbr.frameH, -gbr.handleX, -gbr.handleY, w2, h2);
+                    ctx.drawImage(gbr.canvas, frameX, frameY, gbr.frameW, gbr.frameH, -gbr.handleX, -gbr.handleY, w2, h2);
                     ctx.restore();
                 }
                 else {
@@ -1373,8 +1390,10 @@ var ha;
                 input.y = pos.y;
                 input.id = e.pointerId;
                 if (input.isDown) {
+                    if (input.isDrag == false) {
+                        input.dragJml++;
+                    }
                     input.isDrag = true;
-                    input.dragJml++;
                     input.xDrag = input.x - input.xStart;
                     input.yDrag = input.y - input.yStart;
                 }
@@ -2632,6 +2651,67 @@ var ha;
         be.Attr = Attr;
     })(be = ha.be || (ha.be = {}));
 })(ha || (ha = {}));
+var ha;
+(function (ha) {
+    var be;
+    (function (be) {
+        class Sound {
+            static list = [];
+            _src = '';
+            _loaded = false;
+            _sound;
+            _playedCount;
+            get playedCount() {
+                return this._playedCount;
+            }
+            set playedCount(value) {
+                this._playedCount = value;
+            }
+            get sound() {
+                return this._sound;
+            }
+            set sound(value) {
+                this._sound = value;
+            }
+            get loaded() {
+                return this._loaded;
+            }
+            set loaded(value) {
+                this._loaded = value;
+            }
+            get src() {
+                return this._src;
+            }
+            set src(value) {
+                this._src = value;
+            }
+            static Load(url) {
+                let sound = document.createElement("audio");
+                let s = new Sound();
+                s.src = url;
+                s.loaded = false;
+                s.sound = sound;
+                sound.onload = () => {
+                    s.loaded = true;
+                };
+                sound.onended = () => {
+                    s.playedCount++;
+                };
+                sound.src = url;
+                Sound.list.push(s);
+            }
+            static Play(s) {
+                s.sound.play();
+            }
+            static PlayedCount(s) {
+                let h = s.playedCount;
+                s.playedCount = 0;
+                return h;
+            }
+        }
+        be.Sound = Sound;
+    })(be = ha.be || (ha.be = {}));
+})(ha || (ha = {}));
 ///<reference path="../ha/Be.ts"/>
 ///<reference path="../ha/Image.ts"/>
 ///<reference path="../ha/Sprite.ts"/>
@@ -2646,6 +2726,11 @@ var ha;
 ///<reference path="../ha/Cache.ts"/>
 ///<reference path="../ha/Mat.ts"/>
 ///<reference path="../ha/Attr.ts"/>
+///<reference path="../ha/Sound.ts"/>
+///<reference path="./Route.ts"/>
+const LoadSound = ha.be.Sound.Load;
+const PlaySound = ha.be.Sound.Play;
+const SoundPlayedCount = ha.be.Sound.PlayedCount;
 ///<reference path="./Route.ts"/>
 const Cls = ha.be.Be.Bersih;
 const Graphics = ha.be.Be.Grafis;
@@ -2680,15 +2765,15 @@ const InputY = ha.be.Input.InputY;
 const InputIsDown = ha.be.Input.Pencet;
 // //extended
 const FlushInput = ha.be.Input.FlushInput;
-const DragX = ha.be.Input.GeserX;
-const DragY = ha.be.Input.GeserY;
+const InputDragX = ha.be.Input.GeserX;
+const InputDragY = ha.be.Input.GeserY;
 const InputIsDragged = ha.be.Input.Geser;
 const InputType = ha.be.Input.InputType;
-const TapCount = ha.be.Input.JmlTap;
-const DragStartCount = ha.be.Input.JmlDragMulai;
-const DragEndCount = ha.be.Input.JmlDragSelesai;
-const DragStartX = ha.be.Input.InputXAwal;
-const DragStartY = ha.be.Input.InputYAwal;
+const InputTapCount = ha.be.Input.JmlTap;
+const InputDragStartCount = ha.be.Input.JmlDragMulai;
+const InputDragEndCount = ha.be.Input.JmlDragSelesai;
+const InputDragStartX = ha.be.Input.InputXAwal;
+const InputDragStartY = ha.be.Input.InputYAwal;
 //TODO: input id
 // // const FlushKeys = () => {
 // // 	// ha.be.input.flushByInput(ha.be.input.keybGlobal);
@@ -2755,7 +2840,7 @@ const ImageAlpha = ha.be.Spr.Alpha;
 const ImageIsDragged = ha.be.Spr.StatusDrag;
 const CopyImage = ha.be.Spr.Copy;
 const ImageBound = ha.be.Spr.Bound;
-///<reference path="../ha/Route.ts"/>
+///<reference path="./Route.ts"/>
 // Shortcut buat perintah-perintah font
 const FontName = ha.be.Teks.Font;
 const FontSize = ha.be.Teks.FontSize;
