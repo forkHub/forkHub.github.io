@@ -1,63 +1,67 @@
 <html>
 
 <head>
-    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0,
-        target-densityDpi=device-dpi">
-    <title>Basik Blok</title>
-    <style>
-        canvas {
-            image-rendering: pixelated;
-        }
-    </style>
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0,
+			target-densityDpi=device-dpi">
+	<title>Basik Blok</title>
+	<style>
+		canvas {
+			image-rendering: pixelated;
+			background-color: black;
+		}
+	</style>
 </head>
 
 <body>
-    <canvas></canvas>
+	<canvas></canvas>
 
-    <script src="./js/blitz.js"></script>
-    <script src="./js/bblok.js"></script>
+	<script src="./js/blitz.js" defer=""></script>
+	<script src="./js/bblok.js" defer=""></script>
+	<script src="./js/js.js" defer=""></script>
 
-    <!-- main  -->
-    <script>
-
-        "use strict";
-        window.onload = () => {
-            console.log('start');
-            var image;
+	<!-- main  -->
+	<script defer="">
 
 
-
-            /*🛩️ Start %1 width: %2 height: %3 %4*/
-            Graphics(320, 240,);
-            image = (LoadImage('./imgs/box.png'));
-
-            ;
+		var image;
 
 
-            /*⏱️ update %1 %2 %3*/
-            function _update() {
-                /*Cls*/
-                Cls();
+		setId('ttDi6Y1piNqKi!GKH=;f');
+		try {
+			Graphics(320, 240);
+			;
+		} catch (e) {
+			console.log("grup mulai error");
+			console.log(e);
 
-                /*DrawImage: %4 image %1 x: %2 y: %3*/
-                DrawImageXY(image, 120, 100,);
-            };
+			e.message = 'Ada kesalahan di grup Mulai: ' + e.message;
 
-            let __update; // = update || Update || UPDATE as any;
-            if (typeof _update === "function")
-                __update = _update;
-            console.log(__update);
-            let __updater = () => {
-                if (__update) {
-                    __update();
-                }
-                requestAnimationFrame(__updater);
-            };
-            requestAnimationFrame(__updater);
-        };
+			handleError(e);
 
-    </script>
+			error = true;
+			//TODO: dialog
+			//throw e;
+		};
+
+		setId('D!_p@;(TK|!Jb;q9U}?k');
+
+		/*⏱️ Update %1 %2 %3*/
+		function _update() {
+			setId('$r:ccf}ka;L`h(uK$k3m');
+
+			/*DrawImage: %4 image %1 x: %2 y: %3*/
+			DrawImageXY(image, 0, 0,);
+			setId('(7d4VY9ISHI3=xQXw=c0');
+
+			/*Cls*/
+			Cls();
+			setId('+XeMS]7,od#~cp`HK;+Y');
+
+			/*Gambar semua*/
+			DrawAllImage();
+		};
+	</script>
 
 
 
