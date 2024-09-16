@@ -170,6 +170,7 @@ var ha;
                 canvas = Be.buatCanvas(canvasDepan);
                 Be._canvasAr.push(canvas);
                 Be.canvasAktif = canvas;
+                ha.be.Teks.Rata("center");
             }
             static backupWarna() {
                 Be.warnaBackup.b = Be.biru;
@@ -295,8 +296,8 @@ var ha;
                     // }, 0);
                     //font default
                     // Teks.Font("12px cursive");
-                    be.Teks.Rata("left");
-                    be.Teks.Goto(0, 10);
+                    be.Teks.Rata("center");
+                    be.Teks.Goto(169, 10);
                     Be.Warna(255, 255, 255, 100);
                     Be.canvasAktif.ctx.strokeStyle = "#ffffff";
                 }
@@ -2528,7 +2529,7 @@ var ha;
         }
         Teks.nama = 'cursive';
         Teks.ukuran = 30;
-        Teks.x = 0;
+        Teks.x = 120;
         Teks.y = 10;
         Teks._stroke = false;
         Teks._jarak = 15;
