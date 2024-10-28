@@ -1,0 +1,46 @@
+<html>
+
+<head>
+    <link href="./bootstrap.min.css" rel="stylesheet">
+</head>
+
+<body>
+    <div class="container">
+        <h1>Prefab Image</h1>
+        <form>
+            <div class="mb-3">
+                <label for="imgUrl" class="form-label">url:</label>
+                <input type="text" class="form-control" name="url" id="imgUrl">
+                <div id="imgUrl" class="form-text">url dari image</div>
+            </div>
+            <div class="mb-3">
+                <label for="imgPanjang" class="form-label">panjang:</label>
+                <input type="text" class="form-control" name="panjang" id="imgPanjang">
+                <div id="imgPanjang" class="form-text">panjang Image (opsional)</div>
+            </div>
+            <div class="mb-3">
+                <label for="imgLebar" class="form-label">lebar:</label>
+                <input type="text" class="form-control" id="imgLebar" name="lebar">
+                <div id="imgLebar" class="form-text">lebar Image (opsional)</div>
+            </div>
+            <div class="mb-3">
+                <label for="imgRotasi" class="form-label">rotasi:</label>
+                <input type="text" class="form-control" id="imgRotasi" name="rotasi">
+                <div id="imgRotasi" class="form-text">rotasi Image (opsional)</div>
+            </div>
+            <div class="mb-3">
+                <label for="imgAlpha" class="form-label">transparansi:</label>
+                <input type="text" class="form-control" id="imgAlpha" name="transparansi">
+                <div id="imgAlpha" class="form-text">transparansi (opsional, default = 1)</div>
+            </div>
+            <!-- drag mode -->
+            <!-- panjang frame  -->
+            <!-- lebar frame -->
+            <button type="submit" class="btn btn-primary">Submit</button>
+        </form>
+    </div>
+
+    <script src="index.js"></script>
+</body>
+
+</html>

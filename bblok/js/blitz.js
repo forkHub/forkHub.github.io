@@ -1,89 +1,3 @@
-var ha;
-(function (ha) {
-    var be;
-    (function (be) {
-        class Dict {
-            constructor() {
-                this.list = [];
-                this._id = '';
-            }
-            set id(value) {
-                this._id = value;
-            }
-            get id() {
-                return this._id;
-            }
-            static Create() {
-                let d = new Dict();
-                d.id = be.Id.id();
-                return d;
-            }
-            static Id(d) {
-                return d.id;
-            }
-            static AddAttr(d, key, value) {
-                d.addAttr(new Attr(key, value));
-            }
-            static GetKeyList(d) {
-                return d.getKeyList();
-            }
-            static GetValueList(d) {
-                return d.getValueList();
-            }
-            static GetValue(d, key) {
-                return d.getValueByKey(key);
-            }
-            addAttr(attr) {
-                this.list.push(attr);
-            }
-            getAttrByKey(key) {
-                let attr;
-                this.list.forEach((item) => {
-                    if (item.key == key) {
-                        attr = item;
-                    }
-                });
-                return attr;
-            }
-            getValueByKey(key) {
-                let attr = this.getAttrByKey(key);
-                return attr.value;
-            }
-            getKeyList() {
-                let hasil = [];
-                this.list.forEach((item) => {
-                    hasil.push(item.key);
-                });
-                return hasil;
-            }
-            getValueList() {
-                let hasil = [];
-                this.list.forEach((item) => {
-                    hasil.push(item.value);
-                });
-                return hasil;
-            }
-        }
-        be.Dict = Dict;
-        class Attr {
-            constructor(key, value) {
-                this._key = '';
-                this._key = key;
-                this._value = value;
-            }
-            get key() {
-                return this._key;
-            }
-            get value() {
-                return this._value;
-            }
-            set value(value) {
-                this._value = value;
-            }
-        }
-        be.Attr = Attr;
-    })(be = ha.be || (ha.be = {}));
-})(ha || (ha = {}));
 /**
  *  @namespace ha
  */
@@ -274,7 +188,7 @@ var ha;
                     Be.init(canvas, canvas);
                     Be.Grafis2(panjang, lebar, Be.skalaOtomatis);
                     if (input) {
-                        be.Input.init(Be.canvasAktif);
+                        be.Input.init(Be.canvasAktif.canvas);
                     }
                     if (Be.skalaOtomatis) {
                         window.onresize = () => {
@@ -507,6 +421,73 @@ var ha;
 (function (ha) {
     var be;
     (function (be) {
+        class Config {
+            constructor() {
+                this._supportGl = false;
+            }
+            get supportGl() {
+                return this._supportGl;
+            }
+            set supportGl(value) {
+                this._supportGl = value;
+            }
+        }
+        be.config = new Config();
+    })(be = ha.be || (ha.be = {}));
+})(ha || (ha = {}));
+var Dict;
+(function (Dict) {
+    function create() {
+        let d = new DictObj();
+        return d;
+    }
+    Dict.create = create;
+    function setAttr(d, key, value) {
+        for (let i = 0; i < d.attrs.length; i++) {
+            if (d.attrs[i].key == key) {
+                d.attrs[i].value = value;
+                return;
+            }
+        }
+        d.attrs.push(new Attr(key, value));
+    }
+    Dict.setAttr = setAttr;
+    function value(d, key) {
+        for (let i = 0; i < d.attrs.length; i++) {
+            if (d.attrs[i].key == key) {
+                return d.attrs[i].value;
+            }
+        }
+        return null;
+    }
+    Dict.value = value;
+    class DictObj {
+        constructor() {
+            this.attrs = [];
+        }
+    }
+    class Attr {
+        constructor(key, value) {
+            this._key = '';
+            this._key = key;
+            this._value = value;
+        }
+        get key() {
+            return this._key;
+        }
+        get value() {
+            return this._value;
+        }
+        set value(value) {
+            this._value = value;
+        }
+    }
+})(Dict || (Dict = {}));
+//TODO:
+var ha;
+(function (ha) {
+    var be;
+    (function (be) {
         class Id {
             static id() {
                 Id._id++;
@@ -605,15 +586,6 @@ var ha;
                 img.load = true;
                 img.panjangDiSet = true;
                 img.lebarDiSet = true;
-                // img = {
-                // 	set rotasi(n: number) {
-                // 		console.debug('[xxx] set rotasi: ' + n);
-                // 		this.rotasi = n;
-                // 	},
-                // 	get rotasi(): number {
-                // 		return this.rotasi;
-                // 	}
-                // }
                 return img;
             }
             static panjang(gbr, pj) {
@@ -784,16 +756,6 @@ var ha;
                     }
                     gbr.frameH = imgP.naturalHeight;
                     gbr.frameW = imgP.naturalWidth;
-                    // ctx.fillStyle = 'rgba(255, 255, 255, 100)';
-                    // ctx.strokeStyle = 'rgba(255, 0, 0, 100)';
-                    // ctx.beginPath();
-                    // ctx.rect(0, 0, 32, 32);
-                    // ctx.moveTo(0, 0);
-                    // ctx.lineTo(31, 31);
-                    // ctx.moveTo(0, 31);
-                    // ctx.lineTo(31, 0);
-                    // ctx.stroke();
-                    // ctx.fillRect(0, 0, 32, 32);
                     ha.be.cache.setFile(url, imgP);
                 }
                 function imgOnLoadDefault() {
@@ -906,7 +868,7 @@ var ha;
                 // let rect: IRect = img.rect;
                 if (gbr.load == false)
                     return;
-                gbr.ctrIdx = ha.be.Spr.ctrDraw++;
+                gbr.ctrIdx = ha.be.SprObj.ctrDraw++;
                 frame = Math.floor(frame);
                 jmlH = Math.floor(gbr.img.naturalWidth / gbr.frameW);
                 // jmlV = Math.floor(gbr.img.naturalHeight / gbr.frameH);
@@ -1009,7 +971,7 @@ var ha;
     (function (be) {
         class EventHandler {
             move(input, buffer, e) {
-                let pos = Input.pos(e.clientX, e.clientY, buffer);
+                let pos = Input.getPos(e.clientX, e.clientY, buffer);
                 input.x = pos.x;
                 input.y = pos.y;
                 input.id = e.pointerId;
@@ -1046,7 +1008,6 @@ var ha;
                 input.isDown = false;
                 input.isDrag = false;
                 input.timerEnd = Date.now();
-                //todo check tap
                 let isTap = this.checkTap(input);
                 input.isTap = (isTap == '');
                 if (input.isTap) {
@@ -1068,7 +1029,7 @@ var ha;
                 if (Math.abs(input.xDrag) > 5)
                     return "drag x " + input.xDrag;
                 if (Math.abs(input.yDrag) > 5)
-                    return "drag y 	" + input.xDrag;
+                    return "drag y " + input.xDrag;
                 let timer = input.timerEnd - input.timerStart;
                 if ((timer) > 500)
                     return "timer " + timer;
@@ -1077,12 +1038,6 @@ var ha;
         }
         class Input {
             constructor() {
-                // this._touchGlobal = this.buatInputDefault();
-                // this._mouseGlobal = this.buatInputDefault();
-                // this._keybGlobal = this.buatInputDefault();
-                // this._touchGlobal.type = EInput.TOUCH;
-                // this._keybGlobal.type = EInput.KEYB;
-                // this._mouseGlobal.type = EInput.MOUSE;
             }
             static get debug() {
                 return Input._debug;
@@ -1090,15 +1045,13 @@ var ha;
             static set debug(value) {
                 Input._debug = value;
             }
-            // static init() {
-            // }
             /**
              * berapa kali tap terjadi sejak pemanggilan terakhir kali
              * @returns (number)
              */
             static JmlTap() {
-                let tap = Input.inputGlobal.tapJml;
-                Input.inputGlobal.tapJml = 0;
+                let tap = Input.global.tapJml;
+                Input.global.tapJml = 0;
                 return tap;
             }
             /**
@@ -1106,8 +1059,8 @@ var ha;
              * @returns (number)
              */
             static JmlUp() {
-                let up = Input.inputGlobal.upJml;
-                Input.inputGlobal.tapJml = 0;
+                let up = Input.global.upJml;
+                Input.global.tapJml = 0;
                 return up;
             }
             /**
@@ -1115,8 +1068,8 @@ var ha;
              * @returns
              */
             static JmlDragSelesai() {
-                let s = Input.inputGlobal.dragSelesaiJml;
-                Input.inputGlobal.dragSelesaiJml = 0;
+                let s = Input.global.dragSelesaiJml;
+                Input.global.dragSelesaiJml = 0;
                 return s;
             }
             /**
@@ -1124,15 +1077,15 @@ var ha;
              * @returns (EInput)
              */
             static InputType() {
-                return Input.inputGlobal.type;
+                return Input.global.type;
             }
             /**
              * berapa kali pointer di tekan sejak terakhir kali perintah dipanggil
              * @returns (number)
              */
             static InputHit() {
-                let hit = Input.inputGlobal.hit;
-                Input.inputGlobal.hit = 0;
+                let hit = Input.global.hit;
+                Input.global.hit = 0;
                 return hit;
             }
             /**
@@ -1141,42 +1094,42 @@ var ha;
              *
              * */
             static InputXAwal() {
-                return Input.inputGlobal.xStart;
+                return Input.global.xStart;
             }
             /**
              * posisi y awal drag
              * @returns (number)
              */
             static InputYAwal() {
-                return Input.inputGlobal.yStart;
+                return Input.global.yStart;
             }
             /**
              * posisi x pointer
              * @returns (number)
              */
             static InputX() {
-                return Input.inputGlobal.x;
+                return Input.global.x;
             }
             /**
              * posisi y pointer
              * @returns
              */
             static InputY() {
-                return Input.inputGlobal.y;
+                return Input.global.y;
             }
             /**
              * berapa jauh pointer digeser sejajar sumbu x
              * @returns (number)
              */
             static GeserX() {
-                return Input.inputGlobal.xDrag;
+                return Input.global.xDrag;
             }
             /**
              * berapa jauh pointer di drag sejajar sumbu y
              * @returns (number)
              */
             static GeserY() {
-                return Input.inputGlobal.yDrag;
+                return Input.global.yDrag;
             }
             /**
              * menghapus data input
@@ -1189,8 +1142,8 @@ var ha;
              *
              */
             static JmlDragMulai() {
-                let hasil = Input.inputGlobal.dragJml;
-                Input.inputGlobal.dragJml = 0;
+                let hasil = Input.global.dragJml;
+                Input.global.dragJml = 0;
                 return hasil;
             }
             /**
@@ -1198,14 +1151,14 @@ var ha;
              * @returns (boolean)
              */
             static Pencet() {
-                return Input.inputGlobal.isDown;
+                return Input.global.isDown;
             }
             /**
              * mengecheck apakah pointer sedang di drag
              * @returns (boolean)
              */
             static Geser() {
-                return Input.inputGlobal.isDrag;
+                return Input.global.isDrag;
             }
             static getMouseKeyId(e) {
                 if (e.pointerType == 'touch') {
@@ -1219,55 +1172,43 @@ var ha;
             static init(buffer) {
                 console.log('input init');
                 Input._inputGlobal = this.buatInputDefault();
-                buffer.canvas.style.touchAction = 'none';
-                buffer.canvas.onpointerdown = (e) => {
+                buffer.style.touchAction = 'none';
+                buffer.onpointerdown = (e) => {
                     e.stopPropagation();
                     e.preventDefault();
-                    let pos = Input.pos(e.clientX, e.clientY, buffer);
+                    let pos = Input.getPos(e.clientX, e.clientY, buffer);
                     let key = Input.getMouseKeyId(e);
                     let input = Input.baru(key, e.pointerType);
                     Input.event.down(input, key, e.pointerType, pos);
                     Input.event.down(this._inputGlobal, key, e.pointerType, pos);
-                    // if ("mouse" == e.pointerType) ha.be.input.event.down(this._mouseGlobal, key, EInput.MOUSE, pos);
-                    // if ("touch" == e.pointerType) ha.be.input.event.down(this._touchGlobal, key, EInput.TOUCH, pos);
                     be.sprInteraksi.inputDown(pos, e.pointerId);
                 };
-                buffer.canvas.onpointermove = (e) => {
+                buffer.onpointermove = (e) => {
                     e.stopPropagation();
                     e.preventDefault();
-                    let pos = Input.pos(e.clientX, e.clientY, buffer);
+                    let pos = Input.getPos(e.clientX, e.clientY, buffer);
                     let key = this.getMouseKeyId(e);
                     let input = this.baru(key, e.pointerType);
                     Input.event.move(input, buffer, e);
-                    Input.event.move(this.inputGlobal, buffer, e);
-                    // if (e.pointerType == 'touch') ha.be.input.event.move(ha.be.input.touchGlobal, buffer, e);
-                    // if (e.pointerType == 'mouse') ha.be.input.event.move(ha.be.input.mouseGlobal, buffer, e);
+                    Input.event.move(this.global, buffer, e);
                     //sprite
                     be.sprInteraksi.inputMove(pos, e.pointerId);
                 };
-                buffer.canvas.onpointerout = (e) => {
-                    e.stopPropagation();
-                    e.preventDefault();
-                    // let key: string = Input.getMouseKeyId(e);
-                    // let input: IInput = Input.baru(key, e.pointerType as EInput);
-                    // Input.event.up(input);
-                    // Input.event.up(Input.inputGlobal);
-                    // if (e.pointerType == 'touch') ha.be.input.event.up(ha.be.input.touchGlobal);
-                    // if (e.pointerType == 'mouse') ha.be.input.event.up(ha.be.input.mouseGlobal);
-                };
-                buffer.canvas.onpointercancel = (e) => {
+                buffer.onpointerout = (e) => {
                     e.stopPropagation();
                     e.preventDefault();
                 };
-                buffer.canvas.onpointerup = (e) => {
+                buffer.onpointercancel = (e) => {
+                    e.stopPropagation();
+                    e.preventDefault();
+                };
+                buffer.onpointerup = (e) => {
                     e.stopPropagation();
                     e.preventDefault();
                     let key = this.getMouseKeyId(e);
                     let input = this.baru(key, e.pointerType);
                     Input.event.up(input);
-                    Input.event.up(this.inputGlobal);
-                    // if (e.pointerType == 'touch') ha.be.input.event.up(ha.be.input.touchGlobal);
-                    // if (e.pointerType == 'mouse') ha.be.input.event.up(ha.be.input.mouseGlobal);
+                    Input.event.up(this.global);
                     //sprite up
                     //sprite hit
                     be.Spr.daftar.forEach((item) => {
@@ -1305,39 +1246,12 @@ var ha;
                     upJml: 0
                 };
             }
-            // private reset(input: IInput) {
-            // 	input.id = 0;
-            // 	input.isDown = false;
-            // 	input.isDrag = false;
-            // 	// input.isHit = false;
-            // 	input.isTap = false;
-            // 	input.key = '';
-            // 	input.timerEnd = 0;
-            // 	input.timerStart = 0;
-            // 	input.type = EInput.DEF;
-            // 	input.x = 0;
-            // 	input.y = 0;
-            // 	input.xDrag = 0;
-            // 	input.yDrag = 0;
-            // 	input.xStart = 0;
-            // 	input.yStart = 0;
-            // }
             static flush() {
                 while (Input.inputs.length > 0) {
                     Input.inputs.pop();
                 }
                 Input.flushByInput(Input._inputGlobal);
-                // this.flushByInput(this._mouseGlobal);
-                // this.flushByInput(this._touchGlobal);
-                // this.flushByInput(this._keybGlobal);
             }
-            // flushByType(type: string): void {
-            // 	this._inputs.forEach((input: IInput) => {
-            // 		if (type == input.type) {
-            // 			this.flushByInput(input);
-            // 		}
-            // 	});
-            // }
             static flushByInput(input) {
                 input.isDown = false;
                 input.isDrag = false;
@@ -1390,37 +1304,27 @@ var ha;
                 return Input._inputs;
             }
             static get event() {
-                return Input._event;
+                return Input._evt;
             }
-            // public get touchGlobal(): IInput {
-            // 	return this._touchGlobal;
-            // }
-            // public get mouseGlobal(): IInput {
-            // 	return this._mouseGlobal;
-            // }
-            // public get keybGlobal(): IInput {
-            // 	return this._keybGlobal;
-            // }
-            static get inputGlobal() {
+            static get global() {
                 return Input._inputGlobal;
             }
         }
         Input._inputs = []; //any input, todo: clean up
         Input._debug = false;
-        Input._event = new EventHandler();
-        Input.pos = (cx, cy, buffer) => {
-            let rect = buffer.canvas.getBoundingClientRect();
-            let canvasScaleX = parseInt(window.getComputedStyle(buffer.canvas).width) / buffer.canvas.width;
-            let canvasScaleY = parseInt(window.getComputedStyle(buffer.canvas).height) / buffer.canvas.height;
-            let poslx = Math.floor((cx - rect.x) / canvasScaleX);
-            let posly = Math.floor((cy - rect.y) / canvasScaleY);
+        Input._evt = new EventHandler();
+        Input.getPos = (cx, cy, c) => {
+            let r = c.getBoundingClientRect();
+            let cSclX = parseInt(window.getComputedStyle(c).width) / c.width;
+            let cSclY = parseInt(window.getComputedStyle(c).height) / c.height;
+            let poslx = Math.floor((cx - r.x) / cSclX);
+            let posly = Math.floor((cy - r.y) / cSclY);
             return {
                 x: poslx,
                 y: posly
             };
         };
         be.Input = Input;
-        // export const input: Input = new Input();
     })(be = ha.be || (ha.be = {}));
 })(ha || (ha = {}));
 // Input
@@ -1498,6 +1402,13 @@ var ha;
             static Sin(n) { return Math.sin(n * Math.PI / 180); }
             static Cos(n) { return Math.cos(n * Math.PI / 180); }
             static Tan(n) { return Math.tan(n * Math.PI / 180); }
+            static Clamp(n, min, max) {
+                if (n < min)
+                    return min;
+                if (n > max)
+                    return max;
+                return n;
+            }
         }
         be.Mat = Mat;
     })(be = ha.be || (ha.be = {}));
@@ -1561,6 +1472,123 @@ var ha;
             }
         }
         be.Point = Point;
+    })(be = ha.be || (ha.be = {}));
+})(ha || (ha = {}));
+var ha;
+(function (ha) {
+    var be;
+    (function (be) {
+        //internal
+        class Segment {
+            static create(v1 = { x: 0, y: 0 }, v2 = { x: 0, y: 0 }) {
+                return {
+                    v1: v1,
+                    v2: v2
+                };
+            }
+            static boundCollide(seg1, seg2) {
+                if (Segment.maxX(seg1) < Segment.minX(seg2))
+                    return false;
+                if (Segment.minX(seg1) > Segment.maxX(seg2))
+                    return false;
+                if (Segment.maxY(seg1) < Segment.minY(seg2))
+                    return false;
+                if (Segment.minY(seg1) > Segment.maxY(seg2))
+                    return false;
+                return true;
+            }
+            static collide(seg1, seg2) {
+                let bound = Segment.boundCollide(seg1, seg2);
+                if (!bound)
+                    return false;
+                // let deg: number = Segment.deg(seg2);
+                let seg2Copy = Segment.clone(seg2);
+                let seg1Copy = Segment.clone(seg1);
+                let deg = Segment.deg(seg2);
+                Segment.rotate(seg2Copy, -deg, seg2.v1.x, seg2.v1.y);
+                Segment.rotate(seg1Copy, -deg, seg2.v1.x, seg2.v1.y);
+                if (!Segment.boundCollide(seg1Copy, seg2Copy))
+                    return false;
+                Segment.translate(seg1Copy, -seg2.v1.x, -seg2.v1.y);
+                Segment.translate(seg2Copy, -seg2.v1.x, -seg2.v1.y);
+                if (!Segment.crossHor(seg1Copy)) {
+                    return false;
+                }
+                let idx = Segment.xHorIdx(seg1Copy);
+                let x = Segment.getXAtIdx(seg1Copy, idx);
+                if (x > Segment.maxX(seg2Copy))
+                    return false;
+                if (x < Segment.minX(seg2Copy))
+                    return false;
+                return true;
+            }
+            static copy(seg1, seg2) {
+                be.Point.copy(seg1.v1, seg2.v2);
+                be.Point.copy(seg1.v2, seg2.v2);
+            }
+            static clone(seg) {
+                return {
+                    v1: be.Point.clone(seg.v1),
+                    v2: be.Point.clone(seg.v2)
+                };
+            }
+            static crossHor(seg) {
+                if (Segment.maxY(seg) > 0) {
+                    if (Segment.minY(seg) < 0) {
+                        return true;
+                    }
+                }
+                return false;
+            }
+            static deg(line) {
+                let j = line.v2.y - line.v1.y;
+                let i = line.v2.x - line.v1.x;
+                return be.Transform.sudut(i, j);
+            }
+            static getXAtIdx(seg, idx) {
+                return seg.v1.x + (idx * Segment.vecI(seg));
+            }
+            static getYAtIdx(seg, idx) {
+                return seg.v1.y + (idx * Segment.vecJ(seg));
+            }
+            static vecI(seg) {
+                return seg.v2.x - seg.v1.x;
+            }
+            static vecJ(seg) {
+                return seg.v2.y - seg.v1.y;
+            }
+            static rotate(seg, deg = 0, xc = 0, yc = 0) {
+                be.Point.putarPoros(seg.v1, xc, yc, deg);
+                be.Point.putarPoros(seg.v2, xc, yc, deg);
+            }
+            static minX(seg) {
+                return Math.min(seg.v1.x, seg.v2.x);
+            }
+            static maxX(seg) {
+                return Math.max(seg.v1.x, seg.v2.x);
+            }
+            static minY(seg) {
+                return Math.min(seg.v1.y, seg.v2.y);
+            }
+            static maxY(seg) {
+                return Math.max(seg.v1.y, seg.v2.y);
+            }
+            static translate(seg, x = 0, y = 0) {
+                seg.v1.x += x;
+                seg.v1.y += y;
+                seg.v2.x += x;
+                seg.v2.y += y;
+            }
+            //tested
+            static xHorIdx(seg) {
+                if (!Segment.crossHor(seg))
+                    return NaN;
+                let idx = 0;
+                idx = (0 - seg.v1.y) / (seg.v2.y - seg.v1.y);
+                return idx;
+            }
+        }
+        be.Segment = Segment;
     })(be = ha.be || (ha.be = {}));
 })(ha || (ha = {}));
 var ha;
@@ -1733,814 +1761,6 @@ var ha;
 (function (ha) {
     var be;
     (function (be) {
-        //internal
-        class Segment {
-            static create(v1 = { x: 0, y: 0 }, v2 = { x: 0, y: 0 }) {
-                return {
-                    v1: v1,
-                    v2: v2
-                };
-            }
-            static boundCollide(seg1, seg2) {
-                if (Segment.maxX(seg1) < Segment.minX(seg2))
-                    return false;
-                if (Segment.minX(seg1) > Segment.maxX(seg2))
-                    return false;
-                if (Segment.maxY(seg1) < Segment.minY(seg2))
-                    return false;
-                if (Segment.minY(seg1) > Segment.maxY(seg2))
-                    return false;
-                return true;
-            }
-            static collide(seg1, seg2) {
-                let bound = Segment.boundCollide(seg1, seg2);
-                if (!bound)
-                    return false;
-                // let deg: number = Segment.deg(seg2);
-                let seg2Copy = Segment.clone(seg2);
-                let seg1Copy = Segment.clone(seg1);
-                let deg = Segment.deg(seg2);
-                Segment.rotate(seg2Copy, -deg, seg2.v1.x, seg2.v1.y);
-                Segment.rotate(seg1Copy, -deg, seg2.v1.x, seg2.v1.y);
-                if (!Segment.boundCollide(seg1Copy, seg2Copy))
-                    return false;
-                Segment.translate(seg1Copy, -seg2.v1.x, -seg2.v1.y);
-                Segment.translate(seg2Copy, -seg2.v1.x, -seg2.v1.y);
-                if (!Segment.crossHor(seg1Copy)) {
-                    return false;
-                }
-                let idx = Segment.xHorIdx(seg1Copy);
-                let x = Segment.getXAtIdx(seg1Copy, idx);
-                if (x > Segment.maxX(seg2Copy))
-                    return false;
-                if (x < Segment.minX(seg2Copy))
-                    return false;
-                return true;
-            }
-            static copy(seg1, seg2) {
-                be.Point.copy(seg1.v1, seg2.v2);
-                be.Point.copy(seg1.v2, seg2.v2);
-            }
-            static clone(seg) {
-                return {
-                    v1: be.Point.clone(seg.v1),
-                    v2: be.Point.clone(seg.v2)
-                };
-            }
-            static crossHor(seg) {
-                if (Segment.maxY(seg) > 0) {
-                    if (Segment.minY(seg) < 0) {
-                        return true;
-                    }
-                }
-                return false;
-            }
-            static deg(line) {
-                let j = line.v2.y - line.v1.y;
-                let i = line.v2.x - line.v1.x;
-                return be.Transform.sudut(i, j);
-            }
-            static getXAtIdx(seg, idx) {
-                return seg.v1.x + (idx * Segment.vecI(seg));
-            }
-            static getYAtIdx(seg, idx) {
-                return seg.v1.y + (idx * Segment.vecJ(seg));
-            }
-            static vecI(seg) {
-                return seg.v2.x - seg.v1.x;
-            }
-            static vecJ(seg) {
-                return seg.v2.y - seg.v1.y;
-            }
-            static rotate(seg, deg = 0, xc = 0, yc = 0) {
-                be.Point.putarPoros(seg.v1, xc, yc, deg);
-                be.Point.putarPoros(seg.v2, xc, yc, deg);
-            }
-            static minX(seg) {
-                return Math.min(seg.v1.x, seg.v2.x);
-            }
-            static maxX(seg) {
-                return Math.max(seg.v1.x, seg.v2.x);
-            }
-            static minY(seg) {
-                return Math.min(seg.v1.y, seg.v2.y);
-            }
-            static maxY(seg) {
-                return Math.max(seg.v1.y, seg.v2.y);
-            }
-            static translate(seg, x = 0, y = 0) {
-                seg.v1.x += x;
-                seg.v1.y += y;
-                seg.v2.x += x;
-                seg.v2.y += y;
-            }
-            //tested
-            static xHorIdx(seg) {
-                if (!Segment.crossHor(seg))
-                    return NaN;
-                let idx = 0;
-                idx = (0 - seg.v1.y) / (seg.v2.y - seg.v1.y);
-                return idx;
-            }
-        }
-        be.Segment = Segment;
-    })(be = ha.be || (ha.be = {}));
-})(ha || (ha = {}));
-var ha;
-(function (ha) {
-    var be;
-    (function (be) {
-        class Sound {
-            constructor() {
-                this._src = '';
-                this._loaded = false;
-            }
-            get playedCount() {
-                return this._playedCount;
-            }
-            set playedCount(value) {
-                this._playedCount = value;
-            }
-            get sound() {
-                return this._sound;
-            }
-            set sound(value) {
-                this._sound = value;
-            }
-            get loaded() {
-                return this._loaded;
-            }
-            set loaded(value) {
-                this._loaded = value;
-            }
-            get src() {
-                return this._src;
-            }
-            set src(value) {
-                this._src = value;
-            }
-            static Load(url) {
-                let sound = document.createElement("audio");
-                let s = new Sound();
-                s.src = url;
-                s.loaded = false;
-                s.sound = sound;
-                sound.onload = () => {
-                    s.loaded = true;
-                };
-                sound.onended = () => {
-                    s.playedCount++;
-                };
-                sound.src = url;
-                Sound.list.push(s);
-            }
-            static Play(s) {
-                s.sound.play();
-            }
-            static SoundEnded(s) {
-                let h = s.playedCount;
-                s.playedCount = 0;
-                return (h > 0);
-            }
-            static SoundLoaded(s) {
-                return s.loaded;
-            }
-        }
-        Sound.list = [];
-        be.Sound = Sound;
-    })(be = ha.be || (ha.be = {}));
-})(ha || (ha = {}));
-///<reference path="./Image.ts"/>
-var ha;
-(function (ha) {
-    var be;
-    (function (be) {
-        class Spr {
-            constructor(buffer, dragable = false) {
-                this._x = 0;
-                this._y = 0;
-                this._dragged = false;
-                this._down = false;
-                this._hit = 0;
-                this._dragStartY = 0;
-                this._dragStartX = 0;
-                this._dragable = false;
-                this.buff = buffer;
-                this.dragable = dragable;
-            }
-            static DragMode(s, n) {
-                if (n > 0) {
-                    s.tipeDrag = n;
-                    s.dragable = true;
-                }
-            }
-            /**
-             *
-             * @param spr
-             * @returns
-             */
-            static kontek(spr) {
-                return spr.buff.ctx;
-            }
-            /**
-             *
-             * @param sprS {ISpr} sprite
-             * @param onload {() => void} optional, fungsi yang dipanggil sprite selesai dimuat
-             * @returns
-             */
-            static Copy(sprS, onload) {
-                if (!onload) {
-                    onload = () => { };
-                }
-                if (sprS.buff.isAnim) {
-                    console.debug('copy sprite anim');
-                    console.debug(sprS);
-                    return Spr.muatAnimasiAsyncKanvas(sprS.url, sprS.buff.frameW, sprS.buff.frameH, sprS.dragable, sprS.buff.canvas, sprS.tipeDrag);
-                }
-                else {
-                    return Spr.muatAsyncBerbagiKanvas(sprS.url, sprS.dragable, sprS.buff.canvas, sprS.tipeDrag, onload);
-                }
-            }
-            /**
-             *
-             * @param spr
-             * @returns
-             */
-            static Dimuat(spr) {
-                return spr.buff.load;
-            }
-            /**
-             *
-             * @param spr
-             * @returns
-             */
-            static StatusDrag(spr) {
-                let hasil = false;
-                Spr.daftar.forEach((item) => {
-                    if (spr == item) {
-                        hasil = spr.dragged;
-                        return;
-                    }
-                });
-                return hasil;
-            }
-            /**
-             *
-             * @param spr
-             * @param pj
-             * @returns
-             */
-            static Panjang(spr, pj) {
-                return be.Img.panjang(spr.buff, pj);
-            }
-            /**
-             *
-             * @param spr
-             * @param lb
-             * @returns
-             */
-            static Lebar(spr, lb) {
-                return be.Img.lebar(spr.buff, lb);
-            }
-            /**
-             *
-             * @param spr
-             * @param alpha
-             * @returns
-             */
-            static Alpha(spr, alpha) {
-                if (typeof (alpha) == 'number') {
-                    spr.buff.alpha = alpha / 100;
-                }
-                return spr.buff.alpha;
-            }
-            /**
-             *
-             * @param spr
-             * @param sudut
-             * @returns
-             */
-            static Rotasi(spr, sudut) {
-                if (spr && (typeof (sudut) == 'number')) {
-                    spr.buff.rotasi = sudut;
-                }
-                return be.Transform.normalizeDeg(spr.buff.rotasi);
-            }
-            /**
-             *
-             * @param spr
-             * @param x
-             * @param y
-             */
-            static Posisi(spr, x = 0, y = 0) {
-                spr.x = x;
-                spr.y = y;
-            }
-            /**
-             *
-             * @param spr
-             * @param x
-             * @returns
-             */
-            static PosisiX(spr, x = null) {
-                if (typeof (x) == 'number') {
-                    spr.x = x;
-                }
-                return spr.x;
-            }
-            /**
-             *
-             * @param s
-             * @param y
-             * @returns
-             */
-            static PosisiY(s, y = null) {
-                if (typeof (y) == 'number') {
-                    // debugger;
-                    s.y = y;
-                }
-                return s.y;
-            }
-            /**
-             *
-             * @param s
-             * @returns
-             */
-            static Bound(s) {
-                be.Img.resetRect(s.buff);
-                be.Img.rectToImageTransform(s.buff, s.x, s.y);
-                return s.buff.rect;
-            }
-            //TODO:boundx, boundy, boundX2, boundY2
-            /**
-             *
-             * @param s
-             * @param x
-             * @param y
-             * @returns
-             */
-            static Handle(s, x = 0, y = 0) {
-                if (s) {
-                    s.buff.handleX = x;
-                    s.buff.handleY = y;
-                }
-            }
-            static HandleX(s) { return s.buff.handleX; }
-            static HandleY(s) { return s.buff.handleY; }
-            /**
-             *
-             */
-            static GambarSemua() {
-                for (let i = 0; i < Spr.daftar.length; i++) {
-                    let item = Spr.daftar[i];
-                    Spr.Gambar(item);
-                }
-            }
-            /**
-             *
-             * @param spr
-             * @param spr2
-             * @returns
-             */
-            static Tabrakan(spr, spr2) {
-                return be.Img.tabrakan(spr.buff, Spr.PosisiX(spr), Spr.PosisiY(spr), spr2.buff, Spr.PosisiX(spr2), Spr.PosisiY(spr2));
-            }
-            static TabrakanXY(spr, x1, y1, spr2, x2, y2) {
-                return be.Img.tabrakan(spr.buff, x1, y1, spr2.buff, x2, y2);
-            }
-            static muatAnimasiAsyncKanvas(url, pf, lf, bisaDiDrag, canvas, tipeDrag) {
-                let img = be.Img.muatAnimAsyncCanvas(url, pf, lf, canvas);
-                return Spr.buatPrivate(img, bisaDiDrag, url, tipeDrag);
-            }
-            /**
-             *
-             * @param url
-             * @param pf
-             * @param lf
-             * @param bisaDiDrag
-             * @param tipeDrag
-             * @returns
-             */
-            static MuatAnimasi(url, pf, lf, bisaDiDrag = false, tipeDrag = 0) {
-                let img = be.Img.muatAnimAsync(url, pf, lf);
-                return Spr.buatPrivate(img, bisaDiDrag, url, tipeDrag);
-            }
-            static muatAsyncBerbagiKanvas(url, dragable = false, canvas, tipeDrag, onload) {
-                let img = be.Img.muatAsyncKanvas(url, canvas, onload);
-                return Spr.buatPrivate(img, dragable, url, tipeDrag);
-            }
-            /**
-             *
-             * @param url
-             * @param bisaDiDrag
-             * @param tipeDrag
-             * @returns
-             */
-            static async MuatAsync(url, bisaDiDrag = false, tipeDrag = 0) {
-                return new Promise((resolve, _reject) => {
-                    let hasil = Spr.Muat(url, bisaDiDrag, tipeDrag, () => {
-                        resolve(hasil);
-                    });
-                });
-            }
-            /**
-             *
-             * @param url (string) url gambar
-             * @param bisaDiDrag
-             * @param tipeDrag
-             * @param onload
-             * @returns
-             */
-            static Muat(url, bisaDiDrag = false, tipeDrag = 0, onload) {
-                if (!onload)
-                    onload = () => { };
-                let img = be.Img.muatAsync(url, onload);
-                let spr = Spr.buatPrivate(img, bisaDiDrag, url, tipeDrag);
-                return spr;
-            }
-            /**
-             *
-             * @param gbr
-             * @param w
-             * @param h
-             */
-            static Ukuran(gbr, w, h) {
-                be.Img.ukuran(gbr.buff, w, h);
-            }
-            static buatPrivate(image, dragable = false, url, tipeDrag) {
-                let hasil;
-                hasil = new Spr(image, dragable);
-                hasil.tipeDrag = tipeDrag;
-                hasil.url = url;
-                if (hasil.dragable) {
-                    if (hasil.tipeDrag == 0) {
-                        hasil.tipeDrag = 1;
-                    }
-                }
-                Spr.daftar.push(hasil);
-                // console.debug('buat sprite');
-                // console.debug(hasil);
-                return hasil;
-            }
-            /**
-             * Menggambar sprite ke layar
-             * @param sprite
-             * @param frame
-             */
-            static Gambar(sprite, frame) {
-                if (sprite == null) {
-                    Spr.GambarSemua();
-                    return;
-                }
-                be.Img.gambar(sprite.buff, sprite.x, sprite.y, frame);
-            }
-            /**
-             *
-             * @param sprite
-             * @param x
-             * @param y
-             * @param frame
-             * @returns
-             */
-            static GambarXY(sprite, x, y, frame) {
-                sprite.x = x;
-                sprite.y = y;
-                be.Img.gambar(sprite.buff, x, y, frame);
-            }
-            /**
-             *
-             * @param sprite
-             * @param sudut
-             * @param jarak
-             * @param x2
-             * @param y2
-             * @param skalaX
-             * @param skalaY
-             */
-            static posisiPolar(sprite, sudut, jarak, x2, y2, skalaX = 1, skalaY = 1, tilt = 0) {
-                let p = be.Point.posPolar(jarak, sudut, x2, y2);
-                p.y -= y2;
-                p.y *= skalaY;
-                p.y += y2;
-                p.x -= x2;
-                p.x *= skalaX;
-                p.x += x2;
-                be.Transform.rotateRel(p.x, p.y, x2, y2, tilt);
-                p.x = be.Transform.lastX;
-                p.y = be.Transform.lastY;
-                sprite.x = p.x;
-                sprite.y = p.y;
-            }
-            /**
-             *
-             * @param spr
-             * @param x
-             * @param y
-             * @param frame
-             */
-            static Ubin(spr, x = 0, y = 0, frame = 0) {
-                be.Img.gambarUbin(spr.buff, x, y, frame);
-            }
-            /**
-             *
-             * @param spr
-             * @returns
-             */
-            static StatusMuat(spr) {
-                let hasil = true;
-                if (spr && spr.buff) {
-                    return spr.buff.load;
-                }
-                Spr.daftar.forEach((item) => {
-                    if (!item.buff.load) {
-                        hasil = false;
-                    }
-                });
-                return hasil;
-            }
-            get drgStartX() {
-                return this._dragStartX;
-            }
-            set drgStartX(value) {
-                this._dragStartX = value;
-            }
-            get drgStartY() {
-                return this._dragStartY;
-            }
-            set drgStartY(value) {
-                this._dragStartY = value;
-            }
-            get dragged() {
-                return this._dragged;
-            }
-            set dragged(value) {
-                this._dragged = value;
-            }
-            get buff() {
-                return this._buff;
-            }
-            set buff(value) {
-                this._buff = value;
-            }
-            get x() {
-                return this._x;
-            }
-            set x(value) {
-                this._x = value;
-            }
-            get y() {
-                return this._y;
-            }
-            set y(value) {
-                this._y = value;
-            }
-            get jmlHit() {
-                return this._hit;
-            }
-            set jmlHit(value) {
-                this._hit = value;
-            }
-            get down() {
-                return this._down;
-            }
-            set down(value) {
-                this._down = value;
-            }
-            get dragable() {
-                return this._dragable;
-            }
-            set dragable(value) {
-                this._dragable = value;
-            }
-            get sudutAwal() {
-                return this._sudutAwal;
-            }
-            set sudutAwal(value) {
-                this._sudutAwal = value;
-            }
-            get sudutTekanAwal() {
-                return this._sudutTekanAwal;
-            }
-            set sudutTekanAwal(value) {
-                this._sudutTekanAwal = value;
-            }
-            get tipeDrag() {
-                return this._tipeDrag;
-            }
-            set tipeDrag(value) {
-                this._tipeDrag = value;
-                if (value > 0) {
-                    this._dragable = true;
-                }
-                else {
-                    this._dragable = false;
-                }
-            }
-            get url() {
-                return this._url;
-            }
-            set url(value) {
-                this._url = value;
-            }
-            static get ctrDraw() {
-                return Spr._ctrDraw;
-            }
-            static set ctrDraw(value) {
-                Spr._ctrDraw = value;
-            }
-            get inputId() {
-                return this._inputId;
-            }
-            set inputId(value) {
-                this._inputId = value;
-            }
-        }
-        Spr.daftar = [];
-        Spr._ctrDraw = 0;
-        be.Spr = Spr;
-    })(be = ha.be || (ha.be = {}));
-})(ha || (ha = {}));
-var ha;
-(function (ha) {
-    var be;
-    (function (be) {
-        let TypeDrag;
-        (function (TypeDrag) {
-            TypeDrag[TypeDrag["drag"] = 1] = "drag";
-            TypeDrag[TypeDrag["rotasi"] = 2] = "rotasi";
-        })(TypeDrag || (TypeDrag = {}));
-        /**
-         * Handle interaksi sprite
-         */
-        class SpriteInteraksi {
-            spriteDown(lastSpr, pos, id) {
-                lastSpr.down = true;
-                lastSpr.drgStartX = pos.x - lastSpr.x;
-                lastSpr.drgStartY = pos.y - lastSpr.y;
-                lastSpr.inputId = id;
-                lastSpr.jmlHit++;
-                lastSpr.sudutTekanAwal = be.Transform.sudut(pos.x - lastSpr.x, pos.y - lastSpr.y);
-                lastSpr.sudutAwal = lastSpr.buff.rotasi;
-                console.log('sprite down event handler');
-            }
-            inputDown(pos, id) {
-                //sprite down
-                console.log('input down');
-                let lastIdx = -1;
-                let lastSprite = null;
-                for (let i = be.Spr.daftar.length - 1; i >= 0; i--) {
-                    let item;
-                    item = be.Spr.daftar[i];
-                    if (be.Img.dotDidalamGambar(item.buff, item.x, item.y, pos.x, pos.y)) {
-                        if (item.buff.ctrIdx > lastIdx) {
-                            lastIdx = item.buff.ctrIdx;
-                            lastSprite = item;
-                        }
-                    }
-                    else {
-                        if (item.tipeDrag == 3 || item.tipeDrag == 4) {
-                            this.spriteDown(item, pos, id);
-                        }
-                    }
-                }
-                //
-                if (lastSprite) {
-                    this.spriteDown(lastSprite, pos, id);
-                    // lastSprite.down = true;
-                    // lastSprite.dragStartX = pos.x - lastSprite.x;
-                    // lastSprite.dragStartY = pos.y - lastSprite.y;
-                    // lastSprite.inputId = id;
-                    // lastSprite.jmlHit++;
-                    // lastSprite.sudutTekanAwal = Transform.sudut(pos.x - lastSprite.x, pos.y - lastSprite.y);
-                    // lastSprite.sudutAwal = lastSprite.buff.rotasi;
-                }
-                //
-            }
-            inputMove(pos, pointerId) {
-                be.Spr.daftar.forEach((item) => {
-                    if (item.down && item.dragable && (item.inputId == pointerId)) {
-                        item.dragged = true;
-                        if (item.tipeDrag == TypeDrag.drag || (item.tipeDrag == 3)) {
-                            item.x = pos.x - item.drgStartX;
-                            item.y = pos.y - item.drgStartY;
-                            console.debug('item drag move');
-                        }
-                        else if (item.tipeDrag == TypeDrag.rotasi || (item.tipeDrag == 4)) {
-                            let sudut2 = be.Transform.sudut(pos.x - item.x, pos.y - item.y);
-                            let perbedaan = sudut2 - item.sudutTekanAwal;
-                            item.buff.rotasi = item.sudutAwal + perbedaan;
-                            // console.debug('item drag move');
-                            // console.debug('sudut ptr: ' + sudut2);
-                            // console.debug('perbedaan: ' + perbedaan);
-                            // console.debug('item rotasi: ' + item.buffer.rotasi);
-                        }
-                    }
-                });
-            }
-            inputUp() {
-                be.Spr.daftar.forEach((item) => {
-                    if (item.down) {
-                        // item.hit++;
-                    }
-                    if (item.dragged) {
-                        console.log('input up: item rotasi ' + item.buff.rotasi);
-                    }
-                    item.down = false;
-                    item.dragged = false;
-                });
-            }
-        }
-        be.sprInteraksi = new SpriteInteraksi();
-    })(be = ha.be || (ha.be = {}));
-})(ha || (ha = {}));
-var ha;
-(function (ha) {
-    var be;
-    (function (be) {
-        class Teks {
-            static get stroke() {
-                return Teks._stroke;
-            }
-            static set stroke(value) {
-                Teks._stroke = value;
-            }
-            static get fill() {
-                return Teks._fill;
-            }
-            static set fill(value) {
-                Teks._fill = value;
-            }
-            static get jarak() {
-                return Teks._jarak;
-            }
-            static set jarak(value) {
-                Teks._jarak = value;
-            }
-            static get ctx() {
-                return be.Be.canvasAktif.ctx;
-            }
-            static Goto(x, y) {
-                Teks.x = x;
-                Teks.y = y;
-            }
-            static Write(str) {
-                Teks.Tulis(str, Teks.x, Teks.y, Teks.fill, Teks.stroke);
-            }
-            static WriteLn(str) {
-                Teks.Tulis(str, Teks.x, Teks.y, Teks.fill, Teks.stroke);
-                Teks.y += Teks.jarak;
-            }
-            /**
-             *
-             * @param nama
-             */
-            static Font(nama = 'cursive') {
-                Teks.nama = nama;
-                Teks.ctx.font = Teks.ukuran + 'px ' + Teks.nama;
-            }
-            static FontSize(n = 30) {
-                Teks.ukuran = n;
-                Teks.ctx.font = Teks.ukuran + 'px ' + Teks.nama;
-                console.log(Teks.ukuran, Teks.nama);
-            }
-            /**
-             *
-             * @param rata (string) "center" | "end" | "left" | "right" | "start"
-             */
-            static Rata(rata = "left") {
-                Teks.ctx.textAlign = rata;
-            }
-            /**
-             * menulis teks di kanvas
-             * @param teks (string)
-             * @param x (number)
-             * @param y (number)
-             * @param warna (boolean=true) apakah akan mengisi teks dengan warna
-             * @param garis (boolean=false) apakah akan menggunakan outline
-             */
-            static Tulis(teks, x, y, warna = true, garis = false) {
-                if (warna) {
-                    Teks.ctx.fillText(teks, x, y);
-                }
-                if (garis) {
-                    Teks.ctx.strokeText(teks, x, y);
-                }
-            }
-        }
-        Teks.nama = 'cursive';
-        Teks.ukuran = 30;
-        Teks.x = 120;
-        Teks.y = 10;
-        Teks._stroke = false;
-        Teks._jarak = 15;
-        Teks._fill = true;
-        be.Teks = Teks;
-    })(be = ha.be || (ha.be = {}));
-})(ha || (ha = {}));
-var ha;
-(function (ha) {
-    var be;
-    (function (be) {
         class Transform {
             static get lastX() {
                 return Transform._lastX;
@@ -2675,3 +1895,865 @@ var ha;
         be.Transform = Transform;
     })(be = ha.be || (ha.be = {}));
 })(ha || (ha = {}));
+///<reference path="./Point.ts"/>
+///<reference path="./Segment.ts"/>
+///<reference path="./Rect.ts"/>
+///<reference path="./Transform.ts"/>
+///<reference path="./geom/Route.ts"/>
+var ha;
+(function (ha) {
+    var be;
+    (function (be) {
+        class Sound {
+            constructor() {
+                this._src = '';
+                this._loaded = false;
+            }
+            get playedCount() {
+                return this._playedCount;
+            }
+            set playedCount(value) {
+                this._playedCount = value;
+            }
+            get sound() {
+                return this._sound;
+            }
+            set sound(value) {
+                this._sound = value;
+            }
+            get loaded() {
+                return this._loaded;
+            }
+            set loaded(value) {
+                this._loaded = value;
+            }
+            get src() {
+                return this._src;
+            }
+            set src(value) {
+                this._src = value;
+            }
+            static Load(url) {
+                let sound = document.createElement("audio");
+                let s = new Sound();
+                s.src = url;
+                s.loaded = false;
+                s.sound = sound;
+                sound.onload = () => {
+                    s.loaded = true;
+                };
+                sound.onended = () => {
+                    s.playedCount++;
+                };
+                sound.src = url;
+                Sound.list.push(s);
+            }
+            static Play(s) {
+                s.sound.play();
+            }
+            static SoundEnded(s) {
+                let h = s.playedCount;
+                s.playedCount = 0;
+                return (h > 0);
+            }
+            static SoundLoaded(s) {
+                return s.loaded;
+            }
+        }
+        Sound.list = [];
+        be.Sound = Sound;
+    })(be = ha.be || (ha.be = {}));
+})(ha || (ha = {}));
+var ha;
+(function (ha) {
+    var be;
+    (function (be) {
+        //Sprite Object
+        class SprObj {
+            constructor(buffer, dragable = false) {
+                //TODO: pindahin ke Image
+                this._x = 0;
+                this._y = 0;
+                this._dragged = false;
+                this._down = false;
+                this._hit = 0;
+                this._dragStartY = 0;
+                this._dragStartX = 0;
+                this._dragable = false;
+                this.buff = buffer;
+                this.dragable = dragable;
+            }
+            get drgStartX() {
+                return this._dragStartX;
+            }
+            set drgStartX(value) {
+                this._dragStartX = value;
+            }
+            get drgStartY() {
+                return this._dragStartY;
+            }
+            set drgStartY(value) {
+                this._dragStartY = value;
+            }
+            get dragged() {
+                return this._dragged;
+            }
+            set dragged(value) {
+                this._dragged = value;
+            }
+            get buff() {
+                return this._buff;
+            }
+            set buff(value) {
+                this._buff = value;
+            }
+            get x() {
+                return this._x;
+            }
+            set x(value) {
+                this._x = value;
+            }
+            get y() {
+                return this._y;
+            }
+            set y(value) {
+                this._y = value;
+            }
+            get jmlHit() {
+                return this._hit;
+            }
+            set jmlHit(value) {
+                this._hit = value;
+            }
+            get down() {
+                return this._down;
+            }
+            set down(value) {
+                this._down = value;
+            }
+            get dragable() {
+                return this._dragable;
+            }
+            set dragable(value) {
+                this._dragable = value;
+            }
+            get sudutAwal() {
+                return this._sudutAwal;
+            }
+            set sudutAwal(value) {
+                this._sudutAwal = value;
+            }
+            get sudutTekanAwal() {
+                return this._sudutTekanAwal;
+            }
+            set sudutTekanAwal(value) {
+                this._sudutTekanAwal = value;
+            }
+            get tipeDrag() {
+                return this._tipeDrag;
+            }
+            set tipeDrag(value) {
+                this._tipeDrag = value;
+                if (value > 0) {
+                    this._dragable = true;
+                }
+                else {
+                    this._dragable = false;
+                }
+            }
+            get url() {
+                return this._url;
+            }
+            set url(value) {
+                this._url = value;
+            }
+            static get ctrDraw() {
+                return SprObj._ctrDraw;
+            }
+            static set ctrDraw(value) {
+                SprObj._ctrDraw = value;
+            }
+            get inputId() {
+                return this._inputId;
+            }
+            set inputId(value) {
+                this._inputId = value;
+            }
+        }
+        SprObj._ctrDraw = 0;
+        be.SprObj = SprObj;
+    })(be = ha.be || (ha.be = {}));
+})(ha || (ha = {}));
+///<reference path="./Image.ts"/>
+var ha;
+(function (ha) {
+    var be;
+    (function (be) {
+        class Spr {
+            //Attribute
+            static DragMode(s, n) {
+                if (n > 0) {
+                    s.tipeDrag = n;
+                    s.dragable = true;
+                }
+            }
+            /**
+             *
+             * @param spr
+             * @returns
+             */
+            static Dimuat(spr) {
+                return spr.buff.load;
+            }
+            /**
+             *
+             * @param spr
+             * @returns
+             */
+            static StatusDrag(spr) {
+                let hasil = false;
+                Spr.daftar.forEach((item) => {
+                    if (spr == item) {
+                        hasil = spr.dragged;
+                        return;
+                    }
+                });
+                return hasil;
+            }
+            /**
+             *
+             * @param spr
+             * @returns
+             */
+            static kontek(spr) {
+                return spr.buff.ctx;
+            }
+            /**
+             *
+             * @param spr
+             * @param pj
+             * @returns
+             */
+            static Panjang(spr, pj) {
+                return be.Img.panjang(spr.buff, pj);
+            }
+            /**
+             *
+             * @param spr
+             * @param lb
+             * @returns
+             */
+            static Lebar(spr, lb) {
+                return be.Img.lebar(spr.buff, lb);
+            }
+            /**
+             *
+             * @param spr
+             * @param alpha
+             * @returns
+             */
+            static Alpha(spr, alpha) {
+                if (typeof (alpha) == 'number') {
+                    spr.buff.alpha = alpha / 100;
+                }
+                return spr.buff.alpha;
+            }
+            /**
+             *
+             * @param spr
+             * @param sudut
+             * @returns
+             */
+            static Rotasi(spr, sudut) {
+                if (spr && (typeof (sudut) == 'number')) {
+                    spr.buff.rotasi = sudut;
+                }
+                return be.Transform.normalizeDeg(spr.buff.rotasi);
+            }
+            /**
+             *
+             * @param spr
+             * @param x
+             * @param y
+             */
+            static Posisi(spr, x = 0, y = 0) {
+                spr.x = x;
+                spr.y = y;
+            }
+            /**
+             *
+             * @param spr
+             * @param x
+             * @returns
+             */
+            static PosisiX(spr, x = null) {
+                if (typeof (x) == 'number') {
+                    spr.x = x;
+                }
+                return spr.x;
+            }
+            /**
+             *
+             * @param s
+             * @param y
+             * @returns
+             */
+            static PosisiY(s, y = null) {
+                if (typeof (y) == 'number') {
+                    // debugger;
+                    s.y = y;
+                }
+                return s.y;
+            }
+            /**
+             *
+             * @param s
+             * @returns
+             */
+            static Bound(s) {
+                be.Img.resetRect(s.buff);
+                be.Img.rectToImageTransform(s.buff, s.x, s.y);
+                return s.buff.rect;
+            }
+            //TODO:boundx, boundy, boundX2, boundY2
+            /**
+             *
+             * @param s
+             * @param x
+             * @param y
+             * @returns
+             */
+            static Handle(s, x = 0, y = 0) {
+                if (s) {
+                    s.buff.handleX = x;
+                    s.buff.handleY = y;
+                }
+            }
+            static HandleX(s) { return s.buff.handleX; }
+            static HandleY(s) { return s.buff.handleY; }
+            /**
+             *
+             * @param gbr
+             * @param w
+             * @param h
+             */
+            static Ukuran(gbr, w, h) {
+                be.Img.ukuran(gbr.buff, w, h);
+            }
+            //================
+            //Image Operation:
+            //================
+            /**
+             *
+             * @param sprS {ISpr} sprite
+             * @param onload {() => void} optional, fungsi yang dipanggil sprite selesai dimuat
+             * @returns
+             */
+            static Copy(sprS, onload) {
+                if (!onload) {
+                    onload = () => { };
+                }
+                if (sprS.buff.isAnim) {
+                    console.debug('copy sprite anim');
+                    console.debug(sprS);
+                    return Spr.muatAnimasiAsyncKanvas(sprS.url, sprS.buff.frameW, sprS.buff.frameH, sprS.dragable, sprS.buff.canvas, sprS.tipeDrag);
+                }
+                else {
+                    return Spr.muatAsyncBerbagiKanvas(sprS.url, sprS.dragable, sprS.buff.canvas, sprS.tipeDrag, onload);
+                }
+            }
+            /**
+             *
+             */
+            static GambarSemua() {
+                for (let i = 0; i < Spr.daftar.length; i++) {
+                    let item = Spr.daftar[i];
+                    Spr.Gambar(item);
+                }
+            }
+            /**
+             *
+             * @param spr
+             * @param spr2
+             * @returns
+             */
+            static Tabrakan(spr, spr2) {
+                return be.Img.tabrakan(spr.buff, Spr.PosisiX(spr), Spr.PosisiY(spr), spr2.buff, Spr.PosisiX(spr2), Spr.PosisiY(spr2));
+            }
+            //TODO: depecrated
+            static TabrakanXY(spr, x1, y1, spr2, x2, y2) {
+                return be.Img.tabrakan(spr.buff, x1, y1, spr2.buff, x2, y2);
+            }
+            static muatAnimasiAsyncKanvas(url, pf, lf, bisaDiDrag, canvas, tipeDrag) {
+                let img = be.Img.muatAnimAsyncCanvas(url, pf, lf, canvas);
+                return Spr.buatPrivate(img, bisaDiDrag, url, tipeDrag);
+            }
+            /**
+             *
+             * @param url
+             * @param pf
+             * @param lf
+             * @param bisaDiDrag
+             * @param tipeDrag
+             * @returns
+             */
+            static MuatAnimasi(url, pf, lf, bisaDiDrag = false, tipeDrag = 0) {
+                let img = be.Img.muatAnimAsync(url, pf, lf);
+                return Spr.buatPrivate(img, bisaDiDrag, url, tipeDrag);
+            }
+            static muatAsyncBerbagiKanvas(url, dragable = false, canvas, tipeDrag, onload) {
+                let img = be.Img.muatAsyncKanvas(url, canvas, onload);
+                return Spr.buatPrivate(img, dragable, url, tipeDrag);
+            }
+            /**
+             *
+             * @param url (string) url gambar
+             * @param bisaDiDrag
+             * @param tipeDrag
+             * @param onload
+             * @returns
+             */
+            static Muat(url, bisaDiDrag = false, tipeDrag = 0, onload) {
+                if (!onload)
+                    onload = () => { };
+                let img = be.Img.muatAsync(url, onload);
+                let spr = Spr.buatPrivate(img, bisaDiDrag, url, tipeDrag);
+                return spr;
+            }
+            static buatPrivate(image, dragable = false, url, tipeDrag) {
+                let hasil;
+                hasil = new be.SprObj(image, dragable);
+                hasil.tipeDrag = tipeDrag;
+                hasil.url = url;
+                if (hasil.dragable) {
+                    if (hasil.tipeDrag == 0) {
+                        hasil.tipeDrag = 1;
+                    }
+                }
+                Spr.daftar.push(hasil);
+                // console.debug('buat sprite');
+                // console.debug(hasil);
+                return hasil;
+            }
+            /**
+             * Menggambar sprite ke layar
+             * @param sprite
+             * @param frame
+             */
+            static Gambar(sprite, frame) {
+                be.Img.gambar(sprite.buff, sprite.x, sprite.y, frame);
+                //TODO: webgl
+            }
+            /**
+             *
+             * @param sprite
+             * @param x
+             * @param y
+             * @param frame
+             * @returns
+             */
+            static GambarXY(sprite, x, y, frame) {
+                sprite.x = x;
+                sprite.y = y;
+                be.Img.gambar(sprite.buff, x, y, frame);
+            }
+            /**
+             *
+             * @param sprite
+             * @param sudut
+             * @param jarak
+             * @param x2
+             * @param y2
+             * @param skalaX
+             * @param skalaY
+             */
+            static posisiPolar(sprite, sudut, jarak, x2, y2, skalaX = 1, skalaY = 1, tilt = 0) {
+                let p = be.Point.posPolar(jarak, sudut, x2, y2);
+                p.y -= y2;
+                p.y *= skalaY;
+                p.y += y2;
+                p.x -= x2;
+                p.x *= skalaX;
+                p.x += x2;
+                //tilt
+                be.Transform.rotateRel(p.x, p.y, x2, y2, tilt);
+                p.x = be.Transform.lastX;
+                p.y = be.Transform.lastY;
+                sprite.x = p.x;
+                sprite.y = p.y;
+            }
+            /**
+             *
+             * @param spr
+             * @param x
+             * @param y
+             * @param frame
+             */
+            static Ubin(spr, x = 0, y = 0, frame = 0) {
+                be.Img.gambarUbin(spr.buff, x, y, frame);
+            }
+            /**
+             *
+             * @param spr
+             * @returns
+             */
+            static StatusMuat(spr) {
+                let hasil = true;
+                if (spr && spr.buff) {
+                    return spr.buff.load;
+                }
+                Spr.daftar.forEach((item) => {
+                    if (!item.buff.load) {
+                        hasil = false;
+                    }
+                });
+                return hasil;
+            }
+        }
+        Spr.daftar = [];
+        be.Spr = Spr;
+    })(be = ha.be || (ha.be = {}));
+})(ha || (ha = {}));
+var ha;
+(function (ha) {
+    var be;
+    (function (be) {
+        let TypeDrag;
+        (function (TypeDrag) {
+            TypeDrag[TypeDrag["drag"] = 1] = "drag";
+            TypeDrag[TypeDrag["rotasi"] = 2] = "rotasi";
+        })(TypeDrag || (TypeDrag = {}));
+        /**
+         * Handle interaksi sprite
+         */
+        class SpriteInteraksi {
+            spriteDown(lastSpr, pos, id) {
+                lastSpr.down = true;
+                lastSpr.drgStartX = pos.x - lastSpr.x;
+                lastSpr.drgStartY = pos.y - lastSpr.y;
+                lastSpr.inputId = id;
+                lastSpr.jmlHit++;
+                lastSpr.sudutTekanAwal = be.Transform.sudut(pos.x - lastSpr.x, pos.y - lastSpr.y);
+                lastSpr.sudutAwal = lastSpr.buff.rotasi;
+                console.log('sprite down event handler');
+            }
+            inputDown(pos, id) {
+                //sprite down
+                console.log('input down');
+                let lastIdx = -1;
+                let lastSprite = null;
+                for (let i = be.Spr.daftar.length - 1; i >= 0; i--) {
+                    let item;
+                    item = be.Spr.daftar[i];
+                    if (be.Img.dotDidalamGambar(item.buff, item.x, item.y, pos.x, pos.y)) {
+                        if (item.buff.ctrIdx > lastIdx) {
+                            lastIdx = item.buff.ctrIdx;
+                            lastSprite = item;
+                        }
+                    }
+                    else {
+                        if (item.tipeDrag == 3 || item.tipeDrag == 4) {
+                            this.spriteDown(item, pos, id);
+                        }
+                    }
+                }
+                //
+                if (lastSprite) {
+                    this.spriteDown(lastSprite, pos, id);
+                    // lastSprite.down = true;
+                    // lastSprite.dragStartX = pos.x - lastSprite.x;
+                    // lastSprite.dragStartY = pos.y - lastSprite.y;
+                    // lastSprite.inputId = id;
+                    // lastSprite.jmlHit++;
+                    // lastSprite.sudutTekanAwal = Transform.sudut(pos.x - lastSprite.x, pos.y - lastSprite.y);
+                    // lastSprite.sudutAwal = lastSprite.buff.rotasi;
+                }
+                //
+            }
+            inputMove(pos, pointerId) {
+                be.Spr.daftar.forEach((item) => {
+                    if (item.down && item.dragable && (item.inputId == pointerId)) {
+                        item.dragged = true;
+                        if (item.tipeDrag == TypeDrag.drag || (item.tipeDrag == 3)) {
+                            item.x = pos.x - item.drgStartX;
+                            item.y = pos.y - item.drgStartY;
+                            console.debug('item drag move');
+                        }
+                        else if (item.tipeDrag == TypeDrag.rotasi || (item.tipeDrag == 4)) {
+                            let sudut2 = be.Transform.sudut(pos.x - item.x, pos.y - item.y);
+                            let perbedaan = sudut2 - item.sudutTekanAwal;
+                            item.buff.rotasi = item.sudutAwal + perbedaan;
+                        }
+                        else {
+                            //TODO:
+                        }
+                    }
+                });
+            }
+            inputUp() {
+                be.Spr.daftar.forEach((item) => {
+                    if (item.down) {
+                        // item.hit++;
+                    }
+                    if (item.dragged) {
+                        console.log('input up: item rotasi ' + item.buff.rotasi);
+                    }
+                    item.down = false;
+                    item.dragged = false;
+                });
+            }
+        }
+        be.sprInteraksi = new SpriteInteraksi();
+    })(be = ha.be || (ha.be = {}));
+})(ha || (ha = {}));
+var ha;
+(function (ha) {
+    var be;
+    (function (be) {
+        //Fungsi untuk pergerakan sprite
+        class Spr3 {
+            static gerakX(s, n) {
+                s.x += n;
+            }
+            static gerakY(s, n) {
+                s.y += n;
+            }
+            static gerakXY(s, x, y) {
+                s.x += x;
+                s.y += y;
+            }
+            static gerakSudut(s, n, sudut) {
+                sudut *= Math.PI / 180;
+                ha.be.Spr3.gerakX(s, n * Math.cos(sudut));
+                ha.be.Spr3.gerakY(s, n * Math.sin(sudut));
+            }
+            static gerakPutar(s, sudut, sx, sy) {
+                be.Transform.rotateRel(s.x, s.y, sx, sy, sudut);
+                s.x += be.Transform.lastX;
+                s.y += be.Transform.lastY;
+            }
+            static menjauh(s, x, y, jml) {
+                let sudut = be.Transform.sudut(s.x - x, s.y - y);
+                Spr3.gerakSudut(s, jml, sudut);
+            }
+            static mendekat(s, x, y, jml) {
+                let sudut = be.Transform.sudut(x - s.x, y - s.y);
+                Spr3.gerakSudut(s, jml, sudut);
+            }
+        }
+        be.Spr3 = Spr3;
+    })(be = ha.be || (ha.be = {}));
+})(ha || (ha = {}));
+var ha;
+(function (ha) {
+    var be;
+    (function (be) {
+        class Teks {
+            static get stroke() {
+                return Teks._stroke;
+            }
+            static set stroke(value) {
+                Teks._stroke = value;
+            }
+            static get fill() {
+                return Teks._fill;
+            }
+            static set fill(value) {
+                Teks._fill = value;
+            }
+            static get jarak() {
+                return Teks._jarak;
+            }
+            static set jarak(value) {
+                Teks._jarak = value;
+            }
+            static get ctx() {
+                return be.Be.canvasAktif.ctx;
+            }
+            static Goto(x, y) {
+                Teks.x = x;
+                Teks.y = y;
+            }
+            static Write(str) {
+                Teks.Tulis(str, Teks.x, Teks.y, Teks.fill, Teks.stroke);
+            }
+            static WriteLn(str) {
+                Teks.Tulis(str, Teks.x, Teks.y, Teks.fill, Teks.stroke);
+                Teks.y += Teks.jarak;
+            }
+            /**
+             *
+             * @param nama
+             */
+            static Font(nama = 'cursive') {
+                Teks.nama = nama;
+                Teks.ctx.font = Teks.ukuran + 'px ' + Teks.nama;
+            }
+            static FontSize(n = 30) {
+                Teks.ukuran = n;
+                Teks.ctx.font = Teks.ukuran + 'px ' + Teks.nama;
+                console.log(Teks.ukuran, Teks.nama);
+            }
+            /**
+             *
+             * @param rata (string) "center" | "end" | "left" | "right" | "start"
+             */
+            static Rata(rata = "left") {
+                Teks.ctx.textAlign = rata;
+            }
+            /**
+             * menulis teks di kanvas
+             * @param teks (string)
+             * @param x (number)
+             * @param y (number)
+             * @param warna (boolean=true) apakah akan mengisi teks dengan warna
+             * @param garis (boolean=false) apakah akan menggunakan outline
+             */
+            static Tulis(teks, x, y, warna = true, garis = false) {
+                if (warna) {
+                    Teks.ctx.fillText(teks, x, y);
+                }
+                if (garis) {
+                    Teks.ctx.strokeText(teks, x, y);
+                }
+            }
+        }
+        Teks.nama = 'cursive';
+        Teks.ukuran = 30;
+        Teks.x = 120;
+        Teks.y = 10;
+        Teks._stroke = false;
+        Teks._jarak = 15;
+        Teks._fill = true;
+        be.Teks = Teks;
+    })(be = ha.be || (ha.be = {}));
+})(ha || (ha = {}));
+///<reference path="../Route.ts"/>
+///<reference path="./Route.ts"/>
+const LoadSound = ha.be.Sound.Load;
+const PlaySound = ha.be.Sound.Play;
+const SoundEnded = ha.be.Sound.SoundEnded;
+const SoundLoaded = ha.be.Sound.SoundLoaded;
+///<reference path="./Route.ts"/>
+const Graphics = ha.be.Be.Grafis;
+/**
+ * Clear Screen and optionally use color
+ * @param r number = 0 - 255 (optional) the red color
+ * @param g
+ * @param b
+ * @param t
+ */
+function Cls(r, g, b, t) {
+    ha.be.Be.Bersih(r, g, b, t);
+}
+const Color = ha.be.Be.Warna;
+const Stroke = ha.be.Be.StrokeColor;
+// /**
+//  * Mengembalikan warna merah dari perintah AmbilPixel terakhir
+//  * @returns (number) warna merah
+//  */
+// };
+const Red = ha.be.Be.Merah;
+const Green = ha.be.Be.Hijau;
+const Blue = ha.be.Be.Biru;
+const Alpha = ha.be.Be.Transparan;
+const GetPixel = ha.be.Img.AmbilPiksel;
+const SetPixel = ha.be.Img.SetPiksel;
+// const Kontek = ha.be.Be.Kontek;
+// const Kanvas = ha.be.Be.Kanvas;
+const Line = ha.be.Be.Garis;
+const Rect = ha.be.Be.Kotak;
+const Oval = ha.be.Be.Oval;
+const CreateDict = Dict.create;
+// const DictGetValue = Dict.GetValue;
+// const DictAddAttr = Dict.AddAttr;
+// const DictGetKeyList = Dict.GetKeyList;
+// const DictGetValueList = Dict.GetValueList;   
+///<reference path="./Route.ts"/>
+const InputHit = ha.be.Input.InputHit;
+const InputX = ha.be.Input.InputX;
+const InputY = ha.be.Input.InputY;
+const InputIsDown = ha.be.Input.Pencet;
+// //extended
+const FlushInput = ha.be.Input.FlushInput;
+const InputDragX = ha.be.Input.GeserX;
+const InputDragY = ha.be.Input.GeserY;
+const InputIsDragged = ha.be.Input.Geser;
+const InputType = ha.be.Input.InputType;
+const InputTapCount = ha.be.Input.JmlTap;
+const InputDragStartCount = ha.be.Input.JmlDragMulai;
+const InputDragEndCount = ha.be.Input.JmlDragSelesai;
+const InputDragStartX = ha.be.Input.InputXAwal;
+const InputDragStartY = ha.be.Input.InputYAwal;
+//TODO: input id
+// // const FlushKeys = () => {
+// // 	// ha.be.input.flushByInput(ha.be.input.keybGlobal);
+// // 	ha.be.input.flushByType('keyb');
+// // }
+// // const GetKey = (): string => {
+// // 	return ha.be.input.keybGlobal.key;
+// // }
+// // const KeybDiPencet = (key: string = ''): boolean => {
+// // 	if ("" == key) {
+// // 		return ha.be.input.keybGlobal.isDown;
+// // 	}
+// // 	else {
+// // 		let input: IInput = ha.be.input.getInput(key, 'keyb');
+// // 		if (input) {
+// // 			return input.isDown;
+// // 		}
+// // 		return false;
+// // 	}
+// // }
+// // const KeybHit = (key: string = ''): number => {
+// // 	if ("" == key) {
+// // 		let n: number = ha.be.input.keybGlobal.hit;
+// // 		ha.be.input.keybGlobal.hit = 0;
+// // 		return (n);
+// // 	}
+// // 	else {
+// // 		let input: IInput = ha.be.input.getInput(key, 'keyb');
+// // 		let n: number = 0;
+// // 		if (input) {
+// // 			n = input.hit;
+// // 			input.hit = 0;
+// // 		}
+// // 		return n;
+// // 	}
+// // }
+///<reference path="./Route.ts"/>
+// const Sudut = ha.be.Mat.Sudut;
+const DistMin = ha.be.Transform.degDistMin;
+///<reference path="./Route.ts"/>
+const LoadImage = ha.be.Spr.Muat; //
+// const MuatAsync = ha.be.Spr.MuatAsync;
+const LoadAnimImage = ha.be.Spr.MuatAnimasi;
+const ResizeImage = ha.be.Spr.Ukuran;
+const DrawImage = ha.be.Spr.Gambar;
+const DrawImageXY = ha.be.Spr.GambarXY;
+const Handle = ha.be.Spr.Handle;
+const Rotation = ha.be.Spr.Rotasi;
+const Collide = ha.be.Spr.Tabrakan;
+const CollideXY = ha.be.Spr.TabrakanXY;
+const SpriteKontek = ha.be.Spr.kontek;
+const Width = ha.be.Spr.Panjang;
+const Height = ha.be.Spr.Lebar;
+const Tile = ha.be.Spr.Ubin;
+//next:
+const ImageLoaded = ha.be.Spr.Dimuat;
+const AllImageLoaded = ha.be.Spr.StatusMuat;
+const PositionImageXY = ha.be.Spr.Posisi;
+const PositionImagePolar = ha.be.Spr.posisiPolar;
+const DrawAllImage = ha.be.Spr.GambarSemua;
+const ImageXPosition = ha.be.Spr.PosisiX;
+const ImageYPosition = ha.be.Spr.PosisiY;
+const ImageAlpha = ha.be.Spr.Alpha;
+const ImageIsDragged = ha.be.Spr.StatusDrag;
+const CopyImage = ha.be.Spr.Copy;
+const ImageBound = ha.be.Spr.Bound;
+///<reference path="./Route.ts"/>
+// Shortcut buat perintah-perintah font
+const FontName = ha.be.Teks.Font;
+const FontSize = ha.be.Teks.FontSize;
+const Print = ha.be.Teks.Tulis;
+const Align = ha.be.Teks.Rata;
