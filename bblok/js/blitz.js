@@ -1,17 +1,7 @@
-/**
- *  @namespace ha
- */
-/**
- *  @namespace be
- *  @memberof ha
- */
 var ha;
 (function (ha) {
     var be;
     (function (be) {
-        /**
-         * @memberof ha.be
-         */
         class Be {
             static Pause() {
                 debugger;
@@ -53,29 +43,38 @@ var ha;
                 return Be.canvasAktif.ctx;
             }
             static buatCanvas(canvasEl) {
-                let canvas = {
-                    canvas: canvasEl,
-                    ctx: canvasEl.getContext('2d'),
-                    lebar: canvasEl.height,
-                    // scaleX: 1,
-                    // scaleY: 1,
-                    panjang: canvasEl.width,
-                    frameH: canvasEl.height,
-                    frameW: canvasEl.width,
-                    handleX: 0,
-                    handleY: 0,
-                    img: null,
-                    isAnim: false,
-                    rotasi: 0,
-                    alpha: 1,
-                    rect: be.Kotak.buat(),
-                    load: true,
-                    panjangDiSet: true,
-                    lebarDiSet: true,
-                    ratioX: 1,
-                    ratioY: 1,
-                    ctrIdx: 0
-                };
+                let canvas = new be.SprObj();
+                canvas.canvas = canvasEl;
+                canvas.ctx = canvasEl.getContext('2d');
+                canvas.lebar = canvasEl.height;
+                canvas.panjang = canvasEl.width;
+                canvas.frameH = canvasEl.height;
+                canvas.frameW = canvasEl.width;
+                canvas.rect = be.Kotak.buat();
+                canvas.load = true;
+                canvas.panjangDiSet = true;
+                canvas.lebarDiSet = true;
+                // {
+                // 	canvas: canvasEl,
+                // 	ctx: canvasEl.getContext('2d'),
+                // 	lebar: canvasEl.height,
+                // 	panjang: canvasEl.width,
+                // 	frameH: canvasEl.height,
+                // 	frameW: canvasEl.width,
+                // 	handleX: 0,
+                // 	handleY: 0,
+                // 	img: null,
+                // 	isAnim: false,
+                // 	rotasi: 0,
+                // 	alpha: 1,
+                // 	rect: Kotak.buat(),
+                // 	load: true,
+                // 	panjangDiSet: true,
+                // 	lebarDiSet: true,
+                // 	ratioX: 1,
+                // 	ratioY: 1,
+                // 	ctrIdx: 0,
+                // }
                 return canvas;
             }
             static init(canvasBelakang, canvasDepan) {
@@ -371,6 +370,7 @@ var ha;
         }
         Be._canvasAr = [];
         Be._skalaOtomatis = true;
+        //TODO: pindah ke konf
         Be._merah = 0;
         Be._hijau = 0;
         Be._biru = 0;
@@ -423,13 +423,52 @@ var ha;
     (function (be) {
         class Config {
             constructor() {
-                this._supportGl = false;
+                this.stroke = new Stroke();
+                this.fill = new Stroke();
             }
-            get supportGl() {
-                return this._supportGl;
+        }
+        class RGB {
+            constructor() {
+                this._m = 0;
+                this._g = 0;
+                this._b = 0;
             }
-            set supportGl(value) {
-                this._supportGl = value;
+            get b() {
+                return this._b;
+            }
+            set b(value) {
+                this._b = value;
+            }
+            get g() {
+                return this._g;
+            }
+            set g(value) {
+                this._g = value;
+            }
+            get m() {
+                return this._m;
+            }
+            set m(value) {
+                this._m = value;
+            }
+        }
+        class Stroke {
+            constructor() {
+                this._tebal = 1;
+                this.rgb = new RGB();
+                this._aktif = false;
+            }
+            get aktif() {
+                return this._aktif;
+            }
+            set aktif(value) {
+                this._aktif = value;
+            }
+            get tebal() {
+                return this._tebal;
+            }
+            set tebal(value) {
+                this._tebal = value;
             }
         }
         be.config = new Config();
@@ -496,465 +535,6 @@ var ha;
         }
         Id._id = Date.now();
         be.Id = Id;
-    })(be = ha.be || (ha.be = {}));
-})(ha || (ha = {}));
-var ha;
-(function (ha) {
-    var be;
-    (function (be) {
-        class ImgObj {
-            constructor() {
-                this.frameW = 32;
-                this.frameH = 32;
-                this.alpha = 100;
-                this.isAnim = false;
-                this.rect = new be.Kotak();
-                this.load = false;
-                this.handleX = 0;
-                this.handleY = 0;
-                this.ratioX = 1;
-                this.ratioY = 1;
-                this.klikKum = 0;
-                this._rotasi = 0;
-                this._panjang = 0;
-                this._lebar = 0;
-                this._panjangDiSet = false;
-                this._lebarDiSet = false;
-                this._ctrIdx = 0;
-            }
-            get panjang() {
-                return this._panjang;
-            }
-            set panjang(value) {
-                console.log('set panjang: ' + value);
-                this._panjang = value;
-                this._panjangDiSet = true;
-            }
-            get lebar() {
-                return this._lebar;
-            }
-            set lebar(value) {
-                this._lebar = value;
-                this._lebarDiSet = true;
-            }
-            get panjangDiSet() {
-                return this._panjangDiSet;
-            }
-            set panjangDiSet(value) {
-                this._panjangDiSet = value;
-            }
-            get lebarDiSet() {
-                return this._lebarDiSet;
-            }
-            set lebarDiSet(value) {
-                this._lebarDiSet = value;
-            }
-            get ctrIdx() {
-                return this._ctrIdx;
-            }
-            set ctrIdx(value) {
-                this._ctrIdx = value;
-            }
-            get rotasi() {
-                return this._rotasi;
-            }
-            set rotasi(value) {
-                // console.debug('set value: ' + value);
-                this._rotasi = value;
-            }
-        }
-        class Img {
-            static buatBagiCanvas(canvas, w = 32, h = 32, frameW = 32, frameH = 32) {
-                let img;
-                canvas.width = w;
-                canvas.height = h;
-                let rect = ha.be.Kotak.buat(0, 0, frameW, frameH);
-                img = new ImgObj();
-                img.load = true;
-                img.panjang = w;
-                img.lebar = h;
-                img.img = null;
-                img.frameH = frameH;
-                img.frameW = frameW;
-                img.handleX = 0;
-                img.handleY = 0;
-                img.alpha = 1;
-                img.isAnim = false;
-                img.canvas = canvas;
-                img.ctx = canvas.getContext('2d');
-                img.rect = rect;
-                img.load = true;
-                img.panjangDiSet = true;
-                img.lebarDiSet = true;
-                return img;
-            }
-            static panjang(gbr, pj) {
-                if (typeof pj == 'number') {
-                    gbr.panjang = pj;
-                    gbr.panjangDiSet = true;
-                }
-                return gbr.panjang;
-            }
-            ;
-            static lebar(gbr, lb) {
-                if (typeof lb == 'number') {
-                    gbr.lebar = lb;
-                    gbr.lebarDiSet = true;
-                }
-                return gbr.lebar;
-            }
-            ;
-            static tabrakan(gbr1, x1, y1, gbr2, x2, y2) {
-                Img.resetRect(gbr1);
-                Img.rectToImageTransform(gbr1, x1, y1);
-                Img.resetRect(gbr2);
-                Img.rectToImageTransform(gbr2, x2, y2);
-                return ha.be.Kotak.collide(gbr1.rect, gbr2.rect);
-            }
-            ;
-            static dotDidalamGambar(gbr1, x1, y1, x2, y2) {
-                Img.resetRect(gbr1);
-                Img.rectToImageTransform(gbr1, x1, y1);
-                return ha.be.Kotak.collideDot(gbr1.rect, x2, y2);
-            }
-            ;
-            static muatAnimAsync(url, fw, fh) {
-                let canvas = document.createElement('canvas');
-                return Img.muatAnimAsyncCanvas(url, fw, fh, canvas);
-            }
-            static muatAnimAsyncCanvas(url, fw, fh, canvas) {
-                let img = document.createElement('img'); //;
-                let ctx = canvas.getContext('2d');
-                let rect;
-                rect = ha.be.Kotak.buat(0, 0, fw, fh);
-                let gbr = new ImgObj();
-                gbr.isAnim = true;
-                gbr.img = img;
-                gbr.panjang = img.naturalWidth;
-                gbr.lebar = img.naturalHeight;
-                gbr.frameH = fh;
-                gbr.frameW = fw;
-                gbr.isAnim = true;
-                gbr.handleX = 0;
-                gbr.handleY = 0;
-                gbr.rotasi = 0;
-                gbr.alpha = 1;
-                gbr.ctx = ctx;
-                gbr.canvas = canvas;
-                gbr.rect = rect;
-                gbr.load = false;
-                gbr.panjangDiSet = false;
-                gbr.lebarDiSet = false;
-                // let gbr: IGambar = {
-                // 	img: img,
-                // 	panjang: img.naturalWidth,
-                // 	lebar: img.naturalHeight,
-                // 	frameH: fh,
-                // 	frameW: fw,
-                // 	isAnim: true,
-                // 	handleX: 0,
-                // 	handleY: 0,
-                // 	rotasi: 0,
-                // 	alpha: 1,
-                // 	ctx: ctx,
-                // 	canvas: canvas,
-                // 	rect: rect,
-                // 	load: false,
-                // 	panjangDiSet: false,
-                // 	lebarDiSet: false
-                // }
-                img.onload = () => {
-                    imgOnLoad(img);
-                };
-                img.onerror = () => {
-                    console.warn('gagal load image, url ' + url);
-                    //TODO: default image
-                };
-                let img2 = ha.be.cache.getGbr(url);
-                if (img2) {
-                    imgOnLoad(img2);
-                }
-                else {
-                    img.src = url;
-                }
-                function imgOnLoad(img) {
-                    // console.log('img anim load ' + url);
-                    canvas.width = img.naturalWidth;
-                    canvas.height = img.naturalHeight;
-                    ctx.drawImage(img, 0, 0);
-                    gbr.load = true;
-                    if (!gbr.panjangDiSet) {
-                        gbr.panjang = fw;
-                        gbr.panjangDiSet = true;
-                    }
-                    if (!gbr.lebarDiSet) {
-                        gbr.lebarDiSet = true;
-                        gbr.lebar = fh;
-                    }
-                    ha.be.cache.setFile(url, img);
-                }
-                return gbr;
-            }
-            static muatAsync(url, onload) {
-                let kanvas = document.createElement('canvas');
-                return Img.muatAsyncKanvas(url, kanvas, onload);
-            }
-            static muatAsyncKanvas(url, canvas, onload) {
-                let img = document.createElement('img');
-                let ctx = canvas.getContext('2d');
-                let rect;
-                rect = ha.be.Kotak.buat(0, 0, img.naturalWidth, img.naturalHeight);
-                let gbr;
-                gbr = new ImgObj();
-                gbr.img = img;
-                gbr.panjang = img.naturalWidth;
-                gbr.lebar = img.naturalHeight;
-                gbr.panjangDiSet = false;
-                gbr.lebarDiSet = false;
-                gbr.frameH = img.naturalHeight;
-                gbr.frameW = img.naturalWidth;
-                gbr.isAnim = false;
-                gbr.handleX = 0;
-                gbr.handleY = 0;
-                gbr.rotasi = 0;
-                gbr.alpha = 1;
-                gbr.ctx = ctx;
-                gbr.canvas = canvas;
-                gbr.rect = rect;
-                gbr.load = false;
-                gbr.ctrIdx = 0;
-                img.onload = () => {
-                    onload();
-                    imgOnLoad(img);
-                };
-                img.onerror = () => {
-                    console.warn('gagal load image, url ' + url);
-                    //TODO: default image
-                    imgOnLoadDefault();
-                };
-                let img2 = ha.be.cache.getGbr(url);
-                if (img2) {
-                    imgOnLoad(img2);
-                }
-                else {
-                    img.src = url;
-                }
-                function imgOnLoad(imgP) {
-                    canvas.width = imgP.naturalWidth;
-                    canvas.height = imgP.naturalHeight;
-                    ctx.drawImage(imgP, 0, 0);
-                    gbr.rect = ha.be.Kotak.buat(0, 0, imgP.naturalWidth, imgP.naturalHeight);
-                    gbr.load = true;
-                    gbr.img = imgP;
-                    if (!gbr.panjangDiSet) {
-                        gbr.panjangDiSet = true;
-                        gbr.panjang = imgP.naturalWidth;
-                    }
-                    if (!gbr.lebarDiSet) {
-                        gbr.lebar = imgP.naturalHeight;
-                        gbr.lebarDiSet = true;
-                    }
-                    gbr.frameH = imgP.naturalHeight;
-                    gbr.frameW = imgP.naturalWidth;
-                    ha.be.cache.setFile(url, imgP);
-                }
-                function imgOnLoadDefault() {
-                    console.log("img on load default");
-                    canvas.width = 32;
-                    canvas.height = 32;
-                    //TODO: draw rectangle, broken image
-                    // ctx = canvas.getContext('2d');
-                    gbr.img = document.createElement('img');
-                    // ctx.drawImage(gbr.img, 0, 0);
-                    gbr.rect = ha.be.Kotak.buat(0, 0, 32, 32);
-                    ctx.fillStyle = 'rgba(255, 255, 255, 100)';
-                    ctx.strokeStyle = 'rgba(255, 0, 0, 100)';
-                    ctx.beginPath();
-                    ctx.rect(0, 0, 32, 32);
-                    ctx.moveTo(0, 0);
-                    ctx.lineTo(31, 31);
-                    ctx.moveTo(0, 31);
-                    ctx.lineTo(31, 0);
-                    ctx.stroke();
-                    // ctx.setf
-                    // ctx.fillRect(0, 0, 32, 32);
-                    gbr.load = true;
-                    if (!gbr.panjangDiSet) {
-                        gbr.panjangDiSet = true;
-                        gbr.panjang = 32;
-                    }
-                    if (!gbr.lebarDiSet) {
-                        gbr.lebar = 32;
-                        gbr.lebarDiSet = true;
-                    }
-                    gbr.frameH = 32;
-                    gbr.frameW = 32;
-                    ha.be.cache.setFile(url, gbr.img);
-                }
-                console.log(gbr);
-                return gbr;
-            }
-            static gambarUbin(gbr, x = 0, y = 0, frame = 0) {
-                let jmlH = 0;
-                let jmlV = 0;
-                if (gbr.load == false)
-                    return;
-                let w2 = Math.floor(gbr.panjang);
-                let h2 = Math.floor(gbr.lebar);
-                while (x < 0) {
-                    x += w2;
-                }
-                while (x > 0) {
-                    x -= w2;
-                }
-                //posisi gambar dimulai dari sebelum titik 0,0
-                while (y < 0) {
-                    y += h2;
-                }
-                while (y > 0) {
-                    y -= h2;
-                }
-                x -= w2;
-                y -= h2;
-                frame = Math.floor(frame);
-                jmlH = Math.ceil((be.Be.canvasAktif.panjang + Math.abs(x)) / w2);
-                jmlV = Math.ceil((be.Be.canvasAktif.lebar + Math.abs(y)) / h2);
-                for (let i = 0; i < jmlH; i++) {
-                    for (let j = 0; j < jmlV; j++) {
-                        Img.gambar(gbr, x + (i * w2), y + (j * h2), frame);
-                    }
-                }
-            }
-            /**
-             * mengambil pixel di layar
-             * @param x posisi x
-             * @param y posisi y
-             * @returns (Uint8ClampedArray)
-             */
-            static AmbilPiksel(x = 0, y = 0) {
-                try {
-                    let data = be.Be.canvasAktif.ctx.getImageData(x, y, 1, 1).data;
-                    let hasil = [];
-                    hasil.push(data[0]);
-                    hasil.push(data[1]);
-                    hasil.push(data[2]);
-                    hasil.push(data[3]);
-                    be.Be.merah = data[0];
-                    be.Be.hijau = data[1];
-                    be.Be.biru = data[2];
-                    be.Be.transparan = data[3];
-                    be.Be.Warna(be.Be.merah, be.Be.hijau, be.Be.biru, be.Be.transparan);
-                    return hasil;
-                }
-                catch (e) {
-                    // console.error(e);
-                }
-                return [0, 0, 0];
-            }
-            /**
-             *
-             * @param x
-             * @param y
-             */
-            static SetPiksel(x = 0, y = 0) {
-                be.Be.canvasAktif.ctx.fillRect(Math.floor(x), Math.floor(y), 1, 1);
-            }
-            static gambar(gbr, x = 0, y = 0, frame = 0) {
-                let ctx = be.Be.canvasAktif.ctx;
-                let jmlH = 0;
-                // let jmlV: number = 0;
-                let frameX = 0;
-                let frameY = 0;
-                // let rect: IRect = img.rect;
-                if (gbr.load == false)
-                    return;
-                gbr.ctrIdx = ha.be.SprObj.ctrDraw++;
-                frame = Math.floor(frame);
-                jmlH = Math.floor(gbr.img.naturalWidth / gbr.frameW);
-                // jmlV = Math.floor(gbr.img.naturalHeight / gbr.frameH);
-                // console.log('jmlH ' + jmlH);
-                // console.log('nw: ' + gbr.img.naturalWidth);
-                // console.log('fw: ' + gbr.frameW);
-                // debugger;
-                frameX = (frame % jmlH);
-                frameY = Math.floor(frame / jmlH);
-                frameX *= gbr.frameW;
-                frameY *= gbr.frameH;
-                frameX = Math.floor(frameX);
-                frameY = Math.floor(frameY);
-                let x2 = Math.floor(x);
-                let y2 = Math.floor(y);
-                let w2 = Math.floor(gbr.panjang);
-                let h2 = Math.floor(gbr.lebar);
-                x2 -= (gbr.handleX);
-                y2 -= (gbr.handleY);
-                if (gbr.rotasi != 0) {
-                    ctx.save();
-                    ctx.translate(x, y);
-                    ctx.rotate(gbr.rotasi * (Math.PI / 180));
-                    ctx.globalAlpha = gbr.alpha;
-                    ctx.drawImage(gbr.canvas, frameX, frameY, gbr.frameW, gbr.frameH, -gbr.handleX, -gbr.handleY, w2, h2);
-                    ctx.restore();
-                }
-                else {
-                    ctx.save();
-                    ctx.globalAlpha = gbr.alpha;
-                    ctx.drawImage(gbr.canvas, frameX, frameY, gbr.frameW, gbr.frameH, x2, y2, w2, h2);
-                    ctx.restore();
-                }
-                // debugger;
-            }
-            /**
-             * Ubah Ukuran Gambar
-             * @param gbr
-             * @param w
-             * @param h
-             */
-            static ukuran(gbr, w = 32, h = 32) {
-                gbr.panjang = w;
-                gbr.lebar = h;
-                gbr.panjangDiSet = true;
-                gbr.lebarDiSet = true;
-            }
-            static resetRect(img) {
-                let rect = img.rect;
-                let p;
-                p = rect.vs[0];
-                p.x = 0;
-                p.y = 0;
-                p = rect.vs[1];
-                p.x = img.frameW;
-                p.y = 0;
-                p = rect.vs[2];
-                p.x = img.frameW;
-                p.y = img.frameH;
-                p = rect.vs[3];
-                p.x = 0;
-                p.y = img.frameH;
-            }
-            static rectToImageTransform(image, x, y) {
-                let rect = image.rect;
-                let p;
-                let x2 = image.panjang;
-                let y2 = image.lebar;
-                //scale
-                p = rect.vs[1];
-                p.x = x2;
-                p.y = 0;
-                p = rect.vs[2];
-                p.x = x2;
-                p.y = y2;
-                p = rect.vs[3];
-                p.x = 0;
-                p.y = y2;
-                //translate
-                ha.be.Kotak.translate(rect, x, y);
-                ha.be.Kotak.translate(rect, -image.handleX, -image.handleY);
-                //rotate
-                ha.be.Kotak.rotate(rect, image.rotasi, x, y, false);
-            }
-        }
-        be.Img = Img;
     })(be = ha.be || (ha.be = {}));
 })(ha || (ha = {}));
 //TODO: depecreated
@@ -1173,7 +753,7 @@ var ha;
                 console.log('input init');
                 Input._inputGlobal = this.buatInputDefault();
                 buffer.style.touchAction = 'none';
-                buffer.onpointerdown = (e) => {
+                buffer.addEventListener("pointerdown", (e) => {
                     e.stopPropagation();
                     e.preventDefault();
                     let pos = Input.getPos(e.clientX, e.clientY, buffer);
@@ -1182,8 +762,8 @@ var ha;
                     Input.event.down(input, key, e.pointerType, pos);
                     Input.event.down(this._inputGlobal, key, e.pointerType, pos);
                     be.sprInteraksi.inputDown(pos, e.pointerId);
-                };
-                buffer.onpointermove = (e) => {
+                });
+                buffer.addEventListener("pointermove", (e) => {
                     e.stopPropagation();
                     e.preventDefault();
                     let pos = Input.getPos(e.clientX, e.clientY, buffer);
@@ -1193,16 +773,16 @@ var ha;
                     Input.event.move(this.global, buffer, e);
                     //sprite
                     be.sprInteraksi.inputMove(pos, e.pointerId);
-                };
-                buffer.onpointerout = (e) => {
+                });
+                buffer.addEventListener("pointerout", (e) => {
                     e.stopPropagation();
                     e.preventDefault();
-                };
-                buffer.onpointercancel = (e) => {
+                });
+                buffer.addEventListener("pointercancel", (e) => {
                     e.stopPropagation();
                     e.preventDefault();
-                };
-                buffer.onpointerup = (e) => {
+                });
+                buffer.addEventListener("pointerup", (e) => {
                     e.stopPropagation();
                     e.preventDefault();
                     let key = this.getMouseKeyId(e);
@@ -1220,7 +800,7 @@ var ha;
                             item.dragged = false;
                         }
                     });
-                };
+                });
             }
             static buatInputDefault() {
                 return {
@@ -1369,11 +949,33 @@ var ha;
 /**
  * INTERFACE
 */
+// interface ISprObj {
+// 	buff: ISprImgObj,
+// 	dragable: boolean
+// 	dragged: boolean
+// 	down: boolean
+// 	//TODO:
+// 	jmlHit?: number,
+// 	jmlup?: number,
+// 	jmlStartDrag?: number,
+// 	jmlEndDrag?: number,
+// 	drgStartX: number
+// 	drgStartY: number
+// 	url: string
+// 	//
+// 	tipeDrag: number; //1 drag, 2 rotasi, 3 skew (todo)
+// 	sudutTekanAwal: number
+// 	sudutAwal: number
+// 	inputId: number
+// }
 var ha;
 (function (ha) {
     var be;
     (function (be) {
         class Mat {
+            static Jarak(x1, y1, x2, y2) {
+                return Math.hypot(x2 - x1, y2 - y1);
+            }
             /**
              * Menghitung sudut dari posisi relative ke posisi 0,0
              * @param x posisi x
@@ -1968,586 +1570,6 @@ var ha;
 (function (ha) {
     var be;
     (function (be) {
-        //Sprite Object
-        class SprObj {
-            constructor(buffer, dragable = false) {
-                //TODO: pindahin ke Image
-                this._x = 0;
-                this._y = 0;
-                this._dragged = false;
-                this._down = false;
-                this._hit = 0;
-                this._dragStartY = 0;
-                this._dragStartX = 0;
-                this._dragable = false;
-                this.buff = buffer;
-                this.dragable = dragable;
-            }
-            get drgStartX() {
-                return this._dragStartX;
-            }
-            set drgStartX(value) {
-                this._dragStartX = value;
-            }
-            get drgStartY() {
-                return this._dragStartY;
-            }
-            set drgStartY(value) {
-                this._dragStartY = value;
-            }
-            get dragged() {
-                return this._dragged;
-            }
-            set dragged(value) {
-                this._dragged = value;
-            }
-            get buff() {
-                return this._buff;
-            }
-            set buff(value) {
-                this._buff = value;
-            }
-            get x() {
-                return this._x;
-            }
-            set x(value) {
-                this._x = value;
-            }
-            get y() {
-                return this._y;
-            }
-            set y(value) {
-                this._y = value;
-            }
-            get jmlHit() {
-                return this._hit;
-            }
-            set jmlHit(value) {
-                this._hit = value;
-            }
-            get down() {
-                return this._down;
-            }
-            set down(value) {
-                this._down = value;
-            }
-            get dragable() {
-                return this._dragable;
-            }
-            set dragable(value) {
-                this._dragable = value;
-            }
-            get sudutAwal() {
-                return this._sudutAwal;
-            }
-            set sudutAwal(value) {
-                this._sudutAwal = value;
-            }
-            get sudutTekanAwal() {
-                return this._sudutTekanAwal;
-            }
-            set sudutTekanAwal(value) {
-                this._sudutTekanAwal = value;
-            }
-            get tipeDrag() {
-                return this._tipeDrag;
-            }
-            set tipeDrag(value) {
-                this._tipeDrag = value;
-                if (value > 0) {
-                    this._dragable = true;
-                }
-                else {
-                    this._dragable = false;
-                }
-            }
-            get url() {
-                return this._url;
-            }
-            set url(value) {
-                this._url = value;
-            }
-            static get ctrDraw() {
-                return SprObj._ctrDraw;
-            }
-            static set ctrDraw(value) {
-                SprObj._ctrDraw = value;
-            }
-            get inputId() {
-                return this._inputId;
-            }
-            set inputId(value) {
-                this._inputId = value;
-            }
-        }
-        SprObj._ctrDraw = 0;
-        be.SprObj = SprObj;
-    })(be = ha.be || (ha.be = {}));
-})(ha || (ha = {}));
-///<reference path="./Image.ts"/>
-var ha;
-(function (ha) {
-    var be;
-    (function (be) {
-        class Spr {
-            //Attribute
-            static DragMode(s, n) {
-                if (n > 0) {
-                    s.tipeDrag = n;
-                    s.dragable = true;
-                }
-            }
-            /**
-             *
-             * @param spr
-             * @returns
-             */
-            static Dimuat(spr) {
-                return spr.buff.load;
-            }
-            /**
-             *
-             * @param spr
-             * @returns
-             */
-            static StatusDrag(spr) {
-                let hasil = false;
-                Spr.daftar.forEach((item) => {
-                    if (spr == item) {
-                        hasil = spr.dragged;
-                        return;
-                    }
-                });
-                return hasil;
-            }
-            /**
-             *
-             * @param spr
-             * @returns
-             */
-            static kontek(spr) {
-                return spr.buff.ctx;
-            }
-            /**
-             *
-             * @param spr
-             * @param pj
-             * @returns
-             */
-            static Panjang(spr, pj) {
-                return be.Img.panjang(spr.buff, pj);
-            }
-            /**
-             *
-             * @param spr
-             * @param lb
-             * @returns
-             */
-            static Lebar(spr, lb) {
-                return be.Img.lebar(spr.buff, lb);
-            }
-            /**
-             *
-             * @param spr
-             * @param alpha
-             * @returns
-             */
-            static Alpha(spr, alpha) {
-                if (typeof (alpha) == 'number') {
-                    spr.buff.alpha = alpha / 100;
-                }
-                return spr.buff.alpha;
-            }
-            /**
-             *
-             * @param spr
-             * @param sudut
-             * @returns
-             */
-            static Rotasi(spr, sudut) {
-                if (spr && (typeof (sudut) == 'number')) {
-                    spr.buff.rotasi = sudut;
-                }
-                return be.Transform.normalizeDeg(spr.buff.rotasi);
-            }
-            /**
-             *
-             * @param spr
-             * @param x
-             * @param y
-             */
-            static Posisi(spr, x = 0, y = 0) {
-                spr.x = x;
-                spr.y = y;
-            }
-            /**
-             *
-             * @param spr
-             * @param x
-             * @returns
-             */
-            static PosisiX(spr, x = null) {
-                if (typeof (x) == 'number') {
-                    spr.x = x;
-                }
-                return spr.x;
-            }
-            /**
-             *
-             * @param s
-             * @param y
-             * @returns
-             */
-            static PosisiY(s, y = null) {
-                if (typeof (y) == 'number') {
-                    // debugger;
-                    s.y = y;
-                }
-                return s.y;
-            }
-            /**
-             *
-             * @param s
-             * @returns
-             */
-            static Bound(s) {
-                be.Img.resetRect(s.buff);
-                be.Img.rectToImageTransform(s.buff, s.x, s.y);
-                return s.buff.rect;
-            }
-            //TODO:boundx, boundy, boundX2, boundY2
-            /**
-             *
-             * @param s
-             * @param x
-             * @param y
-             * @returns
-             */
-            static Handle(s, x = 0, y = 0) {
-                if (s) {
-                    s.buff.handleX = x;
-                    s.buff.handleY = y;
-                }
-            }
-            static HandleX(s) { return s.buff.handleX; }
-            static HandleY(s) { return s.buff.handleY; }
-            /**
-             *
-             * @param gbr
-             * @param w
-             * @param h
-             */
-            static Ukuran(gbr, w, h) {
-                be.Img.ukuran(gbr.buff, w, h);
-            }
-            //================
-            //Image Operation:
-            //================
-            /**
-             *
-             * @param sprS {ISpr} sprite
-             * @param onload {() => void} optional, fungsi yang dipanggil sprite selesai dimuat
-             * @returns
-             */
-            static Copy(sprS, onload) {
-                if (!onload) {
-                    onload = () => { };
-                }
-                if (sprS.buff.isAnim) {
-                    console.debug('copy sprite anim');
-                    console.debug(sprS);
-                    return Spr.muatAnimasiAsyncKanvas(sprS.url, sprS.buff.frameW, sprS.buff.frameH, sprS.dragable, sprS.buff.canvas, sprS.tipeDrag);
-                }
-                else {
-                    return Spr.muatAsyncBerbagiKanvas(sprS.url, sprS.dragable, sprS.buff.canvas, sprS.tipeDrag, onload);
-                }
-            }
-            /**
-             *
-             */
-            static GambarSemua() {
-                for (let i = 0; i < Spr.daftar.length; i++) {
-                    let item = Spr.daftar[i];
-                    Spr.Gambar(item);
-                }
-            }
-            /**
-             *
-             * @param spr
-             * @param spr2
-             * @returns
-             */
-            static Tabrakan(spr, spr2) {
-                return be.Img.tabrakan(spr.buff, Spr.PosisiX(spr), Spr.PosisiY(spr), spr2.buff, Spr.PosisiX(spr2), Spr.PosisiY(spr2));
-            }
-            //TODO: depecrated
-            static TabrakanXY(spr, x1, y1, spr2, x2, y2) {
-                return be.Img.tabrakan(spr.buff, x1, y1, spr2.buff, x2, y2);
-            }
-            static muatAnimasiAsyncKanvas(url, pf, lf, bisaDiDrag, canvas, tipeDrag) {
-                let img = be.Img.muatAnimAsyncCanvas(url, pf, lf, canvas);
-                return Spr.buatPrivate(img, bisaDiDrag, url, tipeDrag);
-            }
-            /**
-             *
-             * @param url
-             * @param pf
-             * @param lf
-             * @param bisaDiDrag
-             * @param tipeDrag
-             * @returns
-             */
-            static MuatAnimasi(url, pf, lf, bisaDiDrag = false, tipeDrag = 0) {
-                let img = be.Img.muatAnimAsync(url, pf, lf);
-                return Spr.buatPrivate(img, bisaDiDrag, url, tipeDrag);
-            }
-            static muatAsyncBerbagiKanvas(url, dragable = false, canvas, tipeDrag, onload) {
-                let img = be.Img.muatAsyncKanvas(url, canvas, onload);
-                return Spr.buatPrivate(img, dragable, url, tipeDrag);
-            }
-            /**
-             *
-             * @param url (string) url gambar
-             * @param bisaDiDrag
-             * @param tipeDrag
-             * @param onload
-             * @returns
-             */
-            static Muat(url, bisaDiDrag = false, tipeDrag = 0, onload) {
-                if (!onload)
-                    onload = () => { };
-                let img = be.Img.muatAsync(url, onload);
-                let spr = Spr.buatPrivate(img, bisaDiDrag, url, tipeDrag);
-                return spr;
-            }
-            static buatPrivate(image, dragable = false, url, tipeDrag) {
-                let hasil;
-                hasil = new be.SprObj(image, dragable);
-                hasil.tipeDrag = tipeDrag;
-                hasil.url = url;
-                if (hasil.dragable) {
-                    if (hasil.tipeDrag == 0) {
-                        hasil.tipeDrag = 1;
-                    }
-                }
-                Spr.daftar.push(hasil);
-                // console.debug('buat sprite');
-                // console.debug(hasil);
-                return hasil;
-            }
-            /**
-             * Menggambar sprite ke layar
-             * @param sprite
-             * @param frame
-             */
-            static Gambar(sprite, frame) {
-                be.Img.gambar(sprite.buff, sprite.x, sprite.y, frame);
-                //TODO: webgl
-            }
-            /**
-             *
-             * @param sprite
-             * @param x
-             * @param y
-             * @param frame
-             * @returns
-             */
-            static GambarXY(sprite, x, y, frame) {
-                sprite.x = x;
-                sprite.y = y;
-                be.Img.gambar(sprite.buff, x, y, frame);
-            }
-            /**
-             *
-             * @param sprite
-             * @param sudut
-             * @param jarak
-             * @param x2
-             * @param y2
-             * @param skalaX
-             * @param skalaY
-             */
-            static posisiPolar(sprite, sudut, jarak, x2, y2, skalaX = 1, skalaY = 1, tilt = 0) {
-                let p = be.Point.posPolar(jarak, sudut, x2, y2);
-                p.y -= y2;
-                p.y *= skalaY;
-                p.y += y2;
-                p.x -= x2;
-                p.x *= skalaX;
-                p.x += x2;
-                //tilt
-                be.Transform.rotateRel(p.x, p.y, x2, y2, tilt);
-                p.x = be.Transform.lastX;
-                p.y = be.Transform.lastY;
-                sprite.x = p.x;
-                sprite.y = p.y;
-            }
-            /**
-             *
-             * @param spr
-             * @param x
-             * @param y
-             * @param frame
-             */
-            static Ubin(spr, x = 0, y = 0, frame = 0) {
-                be.Img.gambarUbin(spr.buff, x, y, frame);
-            }
-            /**
-             *
-             * @param spr
-             * @returns
-             */
-            static StatusMuat(spr) {
-                let hasil = true;
-                if (spr && spr.buff) {
-                    return spr.buff.load;
-                }
-                Spr.daftar.forEach((item) => {
-                    if (!item.buff.load) {
-                        hasil = false;
-                    }
-                });
-                return hasil;
-            }
-        }
-        Spr.daftar = [];
-        be.Spr = Spr;
-    })(be = ha.be || (ha.be = {}));
-})(ha || (ha = {}));
-var ha;
-(function (ha) {
-    var be;
-    (function (be) {
-        let TypeDrag;
-        (function (TypeDrag) {
-            TypeDrag[TypeDrag["drag"] = 1] = "drag";
-            TypeDrag[TypeDrag["rotasi"] = 2] = "rotasi";
-        })(TypeDrag || (TypeDrag = {}));
-        /**
-         * Handle interaksi sprite
-         */
-        class SpriteInteraksi {
-            spriteDown(lastSpr, pos, id) {
-                lastSpr.down = true;
-                lastSpr.drgStartX = pos.x - lastSpr.x;
-                lastSpr.drgStartY = pos.y - lastSpr.y;
-                lastSpr.inputId = id;
-                lastSpr.jmlHit++;
-                lastSpr.sudutTekanAwal = be.Transform.sudut(pos.x - lastSpr.x, pos.y - lastSpr.y);
-                lastSpr.sudutAwal = lastSpr.buff.rotasi;
-                console.log('sprite down event handler');
-            }
-            inputDown(pos, id) {
-                //sprite down
-                console.log('input down');
-                let lastIdx = -1;
-                let lastSprite = null;
-                for (let i = be.Spr.daftar.length - 1; i >= 0; i--) {
-                    let item;
-                    item = be.Spr.daftar[i];
-                    if (be.Img.dotDidalamGambar(item.buff, item.x, item.y, pos.x, pos.y)) {
-                        if (item.buff.ctrIdx > lastIdx) {
-                            lastIdx = item.buff.ctrIdx;
-                            lastSprite = item;
-                        }
-                    }
-                    else {
-                        if (item.tipeDrag == 3 || item.tipeDrag == 4) {
-                            this.spriteDown(item, pos, id);
-                        }
-                    }
-                }
-                //
-                if (lastSprite) {
-                    this.spriteDown(lastSprite, pos, id);
-                    // lastSprite.down = true;
-                    // lastSprite.dragStartX = pos.x - lastSprite.x;
-                    // lastSprite.dragStartY = pos.y - lastSprite.y;
-                    // lastSprite.inputId = id;
-                    // lastSprite.jmlHit++;
-                    // lastSprite.sudutTekanAwal = Transform.sudut(pos.x - lastSprite.x, pos.y - lastSprite.y);
-                    // lastSprite.sudutAwal = lastSprite.buff.rotasi;
-                }
-                //
-            }
-            inputMove(pos, pointerId) {
-                be.Spr.daftar.forEach((item) => {
-                    if (item.down && item.dragable && (item.inputId == pointerId)) {
-                        item.dragged = true;
-                        if (item.tipeDrag == TypeDrag.drag || (item.tipeDrag == 3)) {
-                            item.x = pos.x - item.drgStartX;
-                            item.y = pos.y - item.drgStartY;
-                            console.debug('item drag move');
-                        }
-                        else if (item.tipeDrag == TypeDrag.rotasi || (item.tipeDrag == 4)) {
-                            let sudut2 = be.Transform.sudut(pos.x - item.x, pos.y - item.y);
-                            let perbedaan = sudut2 - item.sudutTekanAwal;
-                            item.buff.rotasi = item.sudutAwal + perbedaan;
-                        }
-                        else {
-                            //TODO:
-                        }
-                    }
-                });
-            }
-            inputUp() {
-                be.Spr.daftar.forEach((item) => {
-                    if (item.down) {
-                        // item.hit++;
-                    }
-                    if (item.dragged) {
-                        console.log('input up: item rotasi ' + item.buff.rotasi);
-                    }
-                    item.down = false;
-                    item.dragged = false;
-                });
-            }
-        }
-        be.sprInteraksi = new SpriteInteraksi();
-    })(be = ha.be || (ha.be = {}));
-})(ha || (ha = {}));
-var ha;
-(function (ha) {
-    var be;
-    (function (be) {
-        //Fungsi untuk pergerakan sprite
-        class Spr3 {
-            static gerakX(s, n) {
-                s.x += n;
-            }
-            static gerakY(s, n) {
-                s.y += n;
-            }
-            static gerakXY(s, x, y) {
-                s.x += x;
-                s.y += y;
-            }
-            static gerakSudut(s, n, sudut) {
-                sudut *= Math.PI / 180;
-                ha.be.Spr3.gerakX(s, n * Math.cos(sudut));
-                ha.be.Spr3.gerakY(s, n * Math.sin(sudut));
-            }
-            static gerakPutar(s, sudut, sx, sy) {
-                be.Transform.rotateRel(s.x, s.y, sx, sy, sudut);
-                s.x += be.Transform.lastX;
-                s.y += be.Transform.lastY;
-            }
-            static menjauh(s, x, y, jml) {
-                let sudut = be.Transform.sudut(s.x - x, s.y - y);
-                Spr3.gerakSudut(s, jml, sudut);
-            }
-            static mendekat(s, x, y, jml) {
-                let sudut = be.Transform.sudut(x - s.x, y - s.y);
-                Spr3.gerakSudut(s, jml, sudut);
-            }
-        }
-        be.Spr3 = Spr3;
-    })(be = ha.be || (ha.be = {}));
-})(ha || (ha = {}));
-var ha;
-(function (ha) {
-    var be;
-    (function (be) {
         class Teks {
             static get stroke() {
                 return Teks._stroke;
@@ -2634,7 +1656,538 @@ const LoadSound = ha.be.Sound.Load;
 const PlaySound = ha.be.Sound.Play;
 const SoundEnded = ha.be.Sound.SoundEnded;
 const SoundLoaded = ha.be.Sound.SoundLoaded;
+var ha;
+(function (ha) {
+    var be;
+    (function (be) {
+        /*
+        export class SprObj {
+            img: HTMLImageElement;
+            canvas: HTMLCanvasElement;
+            ctx: CanvasRenderingContext2D;
+            isAnim: boolean = false;
+            rect: Ikt = new Kotak();
+            load: boolean = false;
+            ratioX?: number = 1;
+            ratioY?: number = 1;
+    
+            private _panjangDiSet: boolean = false;
+            private _lebarDiSet: boolean = false;
+            private _ctrIdx: number = 0;
+    
+            private _x: number = 0;
+            private _y: number = 0;
+            private _alpha: number = 100;
+            private _frameW: number = 32;
+            private _frameH: number = 32;
+            private _handleX: number = 0;
+            private _handleY: number = 0;
+            private _rotasi: number = 0;
+            private _panjang: number = 0;
+            private _lebar: number = 0;
+    
+            public get frameW(): number {
+                return this._frameW;
+            }
+            public set frameW(value: number) {
+                this._frameW = value;
+            }
+            public get frameH(): number {
+                return this._frameH;
+            }
+            public set frameH(value: number) {
+                this._frameH = value;
+            }
+    
+            public get x(): number {
+                return this._x;
+            }
+            public set x(value: number) {
+                this._x = value;
+            }
+            public get y(): number {
+                return this._y;
+            }
+            public set y(value: number) {
+                this._y = value;
+            }
+    
+            public get alpha(): number {
+                return this._alpha;
+            }
+            public set alpha(value: number) {
+                this._alpha = value;
+            }
+    
+            public get handleY(): number {
+                return this._handleY;
+            }
+            public set handleY(value: number) {
+                this._handleY = value;
+            }
+    
+            public get handleX(): number {
+                return this._handleX;
+            }
+            public set handleX(value: number) {
+                this._handleX = value;
+            }
+    
+            public get panjang(): number {
+                return this._panjang;
+            }
+            public set panjang(value: number) {
+                console.log('set panjang: ' + value);
+                this._panjang = value;
+                this._panjangDiSet = true;
+            }
+    
+            public get lebar(): number {
+                return this._lebar;
+            }
+            public set lebar(value: number) {
+                this._lebar = value;
+                this._lebarDiSet = true;
+            }
+    
+            public get panjangDiSet(): boolean {
+                return this._panjangDiSet;
+            }
+            public set panjangDiSet(value: boolean) {
+                this._panjangDiSet = value;
+            }
+    
+            public get lebarDiSet(): boolean {
+                return this._lebarDiSet;
+            }
+            public set lebarDiSet(value: boolean) {
+                this._lebarDiSet = value;
+            }
+    
+            public get ctrIdx(): number {
+                return this._ctrIdx;
+            }
+            public set ctrIdx(value: number) {
+                this._ctrIdx = value;
+            }
+    
+            public get rotasi(): number {
+                return this._rotasi;
+            }
+            public set rotasi(value: number) {
+                // console.debug('set value: ' + value);
+                this._rotasi = value;
+            }
+        }
+        */
+        class SprImg {
+            static buatBagiCanvas(canvas, w = 32, h = 32, frameW = 32, frameH = 32) {
+                let img;
+                canvas.width = w;
+                canvas.height = h;
+                let rect = ha.be.Kotak.buat(0, 0, frameW, frameH);
+                img = new be.SprObj();
+                img.load = true;
+                img.panjang = w;
+                img.lebar = h;
+                img.img = null;
+                img.frameH = frameH;
+                img.frameW = frameW;
+                img.handleX = 0;
+                img.handleY = 0;
+                img.alpha = 100;
+                img.isAnim = false;
+                img.canvas = canvas;
+                img.ctx = canvas.getContext('2d');
+                img.rect = rect;
+                img.load = true;
+                img.panjangDiSet = true;
+                img.lebarDiSet = true;
+                return img;
+            }
+            //depecrated
+            static panjang(gbr, pj) {
+                if (typeof pj == 'number') {
+                    gbr.panjang = pj;
+                    gbr.panjangDiSet = true;
+                }
+                return gbr.panjang;
+            }
+            ;
+            //depecrated
+            static lebar(gbr, lb) {
+                if (typeof lb == 'number') {
+                    gbr.lebar = lb;
+                    gbr.lebarDiSet = true;
+                }
+                return gbr.lebar;
+            }
+            ;
+            static tabrakan(gbr1, x1, y1, gbr2, x2, y2) {
+                SprImg.resetRect(gbr1);
+                SprImg.rectToImageTransform(gbr1, x1, y1);
+                SprImg.resetRect(gbr2);
+                SprImg.rectToImageTransform(gbr2, x2, y2);
+                return ha.be.Kotak.collide(gbr1.rect, gbr2.rect);
+            }
+            ;
+            static dotDidalamGambar(gbr1, x1, y1, x2, y2) {
+                SprImg.resetRect(gbr1);
+                SprImg.rectToImageTransform(gbr1, x1, y1);
+                return ha.be.Kotak.collideDot(gbr1.rect, x2, y2);
+            }
+            ;
+            static muatAnimAsync(url, fw, fh) {
+                let canvas = document.createElement('canvas');
+                return SprImg.muatAnimAsyncCanvas(url, fw, fh, canvas);
+            }
+            static muatAnimAsyncCanvas(url, fw, fh, canvas) {
+                let img = document.createElement('img'); //;
+                let ctx = canvas.getContext('2d');
+                let rect;
+                rect = ha.be.Kotak.buat(0, 0, fw, fh);
+                let gbr = new be.SprObj();
+                gbr.isAnim = true;
+                gbr.img = img;
+                gbr.panjang = img.naturalWidth;
+                gbr.lebar = img.naturalHeight;
+                gbr.frameH = fh;
+                gbr.frameW = fw;
+                gbr.isAnim = true;
+                gbr.handleX = 0;
+                gbr.handleY = 0;
+                gbr.rotasi = 0;
+                gbr.alpha = 100;
+                gbr.ctx = ctx;
+                gbr.canvas = canvas;
+                gbr.rect = rect;
+                gbr.load = false;
+                gbr.panjangDiSet = false;
+                gbr.lebarDiSet = false;
+                // let gbr: IGambar = {
+                // 	img: img,
+                // 	panjang: img.naturalWidth,
+                // 	lebar: img.naturalHeight,
+                // 	frameH: fh,
+                // 	frameW: fw,
+                // 	isAnim: true,
+                // 	handleX: 0,
+                // 	handleY: 0,
+                // 	rotasi: 0,
+                // 	alpha: 1,
+                // 	ctx: ctx,
+                // 	canvas: canvas,
+                // 	rect: rect,
+                // 	load: false,
+                // 	panjangDiSet: false,
+                // 	lebarDiSet: false
+                // }
+                img.onload = () => {
+                    imgOnLoad(img);
+                };
+                img.onerror = () => {
+                    console.warn('gagal load image, url ' + url);
+                    //TODO: default image
+                };
+                let img2 = ha.be.cache.getGbr(url);
+                if (img2) {
+                    imgOnLoad(img2);
+                }
+                else {
+                    img.src = url;
+                }
+                function imgOnLoad(img) {
+                    // console.log('img anim load ' + url);
+                    canvas.width = img.naturalWidth;
+                    canvas.height = img.naturalHeight;
+                    ctx.drawImage(img, 0, 0);
+                    gbr.load = true;
+                    if (!gbr.panjangDiSet) {
+                        gbr.panjang = fw;
+                        gbr.panjangDiSet = true;
+                    }
+                    if (!gbr.lebarDiSet) {
+                        gbr.lebarDiSet = true;
+                        gbr.lebar = fh;
+                    }
+                    ha.be.cache.setFile(url, img);
+                }
+                return gbr;
+            }
+            static muatAsync(url, onload) {
+                let kanvas = document.createElement('canvas');
+                return SprImg.muatAsyncKanvas(url, kanvas, onload);
+            }
+            static muatAsyncKanvas(url, canvas, onload) {
+                let img = document.createElement('img');
+                let ctx = canvas.getContext('2d');
+                let rect;
+                rect = ha.be.Kotak.buat(0, 0, img.naturalWidth, img.naturalHeight);
+                let gbr;
+                gbr = new be.SprObj();
+                //TODO: refaktor
+                gbr.img = img;
+                gbr.panjang = img.naturalWidth;
+                gbr.lebar = img.naturalHeight;
+                gbr.panjangDiSet = false;
+                gbr.lebarDiSet = false;
+                gbr.frameH = img.naturalHeight;
+                gbr.frameW = img.naturalWidth;
+                gbr.isAnim = false;
+                gbr.handleX = 0;
+                gbr.handleY = 0;
+                gbr.rotasi = 0;
+                gbr.alpha = 100;
+                gbr.ctx = ctx;
+                gbr.canvas = canvas;
+                gbr.rect = rect;
+                gbr.load = false;
+                gbr.ctrIdx = 0;
+                img.onload = () => {
+                    onload();
+                    imgOnLoad(img);
+                };
+                img.onerror = () => {
+                    console.warn('gagal load image, url ' + url);
+                    //TODO: default image
+                    imgOnLoadDefault();
+                };
+                let img2 = ha.be.cache.getGbr(url);
+                if (img2) {
+                    imgOnLoad(img2);
+                }
+                else {
+                    img.src = url;
+                }
+                function imgOnLoad(imgP) {
+                    canvas.width = imgP.naturalWidth;
+                    canvas.height = imgP.naturalHeight;
+                    ctx.drawImage(imgP, 0, 0);
+                    gbr.rect = ha.be.Kotak.buat(0, 0, imgP.naturalWidth, imgP.naturalHeight);
+                    gbr.load = true;
+                    gbr.img = imgP;
+                    if (!gbr.panjangDiSet) {
+                        gbr.panjangDiSet = true;
+                        gbr.panjang = imgP.naturalWidth;
+                    }
+                    if (!gbr.lebarDiSet) {
+                        gbr.lebar = imgP.naturalHeight;
+                        gbr.lebarDiSet = true;
+                    }
+                    gbr.frameH = imgP.naturalHeight;
+                    gbr.frameW = imgP.naturalWidth;
+                    ha.be.cache.setFile(url, imgP);
+                }
+                function imgOnLoadDefault() {
+                    console.log("img on load default");
+                    canvas.width = 32;
+                    canvas.height = 32;
+                    //TODO: draw rectangle, broken image
+                    // ctx = canvas.getContext('2d');
+                    gbr.img = document.createElement('img');
+                    // ctx.drawImage(gbr.img, 0, 0);
+                    gbr.rect = ha.be.Kotak.buat(0, 0, 32, 32);
+                    ctx.fillStyle = 'rgba(255, 255, 255, 100)';
+                    ctx.strokeStyle = 'rgba(255, 0, 0, 100)';
+                    ctx.beginPath();
+                    ctx.rect(0, 0, 32, 32);
+                    ctx.moveTo(0, 0);
+                    ctx.lineTo(31, 31);
+                    ctx.moveTo(0, 31);
+                    ctx.lineTo(31, 0);
+                    ctx.stroke();
+                    // ctx.setf
+                    // ctx.fillRect(0, 0, 32, 32);
+                    gbr.load = true;
+                    if (!gbr.panjangDiSet) {
+                        gbr.panjangDiSet = true;
+                        gbr.panjang = 32;
+                    }
+                    if (!gbr.lebarDiSet) {
+                        gbr.lebar = 32;
+                        gbr.lebarDiSet = true;
+                    }
+                    gbr.frameH = 32;
+                    gbr.frameW = 32;
+                    ha.be.cache.setFile(url, gbr.img);
+                }
+                console.log(gbr);
+                return gbr;
+            }
+            static gambarUbin(gbr, x = 0, y = 0, frame = 0) {
+                let jmlH = 0;
+                let jmlV = 0;
+                if (gbr.load == false)
+                    return;
+                let w2 = Math.floor(gbr.panjang);
+                let h2 = Math.floor(gbr.lebar);
+                while (x < 0) {
+                    x += w2;
+                }
+                while (x > 0) {
+                    x -= w2;
+                }
+                //posisi gambar dimulai dari sebelum titik 0,0
+                while (y < 0) {
+                    y += h2;
+                }
+                while (y > 0) {
+                    y -= h2;
+                }
+                x -= w2;
+                y -= h2;
+                frame = Math.floor(frame);
+                jmlH = Math.ceil((be.Be.canvasAktif.panjang + Math.abs(x)) / w2);
+                jmlV = Math.ceil((be.Be.canvasAktif.lebar + Math.abs(y)) / h2);
+                for (let i = 0; i < jmlH; i++) {
+                    for (let j = 0; j < jmlV; j++) {
+                        SprImg.gambar(gbr, x + (i * w2), y + (j * h2), frame);
+                    }
+                }
+            }
+            /**
+             * mengambil pixel di layar
+             * @param x posisi x
+             * @param y posisi y
+             * @returns (Uint8ClampedArray)
+             */
+            static AmbilPiksel(x = 0, y = 0) {
+                try {
+                    let data = be.Be.canvasAktif.ctx.getImageData(x, y, 1, 1).data;
+                    let hasil = [];
+                    hasil.push(data[0]);
+                    hasil.push(data[1]);
+                    hasil.push(data[2]);
+                    hasil.push(data[3]);
+                    be.Be.merah = data[0];
+                    be.Be.hijau = data[1];
+                    be.Be.biru = data[2];
+                    be.Be.transparan = data[3];
+                    be.Be.Warna(be.Be.merah, be.Be.hijau, be.Be.biru, be.Be.transparan);
+                    return hasil;
+                }
+                catch (e) {
+                    // console.error(e);
+                }
+                return [0, 0, 0];
+            }
+            /**
+             *
+             * @param x
+             * @param y
+             */
+            static SetPiksel(x = 0, y = 0) {
+                be.Be.canvasAktif.ctx.fillRect(Math.floor(x), Math.floor(y), 1, 1);
+            }
+            static gambar(gbr, x = 0, y = 0, frame = 0) {
+                let ctx = be.Be.canvasAktif.ctx;
+                let jmlH = 0;
+                // let jmlV: number = 0;
+                let frameX = 0;
+                let frameY = 0;
+                // let rect: IRect = img.rect;
+                if (gbr.load == false)
+                    return;
+                gbr.ctrIdx = ha.be.SprObj.ctrDraw++;
+                frame = Math.floor(frame);
+                jmlH = Math.floor(gbr.img.naturalWidth / gbr.frameW);
+                // jmlV = Math.floor(gbr.img.naturalHeight / gbr.frameH);
+                // console.log('jmlH ' + jmlH);
+                // console.log('nw: ' + gbr.img.naturalWidth);
+                // console.log('fw: ' + gbr.frameW);
+                // debugger;
+                frameX = (frame % jmlH);
+                frameY = Math.floor(frame / jmlH);
+                frameX *= gbr.frameW;
+                frameY *= gbr.frameH;
+                frameX = Math.floor(frameX);
+                frameY = Math.floor(frameY);
+                let x2 = Math.floor(x);
+                let y2 = Math.floor(y);
+                let w2 = Math.floor(gbr.panjang);
+                let h2 = Math.floor(gbr.lebar);
+                x2 -= (gbr.handleX);
+                y2 -= (gbr.handleY);
+                if (gbr.rotasi != 0) {
+                    ctx.save();
+                    ctx.translate(x, y);
+                    ctx.rotate(gbr.rotasi * (Math.PI / 180));
+                    // ctx.globalAlpha = gbr.alpha / 100;
+                    // ctx.drawImage(gbr.canvas, frameX, frameY, gbr.frameW, gbr.frameH, -gbr.handleX, -gbr.handleY, w2, h2);
+                    drawImpl(-gbr.handleX, -gbr.handleY);
+                    ctx.restore();
+                }
+                else {
+                    ctx.save();
+                    // ctx.globalAlpha = gbr.alpha / 100;
+                    // ctx.drawImage(gbr.canvas, frameX, frameY, gbr.frameW, gbr.frameH, x2, y2, w2, h2);
+                    drawImpl(x2, y2);
+                    ctx.restore();
+                }
+                function drawImpl(dx, dy) {
+                    ctx.globalAlpha = gbr.alpha / 100;
+                    ctx.drawImage(gbr.canvas, frameX, frameY, gbr.frameW, gbr.frameH, dx, dy, w2, h2);
+                    console.group('gmbar image');
+                    console.log("x:", x, "y:", y, "x2:", x2, "y2:", y2);
+                    console.groupEnd();
+                }
+                // debugger;
+            }
+            /**
+             * Ubah Ukuran Gambar
+             * @param gbr
+             * @param w
+             * @param h
+             */
+            static ukuran(gbr, w = 32, h = 32) {
+                gbr.panjang = w;
+                gbr.lebar = h;
+                gbr.panjangDiSet = true;
+                gbr.lebarDiSet = true;
+            }
+            static resetRect(img) {
+                let rect = img.rect;
+                let p;
+                p = rect.vs[0];
+                p.x = 0;
+                p.y = 0;
+                p = rect.vs[1];
+                p.x = img.frameW;
+                p.y = 0;
+                p = rect.vs[2];
+                p.x = img.frameW;
+                p.y = img.frameH;
+                p = rect.vs[3];
+                p.x = 0;
+                p.y = img.frameH;
+            }
+            static rectToImageTransform(image, x, y) {
+                let rect = image.rect;
+                let p;
+                let x2 = image.panjang;
+                let y2 = image.lebar;
+                //scale
+                p = rect.vs[1];
+                p.x = x2;
+                p.y = 0;
+                p = rect.vs[2];
+                p.x = x2;
+                p.y = y2;
+                p = rect.vs[3];
+                p.x = 0;
+                p.y = y2;
+                //translate
+                ha.be.Kotak.translate(rect, x, y);
+                ha.be.Kotak.translate(rect, -image.handleX, -image.handleY);
+                //rotate
+                ha.be.Kotak.rotate(rect, image.rotasi, x, y, false);
+            }
+        }
+        be.SprImg = SprImg;
+    })(be = ha.be || (ha.be = {}));
+})(ha || (ha = {}));
 ///<reference path="./Route.ts"/>
+///<reference path="../spr/SpriteImage.ts"/>
 const Graphics = ha.be.Be.Grafis;
 /**
  * Clear Screen and optionally use color
@@ -2657,8 +2210,8 @@ const Red = ha.be.Be.Merah;
 const Green = ha.be.Be.Hijau;
 const Blue = ha.be.Be.Biru;
 const Alpha = ha.be.Be.Transparan;
-const GetPixel = ha.be.Img.AmbilPiksel;
-const SetPixel = ha.be.Img.SetPiksel;
+const GetPixel = ha.be.SprImg.AmbilPiksel;
+const SetPixel = ha.be.SprImg.SetPiksel;
 // const Kontek = ha.be.Be.Kontek;
 // const Kanvas = ha.be.Be.Kanvas;
 const Line = ha.be.Be.Garis;
@@ -2724,36 +2277,928 @@ const InputDragStartY = ha.be.Input.InputYAwal;
 ///<reference path="./Route.ts"/>
 // const Sudut = ha.be.Mat.Sudut;
 const DistMin = ha.be.Transform.degDistMin;
+/**
+ *
+ * @param x1
+ * @param y1
+ * @param x2
+ * @param y2
+ * @returns
+ */
+function Distance(x1, y1, x2, y2) {
+    return Math.hypot(x2 - x1, y2 - y1);
+}
+///<reference path="./SpriteImage.ts"/>
+var ha;
+(function (ha) {
+    var be;
+    (function (be) {
+        class Spr {
+            static checkNull(s) {
+                if (s == null)
+                    throw Error("Image belum di inisialisasi");
+            }
+            //Attribute [depecrated]
+            //depecrated
+            static DragMode(s, n) {
+                Spr.checkNull(s);
+                if (n > 0) {
+                    s.tipeDrag = n;
+                    s.dragable = true;
+                }
+            }
+            //depecrated
+            /**
+             *
+             * @param s
+             * @returns
+             */
+            static Dimuat(s) {
+                Spr.checkNull(s);
+                return s.load;
+            }
+            /**
+             *
+             * @param s
+             * @returns
+             */
+            static StatusDrag(s) {
+                let hasil = false;
+                Spr.checkNull(s);
+                Spr.daftar.forEach((item) => {
+                    if (s == item) {
+                        hasil = s.dragged;
+                        return;
+                    }
+                });
+                return hasil;
+            }
+            /**
+             * [depecrated]
+             * @param s
+             * @returns
+             */
+            static kontek(s) {
+                Spr.checkNull(s);
+                return s.ctx;
+            }
+            /**
+             * [depecrated]
+             * @param s
+             * @param pj
+             * @returns
+             */
+            static Panjang(s, pj) {
+                Spr.checkNull(s);
+                return be.SprImg.panjang(s, pj);
+            }
+            /**
+             * [depacrated]
+             * @param s
+             * @param lb
+             * @returns
+             */
+            static Lebar(s, lb) {
+                Spr.checkNull(s);
+                return be.SprImg.lebar(s, lb);
+            }
+            /**
+             *
+             * @param s
+             * @param alpha 0-100s
+             * @returns
+             */
+            static Alpha(s, alpha) {
+                Spr.checkNull(s);
+                if (typeof (alpha) == 'number') {
+                    s.alpha = alpha;
+                }
+                return s.alpha;
+            }
+            /**
+             *
+             * @param s
+             * @param sudut
+             * @returns
+             */
+            static Rotasi(s, sudut) {
+                Spr.checkNull(s);
+                if (s && (typeof (sudut) == 'number')) {
+                    s.rotasi = sudut;
+                }
+                return be.Transform.normalizeDeg(s.rotasi);
+            }
+            //method
+            /**
+             *
+             * @param s
+             * @param x
+             * @param y
+             */
+            static Posisi(s, x = 0, y = 0) {
+                Spr.checkNull(s);
+                s.x = x;
+                s.y = y;
+            }
+            /**
+             *
+             * @param s
+             * @param x
+             * @returns
+             */
+            static PosisiX(s, x = null) {
+                Spr.checkNull(s);
+                if (typeof (x) == 'number') {
+                    s.x = x;
+                }
+                return s.x;
+            }
+            /**
+             *
+             * @param s
+             * @param y
+             * @returns
+             */
+            static PosisiY(s, y = null) {
+                if (typeof (y) == 'number') {
+                    // debugger;
+                    s.y = y;
+                }
+                return s.y;
+            }
+            /**
+             *
+             * @param s
+             * @returns
+             */
+            static Bound(s) {
+                be.SprImg.resetRect(s);
+                be.SprImg.rectToImageTransform(s, s.x, s.y);
+                return s.rect;
+            }
+            //TODO:boundx, boundy, boundX2, boundY2
+            /**
+             *
+             * @param s
+             * @param x
+             * @param y
+             * @returns
+             */
+            static Handle(s, x = 0, y = 0) {
+                if (s) {
+                    s.handleX = x;
+                    s.handleY = y;
+                }
+            }
+            static HandleX(s) { return s.handleX; }
+            static HandleY(s) { return s.handleY; }
+            /**
+             *
+             * @param s
+             * @param w
+             * @param h
+             */
+            static Ukuran(s, w, h) {
+                be.SprImg.ukuran(s, w, h);
+            }
+            //================
+            //Image Operation:
+            //================
+            /**
+             *
+             * @param s {ISprObj} sprite
+             * @param onload {() => void} optional, fungsi yang dipanggil sprite selesai dimuat
+             * @returns
+             */
+            static Copy(s, onload) {
+                if (!onload) {
+                    onload = () => { };
+                }
+                if (s.isAnim) {
+                    console.debug('copy sprite anim');
+                    console.debug(s);
+                    return Spr.muatAnimasiAsyncKanvas(s.url, s.frameW, s.frameH, s.dragable, s.canvas, s.tipeDrag);
+                }
+                else {
+                    return Spr.muatAsyncBerbagiKanvas(s.url, s.dragable, s.canvas, s.tipeDrag, onload);
+                }
+            }
+            /**
+             *
+             */
+            static GambarSemua() {
+                for (let i = 0; i < Spr.daftar.length; i++) {
+                    let item = Spr.daftar[i];
+                    Spr.Gambar(item);
+                }
+            }
+            /**
+             *
+             * @param spr
+             * @param spr2
+             * @returns
+             */
+            static Tabrakan(spr, spr2) {
+                return be.SprImg.tabrakan(spr, Spr.PosisiX(spr), Spr.PosisiY(spr), spr2, Spr.PosisiX(spr2), Spr.PosisiY(spr2));
+            }
+            //TODO: depecrated
+            static TabrakanXY(spr, x1, y1, spr2, x2, y2) {
+                return be.SprImg.tabrakan(spr, x1, y1, spr2, x2, y2);
+            }
+            static muatAnimasiAsyncKanvas(url, pf, lf, bisaDiDrag, canvas, tipeDrag) {
+                let img = be.SprImg.muatAnimAsyncCanvas(url, pf, lf, canvas);
+                return Spr.register(img, bisaDiDrag, url, tipeDrag);
+            }
+            /**
+             *
+             * @param url
+             * @param pf
+             * @param lf
+             * @param bisaDiDrag
+             * @param tipeDrag
+             * @returns
+             */
+            static MuatAnimasi(url, pf, lf, bisaDiDrag = false, tipeDrag = 0) {
+                let img = be.SprImg.muatAnimAsync(url, pf, lf);
+                return Spr.register(img, bisaDiDrag, url, tipeDrag);
+            }
+            static muatAsyncBerbagiKanvas(url, dragable = false, canvas, tipeDrag, onload) {
+                let img = be.SprImg.muatAsyncKanvas(url, canvas, onload);
+                return Spr.register(img, dragable, url, tipeDrag);
+            }
+            /**
+             *
+             * @param url (string) url gambar
+             * @param bisaDiDrag
+             * @param tipeDrag
+             * @param onload
+             * @returns
+             */
+            static Muat(url, bisaDiDrag = false, tipeDrag = 0, onload) {
+                if (!onload)
+                    onload = () => { };
+                let img = be.SprImg.muatAsync(url, onload);
+                let spr = Spr.register(img, bisaDiDrag, url, tipeDrag);
+                return spr;
+            }
+            static register(image, dragable = false, url, tipeDrag) {
+                let hasil;
+                hasil = image;
+                hasil.dragable = dragable;
+                hasil.tipeDrag = tipeDrag;
+                hasil.url = url;
+                if (hasil.dragable) {
+                    if (hasil.tipeDrag == 0) {
+                        hasil.tipeDrag = 1;
+                    }
+                }
+                Spr.daftar.push(hasil);
+                // console.debug('buat sprite');
+                // console.debug(hasil);
+                return hasil;
+            }
+            /**
+             * Menggambar sprite ke layar
+             * @param sprite
+             * @param frame
+             */
+            static Gambar(sprite, frame) {
+                be.SprImg.gambar(sprite, sprite.x, sprite.y, frame);
+            }
+            /**
+             *
+             * @param s
+             * @param x
+             * @param y
+             * @param frame
+             * @returns
+             */
+            static GambarXY(s, x, y, frame) {
+                s.x = x;
+                s.y = y;
+                be.SprImg.gambar(s, x, y, frame);
+            }
+            /**
+             *
+             * @param spr
+             * @param sudut
+             * @param jarak
+             * @param x2
+             * @param y2
+             * @param skalaX
+             * @param skalaY
+             */
+            static posisiPolar(spr, sudut, jarak, x2, y2, skalaX = 1, skalaY = 1, tilt = 0) {
+                let p = be.Point.posPolar(jarak, sudut, x2, y2);
+                p.y -= y2;
+                p.y *= skalaY;
+                p.y += y2;
+                p.x -= x2;
+                p.x *= skalaX;
+                p.x += x2;
+                //tilt
+                be.Transform.rotateRel(p.x, p.y, x2, y2, tilt);
+                p.x = be.Transform.lastX;
+                p.y = be.Transform.lastY;
+                spr.x = p.x;
+                spr.y = p.y;
+            }
+            /**
+             *
+             * @param spr
+             * @param x
+             * @param y
+             * @param frame
+             */
+            static Ubin(spr, x = 0, y = 0, frame = 0) {
+                be.SprImg.gambarUbin(spr, x, y, frame);
+            }
+            /**
+             *
+             * @param spr
+             * @returns
+             */
+            static StatusMuat(spr) {
+                let hasil = true;
+                if (spr && spr) {
+                    return spr.load;
+                }
+                Spr.daftar.forEach((item) => {
+                    if (!item.load) {
+                        hasil = false;
+                    }
+                });
+                return hasil;
+            }
+        }
+        Spr.daftar = [];
+        be.Spr = Spr;
+    })(be = ha.be || (ha.be = {}));
+})(ha || (ha = {}));
 ///<reference path="./Route.ts"/>
+///<reference path="../spr/Sprite.ts"/>
+//operation
 const LoadImage = ha.be.Spr.Muat; //
-// const MuatAsync = ha.be.Spr.MuatAsync;
 const LoadAnimImage = ha.be.Spr.MuatAnimasi;
 const ResizeImage = ha.be.Spr.Ukuran;
 const DrawImage = ha.be.Spr.Gambar;
 const DrawImageXY = ha.be.Spr.GambarXY;
-const Handle = ha.be.Spr.Handle;
-const Rotation = ha.be.Spr.Rotasi;
 const Collide = ha.be.Spr.Tabrakan;
 const CollideXY = ha.be.Spr.TabrakanXY;
-const SpriteKontek = ha.be.Spr.kontek;
-const Width = ha.be.Spr.Panjang;
-const Height = ha.be.Spr.Lebar;
-const Tile = ha.be.Spr.Ubin;
-//next:
-const ImageLoaded = ha.be.Spr.Dimuat;
+const Tile = ha.be.Spr.Ubin; //TODO: diganti property
 const AllImageLoaded = ha.be.Spr.StatusMuat;
 const PositionImageXY = ha.be.Spr.Posisi;
 const PositionImagePolar = ha.be.Spr.posisiPolar;
 const DrawAllImage = ha.be.Spr.GambarSemua;
+const CopyImage = ha.be.Spr.Copy;
+//depecrated
+const SpriteKontek = ha.be.Spr.kontek;
+const Handle = ha.be.Spr.Handle;
+const Rotation = ha.be.Spr.Rotasi;
+const Width = ha.be.Spr.Panjang; //depecrated
+const Height = ha.be.Spr.Lebar; //depecrated
+const ImageLoaded = ha.be.Spr.Dimuat;
 const ImageXPosition = ha.be.Spr.PosisiX;
 const ImageYPosition = ha.be.Spr.PosisiY;
 const ImageAlpha = ha.be.Spr.Alpha;
 const ImageIsDragged = ha.be.Spr.StatusDrag;
-const CopyImage = ha.be.Spr.Copy;
 const ImageBound = ha.be.Spr.Bound;
+/**
+ * @memberof Image
+ *
+ * return Distance between 2 images
+ * @param s first Image
+ * @param s2 second Image
+ */
+function Dist2Image(s, s2) {
+    return Math.hypot(s.x - s2.x, s2.y - s.y);
+}
 ///<reference path="./Route.ts"/>
 // Shortcut buat perintah-perintah font
 const FontName = ha.be.Teks.Font;
 const FontSize = ha.be.Teks.FontSize;
 const Print = ha.be.Teks.Tulis;
 const Align = ha.be.Teks.Rata;
+var rpg;
+(function (rpg) {
+    class Conf {
+        constructor() {
+            this._npc = [];
+            this._trig = new Trig();
+        }
+        get roomUrl() {
+            return this._roomUrl;
+        }
+        set roomUrl(value) {
+            this._roomUrl = value;
+        }
+        get npc() {
+            return this._npc;
+        }
+        set npc(value) {
+            this._npc = value;
+        }
+        get trig() {
+            return this._trig;
+        }
+        set trig(value) {
+            this._trig = value;
+        }
+    }
+    class Trig {
+        constructor() {
+            this.p = new Point();
+            this._id = '';
+        }
+        get id() {
+            return this._id;
+        }
+        set id(value) {
+            this._id = value;
+        }
+        static baru(n) {
+            for (let i = 0; i < Trig.list.length; i++) {
+                let item = Trig.list[i];
+                if (item.id == n)
+                    return item;
+            }
+            return new Trig();
+        }
+        static buat(n, x, y) {
+            let t = Trig.baru(n);
+            t.id = n;
+            t.p.x = x;
+            t.p.y = y;
+        }
+    }
+    Trig.list = [];
+    class Point {
+        constructor() {
+            this._x = 0;
+            this._y = 0;
+        }
+        get x() {
+            return this._x;
+        }
+        set x(value) {
+            this._x = value;
+        }
+        get y() {
+            return this._y;
+        }
+        set y(value) {
+            this._y = value;
+        }
+    }
+    class NPC {
+        constructor() {
+            this._p = new Point();
+            this._url = '';
+            this._id = '';
+        }
+        static baru(n) {
+            for (let i = 0; i < NPC.list.length; i++) {
+                let item = NPC.list[i];
+                if (item.id == n)
+                    return item;
+            }
+            return new NPC();
+        }
+        static buat(n, url, x, y) {
+            let npc = NPC.baru(n);
+            npc.url = url;
+            npc.id = n;
+            npc.p.x = x;
+            npc.p.y = y;
+            return npc;
+        }
+        get id() {
+            return this._id;
+        }
+        set id(value) {
+            this._id = value;
+        }
+        get url() {
+            return this._url;
+        }
+        set url(value) {
+            this._url = value;
+        }
+        get p() {
+            return this._p;
+        }
+        set p(value) {
+            this._p = value;
+        }
+    }
+    NPC.list = [];
+    //task
+    rpg.conf = new Conf();
+})(rpg || (rpg = {}));
+var rpg;
+(function (rpg) {
+    function render() {
+    }
+    rpg.render = render;
+})(rpg || (rpg = {}));
+var ha;
+(function (ha) {
+    var be;
+    (function (be) {
+        class SprObj {
+            // //image wrapper
+            // public get x(): number {
+            // 	return this._buff.x;
+            // }
+            // public set x(value: number) {
+            // 	this._buff.x = value;
+            // }
+            // public get y(): number {
+            // 	return this._buff.y;
+            // }
+            // public set y(value: number) {
+            // 	this._buff.y = value;
+            // }
+            // public get panjang(): number {
+            // 	return this._buff.panjang;
+            // }
+            // public set panjang(value: number) {
+            // 	this._buff.panjang = value;
+            // }
+            // public get lebar(): number {
+            // 	return this._buff.lebar;
+            // }
+            // public set lebar(value: number) {
+            // 	this._buff.lebar = value;
+            // }
+            // public get alpha(): number {
+            // 	return this._buff.alpha;
+            // }
+            // public set alpha(value: number) {
+            // 	this._buff.alpha = value;
+            // }
+            //TODO: wrapper yang lain
+            //untuk memudahkan membuat perintah shortcut dan penyederhanaan
+            constructor(dragable = false) {
+                this.isAnim = false;
+                this.rect = new be.Kotak();
+                this.load = false;
+                this.ratioX = 1;
+                this.ratioY = 1;
+                this._panjangDiSet = false;
+                this._lebarDiSet = false;
+                this._ctrIdx = 0;
+                this._x = 0;
+                this._y = 0;
+                this._alpha = 100;
+                this._frameW = 32;
+                this._frameH = 32;
+                this._handleX = 0;
+                this._handleY = 0;
+                this._rotasi = 0;
+                this._panjang = 0;
+                this._lebar = 0;
+                //interaktif even
+                this._dragged = false;
+                this._down = false;
+                this._dragable = false;
+                this._hit = 0;
+                this._tipeDrag = 0;
+                this._dragSelesaiJml = 0;
+                //internal interatif
+                this._dragStartY = 0;
+                this._dragStartX = 0;
+                this._sudutTekanAwal = 0;
+                this._sudutAwal = 0;
+                this.dragable = dragable;
+            }
+            get sudutAwal() {
+                return this._sudutAwal;
+            }
+            set sudutAwal(value) {
+                this._sudutAwal = value;
+            }
+            get frameW() {
+                return this._frameW;
+            }
+            set frameW(value) {
+                this._frameW = value;
+            }
+            get frameH() {
+                return this._frameH;
+            }
+            set frameH(value) {
+                this._frameH = value;
+            }
+            get x() {
+                return this._x;
+            }
+            set x(value) {
+                this._x = value;
+            }
+            get y() {
+                return this._y;
+            }
+            set y(value) {
+                this._y = value;
+            }
+            get alpha() {
+                return this._alpha;
+            }
+            set alpha(value) {
+                this._alpha = value;
+            }
+            get handleY() {
+                return this._handleY;
+            }
+            set handleY(value) {
+                this._handleY = value;
+            }
+            get handleX() {
+                return this._handleX;
+            }
+            set handleX(value) {
+                this._handleX = value;
+            }
+            get panjang() {
+                return this._panjang;
+            }
+            set panjang(value) {
+                this._panjang = value;
+                this._panjangDiSet = true;
+            }
+            get lebar() {
+                return this._lebar;
+            }
+            set lebar(value) {
+                this._lebar = value;
+                this._lebarDiSet = true;
+            }
+            get panjangDiSet() {
+                return this._panjangDiSet;
+            }
+            set panjangDiSet(value) {
+                this._panjangDiSet = value;
+            }
+            get lebarDiSet() {
+                return this._lebarDiSet;
+            }
+            set lebarDiSet(value) {
+                this._lebarDiSet = value;
+            }
+            get ctrIdx() {
+                return this._ctrIdx;
+            }
+            set ctrIdx(value) {
+                this._ctrIdx = value;
+            }
+            get rotasi() {
+                return this._rotasi;
+            }
+            set rotasi(value) {
+                // console.debug('set value: ' + value);
+                this._rotasi = value;
+            }
+            get dragSelesaiJml() {
+                return this._dragSelesaiJml;
+            }
+            set dragSelesaiJml(value) {
+                this._dragSelesaiJml = value;
+            }
+            get drgStartX() {
+                return this._dragStartX;
+            }
+            set drgStartX(value) {
+                this._dragStartX = value;
+            }
+            get drgStartY() {
+                return this._dragStartY;
+            }
+            set drgStartY(value) {
+                this._dragStartY = value;
+            }
+            get dragged() {
+                return this._dragged;
+            }
+            set dragged(value) {
+                this._dragged = value;
+            }
+            // public get buff(): SprImgObj {
+            // 	return this._buff;
+            // }
+            // public set buff(value: SprImgObj) {
+            // 	this._buff = value;
+            // }
+            // public get x(): number {
+            // 	return this._x;
+            // }
+            // public set x(value: number) {
+            // 	this._x = value;
+            // }
+            // public get y(): number {
+            // 	return this._y;
+            // }
+            // public set y(value: number) {
+            // 	this._y = value;
+            // }
+            get jmlHit() {
+                return this._hit;
+            }
+            set jmlHit(value) {
+                this._hit = value;
+            }
+            get down() {
+                return this._down;
+            }
+            set down(value) {
+                this._down = value;
+            }
+            get dragable() {
+                return this._dragable;
+            }
+            set dragable(value) {
+                this._dragable = value;
+            }
+            get sudutTekanAwal() {
+                return this._sudutTekanAwal;
+            }
+            set sudutTekanAwal(value) {
+                this._sudutTekanAwal = value;
+            }
+            get tipeDrag() {
+                return this._tipeDrag;
+            }
+            set tipeDrag(value) {
+                this._tipeDrag = value;
+                if (value > 0) {
+                    this._dragable = true;
+                }
+                else {
+                    this._dragable = false;
+                }
+            }
+            get url() {
+                return this._url;
+            }
+            set url(value) {
+                this._url = value;
+            }
+            static get ctrDraw() {
+                return SprObj._ctrDraw;
+            }
+            static set ctrDraw(value) {
+                SprObj._ctrDraw = value;
+            }
+            get inputId() {
+                return this._inputId;
+            }
+            set inputId(value) {
+                this._inputId = value;
+            }
+        }
+        SprObj._ctrDraw = 0;
+        be.SprObj = SprObj;
+    })(be = ha.be || (ha.be = {}));
+})(ha || (ha = {}));
+var ha;
+(function (ha) {
+    var be;
+    (function (be) {
+        let TypeDrag;
+        (function (TypeDrag) {
+            TypeDrag[TypeDrag["drag"] = 1] = "drag";
+            TypeDrag[TypeDrag["rotasi"] = 2] = "rotasi";
+        })(TypeDrag || (TypeDrag = {}));
+        /**
+         * Handle interaksi sprite
+         */
+        class SpriteInteraksi {
+            spriteDown(s, pos, id) {
+                s.down = true;
+                s.drgStartX = pos.x - s.x;
+                s.drgStartY = pos.y - s.y;
+                s.inputId = id;
+                s.jmlHit++;
+                s.sudutTekanAwal = be.Transform.sudut(pos.x - s.x, pos.y - s.y);
+                s.sudutAwal = s.rotasi;
+                console.group('sprite down event handler');
+                console.log("sudut tekan awal", s.sudutTekanAwal);
+                console.log("sudut awal", s.sudutAwal);
+                console.groupEnd();
+            }
+            inputDown(pos, id) {
+                //sprite down
+                console.group('input down');
+                let lastIdx = -1;
+                let lastSprite = null;
+                for (let i = be.Spr.daftar.length - 1; i >= 0; i--) {
+                    let item;
+                    item = be.Spr.daftar[i];
+                    if (be.SprImg.dotDidalamGambar(item, item.x, item.y, pos.x, pos.y)) {
+                        if (item.ctrIdx > lastIdx) {
+                            lastIdx = item.ctrIdx;
+                            lastSprite = item;
+                        }
+                    }
+                    else {
+                        if (item.tipeDrag == 3 || item.tipeDrag == 4) {
+                            this.spriteDown(item, pos, id);
+                        }
+                    }
+                }
+                //
+                if (lastSprite) {
+                    this.spriteDown(lastSprite, pos, id);
+                    // lastSprite.down = true;
+                    // lastSprite.dragStartX = pos.x - lastSprite.x;
+                    // lastSprite.dragStartY = pos.y - lastSprite.y;
+                    // lastSprite.inputId = id;
+                    // lastSprite.jmlHit++;
+                    // lastSprite.sudutTekanAwal = Transform.sudut(pos.x - lastSprite.x, pos.y - lastSprite.y);
+                    // lastSprite.sudutAwal = lastSprite.buff.rotasi;
+                }
+                //
+                console.groupEnd();
+            }
+            inputMove(pos, pointerId) {
+                be.Spr.daftar.forEach((item) => {
+                    if (item.down && item.dragable && (item.inputId == pointerId)) {
+                        item.dragged = true;
+                        if (item.tipeDrag == TypeDrag.drag || (item.tipeDrag == 3)) {
+                            item.x = pos.x - item.drgStartX;
+                            item.y = pos.y - item.drgStartY;
+                            console.debug('item drag move');
+                        }
+                        else if (item.tipeDrag == TypeDrag.rotasi || (item.tipeDrag == 4)) {
+                            let sudut2 = be.Transform.sudut(pos.x - item.x, pos.y - item.y);
+                            let perbedaan = sudut2 - item.sudutTekanAwal;
+                            item.rotasi = item.sudutAwal + perbedaan;
+                            console.group();
+                            console.log("sudut", sudut2);
+                            console.log("beda", perbedaan);
+                            console.log("sudut tekan awal", item.sudutTekanAwal);
+                            console.log("sudut awal", item.sudutAwal);
+                            console.log("rotasi", item.rotasi);
+                            console.log("posisi", item.x, item.y);
+                            console.groupEnd();
+                        }
+                        else {
+                            //TODO:
+                        }
+                    }
+                });
+            }
+            inputUp() {
+                be.Spr.daftar.forEach((item) => {
+                    if (item.down) {
+                        // item.hit++;
+                    }
+                    if (item.dragged) {
+                        console.log('input up: item rotasi ' + item.rotasi);
+                    }
+                    item.down = false;
+                    item.dragged = false;
+                });
+            }
+        }
+        be.sprInteraksi = new SpriteInteraksi();
+    })(be = ha.be || (ha.be = {}));
+})(ha || (ha = {}));
+var ha;
+(function (ha) {
+    var be;
+    (function (be) {
+        //Fungsi untuk pergerakan sprite
+        class Spr3 {
+            static gerakX(s, n) {
+                s.x += n;
+            }
+            static gerakY(s, n) {
+                s.y += n;
+            }
+            static gerakXY(s, x, y) {
+                s.x += x;
+                s.y += y;
+            }
+            static gerakSudut(s, n, sudut) {
+                sudut *= Math.PI / 180;
+                ha.be.Spr3.gerakX(s, n * Math.cos(sudut));
+                ha.be.Spr3.gerakY(s, n * Math.sin(sudut));
+            }
+            static gerakPutar(s, sudut, sx, sy) {
+                be.Transform.rotateRel(s.x, s.y, sx, sy, sudut);
+                s.x += be.Transform.lastX;
+                s.y += be.Transform.lastY;
+            }
+            static menjauh(s, x, y, jml) {
+                let sudut = be.Transform.sudut(s.x - x, s.y - y);
+                Spr3.gerakSudut(s, jml, sudut);
+            }
+            static mendekat(s, x, y, jml) {
+                let sudut = be.Transform.sudut(x - s.x, y - s.y);
+                Spr3.gerakSudut(s, jml, sudut);
+            }
+        }
+        be.Spr3 = Spr3;
+    })(be = ha.be || (ha.be = {}));
+})(ha || (ha = {}));
