@@ -5,37 +5,35 @@
 		content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, target-densityDpi=device-dpi">
 
 	<style>
-		img {
-			width: 100%;
-			display: block;
-			margin: 8px;
-			margin-bottom: 32px;
-		}
-
 		html,
-		body {
-			box-sizing: border-box;
+		body,
+		div {
+			padding: 0px;
 			margin: 0px;
+			box-sizing: border-box;
 		}
 
 		body {
-			padding: 16px;
+			padding: 32px;
+		}
+
+		.img-cont {
+			overflow-y: auto;
+		}
+
+		.img-cont img {
+			width: 100%;
 		}
 	</style>
 </head>
 
 <body>
-	<img src="./doa.png" />
-	<img src="./doa2.png" />
-	<img src="./doa3.png" />
-	<img src="./doa4.png" />
-	<img src="./doa5.png" />
-	<img src="./doa6.png" />
-	<img src="./doa7.png" />
-	<img src="./doa8.png" />
-	<img src="./doa9.png" />
-	<img src="./doa10.png" />
-	<img src="./doa11.png" />
+	<div class="cont">
+		<div class="img-cont">
+			<img src="" />
+		</div>
+	</div>
+	<script src="index.js"></script>
 </body>
 
 </html>
