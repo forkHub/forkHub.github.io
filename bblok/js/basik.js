@@ -727,11 +727,24 @@ var Basik;
 var Basik;
 (function (Basik) {
     class Point {
+        constructor(x = 0, y = 0) {
+            this.x = x;
+            this.y = y;
+        }
+        get x() {
+            return this._x;
+        }
+        set x(value) {
+            this._x = value;
+        }
+        get y() {
+            return this._y;
+        }
+        set y(value) {
+            this._y = value;
+        }
         static create(x = 0, y = 0) {
-            return {
-                x: x,
-                y: y
-            };
+            return new Point(x, y);
         }
         static copy(p1, p2) {
             p2.x = p1.x;
@@ -783,11 +796,24 @@ var Basik;
 var Basik;
 (function (Basik) {
     class Segment {
-        static create(v1 = { x: 0, y: 0 }, v2 = { x: 0, y: 0 }) {
-            return {
-                v1: v1,
-                v2: v2
-            };
+        constructor(A = new Basik.Point(), B = new Basik.Point()) {
+            this.A = A;
+            this.B = B;
+        }
+        get A() {
+            return this._A;
+        }
+        set A(value) {
+            this._A = value;
+        }
+        get B() {
+            return this._B;
+        }
+        set B(value) {
+            this._B = value;
+        }
+        static create(v1 = new Basik.Point(), v2 = new Basik.Point()) {
+            return new Segment(v1, v2);
         }
         static boundCollide(seg1, seg2) {
             if (Segment.maxX(seg1) < Segment.minX(seg2))
@@ -807,12 +833,12 @@ var Basik;
             let seg2Copy = Segment.clone(seg2);
             let seg1Copy = Segment.clone(seg1);
             let deg = Segment.deg(seg2);
-            Segment.rotate(seg2Copy, -deg, seg2.v1.x, seg2.v1.y);
-            Segment.rotate(seg1Copy, -deg, seg2.v1.x, seg2.v1.y);
+            Segment.rotate(seg2Copy, -deg, seg2.A.x, seg2.A.y);
+            Segment.rotate(seg1Copy, -deg, seg2.A.x, seg2.A.y);
             if (!Segment.boundCollide(seg1Copy, seg2Copy))
                 return false;
-            Segment.translate(seg1Copy, -seg2.v1.x, -seg2.v1.y);
-            Segment.translate(seg2Copy, -seg2.v1.x, -seg2.v1.y);
+            Segment.translate(seg1Copy, -seg2.A.x, -seg2.A.y);
+            Segment.translate(seg2Copy, -seg2.A.x, -seg2.A.y);
             if (!Segment.crossHor(seg1Copy)) {
                 return false;
             }
@@ -825,14 +851,11 @@ var Basik;
             return true;
         }
         static copy(seg1, seg2) {
-            Basik.Point.copy(seg1.v1, seg2.v2);
-            Basik.Point.copy(seg1.v2, seg2.v2);
+            Basik.Point.copy(seg1.A, seg2.B);
+            Basik.Point.copy(seg1.B, seg2.B);
         }
         static clone(seg) {
-            return {
-                v1: Basik.Point.clone(seg.v1),
-                v2: Basik.Point.clone(seg.v2)
-            };
+            return new Segment(Basik.Point.clone(seg.A), Basik.Point.clone(seg.B));
         }
         static crossHor(seg) {
             if (Segment.maxY(seg) > 0) {
@@ -843,49 +866,49 @@ var Basik;
             return false;
         }
         static deg(line) {
-            let j = line.v2.y - line.v1.y;
-            let i = line.v2.x - line.v1.x;
+            let j = line.B.y - line.A.y;
+            let i = line.B.x - line.A.x;
             return Basik.Transform.sudut(i, j);
         }
         static getXAtIdx(seg, idx) {
-            return seg.v1.x + (idx * Segment.vecI(seg));
+            return seg.A.x + (idx * Segment.vecI(seg));
         }
         static getYAtIdx(seg, idx) {
-            return seg.v1.y + (idx * Segment.vecJ(seg));
+            return seg.A.y + (idx * Segment.vecJ(seg));
         }
         static vecI(seg) {
-            return seg.v2.x - seg.v1.x;
+            return seg.B.x - seg.A.x;
         }
         static vecJ(seg) {
-            return seg.v2.y - seg.v1.y;
+            return seg.B.y - seg.A.y;
         }
         static rotate(seg, deg = 0, xc = 0, yc = 0) {
-            Basik.Point.putarPoros(seg.v1, xc, yc, deg);
-            Basik.Point.putarPoros(seg.v2, xc, yc, deg);
+            Basik.Point.putarPoros(seg.A, xc, yc, deg);
+            Basik.Point.putarPoros(seg.B, xc, yc, deg);
         }
         static minX(seg) {
-            return Math.min(seg.v1.x, seg.v2.x);
+            return Math.min(seg.A.x, seg.B.x);
         }
         static maxX(seg) {
-            return Math.max(seg.v1.x, seg.v2.x);
+            return Math.max(seg.A.x, seg.B.x);
         }
         static minY(seg) {
-            return Math.min(seg.v1.y, seg.v2.y);
+            return Math.min(seg.A.y, seg.B.y);
         }
         static maxY(seg) {
-            return Math.max(seg.v1.y, seg.v2.y);
+            return Math.max(seg.A.y, seg.B.y);
         }
         static translate(seg, x = 0, y = 0) {
-            seg.v1.x += x;
-            seg.v1.y += y;
-            seg.v2.x += x;
-            seg.v2.y += y;
+            seg.A.x += x;
+            seg.A.y += y;
+            seg.B.x += x;
+            seg.B.y += y;
         }
         static xHorIdx(seg) {
             if (!Segment.crossHor(seg))
                 return NaN;
             let idx = 0;
-            idx = (0 - seg.v1.y) / (seg.v2.y - seg.v1.y);
+            idx = (0 - seg.A.y) / (seg.B.y - seg.A.y);
             return idx;
         }
     }
@@ -894,14 +917,16 @@ var Basik;
 var Basik;
 (function (Basik) {
     class Kotak {
+        constructor() {
+            this.vs = [];
+            this.segs = [];
+        }
         static buat(x1 = 0, y1 = 0, x2 = 0, y2 = 0) {
-            let r = {};
-            r.vs = [];
+            let r = new Kotak();
             r.vs.push(Basik.Point.create(x1, y1));
             r.vs.push(Basik.Point.create(x2, y1));
             r.vs.push(Basik.Point.create(x2, y2));
             r.vs.push(Basik.Point.create(x1, y2));
-            r.segs = [];
             r.segs.push(Basik.Segment.create(r.vs[0], r.vs[1]));
             r.segs.push(Basik.Segment.create(r.vs[1], r.vs[2]));
             r.segs.push(Basik.Segment.create(r.vs[2], r.vs[3]));
@@ -1295,6 +1320,21 @@ const SoundLoaded = ha.be.Sound.SoundLoaded;
 var Basik;
 (function (Basik) {
     class ImgImpl {
+        static CreateImage(width, height) {
+            let h = new Basik.ImageObj();
+            h.canvas = document.createElement('canvas');
+            h.canvas.width = width;
+            h.canvas.height = height;
+            h.ctx = h.canvas.getContext('2d');
+            h.frameH = height;
+            h.frameW = width;
+            h.panjangDiSet = true;
+            h.lebarDiSet = true;
+            h.load = true;
+            h.img = document.createElement('img');
+            ImgImpl.register(h, h.dragable, h.url, h.tipeDrag);
+            return h;
+        }
         static MuatAnimasi(url, pf, lf, bisaDiDrag = false, tipeDrag = 0) {
             let img = ImgImpl.muatAnimAsync(url, pf, lf);
             return ImgImpl.register(img, bisaDiDrag, url, tipeDrag);
@@ -1716,6 +1756,9 @@ var Basik;
 var Basik;
 (function (Basik) {
     class Image {
+        static CreateImage(width, height) {
+            return Basik.ImgImpl.CreateImage(width, height);
+        }
         static Copy(s, onload) {
             if (!onload) {
                 onload = () => { };
@@ -1738,8 +1781,8 @@ var Basik;
         static LoadAnim(url, fw, fh, dragable = false, dragType = 0) {
             return Basik.ImgImpl.MuatAnimasi(url, fw, fh, dragable, dragType);
         }
-        static Load(url, dragable = false, dragType = 0, onload) {
-            return Basik.ImgImpl.Muat(url, dragable, dragType, onload);
+        static Load(url, dragable = false, dragType = 0) {
+            return Basik.ImgImpl.Muat(url, dragable, dragType, () => { });
         }
         static Draw(img, frame) {
             Basik.ImgImpl.gambar(img, img.x, img.y, frame);
