@@ -1,7 +1,7 @@
 "use strict";
 window.onload = () => {
     Graphics(320, 240);
-    char = LoadAnimImage("./imgs/box.png", 32, 32);
+    char = LoadAnimImage("https://forkhub.github.io/basik/demo/platform/imgs/box.png", 32, 32);
     char.frame = 3;
     char.x = 32;
     char.y = 32;
@@ -23,7 +23,7 @@ window.onload = () => {
     for (let row = 0; row < data.length; row++) {
         for (let col = 0; col < data[row].length; col++) {
             if (data[row].charAt(col) != ' ') {
-                let t = LoadAnimImage("./imgs/Box.png", 32, 32);
+                let t = LoadAnimImage("https://forkhub.github.io/basik/demo/platform/imgs/box.png", 32, 32);
                 t.x = col * 32;
                 t.y = row * 32;
                 tiles.push(t);
