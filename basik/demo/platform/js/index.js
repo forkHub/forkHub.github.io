@@ -45,17 +45,13 @@ window.onload = () => {
         else {
             resolveUp();
         }
-        if (KeyboardDown("ArrowRight")) {
-            char.x += velX;
-            if (CollideMap()) {
-                char.x = collidedTile.x - 32;
-            }
-        }
-        if (KeyboardDown("ArrowLeft")) {
-            char.x -= velX;
-            if (CollideMap())
-                char.x = collidedTile.x + 32;
-        }
+		
+		let sign = KeyboardDown("ArrowRight") - KeyboardDown("ArrowLeft");
+		char.x += velX * sign;
+		if (CollideMap()) {
+			char.x = collidedTile.x - 32 * sign;
+		}
+				
         if (KeyboardDown('ArrowUp')) {
             if (onFloor) {
                 velY = -4;
