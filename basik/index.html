@@ -1,85 +1,119 @@
-<html>
-
+<!DOCTYPE html>
+<html lang="id">
 <head>
-	<link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
-	<link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
-	<style>
-		hr {
-			margin-top: 24px;
-			display: block;
-		}
-
-		ul {
-			margin-left: 16px;
-		}
-
-		body {
-			margin: 32px;
-			font-size: 16px;
-		}
-	</style>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>BASIK - Template JavaScript</title>
+  <style>
+    :root {
+      --primary: #2c3e50;
+      --accent: #3498db;
+      --bg: #f4f6f8;
+      --text: #333;
+    }
+    body {
+      margin: 0;
+      font-family: 'Segoe UI', sans-serif;
+      background-color: var(--bg);
+      color: var(--text);
+    }
+    header {
+      background-color: var(--primary);
+      color: white;
+      padding: 1.5rem;
+      text-align: center;
+    }
+    header h1 {
+      margin: 0;
+      font-size: 2rem;
+    }
+    main {
+      max-width: 900px;
+      margin: auto;
+      padding: 2rem;
+    }
+    section {
+      margin-bottom: 2rem;
+      background: white;
+      padding: 1.5rem;
+      border-radius: 8px;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+    }
+    section h2 {
+      color: var(--accent);
+      margin-top: 0;
+    }
+    ul {
+      padding-left: 1.2rem;
+    }
+    ul li {
+      margin-bottom: 0.5rem;
+    }
+    a.button {
+      display: inline-block;
+      background-color: var(--accent);
+      color: white;
+      padding: 0.75rem 1.5rem;
+      border-radius: 6px;
+      text-decoration: none;
+      font-weight: bold;
+      transition: background 0.3s;
+    }
+    a.button:hover {
+      background-color: #2980b9;
+    }
+    footer {
+      text-align: center;
+      padding: 1rem;
+      font-size: 0.9rem;
+      color: #777;
+    }
+    @media (max-width: 600px) {
+      header h1 {
+        font-size: 1.5rem;
+      }
+      main {
+        padding: 1rem;
+      }
+      section {
+        padding: 1rem;
+      }
+    }
+  </style>
 </head>
-
 <body>
-	<h1><strong>BASIK</strong></h1>
-	<p>
-		BASIK adalah sebuah template JavaScript yang dirancang khusus untuk memudahkan pembuatan aplikasi berbasis
-		kanvas.<br />
-		Template ini ditujukan sebagai pengantar dalam pembelajaran bahasa pemrograman JavaScript, terutama bagi pemula.
-	</p>
-	<hr />
-	<h3>🚀 Desain BASIK disusun dengan prinsip-prinsip berikut:</h3>
-	<p>
-		✅ <strong>Perintah yang Disederhanakan:</strong> Semua perintah dalam BASIK memiliki bentuk yang sederhana
-		dan struktur
-		prosedural. Pendekatan ini menghindari konsep-konsep kompleks seperti dot-notation, class, closure, dan
-		lainnya,
-		agar lebih mudah dipelajari dan digunakan sebagai pengenalan terhadap pemrograman.
-	</p>
+  <header>
+    <h1>BASIK - Belajar koding untuk pemula</h1>
+  </header>
+  <main>
+    <section>
+      <h2>✨ Tentang BASIK</h2>
+      <p>BASIK adalah template JavaScript berbasis kanvas yang dirancang untuk memudahkan pembelajaran pemrograman bagi pemula.</p>
+    </section>
 
-	<p>
-		⚡ <strong>Umpan Balik Langsung:</strong> Setiap perintah dapat langsung menampilkan hasilnya. Hal ini
-		memungkinkan siswa
-		untuk
-		fokus pada penyusunan logika dan pemecahan masalah tanpa hambatan teknis.
-	</p>
+    <section>
+      <h2>🔧 Prinsip Desain</h2>
+      <ul>
+        <li>✅ Perintah yang disederhanakan</li>
+        <li>📐 Tanpa install server</li>
+        <li>🔥 Memancing kreatifitas</li>
+        <li>⚡ Umpan balik langsung</li>
+        <li>🧠 Fungsi bawaan siap pakai</li>
+        <li>📦 Struktur proyek siap digunakan</li>
+        <li>🎨 Contoh yang variatif</li>
+        <li>🌐 Dapat digunakan secara luring/daring</li>
+        <li>📱 Jalan di mobile ataupun desktop</li>
+      </ul>
+    </section>
 
-	<p>🧰 <strong>Fungsi Bawaan Siap Pakai:</strong> BASIK menyediakan berbagai perintah bawaan yang dapat langsung
-		digunakan.
-		Dengan
-		ini, siswa dapat berkreasi dan mengembangkan kreativitas, imajinasi sambil belajar.
-	</p>
-
-	<p>📦 <strong>Struktur Proyek yang Siap Digunakan:</strong> BASIK memiliki struktur proyek yang siap pakai,
-		sehingga memudahkan
-		siswa untuk memulai proyek, mengumpulkan tugas, atau membagikan hasil karya mereka kepada teman atau kepada
-		yang
-		lain.
-	</p>
-
-
-	<p>🎨 <strong>Contoh yang Variatif: </strong>Disediakan berbagai contoh yang dapat dijadikan bahan pembelajaran
-		dan inspirasi
-		untuk
-		mendorong kreativitas siswa.
-	</p>
-
-	<p>🌐 <strong>Dapat Digunakan Secara Luring: </strong>BASIK dapat dijalankan tanpa koneksi internet. Hasilnya
-		langsung dapat
-		dilihat
-		melalui browser tanpa perlu menginstal server atau infrastruktur tambahan.
-	</p>
-
-
-	<p>📱 <strong>Adaptif untuk Berbagai Perangkat: </strong>Aplikasi yang dibuat dengan BASIK dapat dijalankan
-		baik di perangkat
-		desktop maupun di ponsel secara langsung.
-	</p>
-
-	<hr />
-	<h3>💾 Download</h3>
-	<a href="https://drive.google.com/file/d/1gvmdHIlSGrEY8Lcib07nicvfFcEveixO/view?usp=sharing">klik untuk
-		mendownload</a><br />
+    <section>
+      <h2>💾 Download</h2>
+      <p>Unduh template BASIK dan mulai belajar:</p>
+      <a class="button" href="https://drive.google.com/file/d/1gvmdHIlSGrEY8Lcib07nicvfFcEveixO/view?usp=sharing" target="_blank">Download BASIK</a>
+    </section>
+  </main>
+  <footer>
+    &copy; 2025 BASIK | Dibuat untuk pembelajaran JavaScript
+  </footer>
 </body>
-
 </html>
