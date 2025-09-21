@@ -1,0 +1,66 @@
+<html>
+
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0,
+        target-densityDpi=device-dpi">
+    <title>Basik Blok</title>
+    <style>
+        canvas {
+            image-rendering: pixelated;
+        }
+    </style>
+</head>
+
+<body>
+    <canvas></canvas>
+
+    <script src="./js/blitz.js"></script>
+    <script src="./js/bblok.js"></script>
+
+    <!-- main  -->
+    <script>
+
+        "use strict";
+        window.onload = () => {
+            console.log('start');
+            var image;
+
+
+
+            /*🛩️ Start %1 width: %2 height: %3 %4*/
+            Graphics(320, 240,);
+            image = (LoadImage('./imgs/box.png'));
+
+            ;
+
+
+            /*⏱️ update %1 %2 %3*/
+            function _update() {
+                /*Cls*/
+                Cls();
+
+                /*DrawImage: %4 image %1 x: %2 y: %3*/
+                DrawImageXY(image, 120, 100,);
+            };
+
+            let __update; // = update || Update || UPDATE as any;
+            if (typeof _update === "function")
+                __update = _update;
+            console.log(__update);
+            let __updater = () => {
+                if (__update) {
+                    __update();
+                }
+                requestAnimationFrame(__updater);
+            };
+            requestAnimationFrame(__updater);
+        };
+
+    </script>
+
+
+
+</body>
+
+</html>
