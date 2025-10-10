@@ -1,6 +1,9 @@
 @media (max-width: 1200px) {}
 
-@media (max-width: 992px) {
+@media (max-width: 992px) {}
+
+/* Responsif untuk layar kecil */
+@media (max-width: 768px) {
 	.menu-toggle {
 		display: block;
 	}
@@ -20,11 +23,7 @@
 	.nav-links.show {
 		display: flex;
 	}
-
 }
-
-/* Responsif untuk layar kecil */
-@media (max-width: 768px) {}
 
 @media (max-width: 576px) {
 	/* .menu-toggle {

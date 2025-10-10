@@ -26,11 +26,35 @@ ul {
 	color: #333;
 }
 
+.section.hero {
+	background-image: url('./gbr/back_gedung.png');
+	background-size: cover;
+	height: 100vh;
+}
+
+.video {
+	max-width: 80%;
+}
+
+img.logo {
+	max-width: 128px;
+	margin-bottom: 16px;
+}
 
 .hero {
 	background: linear-gradient(to right, #005baa, #0077cc);
 	color: white;
+	color: black;
 }
+
+.hero .hero-cont {
+	background-color: rgba(255, 255, 255, .5);
+	border-radius: 25px;
+	padding: 16px;
+	max-width: 768px;
+	margin: auto;
+}
+
 
 .cards {
 	display: flex;
