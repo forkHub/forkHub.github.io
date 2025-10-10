@@ -1,37 +1,58 @@
-  const sections = document.querySelectorAll("section");
-  const navLinks = document.querySelectorAll("#main-nav a");
 
-  window.addEventListener("scroll", () => {
-    let current = "";
-    sections.forEach(section => {
-      const sectionTop = section.offsetTop - 70;
-      if (pageYOffset >= sectionTop) {
-        current = section.getAttribute("id");
-      }
-    });
+{/* <script> */ }
+const toggle = document.querySelector('.menu-toggle');
+const navLinks = document.querySelector('.nav-links');
+const links = document.querySelectorAll('.nav-links a');
+const sections = document.querySelectorAll('section');
 
-    navLinks.forEach(link => {
-      link.classList.remove("active");
-      if (link.getAttribute("href") === "#" + current) {
-        link.classList.add("active");
-      }
-    });
-  });
+// Toggle menu mobile
+toggle.addEventListener('click', () => {
+	navLinks.classList.toggle('show');
+});
 
-  const backToTopBtn = document.getElementById("backToTop");
+// Highlight menu aktif saat scroll
+window.addEventListener('scroll', () => {
+	let current = '';
+	sections.forEach(section => {
+		const sectionTop = section.offsetTop - 100;
+		if (pageYOffset >= sectionTop) {
+			current = section.getAttribute('id');
+		}
+	});
 
-  window.addEventListener("scroll", () => {
-    if (document.documentElement.scrollTop > 300) {
-      backToTopBtn.style.display = "block";
-    } else {
-      backToTopBtn.style.display = "none";
-    }
-  });
+	links.forEach(link => {
+		link.classList.remove('active');
+		if (link.getAttribute('href') === '#' + current) {
+			link.classList.add('active');
+		}
+	});
+});
+// </script>
 
-  backToTopBtn.addEventListener("click", () => {
-    window.scrollTo({
-      top: 0,
-      behavior: "smooth"
-    });
-  });
+function initModal() {
+	// <script>
+	const thumbnails = document.querySelectorAll('.thumbnail');
+	const modal = document.getElementById('modal');
+	const modalImg = document.getElementById('modal-img');
+	const closeBtn = document.querySelector('.close');
 
+	thumbnails.forEach(img => {
+		img.addEventListener('click', () => {
+			modal.style.display = 'block';
+			modalImg.src = img.dataset.full;
+			modalImg.alt = img.alt;
+		});
+	});
+
+	closeBtn.addEventListener('click', () => {
+		modal.style.display = 'none';
+	});
+
+	window.addEventListener('click', (e) => {
+		if (e.target === modal) {
+			modal.style.display = 'none';
+		}
+	});
+	// </script>
+}
+initModal();

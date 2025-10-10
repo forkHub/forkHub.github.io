@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html lang="id">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>Sekolah Cahaya Bangsa — Pendidikan Berkarakter</title>
+    <meta
+      name="description"
+      content="Sekolah Cahaya Bangsa: Kurikulum terintegrasi, fasilitas modern, pembinaan karakter Islami. Daftar sekarang."
+    />
+    <link rel="stylesheet" href="styles2.css" />
+  </head>
+  <body>
+    <a class="skip-link" href="#main">Lewati ke konten utama</a>
+
+    <header class="site-header">
+      <div class="container header-inner">
+        <a class="brand" href="/">
+          <img
+            src="logo-placeholder.svg"
+            alt="Logo Sekolah Cahaya Bangsa"
+            width="48"
+            height="48"
+          />
+          <span class="brand-name">Sekolah Cahaya Bangsa</span>
+        </a>
+
+        <button
+          class="nav-toggle"
+          aria-expanded="false"
+          aria-controls="site-nav"
+          aria-label="Buka menu"
+        >
+          ☰
+        </button>
+
+        <nav id="site-nav" class="site-nav" aria-label="Navigasi utama">
+          <ul>
+            <li><a href="#about">Tentang</a></li>
+            <li><a href="#programs">Program</a></li>
+            <li><a href="#fasilitas">Fasilitas</a></li>
+            <li><a href="#pendaftaran">Pendaftaran</a></li>
+            <li><a href="#kontak">Kontak</a></li>
+          </ul>
+        </nav>
+      </div>
+    </header>
+
+    <main id="main">
+      <section class="hero" aria-labelledby="hero-title">
+        <div class="container hero-grid">
+          <div class="hero-content">
+            <h1 id="hero-title">Pendidikan Berkarakter dari TK sampai SMA</h1>
+            <p class="lead">
+              Kurikulum terintegrasi, fasilitas modern, dan pembinaan karakter
+              Islami untuk menghasilkan generasi cakap, berakhlak, dan kreatif.
+            </p>
+
+            <div class="hero-ctas">
+              <a class="btn btn-primary" href="#pendaftaran">Daftar Sekarang</a>
+              <a
+                class="btn btn-outline"
+                href="https://wa.me/6281234567890"
+                aria-label="Chat via WhatsApp"
+                >Chat WA</a
+              >
+            </div>
+
+            <ul class="hero-badges" aria-hidden="true">
+              <li>Akreditasi A</li>
+              <li>Rasio guru:siswa 1:15</li>
+              <li>Fasilitas olahraga & laboratorium</li>
+            </ul>
+          </div>
+
+          <div class="hero-media">
+            <img
+              src="hero-photo-placeholder.jpg"
+              alt="Siswa sedang belajar di kelas"
+              loading="lazy"
+              width="720"
+              height="480"
+            />
+          </div>
+        </div>
+      </section>
+
+      <section id="about" class="section container">
+        <h2>Tentang Kami</h2>
+        <p>
+          Ringkasan 2–3 kalimat yang menjelaskan identitas dan keunggulan
+          sekolah. Gunakan poin pendek untuk menonjolkan nilai unik.
+        </p>
+      </section>
+
+      <section id="programs" class="section container">
+        <h2>Program Pendidikan</h2>
+        <div class="card-grid">
+          <article class="card">
+            <h3>TK & PAUD</h3>
+            <p class="card-lead">Pembelajaran bermain berbasis karakter.</p>
+          </article>
+
+          <article class="card">
+            <h3>SD</h3>
+            <p class="card-lead">Dasar akademik kuat dan pengembangan nilai.</p>
+          </article>
+
+          <article class="card">
+            <h3>SMP & SMA</h3>
+            <p class="card-lead">
+              Persiapan akademik dan kehidupan bermasyarakat.
+            </p>
+          </article>
+        </div>
+      </section>
+
+      <section id="fasilitas" class="section container">
+        <h2>Fasilitas</h2>
+        <div class="card-grid small">
+          <div class="card">Laboratorium IPA</div>
+          <div class="card">Perpustakaan Digital</div>
+          <div class="card">Lapangan Olahraga</div>
+          <div class="card">Aula Serbaguna</div>
+        </div>
+      </section>
+
+      <section id="pendaftaran" class="section container">
+        <h2>Pendaftaran</h2>
+        <p>
+          Isi form singkat untuk pendaftaran awal. Form lengkap dikirim setelah
+          verifikasi admin.
+        </p>
+        <button class="btn btn-primary" id="open-form">
+          Isi Formulir Singkat
+        </button>
+      </section>
+
+      <section id="kontak" class="section container">
+        <h2>Kontak</h2>
+        <address>
+          <p><strong>Alamat:</strong> Jl. Contoh No.1, Jakarta</p>
+          <p>
+            <strong>Telepon:</strong>
+            <a href="tel:+622112345678">(+62) 21 1234 5678</a>
+          </p>
+          <p>
+            <strong>Email:</strong>
+            <a href="mailto:info@sekolahcahaya.id">info@sekolahcahaya.id</a>
+          </p>
+          <p>
+            <strong>WhatsApp:</strong>
+            <a href="https://wa.me/6281234567890">Chat WA</a>
+          </p>
+        </address>
+      </section>
+    </main>
+
+    <footer class="site-footer">
+      <div class="container">
+        <p>
+          © <span id="year"></span> Sekolah Cahaya Bangsa. Semua hak dilindungi.
+        </p>
+      </div>
+    </footer>
+
+    <!-- Modal form (hidden) -->
+    <div
+      id="modal"
+      class="modal"
+      role="dialog"
+      aria-modal="true"
+      aria-hidden="true"
+      aria-labelledby="modal-title"
+    >
+      <div class="modal-panel">
+        <button class="modal-close" aria-label="Tutup formulir">✕</button>
+        <h3 id="modal-title">Formulir Pendaftaran Singkat</h3>
+        <form id="quick-form" novalidate>
+          <label>
+            Nama lengkap
+            <input name="name" type="text" required />
+          </label>
+          <label>
+            No. WhatsApp
+            <input name="phone" type="tel" required pattern="^\+?\d{9,15}$" />
+          </label>
+          <label>
+            Anak/Tingkat
+            <select name="level" required>
+              <option value="">Pilih</option>
+              <option>TK</option>
+              <option>SD</option>
+              <option>SMP</option>
+              <option>SMA</option>
+            </select>
+          </label>
+          <div class="form-actions">
+            <button type="submit" class="btn btn-primary">Kirim</button>
+            <button type="button" class="btn btn-outline modal-close">
+              Batal
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+
+    <script src="script2.js" defer></script>
+  </body>
+</html>
