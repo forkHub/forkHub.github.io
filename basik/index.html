@@ -1,126 +1,164 @@
 <!DOCTYPE html>
 <html lang="id">
+
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>BASIK - Template JavaScript</title>
-  <style>
-    :root {
-      --primary: #2c3e50;
-      --accent: #3498db;
-      --bg: #f4f6f8;
-      --text: #333;
-    }
-    body {
-      margin: 0;
-      font-family: 'Segoe UI', sans-serif;
-      background-color: var(--bg);
-      color: var(--text);
-    }
-    header {
-      background-color: var(--primary);
-      color: white;
-      padding: 1.5rem;
-      text-align: center;
-    }
-    header h1 {
-      margin: 0;
-      font-size: 2rem;
-    }
-    main {
-      max-width: 900px;
-      margin: auto;
-      padding: 2rem;
-    }
-    section {
-      margin-bottom: 2rem;
-      background: white;
-      padding: 1.5rem;
-      border-radius: 8px;
-      box-shadow: 0 2px 6px rgba(0,0,0,0.1);
-    }
-    section h2 {
-      color: var(--accent);
-      margin-top: 0;
-    }
-    ul {
-      padding-left: 1.2rem;
-    }
-    ul li {
-      margin-bottom: 0.5rem;
-    }
-    a.button {
-      display: inline-block;
-      background-color: var(--accent);
-      color: white;
-      padding: 0.75rem 1.5rem;
-      border-radius: 6px;
-      text-decoration: none;
-      font-weight: bold;
-      transition: background 0.3s;
-    }
-    a.button:hover {
-      background-color: #2980b9;
-    }
-    footer {
-      text-align: center;
-      padding: 1rem;
-      font-size: 0.9rem;
-      color: #777;
-    }
-    @media (max-width: 600px) {
-      header h1 {
-        font-size: 1.5rem;
-      }
-      main {
-        padding: 1rem;
-      }
-      section {
-        padding: 1rem;
-      }
-    }
-  </style>
+	<meta charset="UTF-8" />
+	<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+	<title>BASIK - Template JavaScript</title>
+	<style>
+		:root {
+			--primary: #2c3e50;
+			--accent: #3498db;
+			--bg: #f4f6f8;
+			--text: #333;
+		}
+
+		body {
+			margin: 0;
+			font-family: 'Segoe UI', sans-serif;
+			background-color: var(--bg);
+			color: var(--text);
+		}
+
+		header {
+			background-color: var(--primary);
+			color: white;
+			padding: 1.5rem;
+			text-align: center;
+		}
+
+		header h1 {
+			margin: 0;
+			font-size: 2rem;
+		}
+
+		main {
+			max-width: 900px;
+			margin: auto;
+			padding: 2rem;
+		}
+
+		section {
+			margin-bottom: 2rem;
+			background: white;
+			padding: 1.5rem;
+			border-radius: 8px;
+			box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+		}
+
+		section h2 {
+			color: var(--accent);
+			margin-top: 0;
+		}
+
+		ul {
+			padding-left: 1.2rem;
+		}
+
+		ul li {
+			margin-bottom: 0.5rem;
+		}
+
+		a.button {
+			display: inline-block;
+			background-color: var(--accent);
+			color: white;
+			padding: 0.75rem 1.5rem;
+			border-radius: 6px;
+			text-decoration: none;
+			font-weight: bold;
+			transition: background 0.3s;
+		}
+
+		a.button:hover {
+			background-color: #2980b9;
+		}
+
+		footer {
+			text-align: center;
+			padding: 1rem;
+			font-size: 0.9rem;
+			color: #777;
+		}
+
+		.full {
+			width: 100%;
+			height: 100vh;
+		}
+
+		@media (max-width: 600px) {
+			header h1 {
+				font-size: 1.5rem;
+			}
+
+			main {
+				padding: 1rem;
+			}
+
+			section {
+				padding: 1rem;
+			}
+		}
+	</style>
 </head>
+
 <body>
-  <header>
-    <h1>BASIK - Belajar koding untuk pemula</h1>
-  </header>
-  <main>
-    <section>
-      <h2>✨ Tentang BASIK</h2>
-      <p>BASIK adalah template JavaScript berbasis kanvas yang dirancang untuk memudahkan pembelajaran pemrograman bagi pemula.</p>
-    </section>
+	<header>
+		<h1>BASIK - Belajar koding untuk pemula</h1>
+	</header>
+	<main>
+		<section>
+			<h2>✨ Tentang BASIK</h2>
+			<p>BASIK adalah template JavaScript berbasis kanvas yang dirancang untuk memudahkan pembelajaran pemrograman
+				bagi pemula.</p>
+		</section>
 
-    <section>
-      <h2>🔧 Prinsip Desain</h2>
-      <ul>
-        <li>Perintah yang disederhanakan ✅ </li>
-        <li>Tanpa install server 📐</li>
-        <li>Memancing kreatifitas 🔥</li>
-        <li>Umpan balik langsung ⚡</li>
-        <li>Fungsi bawaan siap pakai 🧠</li>
-        <li>Struktur proyek siap digunakan 📦</li>
-        <li>Contoh yang variatif 🎨</li>
-        <li>Dapat digunakan secara luring/daring 🌐</li>
-        <li>Jalan di mobile ataupun desktop 📱</li>
-      </ul>
-    </section>
+		<section>
+			<h2>🔧 Prinsip Desain</h2>
+			<ul>
+				<li>Perintah yang disederhanakan ✅ </li>
+				<li>Tanpa install server 📐</li>
+				<li>Memancing kreatifitas 🔥</li>
+				<li>Umpan balik langsung ⚡</li>
+				<li>Fungsi bawaan siap pakai 🧠</li>
+				<li>Struktur proyek siap digunakan 📦</li>
+				<li>Contoh yang variatif 🎨</li>
+				<li>Dapat digunakan secara luring/daring 🌐</li>
+				<li>Jalan di mobile ataupun desktop 📱</li>
+			</ul>
+		</section>
 
-    <section>
-      <h2>💾 Download</h2>
-      <p>Unduh template BASIK dan mulai belajar:</p>
-      <a class="button" href="https://drive.google.com/file/d/1gvmdHIlSGrEY8Lcib07nicvfFcEveixO/view?usp=sharing" target="_blank">Download BASIK</a>
-    </section>
-	
-    <section>
-      <h2>📗 Nara Hubung</h2>
-      <p>rokhman.fajar@gmail.com - 081285382224</p>
-    </section>
-	
-  </main>
-  
-  <footer>
-    &copy; 2025 BASIK | Dibuat untuk pembelajaran JavaScript
-  </footer>
+		<section>
+			<h2>💾 Download</h2>
+			<p>Unduh template BASIK dan mulai belajar:</p>
+			<a class="button" href="https://drive.google.com/file/d/1gvmdHIlSGrEY8Lcib07nicvfFcEveixO/view?usp=sharing"
+				target="_blank">Download BASIK</a>
+			<br /><br />
+			<h2>💾 Download versi 2</h2>
+			<p>Versi dua terintegrasi dengan browser secara penuh sehingga tidak perlu lagi mendownload IDE atau
+				applikasi tambahan</p>
+			<a class="button"
+				href="https://drive.google.com/file/d/1zEYIe2S3IFUF_YD0e-ECOmtPK0U0UxLy/view?usp=sharing">Download BASIK
+				V.02</a>
+		</section>
+
+		<section>
+			<h2>Coba daring</h2>
+			<p>BASIK Versi 2 tersedia dalam versi html yang bisa diakses secara daring maupun luring dari browser tanpa install aplikasi tambahan</p>
+			<iframe src="./pg/index.html" class="full">
+			</iframe>
+		</section>
+
+		<section>
+			<h2>📗 Nara Hubung</h2>
+			<p>rokhman.fajar@gmail.com - 081285382224</p>
+		</section>
+
+	</main>
+
+	<footer>
+		&copy; 2025 BASIK | Dibuat untuk pembelajaran JavaScript
+	</footer>
 </body>
+
 </html>
