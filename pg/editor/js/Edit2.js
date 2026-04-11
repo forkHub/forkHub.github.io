@@ -23,7 +23,7 @@ class Edit2 {
         this.editArea = document.querySelector('textarea.edit-area');
         this.webCont = document.querySelector('div.kontainer-2 div.web');
         this.editCont = document.querySelector('div.kontainer-2 div.edit-text');
-        this.tblEditGroup = ["simpan", "muat", "jalan"];
+        this.tblEditGroup = ["simpan", "muat", "jalan", "baru"];
         this.tblJalanGroup = ["edit",];
         this.webCont;
         this.editCont;
@@ -69,7 +69,6 @@ class Edit2 {
             this.muatKlik();
         };
         this.getTbl("jalan").onclick = () => {
-            // this.gantiState(EState.jalankan);
             console.debug('run');
             this.editCont.classList.remove('active');
             this.webCont.classList.add('active');
@@ -89,6 +88,12 @@ class Edit2 {
         this.getTbl("edit").onclick = () => {
             this.editClick();
         };
+        this.getTbl("baru").onclick = () => {
+            this.baruKlik();
+        };
+        // this.getTbl("demo").onclick = () => {
+        // 	this.demoKlik();
+        // }
         this.myCodeMirror = CodeMirror.fromTextArea(this.editArea, {
             lineNumbers: true,
             mode: "javascript",
@@ -102,6 +107,13 @@ class Edit2 {
         this.hideTbl("edit");
         this.muatFileAwal();
         this.fileInfo.innerText = fileNama;
+    }
+    demoKlik() {
+        let demo = document.querySelector("dialog.demo") || (() => { throw new Error("Demo dialog not found"); })();
+        demo.showModal();
+    }
+    baruKlik() {
+        window.location.reload();
     }
     muatKlik() {
         dialogDaftarFile((item) => {
@@ -249,7 +261,7 @@ class Edit2 {
         // console.log(hal2);
     }
     runOk() {
-        let hal2 = render(this.myCodeMirror.getValue());
+        let hal2 = renderIframe(this.myCodeMirror.getValue());
         // hal2 = hal2.replace('{{script}}', this.myCodeMirror.getValue());
         let iframe = document.createElement('iframe');
         let iframeCont = document.body.querySelector('div.kontainer-2 div.web');
@@ -283,7 +295,8 @@ window.onload = () => {
     // JSHINT.warnings = jshintWarnings;
     // JSHINT.info = jsHintInfo;
 };
-function render(script) {
+function renderIframe(script) {
+    let rand = Math.floor(Math.random() * 1000);
     let hal = `
 <html>
 <meta charset="utf-8" />
@@ -301,6 +314,40 @@ function render(script) {
 			padding: 0px;
 			background-color: lightGray;
 		}
+
+		.custom-alert-overlay {		
+			position: fixed;
+			top: 0;
+			left: 0;
+			width: 100%;
+			height: 100%;
+			background: rgba(0, 0, 0, 0.5);
+			display: none;
+			/* awalnya hidden */
+			justify-content: center;
+			align-items: center;
+			z-index: 9999;
+		}
+
+		.custom-alert-box {
+			background: #fff;
+			padding: 20px;
+			border-radius: 8px;
+			min-width: 250px;
+			text-align: center;
+			box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+		}
+
+		.custom-alert-box button {
+			margin-top: 15px;
+			padding: 8px 16px;
+			border: none;
+			background: #0078d7;
+			color: #fff;
+			border-radius: 4px;
+			cursor: pointer;
+		}
+
 	</style>
 	<script>
 	function loadScriptsSequentially(sources, finalCallback) {
@@ -325,8 +372,8 @@ function render(script) {
 
 	// Example usage:
 	loadScriptsSequentially([
-		'./editor/lib/basik.min.js?r=324',
-		'./editor/lib/mulai.js?r=123'
+		'./editor/lib/basik.min.js?r=${rand}',
+		'./editor/lib/mulai.js?r=${rand}'
 	], () => {
 		const script = document.createElement('script');
 		script.textContent = \`${script}\`
