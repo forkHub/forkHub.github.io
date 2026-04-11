@@ -15,6 +15,7 @@ button {
 	position: relative;
 	box-shadow: 4px 4px #333;
 	padding: 4px 8px 4px 8px;
+	margin-left: 4px;
 }
 
 button:active,
@@ -31,6 +32,10 @@ button:disabled {
 	box-shadow: none;
 	color: white;
 	background-color: #333;
+}
+
+button.edit {
+	margin-left: 8px;
 }
 
 html {
@@ -65,7 +70,7 @@ div.kontainer-utama div.kontainer-2 div.edit-text.active {
 
 div.kontainer-2 div.edit-text form {
 	height: 100%;
-	font-size: 16px;
+	font-size: 17px;
 }
 
 
@@ -82,10 +87,17 @@ div.kontainer-utama div.kontainer-2 div.edit-text textarea {
 	height: 100vh;
 }
 
-div.kontainer-utama div.header {
+div.kontainer-utama div.header,
+div.kontainer-utama div.file-info {
 	display: flex;
 	background-color: #c0c0c0;
+	padding: 8px;
 }
+
+div.kontainer-utama div.file-info {
+	background-color: #cccccc;
+}
+
 
 div.pisah {
 	border: 1px solid;
