@@ -7,16 +7,25 @@ declare namespace Basik {
         static get y(): number;
         static set y(value: number);
         private static _img;
-        static get img(): Basik.Image;
-        static set img(value: Basik.Image);
+        static get img(): Basik.GbrObj;
+        static set img(value: Basik.GbrObj);
     }
+}
+declare namespace Basik {
+    class Data {
+        private _soundEvent;
+        get soundEvent(): HTMLAudioElement;
+        set soundEvent(value: HTMLAudioElement);
+    }
+    export function data(): Data;
+    export {};
 }
 declare namespace Basik {
     enum Evt {
         MOUSE_DOWN = "mouseDitekan",
         MOUSE_UP = "mouseDilepas",
         MOUSE_MOVE = "mouseGerak",
-        MOUSE_CLICK = "mouseKlik",
+        MOUSE_TAP = "mouseDitap",
         MOUSE_START_DRAG = "mouseMulaiDrag",
         MOUSE_END_DRAG = "mouseSelesaiDrag",
         KEYB_DOWN = "keyboardDitekan",
@@ -52,26 +61,27 @@ declare namespace Basik {
         private static _lastY;
         static get lastY(): number;
         static set lastY(value: number);
-        private static _red;
+        private static _merah;
         private static _green;
         private static _blue;
         private static _transparan;
         private static handleWindowResize;
         private static buildCanvas;
         static Canvas(): HTMLCanvasElement;
+        static Context(): CanvasRenderingContext2D;
         static SetCanvas(canvas: HTMLCanvasElement): void;
-        static Start(canvas: HTMLCanvasElement): void;
         static Graphics(w?: number, h?: number, canvas?: HTMLCanvasElement, mode?: number): void;
         static Cls(x?: number, y?: number, w?: number, h?: number): void;
         private static callFunc;
         private static initEvent;
         private static setupMainCanvas;
-        static get red(): number;
-        static set red(value: number);
-        static get green(): number;
-        static set green(value: number);
-        static get blue(): number;
-        static set blue(value: number);
+        static alert(msg: string): void;
+        static get merah(): number;
+        static set merah(value: number);
+        static get hijau(): number;
+        static set hijau(value: number);
+        static get biru(): number;
+        static set biru(value: number);
         static get alpha(): number;
         static set alpha(value: number);
     }
@@ -129,6 +139,11 @@ declare namespace Basik {
         timerStart: number;
         timerEnd: number;
         pointerId: number;
+    }
+    interface IWarna {
+        r: number;
+        g: number;
+        b: number;
     }
     interface IV2D {
         x: number;
@@ -239,128 +254,8 @@ declare namespace Basik {
     const Tf: typeof Transform;
 }
 declare namespace Basik {
-    class ImgImpl {
-        static readonly props: string[];
-        static readonly daftar: Image[];
-        static CreateImage(width: number, height: number): Image;
-        static MuatAnimasi(url: string, pf: number, lf: number): Image;
-        static Muat(url: string): Image;
-        static tabrakan(gbr1: Image, x1: number, y1: number, gbr2: Image, x2: number, y2: number): boolean;
-        static register(image: Image, url: string, tipeDrag: number): Image;
-        static free(img: Basik.Image): void;
-        static dotInsideImage(gbr1: Image, x1: number, y1: number, x2: number, y2: number): boolean;
-        private static gambarUbin;
-        static AmbilPiksel(x?: number, y?: number): void;
-        static SetPiksel(x?: number, y?: number): void;
-        static Draw(img: Image): void;
-        private static DrawSingle;
-        private static resetRect;
-        private static rectToImageTf;
-        static AllImageLoaded(): boolean;
-    }
-    const Ip: typeof ImgImpl;
-}
-declare namespace Basik {
-    class ImgIntHandler {
-        init(): void;
-        private down;
-        private inputDown;
-        private inputMove;
-    }
-    export const sprInt: ImgIntHandler;
-    export {};
-}
-declare namespace Basik {
-    class Teks {
-        private static _name;
-        private static _size;
-        private static _x;
-        private static _y;
-        static get size(): number;
-        static set size(value: number);
-        static Goto(x: number, y: number): void;
-        static Name(name?: string): void;
-        static Size(n?: number): void;
-        static Align(s?: CanvasTextAlign): void;
-        static WriteLn(teks: string): void;
-        static Write(teks: string): void;
-    }
-    const Tk: typeof Teks;
-}
-declare namespace Basik {
-    class Sound implements IAudio {
-        static readonly list: IAudio[];
-        private static _lastSound;
-        private _src;
-        private _loaded;
-        private _sound;
-        private _playedCount;
-        static get lastSound(): HTMLAudioElement;
-        static set lastSound(value: HTMLAudioElement);
-        get playedCount(): number;
-        set playedCount(value: number);
-        get sound(): HTMLAudioElement;
-        set sound(value: HTMLAudioElement);
-        get loaded(): boolean;
-        set loaded(value: boolean);
-        get src(): string;
-        set src(value: string);
-    }
-    const Sn: typeof Sound;
-}
-declare function penaDitekan(x?: number, y?: number, rotasi?: number): void;
-declare function garis(x: number, y: number): void;
-declare function lingkaran(x: number, y: number, radius: number, awal: number, akhir: number): void;
-declare function elips(x: number, y: number, radiusX: number, radiusY: number, awal: number, akhir: number): void;
-declare function quad(cx: number, cy: number, x: number, y: number): void;
-declare function bezier(): void;
-declare function penaDiangkat(): void;
-declare const S: typeof Basik.Sound;
-declare function muatSuara(url: string): HTMLAudioElement;
-declare function mainkanSuara(s: HTMLAudioElement): void;
-declare function suaraEvent(): HTMLAudioElement;
-declare const G: typeof Basik.Graphic;
-declare const Ip: typeof Basik.ImgImpl;
-declare const In: typeof Basik.Input;
-declare function setKanvas(c: HTMLCanvasElement): void;
-declare function kanvas(): HTMLCanvasElement;
-declare function buatKanvas(w?: number, h?: number, canvas?: HTMLCanvasElement, mode?: number): void;
-declare function bersihkanLayar(x?: number, y?: number, w?: number, h?: number): void;
-declare function hijau(): number;
-declare function merah(): number;
-declare function biru(): number;
-declare function alpha(): number;
-declare function ambilPiksel(x?: number, y?: number): void;
-declare function setPiksel(x?: number, y?: number): void;
-declare function warna(r?: number, g?: number, b?: number, a?: number): void;
-declare function warnaGaris(r?: number, g?: number, b?: number, a?: number): void;
-declare function mouseDitahan(): boolean;
-declare function mouseDidrag(): boolean;
-declare function mouseDragX(): number;
-declare function mouseDragY(): number;
-declare function mouseX(): number;
-declare function mouseY(): number;
-declare function mouseDragAwalX(): number;
-declare function mouseDragAwalY(): number;
-declare function mouseGerakX(): number;
-declare function mouseGerakY(): number;
-declare function muatGambar(url: string): Basik.Image;
-declare function stempel(img: Basik.Image): void;
-declare function gambarTabrakan(img1: Basik.Image, img2: Basik.Image): boolean;
-declare function poinDidalamGambar(img: Basik.Image, x: number, y: number): boolean;
-declare function buatGambar(width: number, height: number): Basik.Image;
-declare function semuaGambarSelesaiDimuat(): boolean;
-declare function hapusGAmbar(img: Basik.Image): void;
-declare const posisiTeks: typeof Basik.Teks.Goto;
-declare const tulis: typeof Basik.Teks.WriteLn;
-declare const fontTeks: typeof Basik.Teks.Name;
-declare const ukuranTeks: typeof Basik.Teks.Size;
-declare const perataanTeks: typeof Basik.Teks.Align;
-declare function tombolDitahan(key?: string): boolean;
-declare function tombolEvent(): string;
-declare namespace Basik {
-    class Image {
-        constructor(url?: string);
+    class GbrObj {
+        constructor(url?: string, pf?: number, lf?: number);
         private _x;
         private _y;
         private _alpha;
@@ -370,30 +265,39 @@ declare namespace Basik {
         private _lebar;
         private _rotasi;
         private _tilable;
-        private _frameW;
-        private _frameH;
+        private _panjangFrame;
+        private _lebarFrame;
         private _dragged;
         private _down;
         private _frame;
         private _pendingStempel;
-        get pendingStempel(): boolean;
-        set pendingStempel(value: boolean);
-        private _dimuat;
-        get dimuat(): boolean;
-        set dimuat(value: boolean);
+        private _nama;
+        private _img;
+        get img(): HTMLImageElement;
+        set img(value: HTMLImageElement);
         private _ctrIdx;
         private static _ctrDraw;
         private _url;
-        img: HTMLImageElement;
         private _canvas;
-        isAnim: boolean;
-        rect: Ktk;
+        private _isAnim;
+        get isAnim(): boolean;
+        set isAnim(value: boolean);
+        private _rect;
+        get rect(): Ktk;
+        set rect(value: Ktk);
         private _tipeDrag;
         private _dragStartY;
         private _dragStartX;
         private _sudutTekanAwal;
         private _sudutAwal;
         private _inputId;
+        private _dimuat;
+        get dimuat(): boolean;
+        set dimuat(value: boolean);
+        get nama(): string;
+        set nama(value: string);
+        get pendingStempel(): boolean;
+        set pendingStempel(value: boolean);
         get inputId(): string;
         set inputId(value: string);
         get frame(): number;
@@ -428,8 +332,8 @@ declare namespace Basik {
         set dragAwalX(value: number);
         get dragAwalY(): number;
         set dragAwalY(value: number);
-        get didrag(): boolean;
-        set didrag(value: boolean);
+        get diDrag(): boolean;
+        set diDrag(value: boolean);
         get ditekan(): boolean;
         set ditekan(value: boolean);
         get tipeDrag(): number;
@@ -444,3 +348,184 @@ declare namespace Basik {
         set initialAngle(value: number);
     }
 }
+declare namespace Basik {
+    class ImgImpl {
+        static readonly props: string[];
+        static readonly daftar: GbrObj[];
+        private static _lastImg;
+        static get lastImg(): GbrObj;
+        static set lastImg(value: GbrObj);
+        static CreateImage(width: number, height: number): GbrObj;
+        static MuatAnimasi(url: string, pf: number, lf: number): GbrObj;
+        static Muat(url: string): GbrObj;
+        static tabrakan(gbr1: GbrObj, x1: number, y1: number, gbr2: GbrObj, x2: number, y2: number): boolean;
+        static getByName(nama: string, buat: boolean): GbrObj;
+        static register(image: GbrObj, url: string, tipeDrag: number): GbrObj;
+        static free(img: Basik.GbrObj): void;
+        static dotInsideImage(gbr1: GbrObj, x1: number, y1: number, x2: number, y2: number): boolean;
+        private static gambarUbin;
+        static AmbilPiksel(x?: number, y?: number): void;
+        static SetPiksel(x?: number, y?: number): void;
+        static Draw(img: GbrObj): void;
+        private static DrawSingle;
+        private static resetRect;
+        private static rectToImageTf;
+        static AllImageLoaded(): boolean;
+    }
+}
+declare namespace Basik {
+    class ImgIntHandler {
+        init(): void;
+        private down;
+        private inputDown;
+        private inputMove;
+    }
+    export const sprInt: ImgIntHandler;
+    export {};
+}
+declare namespace Basik {
+    class Teks {
+        private static _name;
+        private static _size;
+        private static _x;
+        private static _y;
+        static get size(): number;
+        static set size(value: number);
+        static Goto(x: number, y: number): void;
+        static Name(name?: string): void;
+        static Size(n?: number): void;
+        static Align(s?: number): void;
+        static WriteLn(teks: string, x: number, y: number): void;
+        static Write(teks: string): void;
+    }
+    const Tk: typeof Teks;
+}
+declare namespace Basik {
+    class Sound implements IAudio {
+        static readonly list: IAudio[];
+        private _src;
+        private _loaded;
+        private _sound;
+        private _playedCount;
+        get playedCount(): number;
+        set playedCount(value: number);
+        get sound(): HTMLAudioElement;
+        set sound(value: HTMLAudioElement);
+        get loaded(): boolean;
+        set loaded(value: boolean);
+        get src(): string;
+        set src(value: string);
+    }
+    const Sn: typeof Sound;
+}
+declare namespace Basik {
+    class Warna {
+        private static warnaAr;
+        static warna(idx?: number, trans?: number): void;
+        static warnaGaris(idx?: number, trans?: number): void;
+        static init(): void;
+    }
+}
+declare namespace Basik {
+    export class Pena {
+        diangkat(): void;
+        ditekan(x: number, y: number): void;
+        kanan(x: number): void;
+        atas(x: number): void;
+        kiri(x: number): void;
+        bawah(x: number): void;
+        diag(x: number, y: number): void;
+        polar(jarak: number, sudut: number): void;
+        kurva(): PenaData.Kurva2;
+    }
+    namespace PenaData {
+        class Kurva2 {
+            constructor();
+            kanan(x: number): Kurva3;
+            bawah(x: number): Kurva3;
+        }
+        class Kurva3 {
+            private cx;
+            private cy;
+            constructor(cx: number, cy: number);
+            kanan(x: number): void;
+            bawah(y: number): void;
+            diag(x: number, y: number): void;
+            kiri(x: number): void;
+            atas(y: number): void;
+        }
+    }
+    export {};
+}
+declare function bukaPath(x?: number, y?: number): void;
+declare function garisKe(x: number, y: number): void;
+declare function kurvaKe(cx: number, cy: number, x: number, y: number): void;
+declare function lingkaranKe(cx: number, cy: number, sweepAngleDeg: number, clockWise?: boolean): void;
+declare function tutupPath(): void;
+declare function lingkaran(x?: number, y?: number, radius?: number, awal?: number, akhir?: number): void;
+declare function elip(x?: number, y?: number, radiusX?: number, radiusY?: number, awal?: number, akhir?: number, searahJarumJam?: boolean): void;
+declare function kotak(x1?: number, y1?: number, x2?: number, y2?: number): void;
+declare function segitiga(x: number, y: number, base: number, height: number, position: number): void;
+declare function pie(x: number, y: number, radius: number, startAngleDeg: number, endAngleDeg: number): void;
+declare function polygonTeratur(x: number, y: number, radius: number, sides: number): void;
+declare function bintang(ctx: CanvasRenderingContext2D, x: number, y: number, spikes: number, outerRadius: number, innerRadius: number, fillColor?: string): void;
+declare function garis(x?: number, y?: number, x2?: number, y2?: number): void;
+declare const S: typeof Basik.Sound;
+declare function muatSuara(url: string): HTMLAudioElement;
+declare function mainkanSuara(s: HTMLAudioElement): void;
+declare function suaraEvent(): HTMLAudioElement;
+declare const G: typeof Basik.Graphic;
+declare const Ip: typeof Basik.ImgImpl;
+declare const In: typeof Basik.Input;
+declare function setKanvas(c: HTMLCanvasElement): void;
+declare function kanvas(): HTMLCanvasElement;
+declare function buatKanvas(w?: number, h?: number, canvas?: HTMLCanvasElement, mode?: number): void;
+declare function bersihkanLayar(x?: number, y?: number, w?: number, h?: number): void;
+declare function hijau(): number;
+declare function merah(): number;
+declare function biru(): number;
+declare function alpha(): number;
+declare function ambilPiksel(x?: number, y?: number): void;
+declare function setPiksel(x?: number, y?: number): void;
+declare function warna(idx?: number, trans?: number): void;
+declare function warnaGaris(idx: number, trans?: number): void;
+declare function tebalGaris(n: number): void;
+declare const dialog: typeof Basik.Graphic.alert;
+declare function mouseDitahan(): boolean;
+declare function mouseDidrag(): boolean;
+declare function mouseDragX(): number;
+declare function mouseDragY(): number;
+declare function mouseX(): number;
+declare function mouseY(): number;
+declare function mouseDragAwalX(): number;
+declare function mouseDragAwalY(): number;
+declare function mouseGerakX(): number;
+declare function mouseGerakY(): number;
+declare function akar(n?: number): number;
+declare function pi(): number;
+declare function jarak(x?: number, y?: number): number;
+declare function jarakSudut(angleS: number, angleT: number, min?: boolean): number;
+declare function sudut(x: number, y: number): number;
+declare function polarX(panjang?: number, sudut?: number): number;
+declare function polarY(panjang?: number, sudut?: number): number;
+declare function abs(n: number): number;
+declare function normalisasiSudut(sdt?: number): number;
+declare function pembulatan(n: number, b?: number, type?: number): number;
+declare function muatGambar(url: string): Basik.GbrObj;
+declare function muatAnimasi(url: string, fw?: number, fh?: number): Basik.GbrObj;
+declare function stempel(img: Basik.GbrObj | string, x?: number, y?: number): void;
+declare function gambarTabrakan(img1: Basik.GbrObj, img2: Basik.GbrObj): boolean;
+declare function poinDidalamGambar(img: Basik.GbrObj, x: number, y: number): boolean;
+declare function buatGambar(width: number, height: number): Basik.GbrObj;
+declare function semuaGambarSelesaiDimuat(): boolean;
+declare function hapusGAmbar(img: Basik.GbrObj): void;
+declare function posisiGambar(img: Basik.GbrObj, x?: number, y?: number): void;
+declare function ukuranGambar(img: Basik.GbrObj, p?: number, l?: number): void;
+declare function pusatGambar(img: Basik.GbrObj, x?: number, y?: number): void;
+declare const posisiTeks: typeof Basik.Teks.Goto;
+declare const tulis: typeof Basik.Teks.WriteLn;
+declare const fontTeks: typeof Basik.Teks.Name;
+declare const ukuranTeks: typeof Basik.Teks.Size;
+declare const perataanTeks: typeof Basik.Teks.Align;
+declare function tombolDitahan(key?: string): boolean;
+declare function tombolEvent(): string;

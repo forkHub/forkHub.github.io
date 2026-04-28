@@ -1,24 +1,26 @@
-let kotak = muatGambar("kotak.png");
-kotak.panjang = 75;
-kotak.x = 100;
-kotak.y = 150;
-kotak.pusatY = 16;
+buatKanvas(800, 600);
 
-let kotak2 = muatGambar("kotak.png");
-kotak2.panjang = 75;
-kotak2.x = 200;
-kotak2.y = 150;
-kotak2.pusatY = 16;
+let box = muatGambar("kotak.png");
+box.panjang = 75;
+box.x = 100;
+box.y = 150;
+box.pusatY = 16;
+
+let box2 = muatGambar("kotak.png");
+box2.panjang = 75;
+box2.x = 200;
+box2.y = 150;
+box2.pusatY = 16;
 
 function update() {
-	kotak.rotasi += 5;
-	kotak2.rotasi += 2;
+	box.rotasi += 5;
+	box2.rotasi += 2;
 	bersihkanLayar();
 
-	stempel(kotak);
-	stempel(kotak2);
+	stempel(box);
+	stempel(box2);
 
-	let col = gambarTabrakan(kotak, kotak2);
+	let col = gambarTabrakan(box, box2);
 
 	posisiTeks(0, 20);
 	tulis("Status Tabrakan: " + col);

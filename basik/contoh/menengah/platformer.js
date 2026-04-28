@@ -1,3 +1,5 @@
+buatKanvas(320, 240);
+
 let char;
 let velY = 0;
 let velX = 2;
@@ -7,11 +9,11 @@ let ubinAr = [];
 let ubinTertabrak;
 let data;
 
-char = muatGambar("moon.png");
+char = muatGambar("bulan.png");
 char.x = 32;
 char.y = 32;
-char.height = 32;
-char.width = 32;
+char.lebar = 32;
+char.panjang = 32;
 data = [
 	"111111111111111111111111111111111111",
 	"1        1                     1",
@@ -24,7 +26,7 @@ data = [
 for (let baris = 0; baris < data.length; baris++) {
 	for (let kolom = 0; kolom < data[baris].length; kolom++) {
 		if (data[baris].charAt(kolom) != ' ') {
-			let t = muatGambar("box.png");
+			let t = muatGambar("kotak.png");
 			t.frameW = 32;
 			t.frameH = 32;
 			t.width = 32;
@@ -37,12 +39,12 @@ for (let baris = 0; baris < data.length; baris++) {
 }
 
 
-function keyboardDipencet() {
+function keyboardDitekan() {
 	if (tombolDitahan('ArrowUp')) {
 		if (diLantai) {
 			velY = -4;
 			char.y += velY;
-			resolveUp();
+			checkAtas();
 			diLantai = false;
 		}
 	}
@@ -74,7 +76,7 @@ function update() {
 		if (checkUbin())
 			char.x = ubinTertabrak.x + 32;
 	}
-	Cls();
+	bersihkanLayar();
 	ubinAr.forEach((tile) => {
 		stempel(tile);
 	});

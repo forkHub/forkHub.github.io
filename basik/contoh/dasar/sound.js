@@ -1,3 +1,5 @@
+buatKanvas(800, 600);
+
 let jmlSoundBerakhir = 0;
 let sound = muatSuara("sound.mp3");
 

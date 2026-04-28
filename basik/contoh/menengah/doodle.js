@@ -1,3 +1,5 @@
+buatKanvas(800, 600);
+
 let brush = muatGambar("brush.png");
 brush.handleX = 8;
 brush.handleY = 8;
