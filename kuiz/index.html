@@ -1,0 +1,277 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Math Adventure</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <div class="app-container">
+    
+    <div id="toast" class="toast">Selesaikan level sebelumnya dulu!</div>
+
+    <div id="screen-home" class="screen">
+      <h1>🧠 MATH ADVENTURE</h1>
+      <button class="btn btn-primary" id="btn-start">▶️ Mulai Petualangan</button>
+    </div>
+
+    <div id="screen-map" class="screen hidden">
+      <h2>🗺️ PILIH LEVEL</h2>
+      <div class="grid-level" id="grid-level-container">
+        </div>
+      <button class="btn btn-secondary" id="btn-back-home">🏠 Kembali ke Home</button>
+    </div>
+
+    <div id="screen-quiz" class="screen hidden">
+      <div class="quiz-header" id="quiz-progress">Soal 0 / 0</div>
+      <div class="question-text" id="quiz-question">0 × 0 = ?</div>
+      <div class="options-container" id="quiz-options">
+        </div>
+    </div>
+
+    <div id="popup-feedback" class="popup-overlay hidden">
+      <div class="popup-content">
+        <div id="popup-title" class="popup-title">✅ BENAR!</div>
+        <div id="popup-text" class="popup-text">Jawaban kamu tepat 🎉</div>
+        <button class="btn btn-primary" id="btn-next-question">Selanjutnya</button>
+      </div>
+    </div>
+
+    <div id="screen-result" class="screen hidden">
+      <h1 id="result-status-title">🎉 LEVEL SELESAI</h1>
+      <div style="font-size: 18px; margin-bottom: 20px; text-align: left; width: 100%; max-width: 280px; line-height: 2;">
+        <div>✅ Benar: <span id="res-benar" style="font-weight:bold;">0</span></div>
+        <div>❌ Salah: <span id="res-salah" style="font-weight:bold;">0</span></div>
+        <div>⭐ Skor Sesi Ini: <span id="res-skor" style="font-weight:bold; color:var(--color-active);">0</span></div>
+        <div>🏆 Skor Tertinggi: <span id="res-high" style="font-weight:bold; color:var(--color-success);">0</span></div>
+      </div>
+      <button class="btn btn-primary" id="btn-back-map">🗺️ Kembali ke Map</button>
+    </div>
+
+  </div>
+
+  <script type="module">
+    import { gameData } from './soal.js';
+
+    // State Variables
+    let currentLevelKey = 'level1';
+    let currentQuestionIndex = 0;
+    let jumlahBenar = 0;
+    let jumlahSalah = 0;
+    let skorLevelSekarang = 0;
+
+    // DOM Elements
+    const screens = {
+      home: document.getElementById('screen-home'),
+      map: document.getElementById('screen-map'),
+      quiz: document.getElementById('screen-quiz'),
+      result: document.getElementById('screen-result'),
+      feedback: document.getElementById('popup-feedback')
+    };
+
+    // Fungsi Navigasi Screen
+    function changeScreen(targetScreen) {
+      Object.values(screens).forEach(s => s.classList.add('hidden'));
+      targetScreen.classList.remove('hidden');
+    }
+
+    // 1. Storage Operations
+    function getSavedProgress() {
+      const defaultProgress = {
+        level1: { status: "aktif", highScore: 0 },
+        level2: { status: "terkunci", highScore: 0 },
+        level3: { status: "terkunci", highScore: 0 }
+      };
+      const saved = localStorage.getItem('math_adventure_progress');
+      return saved ? JSON.parse(saved) : defaultProgress;
+    }
+
+    function saveProgress(progress) {
+      localStorage.setItem('math_adventure_progress', JSON.stringify(progress));
+    }
+
+    // 2. Render Map Screen
+    function renderMap() {
+      const progress = getSavedProgress();
+      const container = document.getElementById('grid-level-container');
+      container.innerHTML = '';
+
+      // Loop berdasarkan key yang ada di file data soal
+      Object.keys(gameData).forEach((lvlKey, index) => {
+        const lvlNum = index + 1;
+        const lvlState = progress[lvlKey] || { status: "terkunci", highScore: 0 };
+        
+        const btn = document.createElement('button');
+        btn.className = `btn-lvl ${lvlState.status}`;
+        
+        let icon = '🔒';
+        if (lvlState.status === 'aktif') icon = '▶️';
+        if (lvlState.status === 'selesai') icon = '✅';
+
+        btn.innerHTML = `<span>${lvlNum}</span><span>${icon}</span>`;
+        
+        btn.addEventListener('click', () => {
+          if (lvlState.status === 'terkunci') {
+            showToast("Selesaikan level sebelumnya dengan nilai lulus terlebih dahulu!");
+          } else {
+            startQuiz(lvlKey);
+          }
+        });
+
+        container.appendChild(btn);
+      });
+    }
+
+    // Toast Notification Utility
+    function showToast(message) {
+      const toast = document.getElementById('toast');
+      toast.innerText = message;
+      toast.classList.add('show');
+      setTimeout(() => toast.classList.remove('show'), 2000);
+    }
+
+    // 3. Quiz Logic
+    function startQuiz(lvlKey) {
+      currentLevelKey = lvlKey;
+      currentQuestionIndex = 0;
+      jumlahBenar = 0;
+      jumlahSalah = 0;
+      skorLevelSekarang = 0;
+
+      changeScreen(screens.quiz);
+      renderQuestion();
+    }
+
+    function renderQuestion() {
+      const questions = gameData[currentLevelKey];
+      const currentQuestion = questions[currentQuestionIndex];
+
+      // Update Header & Teks Soal
+      document.getElementById('quiz-progress').innerText = `Soal ${currentQuestionIndex + 1} / ${questions.length}`;
+      document.getElementById('quiz-question').innerText = currentQuestion.question;
+
+      // Render Pilihan Jawaban
+      const optionsContainer = document.getElementById('quiz-options');
+      optionsContainer.innerHTML = '';
+
+      currentQuestion.options.forEach(opt => {
+        const btnOpt = document.createElement('button');
+        btnOpt.className = 'btn-option';
+        btnOpt.innerText = opt;
+        
+        btnOpt.addEventListener('click', () => evaluateAnswer(btnOpt, opt, currentQuestion.answer));
+        optionsContainer.appendChild(btnOpt);
+      });
+    }
+
+    function evaluateAnswer(selectedBtn, chosenValue, correctValue) {
+      // Lock semua tombol jawaban langsung
+      const allOptions = document.querySelectorAll('.btn-option');
+      allOptions.forEach(btn => btn.disabled = true);
+
+      const isCorrect = chosenValue === correctValue;
+      
+      if (isCorrect) {
+        selectedBtn.classList.add('correct-choice');
+        jumlahBenar++;
+        skorLevelSekarang += 10;
+        showPopup(true, correctValue);
+      } else {
+        selectedBtn.classList.add('wrong-choice');
+        jumlahSalah++;
+        showPopup(false, correctValue);
+      }
+    }
+
+    // 4. Popup Feedback Logic
+    function showPopup(isCorrect, correctAnswer) {
+      const titleEl = document.getElementById('popup-title');
+      const textEl = document.getElementById('popup-text');
+      const nextBtn = document.getElementById('btn-next-question');
+
+      // Mengembalikan state tombol next ke aktif
+      nextBtn.disabled = false;
+
+      if (isCorrect) {
+        titleEl.innerText = "✅ BENAR!";
+        titleEl.className = "popup-title benar";
+        textEl.innerHTML = "Jawaban kamu tepat 🎉<br><b style='color:#2ecc71'>+10 poin</b>";
+      } else {
+        titleEl.innerText = "❌ SALAH";
+        titleEl.className = "popup-title salah";
+        textEl.innerHTML = `Jawaban benar: <b>${correctAnswer}</b><br><b style='color:#7f8c8d'>+0 poin</b>`;
+      }
+
+      screens.feedback.classList.remove('hidden');
+    }
+
+    // Aksi Klik tombol Selanjutnya di Popup
+    document.getElementById('btn-next-question').addEventListener('click', function() {
+      this.disabled = true; // Mencegah double click bypass cecak logika
+      screens.feedback.classList.add('hidden');
+
+      currentQuestionIndex++;
+      const totalSoal = gameData[currentLevelKey].length;
+
+      if (currentQuestionIndex < totalSoal) {
+        renderQuestion();
+      } else {
+        showResult();
+      }
+    });
+
+    // 5. Result Screen Logic
+    function showResult() {
+      const totalSoal = gameData[currentLevelKey].length;
+      const tingkatKelulusan = jumlahBenar / totalSoal;
+      const isLulus = tingkatKelulusan >= 0.6;
+
+      let progress = getSavedProgress();
+
+      // Update State Kelulusan & Unlock Level Berikutnya
+      if (isLulus) {
+        progress[currentLevelKey].status = "selesai";
+
+        // Ambil urutan nomor level berikutnya secara dinamis
+        const currentLvlNum = parseInt(currentLevelKey.replace('level', ''));
+        const nextLevelKey = `level${currentLvlNum + 1}`;
+
+        if (gameData[nextLevelKey] && progress[nextLevelKey].status === "terkunci") {
+          progress[nextLevelKey].status = "aktif";
+        }
+      }
+
+      // Update High Score
+      if (skorLevelSekarang > progress[currentLevelKey].highScore) {
+        progress[currentLevelKey].highScore = skorLevelSekarang;
+      }
+
+      saveProgress(progress);
+
+      // Render Hasil Akhir ke UI
+      document.getElementById('result-status-title').innerText = isLulus ? "🎉 LEVEL SELESAI" : "❌ COBA LAGI 💪";
+      document.getElementById('res-benar').innerText = jumlahBenar;
+      document.getElementById('res-salah').innerText = jumlahSalah;
+      document.getElementById('res-skor').innerText = skorLevelSekarang;
+      document.getElementById('res-high').innerText = progress[currentLevelKey].highScore;
+
+      changeScreen(screens.result);
+    }
+
+    // Event Global Navigasi Utama
+    document.getElementById('btn-start').addEventListener('click', () => {
+      renderMap();
+      changeScreen(screens.map);
+    });
+
+    document.getElementById('btn-back-home').addEventListener('click', () => changeScreen(screens.home));
+    document.getElementById('btn-back-map').addEventListener('click', () => {
+      renderMap();
+      changeScreen(screens.map);
+    });
+
+  </script>
+</body>
+</html>

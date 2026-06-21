@@ -1,0 +1,203 @@
+/* style.css */
+:root {
+  --color-bg: #f5f7fa;
+  --color-card: #ffffff;
+  --color-text: #2c3e50;
+  --color-active: #3498db;
+  --color-success: #2ecc71;
+  --color-danger: #e74c3c;
+  --color-locked: #bdc3c7;
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+body {
+  background-color: var(--color-bg);
+  color: var(--color-text);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+  padding: 10px;
+}
+
+/* Container Utama Mobile-First */
+.app-container {
+  width: 100%;
+  max-width: 480px;
+  background: var(--color-card);
+  border-radius: 16px;
+  box-shadow: 0 8px 24px rgba(0,0,0,0.1);
+  overflow: hidden;
+  position: relative;
+  min-height: 500px;
+}
+
+.screen {
+  padding: 30px 20px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 500px;
+  text-align: center;
+  transition: all 0.2s ease;
+}
+
+.hidden {
+  display: none !important;
+}
+
+h1 {
+  font-size: 28px;
+  margin-bottom: 20px;
+}
+
+h2 {
+  font-size: 22px;
+  margin-bottom: 20px;
+}
+
+/* Tombol Umum */
+.btn {
+  width: 100%;
+  padding: 14px;
+  border: none;
+  border-radius: 8px;
+  font-size: 18px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: transform 0.1s ease, background-color 0.2s ease;
+  margin-bottom: 12px;
+}
+
+.btn:active {
+  transform: scale(0.98);
+}
+
+.btn-primary { background-color: var(--color-active); color: white; }
+.btn-secondary { background-color: #95a5a6; color: white; }
+
+/* Grid Map Level */
+.grid-level {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 15px;
+  width: 100%;
+  margin-bottom: 30px;
+}
+
+.btn-lvl {
+  aspect-ratio: 1;
+  border: none;
+  border-radius: 12px;
+  font-size: 18px;
+  font-weight: bold;
+  color: white;
+  cursor: pointer;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 5px;
+}
+
+.btn-lvl.aktif { background-color: var(--color-active); }
+.btn-lvl.selesai { background-color: var(--color-success); }
+.btn-lvl.terkunci { background-color: var(--color-locked); cursor: not-allowed; }
+
+/* Quiz Screen */
+.quiz-header {
+  font-size: 16px;
+  color: #7f8c8d;
+  margin-bottom: 10px;
+}
+
+.question-text {
+  font-size: 32px;
+  font-weight: bold;
+  margin-bottom: 30px;
+}
+
+.options-container {
+  width: 100%;
+}
+
+.btn-option {
+  width: 100%;
+  padding: 14px;
+  background-color: #f8f9fa;
+  border: 2px solid #e2e8f0;
+  border-radius: 8px;
+  font-size: 18px;
+  margin-bottom: 12px;
+  cursor: pointer;
+  text-align: center;
+  transition: all 0.2s ease;
+}
+
+.btn-option:not(:disabled):hover {
+  background-color: #edf2f7;
+  border-color: var(--color-active);
+}
+
+/* Status Jawaban */
+.btn-option.correct-choice { background-color: var(--color-success) !important; color: white; border-color: var(--color-success); }
+.btn-option.wrong-choice { background-color: var(--color-danger) !important; color: white; border-color: var(--color-danger); }
+
+/* Popup Feedback overlay */
+.popup-overlay {
+  position: absolute;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background-color: rgba(0,0,0,0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 20px;
+  z-index: 10;
+}
+
+.popup-content {
+  background: white;
+  width: 100%;
+  max-width: 380px;
+  border-radius: 16px;
+  padding: 30px 20px;
+  text-align: center;
+  box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+  animation: popIn 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+@keyframes popIn {
+  from { transform: scale(0.8); opacity: 0; }
+  to { transform: scale(1); opacity: 1; }
+}
+
+.popup-title { font-size: 24px; font-weight: bold; margin-bottom: 10px; }
+.popup-title.benar { color: var(--color-success); }
+.popup-title.salah { color: var(--color-danger); }
+.popup-text { font-size: 18px; margin-bottom: 20px; }
+
+/* Toast Notification */
+.toast {
+  position: absolute;
+  bottom: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: #333;
+  color: white;
+  padding: 10px 20px;
+  border-radius: 20px;
+  font-size: 14px;
+  z-index: 20;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+  pointer-events: none;
+  white-space: nowrap;
+}
+.toast.show { opacity: 1; }
