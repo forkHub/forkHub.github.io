@@ -28,6 +28,15 @@ var Basik;
 var Basik;
 (function (Basik) {
     class Data {
+        constructor() {
+            this._init = false;
+        }
+        get init() {
+            return this._init;
+        }
+        set init(value) {
+            this._init = value;
+        }
         get soundEvent() {
             return this._soundEvent;
         }
@@ -35,11 +44,7 @@ var Basik;
             this._soundEvent = value;
         }
     }
-    let _data = new Data();
-    function data() {
-        return _data;
-    }
-    Basik.data = data;
+    Basik.data = new Data();
 })(Basik || (Basik = {}));
 var Basik;
 (function (Basik) {
@@ -55,6 +60,7 @@ var Basik;
         Evt["KEYB_UP"] = "keyboardDilepas";
         Evt["SOUND_ENDED"] = "suaraSelesai";
         Evt["UPDATE"] = "update";
+        Evt["RENDER"] = "render";
         Evt["MULAI"] = "mulai";
         Evt["GAMBAR_DILOAD"] = "gambarDiload";
         Evt["RESIZE"] = "resize";
@@ -98,6 +104,12 @@ var Basik;
 var Basik;
 (function (Basik) {
     class Graphic {
+        static get drawCanvas() {
+            return Graphic._drawCanvas;
+        }
+        static set drawCanvas(value) {
+            Graphic._drawCanvas = value;
+        }
         static get isUpdating() {
             return Graphic._isUpdating;
         }
@@ -121,9 +133,9 @@ var Basik;
                 return;
             if (Basik.G.callFunc("resize"))
                 return;
-            let canvas = Basik.G.drawCanvas;
-            let cp = Basik.G.drawCanvas.width;
-            let cl = Basik.G.drawCanvas.height;
+            let canvas = Basik.G._drawCanvas;
+            let cp = Basik.G._drawCanvas.width;
+            let cl = Basik.G._drawCanvas.height;
             let wp = window.innerWidth;
             let wl = window.innerHeight;
             let ratio = Math.min((wp / cp), (wl / cl));
@@ -149,23 +161,28 @@ var Basik;
             }
             return canvas;
         }
-        static Canvas() {
-            return Basik.G.drawCanvas;
+        static Kanvas() {
+            if (!Basik.G._drawCanvas) {
+                Basik.G.Graphics();
+            }
+            return Basik.G._drawCanvas;
         }
-        static Context() {
-            return Graphic.Canvas().getContext('2d');
-        }
-        static SetCanvas(canvas) {
-            Basik.G.drawCanvas = canvas;
+        static Kontek() {
+            return Graphic.Kanvas().getContext('2d');
         }
         static Graphics(w, h, canvas = null, mode = 1) {
             console.groupCollapsed("init");
+            if (Basik.data.init) {
+                console.warn("sudah di init");
+                console.groupEnd();
+                return;
+            }
             if (!canvas)
                 canvas = Basik.G.buildCanvas(w, h);
-            Basik.G.drawCanvas = canvas;
+            Basik.G._drawCanvas = canvas;
             Basik.G._autoScale = (mode == 1);
             Basik.G.setupMainCanvas(w, h, mode);
-            Basik.In.init(Basik.G.drawCanvas);
+            Basik.In.init(Basik.G._drawCanvas);
             Basik.Keyboard.init();
             Basik.Warna.init();
             Basik.sprInt.init();
@@ -174,6 +191,7 @@ var Basik;
                 try {
                     Basik.G._isUpdating = true;
                     Basik.Event.dispatchEvent(Basik.Evt.UPDATE);
+                    Basik.Event.dispatchEvent(Basik.Evt.RENDER);
                     window.requestAnimationFrame(update);
                     Basik.G._isUpdating = false;
                 }
@@ -184,7 +202,9 @@ var Basik;
                     console.log("error !!!");
                 }
             }
-            window.requestAnimationFrame(update);
+            setTimeout(() => {
+                window.requestAnimationFrame(update);
+            }, 100);
             setTimeout(() => {
                 Basik.G.handleWindowResize();
             }, 100);
@@ -194,14 +214,14 @@ var Basik;
             warna(215);
             posisiTeks(20, 20);
             ukuranTeks(20);
-            tebalGaris(1);
-            Basik.G.Canvas().getContext('2d').lineWidth = 1;
+            tebalGaris(2);
+            Basik.data.init = true;
             console.groupEnd();
         }
         static Cls(x = 0, y = 0, w = 0, h = 0) {
-            let ctx = Basik.G.drawCanvas.getContext('2d');
-            w = w || Basik.G.drawCanvas.width;
-            h = h || Basik.G.drawCanvas.height;
+            let ctx = Basik.G._drawCanvas.getContext('2d');
+            w = w || Basik.G._drawCanvas.width;
+            h = h || Basik.G._drawCanvas.height;
             ctx.clearRect(x, y, w, h);
         }
         static callFunc(str) {
@@ -257,16 +277,20 @@ var Basik;
                     }
                 });
             });
+            Basik.Event.addEventListener(Basik.Evt.RENDER, () => {
+                if (Basik.G.callFunc(Basik.Evt.RENDER)) {
+                }
+            });
         }
         static setupMainCanvas(p, l, mode = 1) {
             if (p)
-                Basik.G.drawCanvas.width = p;
+                Basik.G._drawCanvas.width = p;
             if (l)
-                Basik.G.drawCanvas.height = l;
+                Basik.G._drawCanvas.height = l;
             if (mode == 1) {
-                Basik.G.drawCanvas.style.width = p + 'px';
-                Basik.G.drawCanvas.style.padding = '0px';
-                Basik.G.drawCanvas.style.margin = '0px';
+                Basik.G._drawCanvas.style.width = p + 'px';
+                Basik.G._drawCanvas.style.padding = '0px';
+                Basik.G._drawCanvas.style.margin = '0px';
                 window.addEventListener("resize", () => {
                     Basik.G.handleWindowResize();
                 });
@@ -472,6 +496,8 @@ var Basik;
             return '';
         }
         static init(buffer) {
+            if (!buffer) {
+            }
             buffer.style.touchAction = 'none';
             buffer.addEventListener("pointerdown", (e) => {
                 e.stopPropagation();
@@ -1113,18 +1139,19 @@ var Basik;
             this._tilable = false;
             this._panjangFrame = 0;
             this._lebarFrame = 0;
-            this._dragged = false;
+            this._diDrag = false;
             this._down = false;
             this._frame = 0;
             this._pendingStempel = false;
+            this._tipeDrag = 0;
+            this._diRender = true;
             this._ctrIdx = 0;
             this._isAnim = false;
-            this._rect = new Basik.Ktk();
-            this._tipeDrag = 0;
-            this._dragStartY = 0;
-            this._dragStartX = 0;
+            this._dragAwalY = 0;
+            this._dragAwalX = 0;
             this._sudutTekanAwal = 0;
             this._sudutAwal = 0;
+            this._rect = new Basik.Ktk();
             this._dimuat = false;
             let img = document.createElement('img');
             let canvas = document.createElement('canvas');
@@ -1143,6 +1170,7 @@ var Basik;
                 imgOnLoad(img);
             }
             img.onload = () => {
+                console.log("selesai memuat gambar, url: " + url);
                 imgOnLoad(img);
             };
             img.onerror = () => {
@@ -1171,12 +1199,25 @@ var Basik;
                 Basik.Event.dispatchEvent(Basik.Evt.GAMBAR_DILOAD);
             }
             function imgOnLoadDefault() {
+                console.log("muat gambar default");
             }
             this.nama = url;
             if (pf != undefined)
                 this.panjangFrame = pf;
             if (lf != undefined)
                 this.lebarFrame = lf;
+        }
+        get diRender() {
+            return this._diRender;
+        }
+        set diRender(value) {
+            this._diRender = value;
+        }
+        get layarX() {
+            return this._x - Basik.Camera.x;
+        }
+        get layarY() {
+            return this._x - Basik.Camera.y;
         }
         get img() {
             return this._img;
@@ -1313,22 +1354,22 @@ var Basik;
             this._rotasi = value;
         }
         get dragAwalX() {
-            return this._dragStartX;
+            return this._dragAwalX;
         }
         set dragAwalX(value) {
-            this._dragStartX = value;
+            this._dragAwalX = value;
         }
         get dragAwalY() {
-            return this._dragStartY;
+            return this._dragAwalY;
         }
         set dragAwalY(value) {
-            this._dragStartY = value;
+            this._dragAwalY = value;
         }
         get diDrag() {
-            return this._dragged;
+            return this._diDrag;
         }
         set diDrag(value) {
-            this._dragged = value;
+            this._diDrag = value;
         }
         get ditekan() {
             return this._down;
@@ -1481,17 +1522,19 @@ var Basik;
             x -= w2;
             y -= h2;
             frame = Math.floor(frame);
-            jmlH = Math.ceil((Basik.G.Canvas().width + Math.abs(x)) / w2);
-            jmlV = Math.ceil((Basik.G.Canvas().height + Math.abs(y)) / h2);
+            jmlH = Math.ceil((Basik.G.Kanvas().width + Math.abs(x)) / w2);
+            jmlV = Math.ceil((Basik.G.Kanvas().height + Math.abs(y)) / h2);
             for (let i = 0; i < jmlH; i++) {
                 for (let j = 0; j < jmlV; j++) {
-                    Ip.DrawSingle(gbr, x + (i * w2), y + (j * h2), frame);
+                    gbr.x = x + (i * w2);
+                    gbr.y = y + (j * h2);
+                    Ip.GamberSingle(gbr);
                 }
             }
         }
         static AmbilPiksel(x = 0, y = 0) {
             try {
-                let data = Basik.G.Canvas().getContext('2d').getImageData(x, y, 1, 1).data;
+                let data = Basik.G.Kanvas().getContext('2d').getImageData(x, y, 1, 1).data;
                 let hasil = [];
                 hasil.push(data[0]);
                 hasil.push(data[1]);
@@ -1503,10 +1546,11 @@ var Basik;
                 Basik.G.alpha = data[3];
             }
             catch (e) {
+                console.error(e);
             }
         }
         static SetPiksel(x = 0, y = 0) {
-            Basik.G.Canvas().getContext('2d').fillRect(Math.floor(x), Math.floor(y), 1, 1);
+            Basik.G.Kanvas().getContext('2d').fillRect(Math.floor(x), Math.floor(y), 1, 1);
         }
         static Draw(img) {
             if (img.dimuat) {
@@ -1524,12 +1568,12 @@ var Basik;
                     Ip.gambarUbin(img, img.x, img.y, img.frame);
                 }
                 else {
-                    Ip.DrawSingle(img, img.x, img.y, img.frame);
+                    Ip.GamberSingle(img);
                 }
             }
         }
-        static DrawSingle(gbr, x = 0, y = 0, frame = 0) {
-            let ctx = Basik.G.Canvas().getContext('2d');
+        static GamberSingle(gbr) {
+            let ctx = Basik.G.Kanvas().getContext('2d');
             let jmlH = 0;
             let frameX = 0;
             let frameY = 0;
@@ -1539,7 +1583,7 @@ var Basik;
             }
             imgW = gbr.img.naturalWidth;
             gbr.ctrIdx = Basik.GbrObj.ctrDraw++;
-            frame = Math.floor(frame);
+            let frame = Math.floor(gbr.frame);
             jmlH = Math.floor(imgW / gbr.panjangFrame);
             frameX = (frame % jmlH);
             frameY = Math.floor(frame / jmlH);
@@ -1547,15 +1591,15 @@ var Basik;
             frameY *= gbr.lebarFrame;
             frameX = Math.floor(frameX);
             frameY = Math.floor(frameY);
-            let x2 = Math.floor(x);
-            let y2 = Math.floor(y);
+            let x2 = Math.floor(gbr.x);
+            let y2 = Math.floor(gbr.y);
             let w2 = Math.floor(gbr.panjang);
             let h2 = Math.floor(gbr.lebar);
             x2 -= (gbr.pusatX);
             y2 -= (gbr.pusatY);
             if (gbr.rotasi != 0) {
                 ctx.save();
-                ctx.translate(x, y);
+                ctx.translate(gbr.x, gbr.y);
                 ctx.rotate(gbr.rotasi * (Math.PI / 180));
                 drawImpl(-gbr.pusatX, -gbr.pusatY);
                 ctx.restore();
@@ -1565,11 +1609,9 @@ var Basik;
                 drawImpl(x2, y2);
                 ctx.restore();
             }
-            function drawImpl(dx, dy) {
-                dx -= Basik.Camera.x;
-                dy -= Basik.Camera.y;
+            function drawImpl(posX, posY) {
                 ctx.globalAlpha = gbr.alpha / 100;
-                ctx.drawImage(gbr.kanvas, frameX, frameY, gbr.panjangFrame, gbr.lebarFrame, Math.floor(dx), Math.floor(dy), w2, h2);
+                ctx.drawImage(gbr.kanvas, frameX, frameY, gbr.panjangFrame, gbr.lebarFrame, Math.floor(posX), Math.floor(posY), w2, h2);
                 ctx.globalAlpha = 1;
             }
         }
@@ -1622,14 +1664,14 @@ var Basik;
 })(Basik || (Basik = {}));
 var Basik;
 (function (Basik) {
-    let TypeDrag;
-    (function (TypeDrag) {
-        TypeDrag[TypeDrag["drag"] = 1] = "drag";
-        TypeDrag[TypeDrag["rotasi"] = 2] = "rotasi";
-        TypeDrag[TypeDrag["remoteDrag"] = 3] = "remoteDrag";
-        TypeDrag[TypeDrag["remoteRotation"] = 4] = "remoteRotation";
-    })(TypeDrag || (TypeDrag = {}));
-    class ImgIntHandler {
+    let tipeDrag;
+    (function (tipeDrag) {
+        tipeDrag[tipeDrag["drag"] = 1] = "drag";
+        tipeDrag[tipeDrag["rotasi"] = 2] = "rotasi";
+        tipeDrag[tipeDrag["remoteDrag"] = 3] = "remoteDrag";
+        tipeDrag[tipeDrag["remoteRotation"] = 4] = "remoteRotation";
+    })(tipeDrag || (tipeDrag = {}));
+    class GbrInter {
         init() {
             Basik.Event.addEventListener(Basik.Evt.MOUSE_DOWN, () => {
                 this.inputDown({
@@ -1650,60 +1692,45 @@ var Basik;
                 });
             });
         }
-        down(img, posCanvas, id) {
-            let posAbs = {
-                x: posCanvas.x - Basik.Camera.x,
-                y: posCanvas.y - Basik.Camera.y
-            };
+        handleGbrDitekan(img, posCanvas, id) {
             img.ditekan = true;
-            img.dragAwalX = posAbs.x - img.x;
-            img.dragAwalY = posAbs.y - img.y;
+            img.dragAwalX = posCanvas.x - img.x;
+            img.dragAwalY = posCanvas.y - img.y;
             img.inputId = id;
-            img.initialMouseAngle = Basik.Tf.sudut(posAbs.x - img.x, posAbs.y - img.y);
+            img.initialMouseAngle = Basik.Tf.sudut(posCanvas.x - img.x, posCanvas.y - img.y);
             img.initialAngle = img.rotasi;
         }
         inputDown(posCanvas, id) {
-            let posAbs = {
-                x: posCanvas.x - Basik.Camera.x,
-                y: posCanvas.y - Basik.Camera.y
-            };
             let lastIdx = -1;
             let lastSprite = null;
             for (let i = Ip.daftar.length - 1; i >= 0; i--) {
-                const img = Ip.daftar[i];
-                if (Ip.dotInsideImage(img, img.x, img.y, posAbs.x, posAbs.y)) {
-                    if (img.ctrIdx > lastIdx) {
-                        lastIdx = img.ctrIdx;
-                        lastSprite = img;
-                    }
+                const gbr = Ip.daftar[i];
+                if (gbr.tipeDrag === tipeDrag.remoteDrag || gbr.tipeDrag === tipeDrag.remoteRotation) {
+                    this.handleGbrDitekan(gbr, posCanvas, id);
                 }
                 else {
-                    if (img.tipeDrag === TypeDrag.remoteDrag || img.tipeDrag === TypeDrag.remoteRotation) {
-                        if (img.ctrIdx > lastIdx) {
-                            lastIdx = img.ctrIdx;
-                            lastSprite = img;
+                    if (Ip.dotInsideImage(gbr, gbr.x, gbr.y, posCanvas.x, posCanvas.y)) {
+                        if (gbr.ctrIdx > lastIdx) {
+                            lastIdx = gbr.ctrIdx;
+                            lastSprite = gbr;
                         }
                     }
                 }
             }
             if (lastSprite) {
-                this.down(lastSprite, posCanvas, id);
+                this.handleGbrDitekan(lastSprite, posCanvas, id);
             }
         }
         inputMove(posCanvas, inputId) {
-            let posAbs = {
-                x: posCanvas.x - Basik.Camera.x,
-                y: posCanvas.y - Basik.Camera.y
-            };
             Ip.daftar.forEach((img) => {
-                if (img.ditekan && (img.tipeDrag != 0) && (img.inputId == inputId)) {
+                if (img.ditekan && (img.tipeDrag !== 0) && (img.inputId === inputId)) {
                     img.diDrag = true;
-                    if (img.tipeDrag == TypeDrag.drag || (img.tipeDrag == TypeDrag.remoteDrag)) {
-                        img.x = posAbs.x - img.dragAwalX;
-                        img.y = posAbs.y - img.dragAwalY;
+                    if (img.tipeDrag === tipeDrag.drag || (img.tipeDrag === tipeDrag.remoteDrag)) {
+                        img.x = posCanvas.x - img.dragAwalX;
+                        img.y = posCanvas.y - img.dragAwalY;
                     }
-                    else if (img.tipeDrag == TypeDrag.rotasi || (img.tipeDrag == TypeDrag.remoteRotation)) {
-                        let sudut2 = Basik.Tf.sudut(posAbs.x - img.x, posAbs.y - img.y);
+                    else if (img.tipeDrag == tipeDrag.rotasi || (img.tipeDrag == tipeDrag.remoteRotation)) {
+                        let sudut2 = Basik.Tf.sudut(posCanvas.x - img.x, posCanvas.y - img.y);
                         let perbedaan = sudut2 - img.initialMouseAngle;
                         img.rotasi = img.initialAngle + perbedaan;
                     }
@@ -1713,7 +1740,7 @@ var Basik;
             });
         }
     }
-    Basik.sprInt = new ImgIntHandler();
+    Basik.sprInt = new GbrInter();
 })(Basik || (Basik = {}));
 var Basik;
 (function (Basik) {
@@ -1734,18 +1761,18 @@ var Basik;
         static Size(n = 12) {
             Teks.size = n;
         }
-        static Align(s = 1) {
+        static Align(n = 1) {
             let align = "left";
-            if (s == 1) {
+            if (n == 1) {
                 align = "left";
             }
-            else if (s == 2) {
+            else if (n == 2) {
                 align = "center";
             }
-            else if (s == 3) {
+            else {
                 align = "right";
             }
-            Basik.G.Canvas().getContext('2d').textAlign = align;
+            Basik.G.Kanvas().getContext('2d').textAlign = align;
         }
         static WriteLn(teks, x, y) {
             if (x != undefined) {
@@ -1754,15 +1781,15 @@ var Basik;
             if (y != undefined) {
                 Teks._y = y;
             }
-            Basik.G.Canvas().getContext('2d').font = Teks.size + 'px ' + Teks._name;
-            Basik.G.Canvas().getContext('2d').fillText(teks, Teks._x, Teks._y);
-            Basik.G.Canvas().getContext('2d').strokeText(teks, Teks._x, Teks._y);
+            Basik.G.Kanvas().getContext('2d').font = Teks.size + 'px ' + Teks._name;
+            Basik.G.Kanvas().getContext('2d').fillText(teks, Teks._x, Teks._y);
+            Basik.G.Kanvas().getContext('2d').strokeText(teks, Teks._x, Teks._y);
             Teks._y += Teks.size + (Teks.size * .4);
         }
         static Write(teks) {
-            Basik.G.Canvas().getContext('2d').font = Teks.size + 'px ' + Teks._name;
-            Basik.G.Canvas().getContext('2d').fillText(teks, Teks._x, Teks._y);
-            Basik.G.Canvas().getContext('2d').strokeText(teks, Teks._x, Teks._y);
+            Basik.G.Kanvas().getContext('2d').font = Teks.size + 'px ' + Teks._name;
+            Basik.G.Kanvas().getContext('2d').fillText(teks, Teks._x, Teks._y);
+            Basik.G.Kanvas().getContext('2d').strokeText(teks, Teks._x, Teks._y);
         }
     }
     Teks._name = 'Arial';
@@ -1814,14 +1841,14 @@ var Basik;
         static warna(idx = 0, trans = 100) {
             let item = Warna.warnaAr[idx];
             let t2 = trans / 100;
-            Basik.G.Canvas().getContext('2d').fillStyle = `rgba(${item.r}, ${item.g}, ${item.b}, ${t2})`;
+            Basik.G.Kanvas().getContext('2d').fillStyle = `rgba(${item.r}, ${item.g}, ${item.b}, ${t2})`;
             Basik.G.merah = item.r;
             Basik.G.biru = item.b;
             Basik.G.hijau = item.g;
         }
         static warnaGaris(idx = 0, trans = 100) {
             let item = Warna.warnaAr[idx];
-            Basik.G.Canvas().getContext('2d').strokeStyle = `rgba(${item.r}, ${item.g}, ${item.b}, ${trans / 100})`;
+            Basik.G.Kanvas().getContext('2d').strokeStyle = `rgba(${item.r}, ${item.g}, ${item.b}, ${trans / 100})`;
             Basik.G.merah = item.r;
             Basik.G.biru = item.b;
             Basik.G.hijau = item.g;
@@ -1854,87 +1881,25 @@ var Basik;
     Warna.warnaAr = [];
     Basik.Warna = Warna;
 })(Basik || (Basik = {}));
-var Basik;
-(function (Basik) {
-    class Pena {
-        diangkat() {
-            tutupPath();
-        }
-        ditekan(x, y) {
-            bukaPath(x, y);
-        }
-        kanan(x) {
-            garis(x, 0);
-        }
-        atas(x) {
-            garis(0, x);
-        }
-        kiri(x) {
-            garis(-x, 0);
-        }
-        bawah(x) {
-            garis(0, x);
-        }
-        diag(x, y) {
-            garis(x, y);
-        }
-        polar(jarak, sudut) {
-            jarak;
-            sudut;
-        }
-        kurva() {
-            return new PenaData.Kurva2();
-        }
-    }
-    Basik.Pena = Pena;
-    let PenaData;
-    (function (PenaData) {
-        class Kurva2 {
-            constructor() {
-            }
-            kanan(x) {
-                return new Kurva3(x, 0);
-            }
-            bawah(x) {
-                return new Kurva3(0, x);
-            }
-        }
-        PenaData.Kurva2 = Kurva2;
-        class Kurva3 {
-            constructor(cx, cy) {
-                this.cx = 0;
-                this.cy = 0;
-                this.cx = cx;
-                this.cy = cy;
-            }
-            kanan(x) {
-                kurvaKe(this.cx, this.cy, x, this.cy);
-            }
-            bawah(y) {
-                kurvaKe(this.cx, this.cy, this.cx, y);
-            }
-            diag(x, y) {
-                kurvaKe(this.cx, this.cy, x, y);
-            }
-            kiri(x) {
-                kurvaKe(this.cx, this.cy, -x, this.cy);
-            }
-            atas(y) {
-                kurvaKe(this.cx, this.cy, this.cx, -y);
-            }
-        }
-        PenaData.Kurva3 = Kurva3;
-    })(PenaData || (PenaData = {}));
-})(Basik || (Basik = {}));
+function posisiKamera(x, y) {
+    Basik.Camera.x = x;
+    Basik.Camera.y = y;
+}
+function KameraX() {
+    return Basik.Camera.x;
+}
+function KameraY() {
+    return Basik.Camera.y;
+}
 function bukaPath(x = 0, y = 0) {
-    let ctx = G.Canvas().getContext('2d');
+    let ctx = G.Kanvas().getContext('2d');
     ctx.beginPath();
     ctx.moveTo(x, y);
     G.lastX = x;
     G.lastY = y;
 }
 function garisKe(x, y) {
-    let ctx = G.Canvas().getContext('2d');
+    let ctx = G.Kanvas().getContext('2d');
     x += G.lastX;
     y += G.lastY;
     ctx.lineTo(x, y);
@@ -1942,7 +1907,7 @@ function garisKe(x, y) {
     G.lastY = y;
 }
 function kurvaKe(cx, cy, x, y) {
-    let ctx = G.Canvas().getContext('2d');
+    let ctx = G.Kanvas().getContext('2d');
     cx += G.lastX;
     cy += G.lastY;
     x += G.lastX;
@@ -1961,18 +1926,18 @@ function lingkaranKe(cx, cy, sweepAngleDeg, clockWise = false) {
     const endAngle = clockWise
         ? startAngle - (sweepAngleDeg * Math.PI / 180)
         : startAngle + (sweepAngleDeg * Math.PI / 180);
-    let ctx = G.Canvas().getContext('2d');
+    let ctx = G.Kanvas().getContext('2d');
     ctx.beginPath();
     ctx.arc(cx, cy, r, startAngle, endAngle, !clockWise);
     ctx.stroke();
 }
 function tutupPath() {
-    let ctx = G.Canvas().getContext('2d');
+    let ctx = G.Kanvas().getContext('2d');
     ctx.stroke();
     ctx.fill();
 }
-function lingkaran(x = 100, y = 100, radius = 20, awal = 0, akhir = 360) {
-    let ctx = G.Canvas().getContext('2d');
+function gambarLingkaran(x = 100, y = 100, radius = 20, awal = 0, akhir = 360) {
+    let ctx = G.Kanvas().getContext('2d');
     ctx.beginPath();
     awal *= (Math.PI / 180);
     akhir *= Math.PI / 180;
@@ -1980,21 +1945,21 @@ function lingkaran(x = 100, y = 100, radius = 20, awal = 0, akhir = 360) {
     ctx.stroke();
     ctx.fill();
 }
-function elip(x = 0, y = 0, radiusX = 32, radiusY = 64, awal = 0, akhir = 360, searahJarumJam = false) {
-    let ctx = G.Canvas().getContext('2d');
+function gambarElips(x = 0, y = 0, radiusX = 32, radiusY = 64, awal = 0, akhir = 360, searahJarumJam = false) {
+    let ctx = G.Kanvas().getContext('2d');
     awal *= (Math.PI / 180);
     akhir *= Math.PI / 180;
     ctx.ellipse(x, y, radiusX, radiusY, 0, awal, akhir, !searahJarumJam);
     ctx.stroke();
     ctx.fill();
 }
-function kotak(x1 = 10, y1 = 10, x2 = 100, y2 = 100) {
-    let ctx = G.Canvas().getContext('2d');
+function gambarKotak(x1 = 10, y1 = 10, x2 = 100, y2 = 100) {
+    let ctx = G.Kanvas().getContext('2d');
     ctx.fillRect(x1, y1, x2, y2);
     ctx.strokeRect(x1, y1, x2, y2);
 }
-function segitiga(x, y, base, height, position) {
-    let ctx = G.Context();
+function gambarSegitiga(x, y, base, height, position) {
+    let ctx = G.Kontek();
     if (height == undefined && position == undefined) {
         const height = (Math.sqrt(3) / 2) * base;
         const x1 = x - base / 2;
@@ -2003,7 +1968,7 @@ function segitiga(x, y, base, height, position) {
         const y2 = y;
         const x3 = x;
         const y3 = y - height;
-        G.Context().beginPath();
+        G.Kontek().beginPath();
         ctx.moveTo(x1, y1);
         ctx.lineTo(x2, y2);
         ctx.lineTo(x3, y3);
@@ -2065,10 +2030,10 @@ function segitiga(x, y, base, height, position) {
         ctx.fill();
     }
 }
-function pie(x, y, radius, startAngleDeg, endAngleDeg) {
+function gambarPie(x, y, radius, startAngleDeg, endAngleDeg) {
     const startAngle = (startAngleDeg * Math.PI) / 180;
     const endAngle = (endAngleDeg * Math.PI) / 180;
-    let ctx = G.Context();
+    let ctx = G.Kontek();
     ctx.beginPath();
     ctx.moveTo(x, y);
     ctx.arc(x, y, radius, startAngle, endAngle);
@@ -2081,7 +2046,7 @@ function polygonTeratur(x, y, radius, sides) {
     if (sides < 3)
         return;
     const angleStep = (2 * Math.PI) / sides;
-    let ctx = G.Context();
+    let ctx = G.Kontek();
     ctx.beginPath();
     for (let i = 0; i < sides; i++) {
         const px = x + radius * Math.cos(angleStep * i - Math.PI / 2);
@@ -2097,7 +2062,7 @@ function polygonTeratur(x, y, radius, sides) {
     ctx.fill();
     ctx.stroke();
 }
-function bintang(ctx, x, y, spikes, outerRadius, innerRadius, fillColor = "gold") {
+function gambarBintang(ctx, x, y, spikes, outerRadius, innerRadius, fillColor = "gold") {
     let rot = Math.PI / 2 * 3;
     let step = Math.PI / spikes;
     let cx = x;
@@ -2120,8 +2085,8 @@ function bintang(ctx, x, y, spikes, outerRadius, innerRadius, fillColor = "gold"
     ctx.fill();
     ctx.stroke();
 }
-function garis(x = 100, y = 100, x2 = 500, y2 = 500) {
-    let ctx = G.Context();
+function gambarGaris(x = 100, y = 100, x2 = 500, y2 = 500) {
+    let ctx = G.Kontek();
     ctx.beginPath();
     ctx.moveTo(x, y);
     ctx.lineTo(x2, y2);
@@ -2131,12 +2096,12 @@ const S = Basik.Sn;
 function muatSuara(url) {
     let sound = document.createElement("audio");
     sound.onload = () => {
-        Basik.data().soundEvent = sound;
+        Basik.data.soundEvent = sound;
         console.log("sound loaded");
     };
     sound.onended = () => {
         try {
-            Basik.data().soundEvent = sound;
+            Basik.data.soundEvent = sound;
             Basik.Event.dispatchEvent(Basik.Evt.SOUND_ENDED);
             console.log("sound ended");
         }
@@ -2150,19 +2115,19 @@ function mainkanSuara(s) {
     s.play();
 }
 function suaraEvent() {
-    return Basik.data().soundEvent;
+    return Basik.data.soundEvent;
 }
 const G = Basik.G;
 const Ip = Basik.ImgImpl;
 const In = Basik.In;
-function setKanvas(c) {
-    G.SetCanvas(c);
-}
 function kanvas() {
-    return G.Canvas();
+    return G.Kanvas();
 }
 function buatKanvas(w = 800, h = 600, canvas = null, mode = 1) {
     console.log("buat kanvas");
+    G.Graphics(w, h, canvas, mode);
+}
+function mulai(w = 800, h = 600, canvas = null, mode = 1) {
     G.Graphics(w, h, canvas, mode);
 }
 function bersihkanLayar(x = 0, y = 0, w = 0, h = 0) {
@@ -2193,7 +2158,7 @@ function warnaGaris(idx, trans = 100) {
     Basik.Warna.warnaGaris(idx, trans);
 }
 function tebalGaris(n) {
-    G.Canvas().getContext('2d').lineWidth = n;
+    G.Kanvas().getContext('2d').lineWidth = n;
 }
 const dialog = G.alert;
 function mouseDitahan() {
@@ -2279,6 +2244,9 @@ function muatAnimasi(url, fw = 32, fh = 32) {
     return Ip.MuatAnimasi(url, fw, fh);
 }
 function stempel(img, x, y) {
+    if (img === undefined) {
+        img = "roket";
+    }
     if (typeof img == "string") {
         let img2 = Ip.getByName(img, true);
         posisi(img2, x, y);

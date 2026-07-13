@@ -1,0 +1,261 @@
+<!DOCTYPE html>
+<html lang="en" data-bs-theme="light">
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <meta name="description" content="None">
+        
+        
+        <link rel="shortcut icon" href="img/favicon.ico">
+        <title>Dokumentasi BASIK</title>
+        <link href="css/bootstrap.min.css" rel="stylesheet">
+        <link href="css/fontawesome.min.css" rel="stylesheet">
+        <link href="css/brands.min.css" rel="stylesheet">
+        <link href="css/solid.min.css" rel="stylesheet">
+        <link href="css/v4-font-face.min.css" rel="stylesheet">
+        <link href="css/base.css" rel="stylesheet">
+        <link id="hljs-light" rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/styles/github.min.css" >
+        <link id="hljs-dark" rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/styles/github-dark.min.css" disabled>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/highlight.min.js"></script>
+        <script>hljs.highlightAll();</script> 
+    </head>
+
+    <body class="homepage">
+        <div class="navbar fixed-top navbar-expand-lg navbar-dark bg-primary">
+            <div class="container">
+                <a class="navbar-brand" href=".">Dokumentasi BASIK</a>
+                <!-- Expander button -->
+                <button type="button" class="navbar-toggler" data-bs-toggle="collapse" data-bs-target="#navbar-collapse" aria-controls="navbar-collapse" aria-expanded="false" aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+
+                <!-- Expanded navigation -->
+                <div id="navbar-collapse" class="navbar-collapse collapse">
+                        <!-- Main navigation -->
+                        <ul class="nav navbar-nav">
+                            <li class="nav-item">
+                                <a href="." class="nav-link active" aria-current="page">Beranda</a>
+                            </li>
+                            <li class="nav-item">
+                                <a href="api-doc-perintah/" class="nav-link">API</a>
+                            </li>
+                        </ul>
+
+                    <ul class="nav navbar-nav ms-md-auto">
+                        <li class="nav-item">
+                            <a href="#" class="nav-link" data-bs-toggle="modal" data-bs-target="#mkdocs_search_modal">
+                                <i class="fa fa-search"></i> Search
+                            </a>
+                        </li>
+                            <li class="nav-item">
+                                <a rel="prev" class="nav-link disabled">
+                                    <i class="fa fa-arrow-left"></i> Previous
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a rel="next" href="api-doc-perintah/" class="nav-link">
+                                    Next <i class="fa fa-arrow-right"></i>
+                                </a>
+                            </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <div class="container">
+            <div class="row">
+                    <div class="col-md-3"><div class="navbar-expand-md bs-sidebar hidden-print affix" role="complementary">
+    <div class="navbar-header">
+        <button type="button" class="navbar-toggler collapsed" data-bs-toggle="collapse" data-bs-target="#toc-collapse" title="Table of Contents">
+            <span class="fa fa-angle-down"></span>
+        </button>
+    </div>
+
+    
+    <div id="toc-collapse" class="navbar-collapse collapse card bg-body-tertiary">
+        <ul class="nav flex-column">
+            
+            <li class="nav-item" data-bs-level="2"><a href="#gambaran-umum" class="nav-link">📖 Gambaran Umum</a>
+              <ul class="nav flex-column">
+              </ul>
+            </li>
+            
+            <li class="nav-item" data-bs-level="2"><a href="#cara-pemakaian" class="nav-link">📖 Cara pemakaian</a>
+              <ul class="nav flex-column">
+              </ul>
+            </li>
+            
+            <li class="nav-item" data-bs-level="2"><a href="#lisensi" class="nav-link">📖 Lisensi</a>
+              <ul class="nav flex-column">
+              </ul>
+            </li>
+        </ul>
+    </div>
+</div></div>
+                    <div class="col-md-9" role="main">
+
+<h2 id="gambaran-umum">📖 Gambaran Umum</h2>
+<p>BASIK adalah kumpulan perintah/fungsi javascript yang bisa dipakai sebagai media pembelajaran pengenalan koding untuk pemula. BASIK mengenalkan pemrograman kepada pemula dengan membuat aplikasi interaktif berbasis kanvas sederhana. Cocok untuk siswa, guru, atau siapa saja yang ingin belajar dasar pemrograman visual.</p>
+<p>Prinsip-prinsip dasar BASIK
+- Semua perintah bisa langsung dilihat hasilnya tanpa dibingungkan dengan struktur yang kompleks. 
+- Tidak perlu install aplikasi tambahan. BASIK berjalan sepenuhnya di browser.
+- Bisa jalan secara daring ataupun luring.
+- Format perintah bersifat procedural, menghindari penggunaan format yang kompleks seperti callback, class, dll.</p>
+<h2 id="cara-pemakaian">📖 Cara pemakaian</h2>
+<p>Untuk pengguna daring, BASIK bisa di buka melalui alamat berikut: ...<br />
+Untuk pengguna luring, BASIK bisa di buka dengan membuka file <code>editor.html</code> di broser untuk memulai.  </p>
+<p>Contoh applikasi sederhana:</p>
+<pre><code>mulai();
+stempel(&quot;roket&quot;);
+</code></pre>
+<p><code>mulai()</code> adalah perintah pertama yang berfungsi untuk memulai aplikasi. Perintah ini harus dipanggil pertama kali sebelum memanggil perintah yang lain.<br />
+<code>stempel("roket")</code> adalah perintah untuk men-stempel gambar ke kanvas. "roket" adalah gambar yang ingin distempel. </p>
+<p>Untuk mengetahui gambar apa saja yang bisa distempel, Anda bisa membuka folder <code>asset</code>. Gunakan nama file sebagai parameter dari perintah <code>stempel()</code>.</p>
+<p>Perintah <code>stempel()</code> adalah perintah sederhana untuk menstempel gambar. Perintah ini sangat terbatas fungsinya. Untuk mendapatkan fungsi yang lebih kompleks seperti memutar gambar, mengubah posisi, dll maka kita harus memuat gambar terlebih dahulu.</p>
+<pre><code>mulai();
+let roket = muatGambar(&quot;roket&quot;);
+roket.x = 400;
+roket.y = 300;
+roket.panjang = 90;
+roket.lebar = 70;
+stempel(roket);
+</code></pre>
+<p>Pada contoh di atas, kita memuat gambar terlebih dahulu, kemudian kita ubah posisi dan ukuran dari gambar tersebut dengan merubah property secara langsung, kemudian menempelkannya ke kanvas. Saat kita memuat gambar terlebih dahulu, maka kita tidak lagi menggunakan nama file sebagai parameter dari perintah <code>stempel()</code>. Kita menggunakan nama variable yang dijadikan referensi saat memuat gambar.</p>
+<p>Kita juga bisa merubah property dengan perintah yang lebih ringkas.</p>
+<pre><code>mulai();
+let roket = muatGambar(&quot;roket&quot;);
+posisiGambar(roket, 400, 300);
+ukuranGambar(roket, 90, 70);
+stempel(roket);
+</code></pre>
+<p>Daftar perintah lengkap bisa di lihat di <a href="api-doc-gambar/">sini</a></p>
+<p>BASIK mendukung aplikasi interaktif dan dinamis dengan menyediakan fungsi bawaan yang menangani mouse, keyboard, update applikasi, dll.</p>
+<p>Di contoah di bawah ini menunjukkan bagaimana kita menghandle event update secara sederhana. Anda cukup membuat fungsi update(), dan fungsi ini akan dipanggil secara otomatis saat applikasi diupdate.</p>
+<pre><code>mulai();
+let roket = muatGambar(&quot;roket&quot;);
+pusatGambar(roket, 32, 46);
+posisiGambar(roket, 400, 300);
+
+function update() {
+    bersihkanLayar();
+    roket.rotasi++;
+    stempel(roket);
+}
+</code></pre>
+<p>BASIK juga menyediakan fungsi bawaan untuk menangani event-event yang berhubungan dengan mouse, touch dan keyboard.</p>
+<pre><code>mulai();
+let roket = muatGambar(&quot;roket&quot;);
+pusatGambar(roket, 32, 46);
+
+function update() {
+    bersihkanLayar();
+    roket.x = mouseX();
+    roket.y = mouseY();
+    roket.rotasi++;
+    stempel(roket);
+}
+</code></pre>
+<p>Bila contoh di atas dijalankan, maka Anda akan melihat gambar roket yang berputar sambil bergerak mengikuti mouse.</p>
+<p>BASIK juga menyediakan fungsi bawaan untuk menangani interaksi drag. Ada 4 tipe drag yang didukung. Memungkinkan pengguna untuk membuat aplikasi interaktif dengan mudah tanpa memikirkan struktur dan alogrithma yang rumit.</p>
+<pre><code>mulai();
+let roket = muatGambar(&quot;roket&quot;);
+pusatGambar(roket, 32, 46);
+posisiGambar(roket, 400, 300);
+roket.tipeDrag = 1;
+
+function update() {
+    bersihkanLayar();
+    Tulis(&quot;&quot;);
+    roket.rotasi++;
+    stempel(roket);
+}
+</code></pre>
+<p>Pada contoh di atas, kita menggunakan drag dengan tipe 1. User bisa mendrag gambar menggunakan mouse atau touch (bila di handphone). </p>
+<p>Dokumentasi lengkap mengenai cara menghandle event bisa dilihat di <a href="api-doc-event/">sini</a></p>
+<h2 id="lisensi">📖 Lisensi</h2>
+<p>GNU license</p>
+<hr /></div>
+            </div>
+        </div>
+
+        <footer class="col-md-12">
+            <hr>
+            <p>Documentation built with <a href="https://www.mkdocs.org/">MkDocs</a>.</p>
+        </footer>
+        <script src="js/bootstrap.bundle.min.js"></script>
+        <script>
+            var base_url = ".",
+                shortcuts = {"help": 191, "next": 78, "previous": 80, "search": 83};
+        </script>
+        <script src="js/base.js"></script>
+        <script src="search/main.js"></script>
+
+        <div class="modal" id="mkdocs_search_modal" tabindex="-1" role="dialog" aria-labelledby="searchModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title" id="searchModalLabel">Search</h4>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <p>From here you can search these documents. Enter your search terms below.</p>
+                <form>
+                    <div class="form-group">
+                        <input type="search" class="form-control" placeholder="Search..." id="mkdocs-search-query" title="Type search term here">
+                    </div>
+                </form>
+                <div id="mkdocs-search-results" data-no-results-text="No results found"></div>
+            </div>
+            <div class="modal-footer">
+            </div>
+        </div>
+    </div>
+</div><div class="modal" id="mkdocs_keyboard_modal" tabindex="-1" role="dialog" aria-labelledby="keyboardModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title" id="keyboardModalLabel">Keyboard Shortcuts</h4>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+              <table class="table">
+                <thead>
+                  <tr>
+                    <th style="width: 20%;">Keys</th>
+                    <th>Action</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td class="help shortcut"><kbd>?</kbd></td>
+                    <td>Open this help</td>
+                  </tr>
+                  <tr>
+                    <td class="next shortcut"><kbd>n</kbd></td>
+                    <td>Next page</td>
+                  </tr>
+                  <tr>
+                    <td class="prev shortcut"><kbd>p</kbd></td>
+                    <td>Previous page</td>
+                  </tr>
+                  <tr>
+                    <td class="search shortcut"><kbd>s</kbd></td>
+                    <td>Search</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+            <div class="modal-footer">
+            </div>
+        </div>
+    </div>
+</div>
+
+    </body>
+</html>
+
+<!--
+MkDocs version : 1.6.1
+Build Date UTC : 2026-06-26 14:46:00.940560+00:00
+-->

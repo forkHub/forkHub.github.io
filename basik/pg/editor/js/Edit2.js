@@ -1,4 +1,13 @@
 "use strict";
+var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
+    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
+    return new (P || (P = Promise))(function (resolve, reject) {
+        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
+        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
+        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
+        step((generator = generator.apply(thisArg, _arguments || [])).next());
+    });
+};
 var EState;
 (function (EState) {
     EState[EState["awal"] = 0] = "awal";
@@ -61,7 +70,37 @@ class Edit2 {
             tbl.classList.add('disp-none');
         }
     }
-    init() {
+    getQuery(key) {
+        let q = '';
+        let h = '';
+        console.group('get query: ' + key);
+        q = window.top.location.search;
+        console.log(q);
+        q = q.slice(1, q.length);
+        console.log(q);
+        let qAr = q.split("&");
+        console.log(qAr);
+        qAr.forEach((item) => {
+            let keyAr = item.split('=');
+            let pKey = keyAr[0];
+            if (pKey == key) {
+                h = keyAr[1];
+            }
+        });
+        console.log('res: ' + h);
+        console.groupEnd();
+        return h;
+    }
+    injectScript(src, f) {
+        console.group('inject script');
+        console.log('src:', src);
+        let script = document.createElement('script');
+        script.onload = f;
+        script.src = src;
+        document.head.appendChild(script);
+        console.groupEnd();
+    }
+    initTombol() {
         this.getTbl("simpan").onclick = () => {
             this.simpanKlik();
         };
@@ -91,22 +130,51 @@ class Edit2 {
         this.getTbl("baru").onclick = () => {
             this.baruKlik();
         };
-        // this.getTbl("demo").onclick = () => {
-        // 	this.demoKlik();
-        // }
+    }
+    initCodeMirror(code = '') {
+        console.log("init code mirror");
         this.myCodeMirror = CodeMirror.fromTextArea(this.editArea, {
             lineNumbers: true,
             mode: "javascript",
             gutters: ["CodeMirror-lint-markers"],
-            lint: false
+            lint: false,
+            init: code
         });
+        this.myCodeMirror.setValue(code);
         this.myCodeMirror.on("change", () => {
-            // console.log('change');
             this.updateNama();
         });
+    }
+    init() {
+        console.group("init");
+        this.initTombol();
         this.hideTbl("edit");
         this.muatFileAwal();
         this.fileInfo.innerText = fileNama;
+        let code = this.getQuery("pId");
+        if (code) {
+            this.injectScript("./demo/" + code + ".js", () => {
+                //TODO:
+                console.log("script loaded");
+                this.initCodeMirror(codeDemo.code);
+            });
+            return;
+        }
+        //let load code;
+        let loadCode = this.getQuery("url");
+        if (loadCode) {
+            loadFileFromUrl(loadCode)
+                .then((code) => {
+                this.initCodeMirror(code);
+            })
+                .catch((err) => {
+                console.log(err);
+            });
+        }
+        else {
+            this.initCodeMirror("mulai();\n");
+        }
+        console.groupEnd();
     }
     demoKlik() {
         let demo = document.querySelector("dialog.demo") || (() => { throw new Error("Demo dialog not found"); })();
@@ -116,9 +184,16 @@ class Edit2 {
         window.location.reload();
     }
     muatKlik() {
+        console.log("");
         dialogDaftarFile((item) => {
+            console.group("");
             console.log("muat data");
             console.log(item.data);
+            console.log("this", this);
+            console.log("code mirror instance", this.myCodeMirror);
+            console.log("globalThis instance", globalThis);
+            console.log("globalThis edit instance", globalThis["edit"]);
+            console.groupEnd();
             fileBaru = false;
             fileNama = item.namaFile;
             fileAktif = item;
@@ -166,6 +241,11 @@ class Edit2 {
     }
     simpanKlik() {
         let dataKode = this.myCodeMirror.getValue();
+        let code = {
+            code: dataKode
+        };
+        console.log("code str");
+        console.log(code);
         if (!dataKode) {
             alert("Tidak ada data yang disimpan, Anda belum menulis apa-apa.");
             return;
@@ -262,7 +342,6 @@ class Edit2 {
     }
     runOk() {
         let hal2 = renderIframe(this.myCodeMirror.getValue());
-        // hal2 = hal2.replace('{{script}}', this.myCodeMirror.getValue());
         let iframe = document.createElement('iframe');
         let iframeCont = document.body.querySelector('div.kontainer-2 div.web');
         iframeCont.innerHTML = '';
@@ -271,6 +350,7 @@ class Edit2 {
             iframe.contentWindow.document.open();
             iframe.contentWindow.document.write(hal2);
             iframe.contentWindow.document.close();
+            iframe.focus();
         }, 0);
     }
     checkFileUpdated() {
@@ -290,7 +370,7 @@ class Edit2 {
 window.onload = () => {
     let edit = new Edit2();
     edit.init();
-    console.log(JSHINT.errors);
+    // console.log(JSHINT.errors);
     // JSHINT.errors = jsHIntErrors;
     // JSHINT.warnings = jshintWarnings;
     // JSHINT.info = jsHintInfo;
@@ -379,6 +459,7 @@ function renderIframe(script) {
 		script.textContent = \`${script}\`
 		document.head.appendChild(script);
 	});
+	window.focus();
 	</script>
 </head>
 
@@ -416,6 +497,10 @@ function showErrorDialog(errors, okHandle, cancelHandle) {
         list.appendChild(item);
     });
     dialog.appendChild(list);
+    dialog.appendChild(document.createElement('hr'));
+    const p = document.createElement('p');
+    p.innerText = "Tekan 'Lanjutkan' untuk tetap menjalankan aplikasi, tekan 'Batal' untuk mengedit kembali.";
+    dialog.appendChild(p);
     // Buttons container
     const buttons = document.createElement('div');
     buttons.style.marginTop = '20px';
@@ -424,7 +509,7 @@ function showErrorDialog(errors, okHandle, cancelHandle) {
     buttons.style.gap = '10px';
     // Continue button
     const continueBtn = document.createElement('button');
-    continueBtn.textContent = 'Continue';
+    continueBtn.textContent = 'Lanjutkan';
     continueBtn.onclick = () => {
         // Empty handler
         dialog.close();
@@ -432,7 +517,7 @@ function showErrorDialog(errors, okHandle, cancelHandle) {
     };
     // Abort button
     const abortBtn = document.createElement('button');
-    abortBtn.textContent = 'Abort';
+    abortBtn.textContent = 'Batal';
     abortBtn.onclick = () => {
         // Empty handler
         dialog.close();
@@ -447,4 +532,26 @@ function showErrorDialog(errors, okHandle, cancelHandle) {
 }
 function dlgBelumSelesai() {
     alert("Maaf fungsi masih belum tersedia");
+}
+/**
+ * Load file content from a given URL.
+ * @param url - The URL of the file to fetch.
+ * @param type - The expected response type: "text", "json", or "arrayBuffer".
+ * @returns Promise with the file content in the chosen format.
+ */
+function loadFileFromUrl(url_1) {
+    return __awaiter(this, arguments, void 0, function* (url, type = "text") {
+        const response = yield fetch(url);
+        if (!response.ok) {
+            throw new Error(`Failed to load file: ${response.status} ${response.statusText}`);
+        }
+        switch (type) {
+            case "json":
+                return (yield response.json());
+            case "arrayBuffer":
+                return (yield response.arrayBuffer());
+            default:
+                return (yield response.text());
+        }
+    });
 }

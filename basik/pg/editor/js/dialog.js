@@ -21,13 +21,13 @@ function dialogDaftarFile(onConfirm, onCancel) {
             buttonContainer.className = 'pd';
             const confirmBtn = document.createElement('button');
             confirmBtn.className = 'dialog-confirm';
-            confirmBtn.textContent = 'Confirm';
+            confirmBtn.textContent = 'OK';
             confirmBtn.onclick = () => {
                 confirmKlik();
             };
             const cancelBtn = document.createElement('button');
             cancelBtn.className = 'dialog-cancel';
-            cancelBtn.textContent = 'Cancel';
+            cancelBtn.textContent = 'Batal';
             cancelBtn.onclick = () => {
                 cancelKlik();
             };
