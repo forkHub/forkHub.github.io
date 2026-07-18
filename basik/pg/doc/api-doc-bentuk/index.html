@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html lang="en" data-bs-theme="light">
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        
+        
+        
+        <link rel="shortcut icon" href="../img/favicon.ico">
+        <title>Api doc bentuk - Dokumentasi BASIK</title>
+        <link href="../css/bootstrap.min.css" rel="stylesheet">
+        <link href="../css/fontawesome.min.css" rel="stylesheet">
+        <link href="../css/brands.min.css" rel="stylesheet">
+        <link href="../css/solid.min.css" rel="stylesheet">
+        <link href="../css/v4-font-face.min.css" rel="stylesheet">
+        <link href="../css/base.css" rel="stylesheet">
+        <link id="hljs-light" rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/styles/github.min.css" >
+        <link id="hljs-dark" rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/styles/github-dark.min.css" disabled>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/highlight.min.js"></script>
+        <script>hljs.highlightAll();</script> 
+    </head>
+
+    <body>
+        <div class="navbar fixed-top navbar-expand-lg navbar-dark bg-primary">
+            <div class="container">
+                <a class="navbar-brand" href="..">Dokumentasi BASIK</a>
+                <!-- Expander button -->
+                <button type="button" class="navbar-toggler" data-bs-toggle="collapse" data-bs-target="#navbar-collapse" aria-controls="navbar-collapse" aria-expanded="false" aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+
+                <!-- Expanded navigation -->
+                <div id="navbar-collapse" class="navbar-collapse collapse">
+                        <!-- Main navigation -->
+                        <ul class="nav navbar-nav">
+                            <li class="nav-item">
+                                <a href=".." class="nav-link">Beranda</a>
+                            </li>
+                            <li class="nav-item">
+                                <a href="../api-doc-perintah/" class="nav-link">API</a>
+                            </li>
+                        </ul>
+
+                    <ul class="nav navbar-nav ms-md-auto">
+                        <li class="nav-item">
+                            <a href="#" class="nav-link" data-bs-toggle="modal" data-bs-target="#mkdocs_search_modal">
+                                <i class="fa fa-search"></i> Search
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <div class="container">
+            <div class="row">
+                    <div class="col-md-3"><div class="navbar-expand-md bs-sidebar hidden-print affix" role="complementary">
+    <div class="navbar-header">
+        <button type="button" class="navbar-toggler collapsed" data-bs-toggle="collapse" data-bs-target="#toc-collapse" title="Table of Contents">
+            <span class="fa fa-angle-down"></span>
+        </button>
+    </div>
+
+    
+    <div id="toc-collapse" class="navbar-collapse collapse card bg-body-tertiary">
+        <ul class="nav flex-column">
+            
+            <li class="nav-item" data-bs-level="2"><a href="#menggambar-bentuk-dasar" class="nav-link">📝 menggambar bentuk dasar</a>
+              <ul class="nav flex-column">
+              </ul>
+            </li>
+        </ul>
+    </div>
+</div></div>
+                    <div class="col-md-9" role="main">
+
+<h2 id="menggambar-bentuk-dasar">📝 menggambar bentuk dasar</h2>
+<p>Berisi kumpulan perintah untuk menggambar dengan bangun geometri</p>
+<h4 id="warnaidx-number-0-trans-100"><code>warna(idx: number = 0, trans = 100)</code></h4>
+<p>Mengeset warna fill</p>
+<p><strong>Parameters</strong>
+*   <code>x</code>: <code>number</code>, default 0
+    posisi x dari tengah lingkaran</p>
+<h4 id="warnagarisidx-number-trans-100"><code>warnaGaris(idx: number, trans = 100)</code></h4>
+<p>Mengeset warna garis</p>
+<p><strong>Parameters</strong>
+*   <code>x</code>: <code>number</code>, default 0
+    posisi x dari tengah lingkaran</p>
+<h4 id="tebalgarisn-number"><code>tebalGaris(n: number)</code></h4>
+<p>Mengatur ketbalan garis</p>
+<p><strong>Parameters</strong>
+*   <code>x</code>: <code>number</code>, default 0
+    posisi x dari tengah lingkaran</p>
+<h3 id="bukapathx-number-0-y-number-0-void"><code>bukaPath(x: number = 0, y: number = 0): void</code></h3>
+<p>Perintah ini berfungsi untuk memulai menggambar bentuk yang kompleks. 
+Perintah ini bisa di ikuti dengan perintah <code>garisKe()</code>, <code>kurvaKe()</code> dan <code>lingkaranKe()</code></p>
+<p><strong>Parameters</strong>
+*   <code>x</code>: <code>number</code><br />
+    Posisi X mulai menggambar
+*   <code>y</code>: <code>number</code>, default 32<br />
+    Posisi Y mulai menggambar</p>
+<h3 id="gariskex-number-y-number-void"><code>garisKe(x: number, y: number): void</code></h3>
+<p>Membuat garis ke posisi tertentu dari posisi terakhir</p>
+<p><strong>Parameters</strong>
+*   <code>x</code>: <code>number</code><br />
+    Posisi x ujung garis
+*   <code>y</code>: <code>number</code>, default 32<br />
+    Posisi y ujung garis</p>
+<h3 id="kurvakecx-number-cy-number-x-number-y-number-void"><code>kurvaKe(cx: number, cy: number, x: number, y: number): void</code></h3>
+<p>Membuat kurva yang berakhir ke posisi x dan y, dengan kontrol point ditentukan oleh cx dan cy</p>
+<p><strong>Parameters</strong>
+*   <code>cx</code>: <code>number</code><br />
+    posisi x kontrol point
+*   <code>cy</code>: <code>number</code><br />
+    posisi y kontrol point
+*   <code>x</code>: <code>number</code><br />
+    posisi x ujung kurva
+*   <code>y</code>: <code>number</code><br />
+    posisi y ujung kurva</p>
+<h3 id="lingkaranketx-number-ty-number-sudut-number-searahjarumjam-false"><code>lingkaranKe(tx: number, ty: number, sudut: number, searahJarumJam = false)</code></h3>
+<p>Membuat lingkaran dari posisi terakhir sebesar sudut tertentu</p>
+<p><strong>Parameters</strong>
+*   <code>tx</code>: <code>number</code><br />
+    posisi x dari tengah lingkaran
+*   <code>ty</code>: <code>number</code><br />
+    posisi y dari tengah lingkaran
+*   <code>sudut</code>: <code>number</code><br />
+    sudut akhir lingkaran di hitung dari posisi akhir x dan y 
+*   <code>searahJarumJam</code>: <code>boolean</code><br />
+    apakah lingkaran digambar searah jarum jam</p>
+<h3 id="tutuppath"><code>tutupPath()</code></h3>
+<p>Menutup Path. Perintah ini harus dipanggil untuk mengakhiri perintah dari <code>bukaPath()</code>.</p>
+<h3 id="elipx-number-0-y-number-0-radiusx-number-0-radiusy-number-0-awal-number-0-akhir-number-360-searahjarumjamboolean-false-void"><code>elip(x: number = 0, y: number = 0, radiusX: number = 0, radiusY: number = 0, awal: number = 0, akhir: number = 360, searahJarumJam:boolean = false): void</code></h3>
+<p>Menggambar elip atau lingkaran</p>
+<p><strong>Parameters</strong>
+*   <code>x</code>: <code>number</code>, default 0
+    posisi x dari tengah lingkaran
+*   <code>y</code>: <code>number</code>, default 0
+    posisi y dari tengah lingkaran
+*   <code>radiusX</code>: <code>number</code>, default 32<br />
+    radius horizontal 
+*   <code>radiusY</code>: <code>number</code>, default 64
+    radius vertikal
+*   <code>awal</code>: <code>number</code>, default 0<br />
+    sudut awal elip
+*   <code>akhir</code>: <code>number</code>, default 360<br />
+    sudut akhir elip
+*   <code>searahJarumJam</code>: <code>boolean</code>, default false<br />
+    apakah elips searah jarum jam</p>
+<h3 id="kotakx-number-10-y-number-10-pjg-number-100-lbr-number-100"><code>kotak(x: number = 10, y: number = 10, pjg: number = 100, lbr: number = 100)</code></h3>
+<p><strong>Parameters</strong>
+*   <code>x</code>: <code>number</code>, default 10<br />
+    posisi x dari awal kotak
+*   <code>y</code>: <code>number</code>, default 10<br />
+    posisi y dari awal kotak
+*   <code>pjg</code>: <code>number</code>, default 100<br />
+    panjang kotak
+*   <code>lbr</code>: <code>number</code>, default 100<br />
+    lebar kotak</p></div>
+            </div>
+        </div>
+
+        <footer class="col-md-12">
+            <hr>
+            <p>Documentation built with <a href="https://www.mkdocs.org/">MkDocs</a>.</p>
+        </footer>
+        <script src="../js/bootstrap.bundle.min.js"></script>
+        <script>
+            var base_url = "..",
+                shortcuts = {"help": 191, "next": 78, "previous": 80, "search": 83};
+        </script>
+        <script src="../js/base.js"></script>
+        <script src="../search/main.js"></script>
+
+        <div class="modal" id="mkdocs_search_modal" tabindex="-1" role="dialog" aria-labelledby="searchModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title" id="searchModalLabel">Search</h4>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <p>From here you can search these documents. Enter your search terms below.</p>
+                <form>
+                    <div class="form-group">
+                        <input type="search" class="form-control" placeholder="Search..." id="mkdocs-search-query" title="Type search term here">
+                    </div>
+                </form>
+                <div id="mkdocs-search-results" data-no-results-text="No results found"></div>
+            </div>
+            <div class="modal-footer">
+            </div>
+        </div>
+    </div>
+</div><div class="modal" id="mkdocs_keyboard_modal" tabindex="-1" role="dialog" aria-labelledby="keyboardModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title" id="keyboardModalLabel">Keyboard Shortcuts</h4>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+              <table class="table">
+                <thead>
+                  <tr>
+                    <th style="width: 20%;">Keys</th>
+                    <th>Action</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td class="help shortcut"><kbd>?</kbd></td>
+                    <td>Open this help</td>
+                  </tr>
+                  <tr>
+                    <td class="next shortcut"><kbd>n</kbd></td>
+                    <td>Next page</td>
+                  </tr>
+                  <tr>
+                    <td class="prev shortcut"><kbd>p</kbd></td>
+                    <td>Previous page</td>
+                  </tr>
+                  <tr>
+                    <td class="search shortcut"><kbd>s</kbd></td>
+                    <td>Search</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+            <div class="modal-footer">
+            </div>
+        </div>
+    </div>
+</div>
+
+    </body>
+</html>

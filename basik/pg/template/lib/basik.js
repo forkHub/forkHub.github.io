@@ -204,9 +204,11 @@ var Basik;
             }
             setTimeout(() => {
                 window.requestAnimationFrame(update);
+                window.focus();
             }, 100);
             setTimeout(() => {
                 Basik.G.handleWindowResize();
+                window.focus();
             }, 100);
             Basik.G.handleWindowResize();
             bersihkanLayar();
@@ -214,8 +216,9 @@ var Basik;
             warna(215);
             posisiTeks(20, 20);
             ukuranTeks(20);
-            tebalGaris(2);
+            tebalGaris(1);
             Basik.data.init = true;
+            window.focus();
             console.groupEnd();
         }
         static Cls(x = 0, y = 0, w = 0, h = 0) {
@@ -1774,7 +1777,7 @@ var Basik;
             }
             Basik.G.Kanvas().getContext('2d').textAlign = align;
         }
-        static WriteLn(teks, x, y) {
+        static WriteLn(teks = "", x, y) {
             if (x != undefined) {
                 Teks._x = x;
             }

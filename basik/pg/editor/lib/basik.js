@@ -1777,7 +1777,7 @@ var Basik;
             }
             Basik.G.Kanvas().getContext('2d').textAlign = align;
         }
-        static WriteLn(teks, x, y) {
+        static WriteLn(teks = "", x, y) {
             if (x != undefined) {
                 Teks._x = x;
             }

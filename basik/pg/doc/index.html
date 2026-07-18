@@ -86,6 +86,11 @@
               </ul>
             </li>
             
+            <li class="nav-item" data-bs-level="2"><a href="#gambar-sebagai-object" class="nav-link">📝 Gambar sebagai object</a>
+              <ul class="nav flex-column">
+              </ul>
+            </li>
+            
             <li class="nav-item" data-bs-level="2"><a href="#lisensi" class="nav-link">📖 Lisensi</a>
               <ul class="nav flex-column">
               </ul>
@@ -129,7 +134,7 @@ posisiGambar(roket, 400, 300);
 ukuranGambar(roket, 90, 70);
 stempel(roket);
 </code></pre>
-<p>Daftar perintah lengkap bisa di lihat di <a href="api-doc-gambar/">sini</a></p>
+<p>Daftar perintah lengkap bisa di lihat di <a href="api-doc-gambar.md">sini</a></p>
 <p>BASIK mendukung aplikasi interaktif dan dinamis dengan menyediakan fungsi bawaan yang menangani mouse, keyboard, update applikasi, dll.</p>
 <p>Di contoah di bawah ini menunjukkan bagaimana kita menghandle event update secara sederhana. Anda cukup membuat fungsi update(), dan fungsi ini akan dipanggil secara otomatis saat applikasi diupdate.</p>
 <pre><code>mulai();
@@ -173,6 +178,48 @@ function update() {
 </code></pre>
 <p>Pada contoh di atas, kita menggunakan drag dengan tipe 1. User bisa mendrag gambar menggunakan mouse atau touch (bila di handphone). </p>
 <p>Dokumentasi lengkap mengenai cara menghandle event bisa dilihat di <a href="api-doc-event/">sini</a></p>
+<h2 id="gambar-sebagai-object">📝 Gambar sebagai object</h2>
+<p>BASIK memiliki object bawaan bernama object Gambar.
+Object ini dibuat dengan perintah <code>muatGambar()</code>.</p>
+<p>Object <code>Gambar</code> memiliki property sebagai berikut:
+*   <code>x</code>: number<br />
+    posisi x 
+*   <code>y</code>: number<br />
+    posisi y 
+*   <code>alpha</code>: number<br />
+    transparansi (0 - 100)
+*   <code>pusatX</code>: number<br />
+    posisi pusat x
+*   <code>pusatY</code>: number<br />
+    posisi y 
+*   <code>panjang</code>: number<br />
+    panjang
+*   <code>lebar</code>: number<br />
+    lebar
+*   <code>rotasi</code>: number<br />
+    rotasi (0 - 360)
+*   <code>ubin</code>: boolean<br />
+    apakah gambar akan digambar sebagai ubin yang memenuhi layar
+*   <code>diDrag</code>: boolean<br />
+    apakah gambar sedang di drag
+*   <code>diTekan</code>: boolean<br />
+    apakah gambar sedang di tekan oleh mouse/jari
+*   <code>tipeDrag</code>: number<br />
+    tipe drag: 1 = geser, 2 = rotasi, 3 = geser tanpa sentuh, 4 = rotasi tanpa sentuh
+*   <code>dimuat</code>: boolean<br />
+    apakah gambar sudah selesai di muat
+*   <code>frame</code>: number<br />
+    nomor frame aktif, bila gambar berupa animasi spritesheet
+*   <code>panjangFrame</code>: number<br />
+    panjang dari tiap frame dalam animasi, bila gambar berupa animasi spritesheet. 
+*   <code>lebarFrame</code>: number<br />
+    lebar dari tiap frame, bila gambar berupa animasi spritesheet
+*   <code>dragAwalX</code>: number<br />
+    posisi awal x saat gambar mulai di drag
+*   <code>dragAwalY</code>: number<br />
+    posisi awal y saat gambar mulai di drag
+*   <code>ditekan</code>: boolean<br />
+    apakah gambar sedang di tekan</p>
 <h2 id="lisensi">📖 Lisensi</h2>
 <p>GNU license</p>
 <hr /></div>
@@ -257,5 +304,5 @@ function update() {
 
 <!--
 MkDocs version : 1.6.1
-Build Date UTC : 2026-06-26 14:46:00.940560+00:00
+Build Date UTC : 2026-07-18 13:44:50.277989+00:00
 -->
