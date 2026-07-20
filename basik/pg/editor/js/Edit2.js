@@ -180,7 +180,20 @@ class Edit2 {
         let demo = document.querySelector("dialog.demo") || (() => { throw new Error("Demo dialog not found"); })();
         demo.showModal();
     }
+    reload() {
+        try {
+            // Get the current URL without query parameters and hash
+            const cleanUrl = window.location.origin + window.location.pathname;
+            // Replace the current history entry without reloading
+            window.history.replaceState({}, document.title, cleanUrl);
+            // Reload the page without query parameters
+        }
+        catch (error) {
+            console.error("Failed to reload without query parameters:", error);
+        }
+    }
     baruKlik() {
+        this.reload();
         window.location.reload();
     }
     muatKlik() {

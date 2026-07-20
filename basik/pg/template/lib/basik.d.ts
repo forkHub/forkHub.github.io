@@ -367,6 +367,7 @@ declare namespace Basik {
         static set lastImg(value: GbrObj);
         static CreateImage(width: number, height: number): GbrObj;
         static MuatAnimasi(url: string, pf: number, lf: number): GbrObj;
+        static resolveGbrUrl(url: string): string;
         static Muat(url: string): GbrObj;
         static tabrakan(gbr1: GbrObj, x1: number, y1: number, gbr2: GbrObj, x2: number, y2: number): boolean;
         static getByName(nama: string, buat: boolean): GbrObj;

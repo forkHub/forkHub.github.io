@@ -1445,7 +1445,7 @@ var Basik;
             gbr.lebar = lf;
             return gbr;
         }
-        static Muat(url) {
+        static resolveGbrUrl(url) {
             let imgUrl = url;
             if (imgUrl.indexOf("/") >= 0) {
             }
@@ -1457,6 +1457,10 @@ var Basik;
                     imgUrl = imgUrl + ".png";
                 }
             }
+            return imgUrl;
+        }
+        static Muat(url) {
+            let imgUrl = ImgImpl.resolveGbrUrl(url);
             return new Basik.GbrObj(imgUrl);
         }
         static tabrakan(gbr1, x1, y1, gbr2, x2, y2) {
@@ -1468,12 +1472,14 @@ var Basik;
         }
         ;
         static getByName(nama, buat) {
+            nama = Basik.ImgImpl.resolveGbrUrl(nama);
             for (let i = 0; i < Ip.daftar.length; i++) {
                 let item = Ip.daftar[i];
                 if (item.nama == nama)
                     return item;
             }
             if (buat) {
+                console.log("buat item baru");
                 return Ip.Muat(nama);
             }
             return null;

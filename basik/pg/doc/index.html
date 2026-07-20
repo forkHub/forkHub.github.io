@@ -103,12 +103,17 @@
 <h2 id="gambaran-umum">📖 Gambaran Umum</h2>
 <p>BASIK adalah kumpulan perintah/fungsi javascript yang bisa dipakai sebagai media pembelajaran pengenalan koding untuk pemula. BASIK mengenalkan pemrograman kepada pemula dengan membuat aplikasi interaktif berbasis kanvas sederhana. Cocok untuk siswa, guru, atau siapa saja yang ingin belajar dasar pemrograman visual.</p>
 <p>Prinsip-prinsip dasar BASIK
-- Semua perintah bisa langsung dilihat hasilnya tanpa dibingungkan dengan struktur yang kompleks. 
-- Tidak perlu install aplikasi tambahan. BASIK berjalan sepenuhnya di browser.
-- Bisa jalan secara daring ataupun luring.
-- Format perintah bersifat procedural, menghindari penggunaan format yang kompleks seperti callback, class, dll.</p>
+- Perintah yang disederhanakan ✅ 
+- Tanpa install server 📐
+- Memancing kreatifitas 🔥
+- Umpan balik langsung ⚡
+- Fungsi bawaan siap pakai 🧠
+- Struktur proyek siap digunakan 📦
+- Contoh yang variatif 🎨
+- Dapat digunakan secara luring/daring 🌐
+- Jalan di mobile ataupun desktop 📱</p>
 <h2 id="cara-pemakaian">📖 Cara pemakaian</h2>
-<p>Untuk pengguna daring, BASIK bisa di buka melalui alamat berikut: ...<br />
+<p>Untuk pengguna daring, BASIK bisa di buka melalui <a href="https://forkhub.github.io/basik/pg/editor.html">alamat ini</a> 
 Untuk pengguna luring, BASIK bisa di buka dengan membuka file <code>editor.html</code> di broser untuk memulai.  </p>
 <p>Contoh applikasi sederhana:</p>
 <pre><code>mulai();
@@ -126,7 +131,7 @@ roket.panjang = 90;
 roket.lebar = 70;
 stempel(roket);
 </code></pre>
-<p>Pada contoh di atas, kita memuat gambar terlebih dahulu, kemudian kita ubah posisi dan ukuran dari gambar tersebut dengan merubah property secara langsung, kemudian menempelkannya ke kanvas. Saat kita memuat gambar terlebih dahulu, maka kita tidak lagi menggunakan nama file sebagai parameter dari perintah <code>stempel()</code>. Kita menggunakan nama variable yang dijadikan referensi saat memuat gambar.</p>
+<p>Pada contoh di atas, kita memuat gambar terlebih dahulu, kemudian kita ubah posisi dan ukuran dari gambar tersebut dengan merubah property secara langsung, kemudian menempelkannya ke kanvas. Dengan kita tidak lagi menggunakan nama file sebagai parameter dari perintah <code>stempel()</code>. Kita menggunakan nama variable yang dijadikan referensi saat memuat gambar.</p>
 <p>Kita juga bisa merubah property dengan perintah yang lebih ringkas.</p>
 <pre><code>mulai();
 let roket = muatGambar(&quot;roket&quot;);
@@ -136,7 +141,7 @@ stempel(roket);
 </code></pre>
 <p>Daftar perintah lengkap bisa di lihat di <a href="api-doc-gambar.md">sini</a></p>
 <p>BASIK mendukung aplikasi interaktif dan dinamis dengan menyediakan fungsi bawaan yang menangani mouse, keyboard, update applikasi, dll.</p>
-<p>Di contoah di bawah ini menunjukkan bagaimana kita menghandle event update secara sederhana. Anda cukup membuat fungsi update(), dan fungsi ini akan dipanggil secara otomatis saat applikasi diupdate.</p>
+<p>Contoh ini menunjukkan bagaimana kita menghandle event update secara sederhana. Anda cukup membuat fungsi <code>update()</code>, maka fungsi ini akan dipanggil secara otomatis saat applikasi diupdate.</p>
 <pre><code>mulai();
 let roket = muatGambar(&quot;roket&quot;);
 pusatGambar(roket, 32, 46);
@@ -148,7 +153,7 @@ function update() {
     stempel(roket);
 }
 </code></pre>
-<p>BASIK juga menyediakan fungsi bawaan untuk menangani event-event yang berhubungan dengan mouse, touch dan keyboard.</p>
+<p>BASIK juga menyediakan fungsi bawaan untuk menangani event-event yang berhubungan dengan mouse, touch dan keyboard, contoh:</p>
 <pre><code>mulai();
 let roket = muatGambar(&quot;roket&quot;);
 pusatGambar(roket, 32, 46);
@@ -179,47 +184,49 @@ function update() {
 <p>Pada contoh di atas, kita menggunakan drag dengan tipe 1. User bisa mendrag gambar menggunakan mouse atau touch (bila di handphone). </p>
 <p>Dokumentasi lengkap mengenai cara menghandle event bisa dilihat di <a href="api-doc-event/">sini</a></p>
 <h2 id="gambar-sebagai-object">📝 Gambar sebagai object</h2>
-<p>BASIK memiliki object bawaan bernama object Gambar.
+<p>BASIK memiliki object bawaan <code>Gambar</code>.
 Object ini dibuat dengan perintah <code>muatGambar()</code>.</p>
-<p>Object <code>Gambar</code> memiliki property sebagai berikut:
-*   <code>x</code>: number<br />
-    posisi x 
-*   <code>y</code>: number<br />
-    posisi y 
-*   <code>alpha</code>: number<br />
-    transparansi (0 - 100)
-*   <code>pusatX</code>: number<br />
-    posisi pusat x
-*   <code>pusatY</code>: number<br />
-    posisi y 
-*   <code>panjang</code>: number<br />
-    panjang
-*   <code>lebar</code>: number<br />
-    lebar
-*   <code>rotasi</code>: number<br />
-    rotasi (0 - 360)
-*   <code>ubin</code>: boolean<br />
-    apakah gambar akan digambar sebagai ubin yang memenuhi layar
-*   <code>diDrag</code>: boolean<br />
-    apakah gambar sedang di drag
-*   <code>diTekan</code>: boolean<br />
-    apakah gambar sedang di tekan oleh mouse/jari
-*   <code>tipeDrag</code>: number<br />
-    tipe drag: 1 = geser, 2 = rotasi, 3 = geser tanpa sentuh, 4 = rotasi tanpa sentuh
-*   <code>dimuat</code>: boolean<br />
-    apakah gambar sudah selesai di muat
-*   <code>frame</code>: number<br />
-    nomor frame aktif, bila gambar berupa animasi spritesheet
-*   <code>panjangFrame</code>: number<br />
-    panjang dari tiap frame dalam animasi, bila gambar berupa animasi spritesheet. 
-*   <code>lebarFrame</code>: number<br />
-    lebar dari tiap frame, bila gambar berupa animasi spritesheet
-*   <code>dragAwalX</code>: number<br />
-    posisi awal x saat gambar mulai di drag
-*   <code>dragAwalY</code>: number<br />
-    posisi awal y saat gambar mulai di drag
-*   <code>ditekan</code>: boolean<br />
-    apakah gambar sedang di tekan</p>
+<p>Object <code>Gambar</code> memiliki property sebagai berikut:</p>
+<ul>
+<li><code>x</code>: number<br />
+    posisi x </li>
+<li><code>y</code>: number<br />
+    posisi y </li>
+<li><code>alpha</code>: number<br />
+    transparansi (0 - 100)</li>
+<li><code>pusatX</code>: number<br />
+    posisi pusat x</li>
+<li><code>pusatY</code>: number<br />
+    posisi y </li>
+<li><code>panjang</code>: number<br />
+    panjang</li>
+<li><code>lebar</code>: number<br />
+    lebar</li>
+<li><code>rotasi</code>: number<br />
+    rotasi (0 - 360)</li>
+<li><code>ubin</code>: boolean<br />
+    apakah gambar akan digambar sebagai ubin yang memenuhi layar</li>
+<li><code>diDrag</code>: boolean<br />
+    apakah gambar sedang di drag</li>
+<li><code>diTekan</code>: boolean<br />
+    apakah gambar sedang di tekan oleh mouse/jari</li>
+<li><code>tipeDrag</code>: number<br />
+    tipe drag: 1 = geser, 2 = rotasi, 3 = geser tanpa sentuh, 4 = rotasi tanpa sentuh</li>
+<li><code>dimuat</code>: boolean<br />
+    apakah gambar sudah selesai di muat</li>
+<li><code>frame</code>: number<br />
+    nomor frame aktif, bila gambar berupa animasi spritesheet</li>
+<li><code>panjangFrame</code>: number<br />
+    panjang dari tiap frame dalam animasi, bila gambar berupa animasi spritesheet. </li>
+<li><code>lebarFrame</code>: number<br />
+    lebar dari tiap frame, bila gambar berupa animasi spritesheet</li>
+<li><code>dragAwalX</code>: number<br />
+    posisi awal x saat gambar mulai di drag</li>
+<li><code>dragAwalY</code>: number<br />
+    posisi awal y saat gambar mulai di drag</li>
+<li><code>ditekan</code>: boolean<br />
+    apakah gambar sedang di tekan</li>
+</ul>
 <h2 id="lisensi">📖 Lisensi</h2>
 <p>GNU license</p>
 <hr /></div>
@@ -304,5 +311,5 @@ Object ini dibuat dengan perintah <code>muatGambar()</code>.</p>
 
 <!--
 MkDocs version : 1.6.1
-Build Date UTC : 2026-07-18 13:44:50.277989+00:00
+Build Date UTC : 2026-07-20 14:24:14.858371+00:00
 -->
