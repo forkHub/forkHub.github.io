@@ -76,22 +76,7 @@
     <div id="toc-collapse" class="navbar-collapse collapse card bg-body-tertiary">
         <ul class="nav flex-column">
             
-            <li class="nav-item" data-bs-level="2"><a href="#gambaran-umum" class="nav-link">📖 Gambaran Umum</a>
-              <ul class="nav flex-column">
-              </ul>
-            </li>
-            
-            <li class="nav-item" data-bs-level="2"><a href="#cara-pemakaian" class="nav-link">📖 Cara pemakaian</a>
-              <ul class="nav flex-column">
-              </ul>
-            </li>
-            
-            <li class="nav-item" data-bs-level="2"><a href="#gambar-sebagai-object" class="nav-link">📝 Gambar sebagai object</a>
-              <ul class="nav flex-column">
-              </ul>
-            </li>
-            
-            <li class="nav-item" data-bs-level="2"><a href="#lisensi" class="nav-link">📖 Lisensi</a>
+            <li class="nav-item" data-bs-level="2"><a href="#memulai-basik" class="nav-link">📖 Memulai BASIK</a>
               <ul class="nav flex-column">
               </ul>
             </li>
@@ -100,136 +85,52 @@
 </div></div>
                     <div class="col-md-9" role="main">
 
-<h2 id="gambaran-umum">📖 Gambaran Umum</h2>
-<p>BASIK adalah kumpulan perintah/fungsi javascript yang bisa dipakai sebagai media pembelajaran pengenalan koding untuk pemula. BASIK mengenalkan pemrograman kepada pemula dengan membuat aplikasi interaktif berbasis kanvas sederhana. Cocok untuk siswa, guru, atau siapa saja yang ingin belajar dasar pemrograman visual.</p>
-<p>Prinsip-prinsip dasar BASIK
-- Perintah yang disederhanakan ✅ 
-- Tanpa install server 📐
-- Memancing kreatifitas 🔥
-- Umpan balik langsung ⚡
-- Fungsi bawaan siap pakai 🧠
-- Struktur proyek siap digunakan 📦
-- Contoh yang variatif 🎨
-- Dapat digunakan secara luring/daring 🌐
-- Jalan di mobile ataupun desktop 📱</p>
-<h2 id="cara-pemakaian">📖 Cara pemakaian</h2>
+<h2 id="memulai-basik">📖 Memulai BASIK</h2>
 <p>Untuk pengguna daring, BASIK bisa di buka melalui <a href="https://forkhub.github.io/basik/pg/editor.html">alamat ini</a> 
-Untuk pengguna luring, BASIK bisa di buka dengan membuka file <code>editor.html</code> di broser untuk memulai.  </p>
+Untuk pengguna luring, BASIK bisa di buka dengan membuka file <code>editor.html</code> di browser untuk memulai.  </p>
 <p>Contoh applikasi sederhana:</p>
 <pre><code>mulai();
 stempel(&quot;roket&quot;);
 </code></pre>
 <p><code>mulai()</code> adalah perintah pertama yang berfungsi untuk memulai aplikasi. Perintah ini harus dipanggil pertama kali sebelum memanggil perintah yang lain.<br />
 <code>stempel("roket")</code> adalah perintah untuk men-stempel gambar ke kanvas. "roket" adalah gambar yang ingin distempel. </p>
-<p>Untuk mengetahui gambar apa saja yang bisa distempel, Anda bisa membuka folder <code>asset</code>. Gunakan nama file sebagai parameter dari perintah <code>stempel()</code>.</p>
-<p>Perintah <code>stempel()</code> adalah perintah sederhana untuk menstempel gambar. Perintah ini sangat terbatas fungsinya. Untuk mendapatkan fungsi yang lebih kompleks seperti memutar gambar, mengubah posisi, dll maka kita harus memuat gambar terlebih dahulu.</p>
+<p>Tekan tombol <code>Jalankan</code> untuk menjalankan aplikasi. Kita akan melihat gambar roket di pojok kiri atas layar.</p>
+<p>Tekan tombol <code>edit</code> untuk mengedit kembali.</p>
+<p>Selamat!</p>
+<p>Kamu telah berhasil membuat aplikasi untuk menampilkan gambar roket. Mari kita lanjutkan lagi.</p>
+<p>Ganti kodenya dengan kode berikut:</p>
 <pre><code>mulai();
-let roket = muatGambar(&quot;roket&quot;);
-roket.x = 400;
-roket.y = 300;
-roket.panjang = 90;
-roket.lebar = 70;
-stempel(roket);
+stempel(&quot;astronot&quot;);
 </code></pre>
-<p>Pada contoh di atas, kita memuat gambar terlebih dahulu, kemudian kita ubah posisi dan ukuran dari gambar tersebut dengan merubah property secara langsung, kemudian menempelkannya ke kanvas. Dengan kita tidak lagi menggunakan nama file sebagai parameter dari perintah <code>stempel()</code>. Kita menggunakan nama variable yang dijadikan referensi saat memuat gambar.</p>
-<p>Kita juga bisa merubah property dengan perintah yang lebih ringkas.</p>
+<p>Jalankan lagi (dengan menekan tombol <code>Jalankan</code>), maka sekarang akan terlihat gambar astronot di layar.</p>
+<p>Jika ingin tahu gambar apa saja yang bisa di stempel ke layar, maka bisa dilihat di folder asset. Disitu sudah tersedia banyak gambar untuk dipakai.</p>
+<p>Saat ini gambar kita masih di pojok kiri atas layar. Kita akan merubah posisinya:</p>
+<p>Perhatikan kode berikut:</p>
 <pre><code>mulai();
-let roket = muatGambar(&quot;roket&quot;);
-posisiGambar(roket, 400, 300);
-ukuranGambar(roket, 90, 70);
-stempel(roket);
+stempel(&quot;astronot&quot;, 100, 100);
 </code></pre>
-<p>Daftar perintah lengkap bisa di lihat di <a href="api-doc-gambar.md">sini</a></p>
-<p>BASIK mendukung aplikasi interaktif dan dinamis dengan menyediakan fungsi bawaan yang menangani mouse, keyboard, update applikasi, dll.</p>
-<p>Contoh ini menunjukkan bagaimana kita menghandle event update secara sederhana. Anda cukup membuat fungsi <code>update()</code>, maka fungsi ini akan dipanggil secara otomatis saat applikasi diupdate.</p>
+<p>Jalankan lagi aplikasinya (Jangan lupa tombol <code>Jalankan</code>), maka sekarang posisi astronot tidak di pojok lagi.</p>
+<p>Cobalah untuk mengubah-ubah posisi gambarnya, dan lihat perbedaannya.</p>
+<p>Gambar astronot saja mungkin kurang menarik, bagaimana kalau astronot dan roket, ditambah dengan background?</p>
+<p>Perhatikan kode berikut:</p>
 <pre><code>mulai();
-let roket = muatGambar(&quot;roket&quot;);
-pusatGambar(roket, 32, 46);
-posisiGambar(roket, 400, 300);
-
-function update() {
-    bersihkanLayar();
-    roket.rotasi++;
-    stempel(roket);
-}
+stempel(&quot;bg_bintang&quot;);
+stempel(&quot;roket&quot;, 300, 300);
+stempel(&quot;astronot&quot;, 100, 100);
 </code></pre>
-<p>BASIK juga menyediakan fungsi bawaan untuk menangani event-event yang berhubungan dengan mouse, touch dan keyboard, contoh:</p>
+<p>Jalankan applikasinya maka akan terlihat gambar roket, astronot dengan background langit.</p>
+<p>Coba tambahkan bintang:</p>
 <pre><code>mulai();
-let roket = muatGambar(&quot;roket&quot;);
-pusatGambar(roket, 32, 46);
-
-function update() {
-    bersihkanLayar();
-    roket.x = mouseX();
-    roket.y = mouseY();
-    roket.rotasi++;
-    stempel(roket);
-}
+stempel(&quot;bg_bintang&quot;);
+stempel(&quot;roket&quot;, 300, 300);
+stempel(&quot;astronot&quot;, 100, 100);
+stempel(&quot;bintang&quot;, 500, 300);
+stempel(&quot;bintang&quot;, 400, 50);
+stempel(&quot;bintang&quot;, 40, 40);
 </code></pre>
-<p>Bila contoh di atas dijalankan, maka Anda akan melihat gambar roket yang berputar sambil bergerak mengikuti mouse.</p>
-<p>BASIK juga menyediakan fungsi bawaan untuk menangani interaksi drag. Ada 4 tipe drag yang didukung. Memungkinkan pengguna untuk membuat aplikasi interaktif dengan mudah tanpa memikirkan struktur dan alogrithma yang rumit.</p>
-<pre><code>mulai();
-let roket = muatGambar(&quot;roket&quot;);
-pusatGambar(roket, 32, 46);
-posisiGambar(roket, 400, 300);
-roket.tipeDrag = 1;
-
-function update() {
-    bersihkanLayar();
-    Tulis(&quot;&quot;);
-    roket.rotasi++;
-    stempel(roket);
-}
-</code></pre>
-<p>Pada contoh di atas, kita menggunakan drag dengan tipe 1. User bisa mendrag gambar menggunakan mouse atau touch (bila di handphone). </p>
-<p>Dokumentasi lengkap mengenai cara menghandle event bisa dilihat di <a href="api-doc-event/">sini</a></p>
-<h2 id="gambar-sebagai-object">📝 Gambar sebagai object</h2>
-<p>BASIK memiliki object bawaan <code>Gambar</code>.
-Object ini dibuat dengan perintah <code>muatGambar()</code>.</p>
-<p>Object <code>Gambar</code> memiliki property sebagai berikut:</p>
-<ul>
-<li><code>x</code>: number<br />
-    posisi x </li>
-<li><code>y</code>: number<br />
-    posisi y </li>
-<li><code>alpha</code>: number<br />
-    transparansi (0 - 100)</li>
-<li><code>pusatX</code>: number<br />
-    posisi pusat x</li>
-<li><code>pusatY</code>: number<br />
-    posisi y </li>
-<li><code>panjang</code>: number<br />
-    panjang</li>
-<li><code>lebar</code>: number<br />
-    lebar</li>
-<li><code>rotasi</code>: number<br />
-    rotasi (0 - 360)</li>
-<li><code>ubin</code>: boolean<br />
-    apakah gambar akan digambar sebagai ubin yang memenuhi layar</li>
-<li><code>diDrag</code>: boolean<br />
-    apakah gambar sedang di drag</li>
-<li><code>diTekan</code>: boolean<br />
-    apakah gambar sedang di tekan oleh mouse/jari</li>
-<li><code>tipeDrag</code>: number<br />
-    tipe drag: 1 = geser, 2 = rotasi, 3 = geser tanpa sentuh, 4 = rotasi tanpa sentuh</li>
-<li><code>dimuat</code>: boolean<br />
-    apakah gambar sudah selesai di muat</li>
-<li><code>frame</code>: number<br />
-    nomor frame aktif, bila gambar berupa animasi spritesheet</li>
-<li><code>panjangFrame</code>: number<br />
-    panjang dari tiap frame dalam animasi, bila gambar berupa animasi spritesheet. </li>
-<li><code>lebarFrame</code>: number<br />
-    lebar dari tiap frame, bila gambar berupa animasi spritesheet</li>
-<li><code>dragAwalX</code>: number<br />
-    posisi awal x saat gambar mulai di drag</li>
-<li><code>dragAwalY</code>: number<br />
-    posisi awal y saat gambar mulai di drag</li>
-<li><code>ditekan</code>: boolean<br />
-    apakah gambar sedang di tekan</li>
-</ul>
-<h2 id="lisensi">📖 Lisensi</h2>
-<p>GNU license</p>
-<hr /></div>
+<p>Sekarang langitnya dipenuhi dengan bintang.</p>
+<p>Pada tahap ini, kita sudah belajar menggunakan basik untuk menempel gambar di layar.
+Untuk latihan berikutnya bisa dilihat di demo-demo yang sudah disediakan.</p></div>
             </div>
         </div>
 
@@ -311,5 +212,5 @@ Object ini dibuat dengan perintah <code>muatGambar()</code>.</p>
 
 <!--
 MkDocs version : 1.6.1
-Build Date UTC : 2026-07-20 14:24:14.858371+00:00
+Build Date UTC : 2026-08-01 15:02:18.370766+00:00
 -->

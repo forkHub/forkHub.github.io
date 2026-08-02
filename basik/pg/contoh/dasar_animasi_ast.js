@@ -1,5 +1,5 @@
 mulai();
-let ast = muatAnimasi("astronot.png", 74, 134);
+let ast = muatAnimasi("astronot_spr.png", 74, 134);
 ast.lebar=600;
 ast.panjang=400;
 stempel(ast);

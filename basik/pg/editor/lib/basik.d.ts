@@ -280,8 +280,11 @@ declare namespace Basik {
         private _img;
         private _tipeDrag;
         private _diRender;
-        get diRender(): Boolean;
-        set diRender(value: Boolean);
+        private _temp;
+        get temp(): boolean;
+        set temp(value: boolean);
+        get diRender(): boolean;
+        set diRender(value: boolean);
         get layarX(): number;
         get layarY(): number;
         get img(): HTMLImageElement;

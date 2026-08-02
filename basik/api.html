@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html lang="id">
+
+<head>
+	<meta charset="UTF-8" />
+	<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+	<title>BASIK - Template JavaScript</title>
+	<link rel="stylesheet" href="./css.css" />
+</head>
+
+<body>
+	<header>
+		<h1>API</h1>
+	</header>
+
+	<main>
+		<section>
+			<h2 id="perintah-umum">📝 Perintah Umum</h2>
+
+			<h4>
+				<code>mulai(pjg: number = 800, lbr: number = 600, kanvas: HTMLCanvasElement = null, mode: number = 1)</code>
+			</h4>
+			<p>Memulai aplikasi. Ini adalah perintah awal untuk memulai applikasi dengan BASIK. Perintah ini
+				akan otomatis dipanggil bila tidak ada dalam kode</p>
+			<p><strong>Parameters</strong></p>
+			<ul>
+				<li><code>pjg</code>: <code>number</code>, default 800<br />
+					panjang kanvas</li>
+				<li><code>lbr</code>: <code>number</code>, default 600<br />
+					lebar kanvas</li>
+				<li><code>kanvas</code>: <code>number</code>, default null<br />
+					Kanvas yang akan dipakai bila ada.<br />
+					Bila diisi null maka BASIK akan otomatis mencari kanvas yang ada di dokumen atau membuat
+					baru bila tidak tersedia</li>
+				<li><code>mode</code>: <code>number</code>, default 1<br />
+					Mode yang dipakai: 1 bila ingin full screen atau 0 bila ingin kanvas apa adanya. Gunakan 0
+					bila ingin full kontrol terhadap kanvas yang ingin dipakai. </li>
+			</ul>
+
+			<h4>
+				<code>bersihkanLayar(x: number = 0, y: number = 0, pjg: number = 0, lbr: number = 0)</code>
+			</h4>
+			<p>Membersihkan layar</p>
+			<p><strong>Parameters</strong></p>
+			<ul>
+				<li><code>x</code>: <code>number</code>, default 0
+					posisi x dari posisi awal membersihkan layar</li>
+				<li><code>y</code>: <code>number</code>, default 0
+					posisi x dari posisi awal membersihkan layar</li>
+				<li><code>pjg</code>: <code>number</code>, default 0
+					panjang area untuk dibersihkan</li>
+				<li><code>lbr</code>: <code>number</code>, default 0
+					lebar area untuk dibersihkan</li>
+			</ul>
+
+			<h4><code>stempel(url = "roket", x, y)</code></h4>
+			<p>Menstempel gambar ke layar pada posisi tertentu </p>
+			<p><strong>Parameters</strong></p>
+			<ul>
+				<li><code>url</code>: <code>string</code> atau <code>Gambar</code> default "roket"<br />
+					<code>url</code> bisa diisi dengan alamat/url gambar yang akan di stempel atau object
+					<code>Gambar</code> yang akan di stempel ke layar.<br />
+					Bila hanya diisi menggunakan nama file ("kotak" atau "kotak.png") maka BASIK akan otomatis
+					mencari di folder asset.<br />
+					<code>url</code> dengan type string ditujukan untuk penyederhanaan bagi pemula yang belum
+					mengenal konsep <code>object</code> dengan fitur yang lebih sedikit.
+					Untuk fitur yang lebih kompleks seperti mengatur ukuran gambar, rotasi, dll, maka dianjurkan
+					untuk memuat gambar terlebih dahulu dengan perintah <code>muatGambar()</code>.
+				</li>
+				<li><code>x</code>: <code>number</code><br />
+					Menentukan posisi x.<br />
+					Parameter ini berifat opsional. Bila kosong dan url mereferensi pada object gambar, maka
+					akan menggunakan property x dari gambar</li>
+				<li><code>y</code>: <code>number</code><br />
+					Menentukan posisi y.<br />
+					Parameter ini berifat opsional. Bila kosong dan url mereferensi pada object gambar, maka
+					akan menggunkaan property y dari gambar </li>
+			</ul>
+			<p><strong>Returns:</strong> <code>void</code></p>
+
+			<h4><code>muatGambar(url)</code></h4>
+			<p>Memuat gambar. Hasil dari perintah ini bisa digunakan dengan perintah <code>stempel()</code>,
+				atau perintah lainnya. Dengan memuat gambar terlebih dahulu, kita akan punya lebih banyak fitur
+				seperti mengatur panjang/lebar, rotasi, dsb.
+				Kita tidak perlu menunggu hingga gambar selesai di muat sepenuhnya untuk memulai operasi
+				selanjutnya, semua di handle secara otomatis. Hal ini untuk memudahkan pemula dan menghindari
+				perintah yang kompleks seperti event, dll.</p>
+			<p><strong>Parameters</strong></p>
+			<ul>
+				<li><code>url</code>: <code>string</code> default "roket"<br />
+					Alamat Gambar yang akan di dimuat.<br />
+					Alamat bisa berupa nama file tanpa ekstensi ("kotak"), dengan ekstensi ("kotak.png"), alamat
+					relatif ("./assets/kotak.png"), atau alamat absolut ("http://www.alamat.com/kotak.png").
+					Bila alamat hanya menggunakan nama ("kotak" atau "kotak.png") maka BASIK akan otomatis
+					mencari di folder asset.</li>
+			</ul>
+			<p><strong>Returns:</strong> <code>Gambar</code> </p>
+
+			<h4>
+				<code>gambarTabrakan(img1: Gambar, img2: Gambar): boolean</code>
+			</h4>
+			<p>Mengecek apakah dua gambar bertabrakan. Pengecekan dilakukan dengan mengecek bounding box dari
+				kedua objek <code>Gambar</code>.
+				Pengecekan mensupport gambar yang di rotasi.</p>
+			<p><strong>Parameters</strong></p>
+			<ul>
+				<li><code>img1</code>: <code>Gambar</code> <br />
+					objek gambar pertama yang akan di check</li>
+				<li><code>img2</code>: <code>Gambar</code> <br />
+					objek gambar kedua yang akan di check</li>
+			</ul>
+			<p><strong>Returns:</strong> <code>boolean</code>. bernilai true bila terjadi tabrakan, atau false
+				bila tidak terjadi tabrakan</p>
+
+			<h4>
+				<code>poinDidalamGambar(img: Gambar, x: number, y: number): boolean</code>
+			</h4>
+			<p>Mengecek apakah sebuah point pada lokasi tertentu ada di dalam gambar</p>
+			<p><strong>Parameters</strong></p>
+			<ul>
+				<li><code>img</code>: <code>Gambar</code><br />
+					Gambar yang akan di check</li>
+				<li><code>x</code>: <code>number</code><br />
+					Posisi x point</li>
+				<li><code>y</code>: <code>number</code><br />
+					Poisi y point</li>
+			</ul>
+			<p><strong>Returns:</strong> <code>boolean</code>. Bernilai True bila point berada di dalam gambar
+			</p>
+
+			<h4><code>semuaGambarSelesaiDimuat(): boolean</code></h4>
+			<p>Mengecek apakah semua gambar sudah selesai dimuat. Gambar yang belum di muat masih bisa menerima
+				perintah dan event.
+				Bila kita men-<code>stempel</code> gambar yang belum dimuat, maka gambarnya akan terlihat
+				setelah gambar selesai di muat.
+				Perintah ini diperlukan kalau kita benar-benar ingin menunggu semua gambar selesai di muat
+				sebelum melakukan sesuatu.</p>
+			<p><strong>Returns:</strong> <code>boolean</code>. Bernilai true bila semua gambar selesai dimuat.
+			</p>
+
+			<h4>
+				<code>posisiGambar(gbr: Gambar, x:number = 0, y:number = 0): void</code>
+			</h4>
+			<p>Mengubah posisi gambar. Kita juga bisa mengubah posisi gambar secara parsial dengan mengubah
+				property <code>x</code> atau <code>y</code> secara langsung.</p>
+			<p><strong>Parameters</strong></p>
+			<ul>
+				<li><code>gbr</code>: <code>Gambar</code><br />
+					Gambar yang akan di pindah</li>
+				<li><code>x</code>: <code>number</code>, default 0<br />
+					Posisi x</li>
+				<li><code>y</code>: <code>number</code>, default 0<br />
+					Posisi y </li>
+			</ul>
+
+			<h4>
+				<code>ukuranGambar(gbr: Gambar, p:number = 32, l:number = 32): void</code>
+			</h4>
+			<p>Mengubah ukuran gambar. Kita juga bisa mengubah ukuran gambar melalui property
+				<code>panjang</code> dan <code>lebar</code>.
+			</p>
+			<p><strong>Parameters</strong></p>
+			<ul>
+				<li><code>gbr</code>: <code>Gambar</code><br />
+					Gambar yang akan di ubah ukurannya</li>
+				<li><code>p</code>: <code>number</code>, default 32<br />
+					panjang gambar</li>
+				<li><code>l</code>: <code>number</code>, default 32
+					Lebar gambar</li>
+			</ul>
+
+		</section>
+
+		<section>
+			<h2 id="input">📝 Input</h2>
+			<p>Perintah-perintah yang berhubungan dengan input seperti mouse, touch, dan keyboard.</p>
+
+			<h4><code>mouseDitekan(): boolean</code></h4>
+			<p>Mengecek apakah mouse sedang di tekan </p>
+			<p><strong>Returns:</strong> <code>boolean</code>. Bernilai true bila mouse sedang ditekan</p>
+
+			<h4 id="mousedidrag-boolean"><code>mouseDidrag(): boolean</code></h4>
+			<p>Mengecek apakah mouse sedang di drag</p>
+			<p><strong>Returns:</strong> <code>boolean</code>. Bernilai true bila mouse sedang di drag</p>
+			<h4 id="mousedragx-number"><code>mouseDragX(): number</code></h4>
+			<p>Mengembalikan jarak vertikal mouse saat di drag, dihitung dari posisi awal saat drag dimulai</p>
+			<p><strong>Returns:</strong> <code>number</code>. besaran drag horizontal</p>
+			<h4 id="mousedragy-number"><code>mouseDragY(): number</code></h4>
+			<p>Mengembalikan jarak vertikal mouse saat di drag, dihitung dari posisi awal saat drag dimulai</p>
+			<p><strong>Returns:</strong> <code>number</code>. besaran drag vertikal</p>
+			<h4 id="mousex-number"><code>mouseX(): number</code></h4>
+			<p>Mengembalikan posisi X dari mouse</p>
+			<p><strong>Returns:</strong> <code>number</code>. posisi x dari mouse</p>
+			<h4 id="mousey-number"><code>mouseY(): number</code></h4>
+			<p>Mengembalikan posisi Y dari mouse</p>
+			<p><strong>Returns:</strong> <code>number</code>. posisi y dari mouse</p>
+			<h4 id="mousedragawalx-number"><code>mouseDragAwalX(): number</code></h4>
+			<p>Mengembalikan Posisi awal mouse saat mulai di drag</p>
+			<p><strong>Returns:</strong> <code>number</code>. posisi x saat mulai di drag</p>
+			<h4 id="mousedragawaly-number"><code>mouseDragAwalY(): number</code></h4>
+			<p>Mengembalikan Posisi awal mouse saat mulai di drag</p>
+			<p><strong>Returns:</strong> <code>number</code>. posisi y saat mulai di drag</p>
+			<h4 id="mousegerakx-number"><code>mouseGerakX(): number</code></h4>
+			<p>Mengembalikan besar pergerakan horizontal saat mouse bergerak</p>
+			<p><strong>Returns:</strong> <code>number</code>. besar pergerakan horizontal saat mouse digerakkan
+			</p>
+			<h4 id="mousegeraky-number"><code>mouseGerakY(): number</code></h4>
+			<p>Mengembalikan besar pergerakan vertikal saat mouse bergerak</p>
+			<p><strong>Returns:</strong> <code>number</code>. besar pergerakan vertikal saat mouse digerakkan
+			</p>
+			<h4 id="tombolditahankey-string"><code>tombolDitahan(key: string = '')</code></h4>
+			<p>mengecek apakah sebuah tombol sedang ditahan</p>
+			<p><strong>Parameters</strong></p>
+			<ul>
+				<li><code>key</code>: <code>string</code>
+					tombol yang sedang ditekan</li>
+			</ul>
+			<h4 id="tomboleventstring"><code>tombolEvent():string</code></h4>
+			<p>Mengembalikan informasi tombol terakhir yang terlibat saat ada event keyboard</p>
+		</section>
+
+		<section>
+			<h2 id="perintah-teks">📝 Perintah Teks</h2>
+			<p>Perintah-perintah yang berhubungan dengan teks.</p>
+			<h5 id="tulisteks-string-xnumber-ynumber"><code>tulis(teks: string = "", x:number, y:number)</code>
+			</h5>
+			<p>Menulis sesuatu di layar</p>
+			<p><strong>Parameters</strong></p>
+			<ul>
+				<li><code>teks</code>: <code>string</code>, default ""
+					teks yang ingin di tulis</li>
+				<li><code>x</code>: <code>number</code>, opsional
+					posisi x dari tulisan, bila tidak disediakan maka akan sama dengan teks sebelumnya</li>
+				<li><code>y</code>: <code>number</code>, optional
+					posisi y dari tulisan, bila tidak disediakan maka posisinya adalah di bawah teks sebelumnya
+				</li>
+			</ul>
+		</section>
+	</main>
+</body>
+
+</html>

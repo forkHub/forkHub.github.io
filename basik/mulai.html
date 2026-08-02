@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="id">
+
+<head>
+	<meta charset="UTF-8" />
+	<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+	<title>BASIK - Template JavaScript</title>
+	<link rel="stylesheet" href="./css.css" />
+</head>
+
+<body>
+	<header>
+		<h1>API</h1>
+	</header>
+
+	<main>
+		<section>
+			<h2 id="memulai-basik">📖 Memulai BASIK</h2>
+
+			<p>Untuk pengguna daring, BASIK bisa di buka melalui <a
+					href="https://forkhub.github.io/basik/pg/editor.html">alamat ini</a>
+				Untuk pengguna luring, BASIK bisa di buka dengan membuka file <code>editor.html</code> di browser untuk
+				memulai. </p>
+
+			<p>Contoh applikasi sederhana:</p>
+
+			<pre><code>mulai();
+stempel(&quot;roket&quot;);
+</code></pre>
+
+			<p><code>mulai()</code> adalah perintah pertama yang berfungsi untuk memulai aplikasi. Perintah ini harus
+				dipanggil pertama kali sebelum memanggil perintah yang lain.<br />
+				<code>stempel("roket")</code> adalah perintah untuk men-stempel gambar ke kanvas. "roket" adalah gambar
+				yang ingin distempel.
+			</p>
+
+			<p>Tekan tombol <code>Jalankan</code> untuk menjalankan aplikasi. Kita akan melihat gambar roket di pojok
+				kiri atas layar.</p>
+
+			<p>Tekan tombol <code>edit</code> untuk mengedit kembali.</p>
+
+			<p>Selamat!</p>
+
+
+			<p>Kamu telah berhasil membuat aplikasi untuk menampilkan gambar roket. Mari kita lanjutkan lagi.</p>
+
+			<p>Ganti kodenya dengan kode berikut:</p>
+
+			<pre><code>mulai();
+stempel(&quot;astronot&quot;);
+</code></pre>
+			<p>Jalankan lagi (dengan menekan tombol <code>Jalankan</code>), maka sekarang akan terlihat gambar astronot
+				di layar.</p>
+			<p>Jika ingin tahu gambar apa saja yang bisa di stempel ke layar, maka bisa dilihat di folder asset. Disitu
+				sudah tersedia banyak gambar untuk dipakai.</p>
+			<p>Saat ini gambar kita masih di pojok kiri atas layar. Kita akan merubah posisinya:</p>
+			<p>Perhatikan kode berikut:</p>
+			<pre><code>mulai();
+stempel(&quot;astronot&quot;, 100, 100);
+</code></pre>
+			<p>Jalankan lagi aplikasinya (Jangan lupa tombol <code>Jalankan</code>), maka sekarang posisi astronot tidak
+				di pojok lagi.</p>
+			<p>Cobalah untuk mengubah-ubah posisi gambarnya, dan lihat perbedaannya.</p>
+			<p>Gambar astronot saja mungkin kurang menarik, bagaimana kalau astronot dan roket, ditambah dengan
+				background?</p>
+			<p>Perhatikan kode berikut:</p>
+			<pre><code>mulai();
+stempel(&quot;bg_bintang&quot;);
+stempel(&quot;roket&quot;, 300, 300);
+stempel(&quot;astronot&quot;, 100, 100);
+</code></pre>
+			<p>Jalankan applikasinya maka akan terlihat gambar roket, astronot dengan background langit.</p>
+			<p>Coba tambahkan bintang:</p>
+			<pre><code>mulai();
+stempel(&quot;bg_bintang&quot;);
+stempel(&quot;roket&quot;, 300, 300);
+stempel(&quot;astronot&quot;, 100, 100);
+stempel(&quot;bintang&quot;, 500, 300);
+stempel(&quot;bintang&quot;, 400, 50);
+stempel(&quot;bintang&quot;, 40, 40);
+</code></pre>
+			<p>Sekarang langitnya dipenuhi dengan bintang.</p>
+			<p>Pada tahap ini, kita sudah belajar menggunakan basik untuk menempel gambar di layar.
+				Untuk latihan berikutnya bisa dilihat di demo-demo yang sudah disediakan.</p>
+
+		</section>
+	</main>
+</body>
+
+</html>

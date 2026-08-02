@@ -1148,6 +1148,7 @@ var Basik;
             this._pendingStempel = false;
             this._tipeDrag = 0;
             this._diRender = true;
+            this._temp = false;
             this._ctrIdx = 0;
             this._isAnim = false;
             this._dragAwalY = 0;
@@ -1209,6 +1210,12 @@ var Basik;
                 this.panjangFrame = pf;
             if (lf != undefined)
                 this.lebarFrame = lf;
+        }
+        get temp() {
+            return this._temp;
+        }
+        set temp(value) {
+            this._temp = value;
         }
         get diRender() {
             return this._diRender;
@@ -1578,6 +1585,10 @@ var Basik;
                 }
                 else {
                     Ip.GamberSingle(img);
+                }
+                if (img.temp) {
+                    ImgImpl.free(img);
+                    console.log('free image ' + img.url);
                 }
             }
         }
@@ -2257,7 +2268,8 @@ function stempel(img, x, y) {
         img = "roket";
     }
     if (typeof img == "string") {
-        let img2 = Ip.getByName(img, true);
+        let img2 = Ip.Muat(img);
+        img2.temp = true;
         posisi(img2, x, y);
         Ip.Draw(img2);
     }

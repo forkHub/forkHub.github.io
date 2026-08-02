@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="id">
+
+<head>
+	<meta charset="UTF-8" />
+	<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+	<title>BASIK - Template JavaScript</title>
+	<link rel="stylesheet" href="./css.css" />
+</head>
+
+<body>
+	<header>
+		<h1>API</h1>
+	</header>
+
+	<main>
+		<section>
+			<h1 id="event">Event</h1>
+			<p>Basik memiliki cara untuk menghandle event yang disederhanakan.<br />
+				Ketika sebuah event terjadi, maka Basik akan mencari deklarasi fungsi yang berhubungan dengan event
+				tersebut, dan memanggilnya.</p>
+			<p>Contoh:
+				Ketika terjadi event mouse ditekan, maka Basik akan mencari deklarasi fungsi mouseDitekan. Bila
+				tersedia, maka fungsi ini akan dipanggil secara otomatis.</p>
+			<pre>
+<code>mulai();
+
+function mouseDitekan() {
+    stempel(&quot;roket&quot;, mouseX(), mouseY());
+}</code></pre>
+			<p>Bila contoh diatas dijalankan, ketika user menekan tombol mouse maka gambar roket akan di gambar pada
+				posisi dimana mouse berada.</p>
+			<p>Berikut adalah daftar fungsi yang akan dipanggil secara otomatis dan event yang berkaitan dengan fungsi
+				tersebut:</p>
+			<ul>
+				<li>mouseDitekan: ketika mouse mulai ditekan</li>
+				<li>mouseDilepas: ketika mouse mulai dilepaskan</li>
+				<li>mouseGerak: ketika mouse digerakkan</li>
+				<li>mouseDitap: ketika mouse di tap</li>
+				<li>mouseMulaiDrag: ketika mouse mulai di drag</li>
+				<li>mouseSelesaiDrag: ketika mouse selesai di drag</li>
+				<li>keyboardDitekan: ketika keyboard di tekan</li>
+				<li>keyboardDilepas: ketika keyboard di lepas</li>
+				<li>update: ketika aplikasi di update</li>
+			</ul>
+			<p>Data yang berhubungan dengan event dipanggil melalui fungsi terpisah. Contohnya: mouseX() yang
+				menghasilkan posisi x dari mouse, dsb.</p>
+		</section>
+	</main>
+</body>
+
+</html>

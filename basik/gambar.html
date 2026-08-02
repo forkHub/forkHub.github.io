@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="id">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>BASIK - Template JavaScript</title>
+    <link rel="stylesheet" href="./css.css" />
+</head>
+
+<body>
+    <header>
+        <h1>API</h1>
+    </header>
+
+    <main>
+        <section>
+            <h2 id="gambar-sebagai-object">📝 Gambar sebagai object</h2>
+            <p>BASIK memiliki object bawaan <code>Gambar</code>.
+                Object ini dibuat dengan perintah <code>muatGambar()</code>.</p>
+            <p>Object <code>Gambar</code> memiliki property sebagai berikut:</p>
+            <ul>
+                <li><code>x</code>: number<br />
+                    posisi x </li>
+                <li><code>y</code>: number<br />
+                    posisi y </li>
+                <li><code>alpha</code>: number<br />
+                    transparansi (0 - 100)</li>
+                <li><code>pusatX</code>: number<br />
+                    posisi pusat x</li>
+                <li><code>pusatY</code>: number<br />
+                    posisi y </li>
+                <li><code>panjang</code>: number<br />
+                    panjang</li>
+                <li><code>lebar</code>: number<br />
+                    lebar</li>
+                <li><code>rotasi</code>: number<br />
+                    rotasi (0 - 360)</li>
+                <li><code>ubin</code>: boolean<br />
+                    apakah gambar akan digambar sebagai ubin yang memenuhi layar</li>
+                <li><code>diDrag</code>: boolean<br />
+                    apakah gambar sedang di drag</li>
+                <li><code>diTekan</code>: boolean<br />
+                    apakah gambar sedang di tekan oleh mouse/jari</li>
+                <li><code>tipeDrag</code>: number<br />
+                    tipe drag: 1 = geser, 2 = rotasi, 3 = geser tanpa sentuh, 4 = rotasi tanpa sentuh</li>
+                <li><code>dimuat</code>: boolean<br />
+                    apakah gambar sudah selesai di muat</li>
+                <li><code>frame</code>: number<br />
+                    nomor frame aktif, bila gambar berupa animasi spritesheet</li>
+                <li><code>panjangFrame</code>: number<br />
+                    panjang dari tiap frame dalam animasi, bila gambar berupa animasi spritesheet. </li>
+                <li><code>lebarFrame</code>: number<br />
+                    lebar dari tiap frame, bila gambar berupa animasi spritesheet</li>
+                <li><code>dragAwalX</code>: number<br />
+                    posisi awal x saat gambar mulai di drag</li>
+                <li><code>dragAwalY</code>: number<br />
+                    posisi awal y saat gambar mulai di drag</li>
+                <li><code>ditekan</code>: boolean<br />
+                    apakah gambar sedang di tekan</li>
+            </ul>
+        </section>
+    </main>
+</body>
+
+</html>
