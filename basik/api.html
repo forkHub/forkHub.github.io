@@ -14,6 +14,7 @@
 	</header>
 
 	<main>
+		<!-- Umum -->
 		<section>
 			<h2 id="perintah-umum">📝 Perintah Umum</h2>
 
@@ -171,6 +172,7 @@
 
 		</section>
 
+		<!-- Input -->
 		<section>
 			<h2 id="input">📝 Input</h2>
 			<p>Perintah-perintah yang berhubungan dengan input seperti mouse, touch, dan keyboard.</p>
@@ -219,6 +221,7 @@
 			<p>Mengembalikan informasi tombol terakhir yang terlibat saat ada event keyboard</p>
 		</section>
 
+		<!-- teks -->
 		<section>
 			<h2 id="perintah-teks">📝 Perintah Teks</h2>
 			<p>Perintah-perintah yang berhubungan dengan teks.</p>
@@ -233,6 +236,288 @@
 					posisi x dari tulisan, bila tidak disediakan maka akan sama dengan teks sebelumnya</li>
 				<li><code>y</code>: <code>number</code>, optional
 					posisi y dari tulisan, bila tidak disediakan maka posisinya adalah di bawah teks sebelumnya
+				</li>
+			</ul>
+		</section>
+
+		<!-- matematika -->
+		<section>
+			<h2>📝 Perintah Matematika</h2>
+			<p>perintah umum matematika.</p>
+
+			<h4><code>akar(n = 4): number</code></h4>
+			<p>Mencari akar dari bilangan</p>
+			<p><strong>Parameters</strong></p>
+			<ul>
+				<li><code>n</code>: <code>number</code>, default 4<br />
+					bilangan yang ingin dicari akarnya
+				</li>
+			</ul>
+			<p><strong>Returns:</strong> <code>number</code>. </p>
+
+			<h4><code>pi(): number</code></h4>
+			<p>Mengembalikan nilai dari Pi, (3.14 ...)</p>
+			<p><strong>Returns:</strong> <code>number</code>. </p>
+
+			<h4><code>jarak(x: number = 0, y: number = 0): number</code></h4>
+			<p>Menghitung jarak</p>
+			<p><strong>Parameters</strong></p>
+			<ul>
+				<li>
+					<p><code>x</code>: <code>number</code>, default 0</p>
+				</li>
+				<li>
+					<p><code>y</code>: <code>number</code>, default 0</p>
+				</li>
+			</ul>
+			<p><strong>Returns:</strong> <code>number</code>. </p>
+
+			<h4>
+				<code>jarakSudut(sudut1: number = 0, sudut2: number, min: boolean = true)</code>
+			</h4>
+
+			<p>menghitung jarak antar dua sudut</p>
+			<p><strong>Parameters</strong></p>
+			<ul>
+				<li><code>sudut1</code>: <code>number</code>, default 0<br />
+					sudut pertama</li>
+				<li><code>sudut2</code>: <code>number</code>, default 0<br />
+					sudut kedua</li>
+				<li><code>min</code>: <code>boolean</code>, default true<br />
+					apakah mencari jarak terdekat, atau jarak terjauh dari dua sudut</li>
+			</ul>
+			<p><strong>Returns:</strong> <code>number</code>. </p>
+
+			<h4><code>sudut(x: number, y: number)</code></h4>
+			<p>Menghitung sudut dari posisi x dan y terhadap posisi 0, 0</p>
+			<p><strong>Parameters</strong></p>
+			<ul>
+				<li><code>x</code>: <code>number</code><br />
+					posisi x </li>
+				<li><code>y</code>: <code>number</code><br />
+					posisi xy </li>
+			</ul>
+			<p><strong>Returns:</strong> <code>number</code>. </p>
+
+			<h4><code>polarX(panjang = 100, sudut = 0)</code></h4>
+			<p>Posisi X dari koordinat polar.</p>
+			<p><strong>Parameters</strong></p>
+			<ul>
+				<li><code>panjang</code>: <code>number</code>, default 100<br />
+					panjang radius</li>
+				<li><code>sudut</code>: <code>number</code>, default 0<br />
+					sudut</li>
+			</ul>
+			<p><strong>Returns:</strong> <code>number</code>. </p>
+
+			<h4><code>polarY(panjang = 100, sudut = 0)</code></h4>
+			<p>Posisi Y dari koordinat polar</p>
+			<p><strong>Parameters</strong></p>
+			<ul>
+				<li><code>panjang</code>: <code>number</code>, default 100<br />
+					panjang radius</li>
+				<li><code>sudut</code>: <code>number</code>, default 0<br />
+					sudut</li>
+			</ul>
+			<p><strong>Returns:</strong> <code>number</code>. </p>
+
+			<h4><code>abs(n: number): number</code></h4>
+			<p>Menghasilkan nilai absolute dari suatu bilangan</p>
+			<p><strong>Parameters</strong></p>
+			<ul>
+				<li><code>n</code>: <code>number</code>, default 0<br />
+					bilangan yang ingin dicari nilai absolutenya</li>
+			</ul>
+			<p><strong>Returns:</strong> <code>number</code>. </p>
+
+			<h4><code>normalisasiSudut(sdt: number = 0): number</code></h4>
+			<p>Menghasilkan sudut yang nilainya antara 0 - 360, dari sebuah sudut</p>
+			<p><strong>Parameters</strong></p>
+			<ul>
+				<li><code>sdt</code>: <code>number</code>, default 0<br />
+					sudut yang ingin dicari nilai normalnya</li>
+			</ul>
+			<p><strong>Returns:</strong> <code>number</code>. </p>
+
+			<h4>
+				<code>pembulatan(n: number, b: number = 1, type: number = 0): number</code>
+			</h4>
+			<p>Membulatkan bilangan </p>
+			<p><strong>Parameters</strong></p>
+			<ul>
+				<li><code>x</code>: <code>number</code>, default 0<br />
+					posisi x dari tengah lingkaran</li>
+			</ul>
+		</section>
+
+		<!-- bentuk -->
+		<section>
+			<h2 id="menggambar-bentuk-dasar">📝 menggambar bentuk dasar</h2>
+			<p>Berisi kumpulan perintah untuk menggambar dengan bangun geometri</p>
+
+			<h4><code>warna(idx: number = 0, trans = 100)</code></h4>
+			<p>Mengeset warna fill</p>
+			<p><strong>Parameters</strong></p>
+			<ul>
+				<li>
+					<code>x</code>: <code>number</code>, default 0<br />
+					posisi x dari tengah lingkaran
+				</li>
+			</ul>
+
+			<h4><code>warnaGaris(idx: number, trans = 100)</code></h4>
+			<p>Mengeset warna garis</p>
+			<p><strong>Parameters</strong></p>
+			<ul>
+				<li>
+					<code>x</code>: <code>number</code>, default 0<br />
+					posisi x dari tengah lingkaran
+				</li>
+			</ul>
+
+			<h4><code>tebalGaris(n: number)</code></h4>
+			<p>Mengatur ketbalan garis</p>
+			<p><strong>Parameters</strong></p>
+			<ul>
+				<li>
+					<code>x</code>: <code>number</code>, default 0<br />
+					posisi x dari tengah lingkaran
+				</li>
+			</ul>
+
+			<h4><code>bukaPath(x: number = 0, y: number = 0): void</code></h4>
+			<p>Perintah ini berfungsi untuk memulai menggambar bentuk yang kompleks.
+				Perintah ini bisa di ikuti dengan perintah <code>garisKe()</code>, <code>kurvaKe()</code> dan
+				<code>lingkaranKe()</code>
+			</p>
+			<p><strong>Parameters</strong></p>
+			<ul>
+				<li>
+					<code>x</code>: <code>number</code><br />
+					Posisi X mulai menggambar
+				</li>
+				<li>
+					<code>y</code>: <code>number</code>, default 32<br />
+					Posisi Y mulai menggambar
+				</li>
+			</ul>
+
+			<h4><code>garisKe(x: number, y: number): void</code></h4>
+			<p>Membuat garis ke posisi tertentu dari posisi terakhir</p>
+			<p><strong>Parameters</strong></p>
+			<ul>
+				<li>
+					<code>x</code>: <code>number</code><br />
+					Posisi x ujung garis
+				</li>
+				<li>
+					<code>y</code>: <code>number</code>, default 32<br />
+					Posisi y ujung garis
+				</li>
+				</li>
+			</ul>
+
+			<h4><code>kurvaKe(cx: number, cy: number, x: number, y: number): void</code></h4>
+			<p>Membuat kurva yang berakhir ke posisi x dan y, dengan kontrol point ditentukan oleh cx dan cy</p>
+			<p><strong>Parameters</strong></p>
+			<ul>
+				<li>
+					<code>cx</code>: <code>number</code><br />
+					posisi x kontrol point
+				</li>
+				<li>
+					<code>cy</code>: <code>number</code><br />
+					posisi y kontrol point
+				</li>
+				<li>
+					<code>x</code>: <code>number</code><br />
+					posisi x ujung kurva
+				</li>
+				<li>
+					<code>y</code>: <code>number</code><br />
+					posisi y ujung kurva</p>
+				</li>
+			</ul>
+
+			<h4><code>lingkaranKe(tx: number, ty: number, sudut: number, searahJarumJam = false)</code></h4>
+			<p>Membuat lingkaran dari posisi terakhir sebesar sudut tertentu</p>
+			<p><strong>Parameters</strong></p>
+			<ul>
+				<li>
+					<code>tx</code>: <code>number</code><br />
+					posisi x dari tengah lingkaran
+				</li>
+				<li>
+					<code>ty</code>: <code>number</code><br />
+					posisi y dari tengah lingkaran
+				</li>
+				<li>
+					<code>sudut</code>: <code>number</code><br />
+					sudut akhir lingkaran di hitung dari posisi akhir x dan y
+				</li>
+				<li>
+					<code>searahJarumJam</code>: <code>boolean</code><br />
+					apakah lingkaran digambar searah jarum jam
+				</li>
+			</ul>
+
+			<h4><code>tutupPath()</code></h4>
+			<p>Menutup Path. Perintah ini harus dipanggil untuk mengakhiri perintah dari <code>bukaPath()</code>.</p>
+
+			<h4>
+				<code>elip(x: number = 0, y: number = 0, radiusX: number = 0, radiusY: number = 0, awal: number = 0, akhir: number = 360, searahJarumJam:boolean = false): void</code>
+			</h4>
+			<p>Menggambar elip atau lingkaran</p>
+			<p><strong>Parameters</strong></p>
+			<ul>
+				<li>
+					<code>x</code>: <code>number</code>, default 0
+					posisi x dari tengah lingkaran
+				</li>
+				<li>
+					<code>y</code>: <code>number</code>, default 0
+					posisi y dari tengah lingkaran
+				</li>
+				<li>
+					<code>radiusX</code>: <code>number</code>, default 32<br />
+					radius horizontal
+				</li>
+				<li>
+					<code>radiusY</code>: <code>number</code>, default 64
+					radius vertikal
+				</li>
+				<li>
+					<code>awal</code>: <code>number</code>, default 0<br />
+					sudut awal elip
+				</li>
+				<li>
+					<code>akhir</code>: <code>number</code>, default 360<br />
+					sudut akhir elip
+				</li>
+				<li>
+					<code>searahJarumJam</code>: <code>boolean</code>, default false<br />
+					apakah elips searah jarum jam</p>
+				</li>
+			</ul>
+
+			<h4><code>kotak(x: number = 10, y: number = 10, pjg: number = 100, lbr: number = 100)</code></h4>
+			<p><strong>Parameters</strong></p>
+			<ul>
+				<li>
+					<code>x</code>: <code>number</code>, default 10<br />
+					posisi x dari awal kotak
+				</li>
+				<li>
+					<code>y</code>: <code>number</code>, default 10<br />
+					posisi y dari awal kotak
+				</li>
+				<li>
+					<code>pjg</code>: <code>number</code>, default 100<br />
+					panjang kotak
+				</li>
+				<li>
+					<code>lbr</code>: <code>number</code>, default 100<br />
+					lebar kotak</p>
 				</li>
 			</ul>
 		</section>
