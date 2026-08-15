@@ -78,6 +78,10 @@ footer {
 	height: 100vh;
 }
 
+code {
+	font-size: large;
+}
+
 @media (max-width: 600px) {
 	header h1 {
 		font-size: 1.5rem;

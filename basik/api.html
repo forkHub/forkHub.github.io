@@ -21,8 +21,7 @@
 			<h4>
 				<code>mulai(pjg: number = 800, lbr: number = 600, kanvas: HTMLCanvasElement = null, mode: number = 1)</code>
 			</h4>
-			<p>Memulai aplikasi. Ini adalah perintah awal untuk memulai applikasi dengan BASIK. Perintah ini
-				akan otomatis dipanggil bila tidak ada dalam kode</p>
+			<p>Memulai aplikasi. Ini adalah perintah awal untuk memulai applikasi dengan BASIK.</p>
 			<p><strong>Parameters</strong></p>
 			<ul>
 				<li><code>pjg</code>: <code>number</code>, default 800<br />
@@ -39,59 +38,61 @@
 			</ul>
 
 			<h4>
-				<code>bersihkanLayar(x: number = 0, y: number = 0, pjg: number = 0, lbr: number = 0)</code>
+				<code>bersihkanLayar(x: number = 0, y: number = 0, pjg: number = 800, lbr: number = 600)</code>
 			</h4>
-			<p>Membersihkan layar</p>
+			<p>Membersihkan area layar</p>
 			<p><strong>Parameters</strong></p>
 			<ul>
-				<li><code>x</code>: <code>number</code>, default 0
-					posisi x dari posisi awal membersihkan layar</li>
-				<li><code>y</code>: <code>number</code>, default 0
-					posisi x dari posisi awal membersihkan layar</li>
-				<li><code>pjg</code>: <code>number</code>, default 0
+				<li><code>x</code>: <code>number</code>, default 0<br />
+					posisi x dari posisi awal untuk membersihkan layar</li>
+				<li><code>y</code>: <code>number</code>, default 0<br />
+					posisi x dari posisi awal untuk membersihkan layar</li>
+				<li><code>pjg</code>: <code>number</code>, default 800<br />
 					panjang area untuk dibersihkan</li>
-				<li><code>lbr</code>: <code>number</code>, default 0
+				<li><code>lbr</code>: <code>number</code>, default 600<br />
 					lebar area untuk dibersihkan</li>
 			</ul>
 
-			<h4><code>stempel(url = "roket", x, y)</code></h4>
+			<h4><code>stempel(url:string = "roket", x?:number = 0, y?:number = 0)</code></h4>
 			<p>Menstempel gambar ke layar pada posisi tertentu </p>
 			<p><strong>Parameters</strong></p>
 			<ul>
-				<li><code>url</code>: <code>string</code> atau <code>Gambar</code> default "roket"<br />
+				<li><code>url</code>: <code>string</code> atau <code>Gambar</code> object, default "roket"<br />
 					<code>url</code> bisa diisi dengan alamat/url gambar yang akan di stempel atau object
 					<code>Gambar</code> yang akan di stempel ke layar.<br />
 					Bila hanya diisi menggunakan nama file ("kotak" atau "kotak.png") maka BASIK akan otomatis
 					mencari di folder asset.<br />
 					<code>url</code> dengan type string ditujukan untuk penyederhanaan bagi pemula yang belum
-					mengenal konsep <code>object</code> dengan fitur yang lebih sedikit.
+					mengenal konsep <code>object</code> dengan fitur yang lebih sedikit.<br />
 					Untuk fitur yang lebih kompleks seperti mengatur ukuran gambar, rotasi, dll, maka dianjurkan
 					untuk memuat gambar terlebih dahulu dengan perintah <code>muatGambar()</code>.
 				</li>
 				<li><code>x</code>: <code>number</code><br />
 					Menentukan posisi x.<br />
-					Parameter ini berifat opsional. Bila kosong dan url mereferensi pada object gambar, maka
+					Parameter ini berifat opsional dengan nilai default 0. Bila kosong dan url mereferensi pada object
+					gambar, maka
 					akan menggunakan property x dari gambar</li>
 				<li><code>y</code>: <code>number</code><br />
 					Menentukan posisi y.<br />
-					Parameter ini berifat opsional. Bila kosong dan url mereferensi pada object gambar, maka
+					Parameter ini berifat opsional dengan nilai default 0. Bila kosong dan url mereferensi pada object
+					gambar, maka
 					akan menggunkaan property y dari gambar </li>
 			</ul>
-			<p><strong>Returns:</strong> <code>void</code></p>
 
 			<h4><code>muatGambar(url)</code></h4>
-			<p>Memuat gambar. Hasil dari perintah ini bisa digunakan dengan perintah <code>stempel()</code>,
-				atau perintah lainnya. Dengan memuat gambar terlebih dahulu, kita akan punya lebih banyak fitur
-				seperti mengatur panjang/lebar, rotasi, dsb.
+			<p>Memuat gambar. <br />
+				Hasil dari perintah ini bisa digunakan dengan perintah <code>stempel()</code>,
+				atau perintah lainnya. <br />
+				Dengan memuat gambar terlebih dahulu, kita akan punya lebih banyak fitur
+				seperti mengatur panjang/lebar, rotasi, dsb.<br />
 				Kita tidak perlu menunggu hingga gambar selesai di muat sepenuhnya untuk memulai operasi
-				selanjutnya, semua di handle secara otomatis. Hal ini untuk memudahkan pemula dan menghindari
-				perintah yang kompleks seperti event, dll.</p>
+				selanjutnya, seperti <code>stempel()</code>,dll, karena hal itu akan di handle secara otomatis. <br />
 			<p><strong>Parameters</strong></p>
 			<ul>
-				<li><code>url</code>: <code>string</code> default "roket"<br />
+				<li><code>url</code>: <code>string</code>, default "roket"<br />
 					Alamat Gambar yang akan di dimuat.<br />
 					Alamat bisa berupa nama file tanpa ekstensi ("kotak"), dengan ekstensi ("kotak.png"), alamat
-					relatif ("./assets/kotak.png"), atau alamat absolut ("http://www.alamat.com/kotak.png").
+					relatif ("./assets/kotak.png"), atau alamat absolut ("http://www.alamat.com/kotak.png").<br />
 					Bila alamat hanya menggunakan nama ("kotak" atau "kotak.png") maka BASIK akan otomatis
 					mencari di folder asset.</li>
 			</ul>
@@ -100,8 +101,8 @@
 			<h4>
 				<code>gambarTabrakan(img1: Gambar, img2: Gambar): boolean</code>
 			</h4>
-			<p>Mengecek apakah dua gambar bertabrakan. Pengecekan dilakukan dengan mengecek bounding box dari
-				kedua objek <code>Gambar</code>.
+			<p>Mengecek apakah dua gambar bertabrakan.<br /> Pengecekan dilakukan dengan mengecek bounding box dari
+				kedua objek <code>Gambar</code>.<br />
 				Pengecekan mensupport gambar yang di rotasi.</p>
 			<p><strong>Parameters</strong></p>
 			<ul>
@@ -110,7 +111,7 @@
 				<li><code>img2</code>: <code>Gambar</code> <br />
 					objek gambar kedua yang akan di check</li>
 			</ul>
-			<p><strong>Returns:</strong> <code>boolean</code>. bernilai true bila terjadi tabrakan, atau false
+			<p><strong>Returns:</strong> <code>boolean</code>, bernilai true bila terjadi tabrakan, atau false
 				bila tidak terjadi tabrakan</p>
 
 			<h4>
@@ -130,12 +131,11 @@
 			</p>
 
 			<h4><code>semuaGambarSelesaiDimuat(): boolean</code></h4>
-			<p>Mengecek apakah semua gambar sudah selesai dimuat. Gambar yang belum di muat masih bisa menerima
-				perintah dan event.
-				Bila kita men-<code>stempel</code> gambar yang belum dimuat, maka gambarnya akan terlihat
-				setelah gambar selesai di muat.
-				Perintah ini diperlukan kalau kita benar-benar ingin menunggu semua gambar selesai di muat
-				sebelum melakukan sesuatu.</p>
+			<p>Mengecek apakah semua gambar sudah selesai dimuat. <br />
+				Perintah ini hanya dipakai bila kit benar2 ingin menunggu semua gambar dimuat
+				sebelum melalukan operasi yang berhubungan dengan gambar.<br />
+				Tanpa perintah inipun aplikasi akan tetap berjalan normal.
+			</p>
 			<p><strong>Returns:</strong> <code>boolean</code>. Bernilai true bila semua gambar selesai dimuat.
 			</p>
 
@@ -158,7 +158,7 @@
 				<code>ukuranGambar(gbr: Gambar, p:number = 32, l:number = 32): void</code>
 			</h4>
 			<p>Mengubah ukuran gambar. Kita juga bisa mengubah ukuran gambar melalui property
-				<code>panjang</code> dan <code>lebar</code>.
+				<code>panjang</code> dan <code>lebar</code> dari object Gambar.
 			</p>
 			<p><strong>Parameters</strong></p>
 			<ul>
