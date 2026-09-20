@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="en-us" dir="ltr">
+
+<head>
+	<meta charset="utf-8">
+<meta name="viewport" content="width=device-width">
+<title> | Basik</title>
+
+<link rel="stylesheet" href="../../css/main.7ae13d0ce9a0a0e7258d18bacffb83a20124fd832e7bf1b9de84e21823667ac0.css">
+
+<script src="../../js/main.23cd0c7d837263b9eaeb96ee2d9ccfa2969daa3fa00fa1c1fe8701a9b87251a1.js"></script>
+
+</head>
+
+<body>
+	<div class="container">
+		
+<p><a href="../../">Beranda</a></p>
+<h2 id="-perintah-umum">📝 Perintah Umum</h2>
+<h3 id="mulaipjg-number--800-lbr-number--600-kanvas-htmlcanvaselement--null-mode-number--1void"><code>mulai(pjg: number = 800, lbr: number = 600, kanvas: HTMLCanvasElement = null, mode: number = 1):void</code></h3>
+<p>Memulai aplikasi. Ini adalah perintah awal untuk memulai applikasi dengan BASIK.</p>
+<p><strong>Parameters</strong></p>
+<ul>
+<li><code>pjg</code>: <code>number</code>, default 800<br>
+panjang kanvas</li>
+<li><code>lbr</code>: <code>number</code>, default 600<br>
+lebar kanvas</li>
+<li><code>kanvas</code>: <code>number</code>, default null<br>
+Kanvas yang akan dipakai bila ada.<br>
+Bila diisi null maka BASIK akan otomatis mencari kanvas yang ada di dokumen atau membuat baru bila tidak tersedia</li>
+<li><code>mode</code>: <code>number</code>, default 1<br>
+Mode yang dipakai: 1 bila ingin full-screen atau 0 bila ingin kanvas apa adanya. Gunakan 0 bila ingin mendapatkan kontrol penuh terhadap kanvas yang ingin dipakai.</li>
+</ul>
+<p><strong>Returns:</strong> <code>void</code></p>
+<h3 id="bersihkanlayarx-number--0-y-number--0-pjg-number--800-lbr-number--600void"><code>bersihkanLayar(x: number = 0, y: number = 0, pjg: number = 800, lbr: number = 600):void</code></h3>
+<p>Membersihkan layar</p>
+<p><strong>Parameters</strong></p>
+<ul>
+<li><code>x</code>: <code>number</code>, default 0
+posisi x dari posisi awal membersihkan layar</li>
+<li><code>y</code>: <code>number</code>, default 0
+posisi y dari posisi awal membersihkan layar</li>
+<li><code>pjg</code>: <code>number</code>, default 800
+panjang area untuk dibersihkan</li>
+<li><code>lbr</code>: <code>number</code>, default 600
+lebar area untuk dibersihkan</li>
+</ul>
+<p><strong>Returns:</strong> <code>void</code></p>
+<h3 id="stempelurl--roket-x-yvoid"><code>stempel(url = &quot;roket&quot;, x?, y?):void</code></h3>
+<p>Menstempel gambar ke layar pada posisi tertentu</p>
+<p><strong>Parameters</strong></p>
+<ul>
+<li><code>url</code>: <code>string</code> default &ldquo;roket&rdquo;, atau object <code>Gambar</code>
+<code>url</code> bisa diisi dengan alamat/url gambar yang akan di stempel atau object <code>Gambar</code> yang akan di stempel ke layar.<br>
+Bila hanya diisi menggunakan nama file (&ldquo;kotak&rdquo; atau &ldquo;kotak.png&rdquo;) maka BASIK akan otomatis mencari di folder <code>asset</code>.<br>
+<code>url</code> dengan type string ditujukan untuk penyederhanaan bagi pemula yang belum mengenal konsep <code>object</code> dengan fitur yang lebih sedikit.
+Untuk fitur yang lebih kompleks seperti mengatur ukuran gambar, rotasi, dll, maka dianjurkan untuk memuat gambar terlebih dahulu dengan perintah <code>muatGambar()</code>.</li>
+<li><code>x</code>: <code>number</code>, optional<br>
+Menentukan posisi x.<br>
+Parameter ini berifat opsional. Bila kosong dan url mereferensi pada object gambar, maka akan menggunakan property x dari gambar</li>
+<li><code>y</code>: <code>number</code>, optional
+Menentukan posisi y.<br>
+Parameter ini berifat opsional. Bila kosong dan url mereferensi pada object gambar, maka akan menggunkaan property y dari gambar</li>
+</ul>
+<p><strong>Returns:</strong> <code>void</code></p>
+<h3 id="muatgambarurlgambar"><code>muatGambar(url):Gambar</code></h3>
+<p>Memuat gambar. Hasil dari perintah ini bisa digunakan dengan perintah <code>stempel()</code>, atau perintah lainnya.<br>
+Dengan memuat gambar terlebih dahulu, kita akan punya lebih banyak fitur seperti mengatur panjang/lebar, rotasi, dsb.</p>
+<p><strong>Parameters</strong></p>
+<ul>
+<li><code>url</code>: <code>string</code> default &ldquo;roket&rdquo;<br>
+Alamat Gambar yang akan di dimuat.<br>
+Alamat  bisa berupa nama file tanpa ekstensi (&ldquo;kotak&rdquo;), dengan ekstensi (&ldquo;kotak.png&rdquo;), alamat relatif (&quot;./assets/kotak.png&quot;), atau alamat absolut (&ldquo;<a href="http://www.alamat.com/kotak.png%22)">http://www.alamat.com/kotak.png&quot;)</a>.
+Bila alamat hanya menggunakan nama (&ldquo;kotak&rdquo; atau &ldquo;kotak.png&rdquo;) maka BASIK akan otomatis mencari di folder asset.</li>
+</ul>
+<p><strong>Returns:</strong> <code>Gambar</code></p>
+<h3 id="gambartabrakanimg1-gambar-img2-gambar-boolean"><code>gambarTabrakan(img1: Gambar, img2: Gambar): boolean</code></h3>
+<p>Mengecek apakah dua gambar bertabrakan. Pengecekan dilakukan dengan mengecek bounding box dari kedua objek <code>Gambar</code>.
+Pengecekan mensupport gambar yang di rotasi.</p>
+<p><strong>Parameters</strong></p>
+<ul>
+<li><code>img1</code>: <code>Gambar</code><br>
+objek gambar pertama yang akan di check</li>
+<li><code>img2</code>: <code>Gambar</code><br>
+objek gambar kedua yang akan di check</li>
+</ul>
+<p><strong>Returns:</strong> <code>boolean</code>. bernilai true bila terjadi tabrakan, atau false bila tidak terjadi tabrakan</p>
+<h3 id="poindidalamgambarimg-gambar-x-number-y-number-boolean"><code>poinDidalamGambar(img: Gambar, x: number, y: number): boolean</code></h3>
+<p>Mengecek apakah sebuah poin pada lokasi tertentu ada di dalam gambar</p>
+<p><strong>Parameters</strong></p>
+<ul>
+<li><code>img</code>: <code>Gambar</code><br>
+Gambar yang akan di check</li>
+<li><code>x</code>: <code>number</code><br>
+Posisi x point</li>
+<li><code>y</code>: <code>number</code><br>
+Poisi y point</li>
+</ul>
+<p><strong>Returns:</strong> <code>boolean</code>. Bernilai <code>true</code> bila point berada di dalam gambar</p>
+<h3 id="semuagambarselesaidimuat-boolean"><code>semuaGambarSelesaiDimuat(): boolean</code></h3>
+<p>Mengecek apakah semua gambar sudah selesai dimuat. Gambar yang belum di muat masih bisa menerima perintah dan event.
+Bila kita men-<code>stempel</code> gambar yang belum dimuat, maka gambarnya akan terlihat setelah gambar selesai di muat.
+Perintah ini diperlukan kalau kita benar-benar ingin menunggu semua gambar selesai di muat sebelum melakukan sesuatu.</p>
+<p><strong>Returns:</strong> <code>boolean</code>. Bernilai <code>true</code> bila semua gambar selesai dimuat.</p>
+<h3 id="posisigambargbr-gambar-xnumber--0-ynumber--0-void"><code>posisiGambar(gbr: Gambar, x:number = 0, y:number = 0): void</code></h3>
+<p>Mengubah posisi gambar. Kita juga bisa mengubah posisi gambar secara parsial dengan mengubah property <code>x</code> atau <code>y</code> secara langsung.</p>
+<p><strong>Parameters</strong></p>
+<ul>
+<li><code>gbr</code>: <code>Gambar</code><br>
+Gambar yang akan di pindah</li>
+<li><code>x</code>: <code>number</code>, default 0<br>
+Posisi x</li>
+<li><code>y</code>: <code>number</code>, default 0<br>
+Posisi y</li>
+</ul>
+<h3 id="ukurangambargbr-gambar-pjgnumber--32-lbrnumber--32-void"><code>ukuranGambar(gbr: Gambar, pjg:number = 32, lbr:number = 32): void</code></h3>
+<p>Mengubah ukuran gambar. Kita juga bisa mengubah ukuran gambar melalui property <code>panjang</code> dan <code>lebar</code>.</p>
+<p><strong>Parameters</strong></p>
+<ul>
+<li><code>gbr</code>: <code>Gambar</code><br>
+Gambar yang akan di ubah ukurannya</li>
+<li><code>pjg</code>: <code>number</code>, default 32<br>
+panjang gambar</li>
+<li><code>lbr</code>: <code>number</code>, default 32
+Lebar gambar</li>
+</ul>
+<h2 id="-input">📝 Input</h2>
+<p>Perintah-perintah yang berhubungan dengan input seperti mouse, touch, dan keyboard.</p>
+<h3 id="mouseditekan-boolean"><code>mouseDitekan(): boolean</code></h3>
+<p>Mengecek apakah mouse sedang di tekan</p>
+<p><strong>Returns:</strong> <code>boolean</code>. Bernilai true bila mouse sedang ditekan</p>
+<h3 id="mousedidrag-boolean"><code>mouseDidrag(): boolean</code></h3>
+<p>Mengecek apakah mouse sedang di drag</p>
+<p><strong>Returns:</strong> <code>boolean</code>. Bernilai true bila mouse sedang di drag</p>
+<h3 id="mousedragx-number"><code>mouseDragX(): number</code></h3>
+<p>Mengembalikan jarak vertikal mouse saat di drag, dihitung dari posisi awal saat drag dimulai</p>
+<p><strong>Returns:</strong> <code>number</code>. besaran drag horizontal</p>
+<h3 id="mousedragy-number"><code>mouseDragY(): number</code></h3>
+<p>Mengembalikan jarak vertikal mouse saat di drag, dihitung dari posisi awal saat drag dimulai</p>
+<p><strong>Returns:</strong> <code>number</code>. besaran drag vertikal</p>
+<h3 id="mousex-number"><code>mouseX(): number</code></h3>
+<p>Mengembalikan posisi X dari mouse</p>
+<p><strong>Returns:</strong> <code>number</code>. posisi x dari mouse</p>
+<h3 id="mousey-number"><code>mouseY(): number</code></h3>
+<p>Mengembalikan posisi Y dari mouse</p>
+<p><strong>Returns:</strong> <code>number</code>. posisi y dari mouse</p>
+<h3 id="mousedragawalx-number"><code>mouseDragAwalX(): number</code></h3>
+<p>Mengembalikan Posisi awal mouse saat mulai di drag</p>
+<p><strong>Returns:</strong> <code>number</code>. posisi x saat mulai di drag</p>
+<h3 id="mousedragawaly-number"><code>mouseDragAwalY(): number</code></h3>
+<p>Mengembalikan Posisi awal mouse saat mulai di drag</p>
+<p><strong>Returns:</strong> <code>number</code>. posisi y saat mulai di drag</p>
+<h3 id="mousegerakx-number"><code>mouseGerakX(): number</code></h3>
+<p>Mengembalikan besar pergerakan horizontal saat mouse bergerak</p>
+<p><strong>Returns:</strong> <code>number</code>. besar pergerakan horizontal saat mouse digerakkan</p>
+<h3 id="mousegeraky-number"><code>mouseGerakY(): number</code></h3>
+<p>Mengembalikan besar pergerakan vertikal saat mouse bergerak</p>
+<p><strong>Returns:</strong> <code>number</code>. besar pergerakan vertikal saat mouse digerakkan</p>
+<h3 id="tombolditahankey-string--"><code>tombolDitahan(key: string = '')</code></h3>
+<p>mengecek apakah sebuah tombol keybord sedang ditahan</p>
+<p><strong>Parameters</strong></p>
+<ul>
+<li><code>key</code>: <code>string</code>
+tombol yang sedang ditekan</li>
+</ul>
+<h3 id="tomboleventstring"><code>tombolEvent():string </code></h3>
+<p>Mengembalikan informasi tombol terakhir yang terlibat saat ada event keyboard</p>
+<p><strong>Returns:</strong> <code>string</code>. tombol yang sedang ditekan</p>
+<h2 id="-perintah-teks">📝 Perintah Teks</h2>
+<p>Perintah-perintah yang berhubungan dengan teks.</p>
+<h3 id="tulisteks-string---xnumber-ynumbervoid"><code>tulis(teks: string = &quot;&quot;, x:number, y:number):void</code></h3>
+<p>Menulis sesuatu di layar</p>
+<p><strong>Parameters</strong></p>
+<ul>
+<li><code>teks</code>: <code>string</code>, default &quot;&rdquo;
+teks yang ingin di tulis</li>
+<li><code>x</code>: <code>number</code>, opsional
+posisi x dari tulisan, bila tidak disediakan maka akan sama dengan teks sebelumnya</li>
+<li><code>y</code>: <code>number</code>, optional
+posisi y dari tulisan, bila tidak disediakan maka posisinya adalah di bawah teks sebelumnya</li>
+</ul>
+
+
+	</div>
+</body>
+
+</html>

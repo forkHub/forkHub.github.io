@@ -10,5 +10,5 @@ function update() {
 	bersihkanLayar();
 	stempel(roket);
 	posisiTeks(0, 20);
-	tulis("Drag dimana saja untuk memutar kotak");
+	tulis("Drag dimana saja untuk memutar roket");
 }

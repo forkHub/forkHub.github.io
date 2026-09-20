@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en-us" dir="ltr">
+
+<head>
+	<meta charset="utf-8">
+<meta name="viewport" content="width=device-width">
+<title> | Basik</title>
+
+<link rel="stylesheet" href="../../css/main.7ae13d0ce9a0a0e7258d18bacffb83a20124fd832e7bf1b9de84e21823667ac0.css">
+
+<script src="../../js/main.23cd0c7d837263b9eaeb96ee2d9ccfa2969daa3fa00fa1c1fe8701a9b87251a1.js"></script>
+
+</head>
+
+<body>
+	<div class="container">
+		
+<p><a href="../../">Beranda</a></p>
+<h2 id="-menggambar-bentuk-dasar">📝 menggambar bentuk dasar</h2>
+<p>Berisi kumpulan perintah untuk menggambar dengan bangun geometri</p>
+<h4 id="warnaidx-number--0-trans--100"><code>warna(idx: number = 0, trans = 100)</code></h4>
+<p>Mengeset warna fill</p>
+<p><strong>Parameters</strong></p>
+<ul>
+<li><code>x</code>: <code>number</code>, default 0
+posisi x dari tengah lingkaran</li>
+</ul>
+<h4 id="warnagarisidx-number-trans--100"><code>warnaGaris(idx: number, trans = 100)</code></h4>
+<p>Mengeset warna garis</p>
+<p><strong>Parameters</strong></p>
+<ul>
+<li><code>x</code>: <code>number</code>, default 0
+posisi x dari tengah lingkaran</li>
+</ul>
+<h4 id="tebalgarisn-number"><code>tebalGaris(n: number)</code></h4>
+<p>Mengatur ketbalan garis</p>
+<p><strong>Parameters</strong></p>
+<ul>
+<li><code>x</code>: <code>number</code>, default 0
+posisi x dari tengah lingkaran</li>
+</ul>
+<h3 id="bukapathx-number--0-y-number--0-void"><code>bukaPath(x: number = 0, y: number = 0): void</code></h3>
+<p>Perintah ini berfungsi untuk memulai menggambar bentuk yang kompleks.
+Perintah ini bisa di ikuti dengan perintah <code>garisKe()</code>, <code>kurvaKe()</code> dan <code>lingkaranKe()</code></p>
+<p><strong>Parameters</strong></p>
+<ul>
+<li><code>x</code>: <code>number</code><br>
+Posisi X mulai menggambar</li>
+<li><code>y</code>: <code>number</code>, default 32<br>
+Posisi Y mulai menggambar</li>
+</ul>
+<h3 id="gariskex-number-y-number-void"><code>garisKe(x: number, y: number): void</code></h3>
+<p>Membuat garis ke posisi tertentu dari posisi terakhir</p>
+<p><strong>Parameters</strong></p>
+<ul>
+<li><code>x</code>: <code>number</code><br>
+Posisi x ujung garis</li>
+<li><code>y</code>: <code>number</code>, default 32<br>
+Posisi y ujung garis</li>
+</ul>
+<h3 id="kurvakecx-number-cy-number-x-number-y-number-void"><code>kurvaKe(cx: number, cy: number, x: number, y: number): void</code></h3>
+<p>Membuat kurva yang berakhir ke posisi x dan y, dengan kontrol point ditentukan oleh cx dan cy</p>
+<p><strong>Parameters</strong></p>
+<ul>
+<li><code>cx</code>: <code>number</code><br>
+posisi x kontrol point</li>
+<li><code>cy</code>: <code>number</code><br>
+posisi y kontrol point</li>
+<li><code>x</code>: <code>number</code><br>
+posisi x ujung kurva</li>
+<li><code>y</code>: <code>number</code><br>
+posisi y ujung kurva</li>
+</ul>
+<h3 id="lingkaranketx-number-ty-number-sudut-number-searahjarumjam--false"><code>lingkaranKe(tx: number, ty: number, sudut: number, searahJarumJam = false)</code></h3>
+<p>Membuat lingkaran dari posisi terakhir sebesar sudut tertentu</p>
+<p><strong>Parameters</strong></p>
+<ul>
+<li><code>tx</code>: <code>number</code><br>
+posisi x dari tengah lingkaran</li>
+<li><code>ty</code>: <code>number</code><br>
+posisi y dari tengah lingkaran</li>
+<li><code>sudut</code>: <code>number</code><br>
+sudut akhir lingkaran di hitung dari posisi akhir x dan y</li>
+<li><code>searahJarumJam</code>: <code>boolean</code><br>
+apakah lingkaran digambar searah jarum jam</li>
+</ul>
+<h3 id="tutuppath"><code>tutupPath()</code></h3>
+<p>Menutup Path. Perintah ini harus dipanggil untuk mengakhiri perintah dari <code>bukaPath()</code>.</p>
+<h3 id="elipx-number--0-y-number--0-radiusx-number--0-radiusy-number--0-awal-number--0-akhir-number--360-searahjarumjamboolean--false-void"><code>elip(x: number = 0, y: number = 0, radiusX: number = 0, radiusY: number = 0, awal: number = 0, akhir: number = 360, searahJarumJam:boolean = false): void</code></h3>
+<p>Menggambar elip atau lingkaran</p>
+<p><strong>Parameters</strong></p>
+<ul>
+<li><code>x</code>: <code>number</code>, default 0
+posisi x dari tengah lingkaran</li>
+<li><code>y</code>: <code>number</code>, default 0
+posisi y dari tengah lingkaran</li>
+<li><code>radiusX</code>: <code>number</code>, default 32<br>
+radius horizontal</li>
+<li><code>radiusY</code>: <code>number</code>, default 64
+radius vertikal</li>
+<li><code>awal</code>: <code>number</code>, default 0<br>
+sudut awal elip</li>
+<li><code>akhir</code>: <code>number</code>, default 360<br>
+sudut akhir elip</li>
+<li><code>searahJarumJam</code>: <code>boolean</code>, default false<br>
+apakah elips searah jarum jam</li>
+</ul>
+<h3 id="kotakx-number--10-y-number--10-pjg-number--100-lbr-number--100"><code>kotak(x: number = 10, y: number = 10, pjg: number = 100, lbr: number = 100)</code></h3>
+<p><strong>Parameters</strong></p>
+<ul>
+<li><code>x</code>: <code>number</code>, default 10<br>
+posisi x dari awal kotak</li>
+<li><code>y</code>: <code>number</code>, default 10<br>
+posisi y dari awal kotak</li>
+<li><code>pjg</code>: <code>number</code>, default 100<br>
+panjang kotak</li>
+<li><code>lbr</code>: <code>number</code>, default 100<br>
+lebar kotak</li>
+</ul>
+
+
+	</div>
+</body>
+
+</html>

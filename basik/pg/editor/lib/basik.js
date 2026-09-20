@@ -1,6 +1,37 @@
 "use strict";
 var Basik;
 (function (Basik) {
+    class Auto {
+        constructor() {
+            this.daftar = new Set([
+                "update"
+            ]);
+        }
+        init() {
+            const ls = this.daftarFungsi();
+            for (const nama of ls) {
+                const namaLower = nama.toLowerCase();
+                if (this.daftar.has(namaLower) && nama !== namaLower) {
+                    console.warn(`Perbedaan casing ditemukan: '${nama}' seharusnya '${namaLower}'. Penanganan Event mungkin tidak akan berjalan.`);
+                }
+            }
+        }
+        daftarFungsi() {
+            return Object.getOwnPropertyNames(window)
+                .filter((prop) => {
+                try {
+                    return typeof window[prop] === 'function';
+                }
+                catch (e) {
+                    return false;
+                }
+            });
+        }
+    }
+    Basik.Auto = Auto;
+})(Basik || (Basik = {}));
+var Basik;
+(function (Basik) {
     class Camera {
         static get x() {
             return Camera._x;
@@ -65,7 +96,7 @@ var Basik;
         Evt["GAMBAR_DILOAD"] = "gambarDiload";
         Evt["RESIZE"] = "resize";
     })(Evt = Basik.Evt || (Basik.Evt = {}));
-    class Event {
+    class BEvent {
         get type() {
             return this._type;
         }
@@ -78,28 +109,28 @@ var Basik;
             this._f = f;
         }
         static addEventListener(type, f) {
-            let e = new Event(type.toLowerCase(), f);
-            Event.list.push(e);
+            let e = new BEvent(type.toLowerCase(), f);
+            BEvent.list.push(e);
             return e;
         }
         static removeListener(e) {
-            for (let i = Event.list.length - 1; i >= 0; i--) {
-                if (Event.list[i] === e) {
-                    Event.list.splice(i, 1);
+            for (let i = BEvent.list.length - 1; i >= 0; i--) {
+                if (BEvent.list[i] === e) {
+                    BEvent.list.splice(i, 1);
                     return;
                 }
             }
         }
         static dispatchEvent(type) {
-            Event.list.forEach((item) => {
+            BEvent.list.forEach((item) => {
                 if (item.type === type.toLowerCase()) {
                     item.f();
                 }
             });
         }
     }
-    Event.list = [];
-    Basik.Event = Event;
+    BEvent.list = [];
+    Basik.BEvent = BEvent;
 })(Basik || (Basik = {}));
 var Basik;
 (function (Basik) {
@@ -190,8 +221,8 @@ var Basik;
             function update() {
                 try {
                     Basik.G._isUpdating = true;
-                    Basik.Event.dispatchEvent(Basik.Evt.UPDATE);
-                    Basik.Event.dispatchEvent(Basik.Evt.RENDER);
+                    Basik.BEvent.dispatchEvent(Basik.Evt.UPDATE);
+                    Basik.BEvent.dispatchEvent(Basik.Evt.RENDER);
                     window.requestAnimationFrame(update);
                     Basik.G._isUpdating = false;
                 }
@@ -226,6 +257,7 @@ var Basik;
             w = w || Basik.G._drawCanvas.width;
             h = h || Basik.G._drawCanvas.height;
             ctx.clearRect(x, y, w, h);
+            Basik.scheduler.ls.length = 0;
         }
         static callFunc(str) {
             try {
@@ -237,50 +269,44 @@ var Basik;
                 return false;
             }
             catch (e) {
-                dialog(`Ada kesalahan di fungsi ${str}. Silahkan check codenya.<hr/>${e.message}<hr/>${e.stack}`);
+                dialog(`Ada kesalahan.<br/> Silahkan check codenya.<hr/>${e.message}<hr/><pre>${e.stack}</pre>`);
                 throw (e);
             }
         }
         static initEvent() {
-            Basik.Event.addEventListener(Basik.Evt.KEYB_DOWN, () => {
+            Basik.BEvent.addEventListener(Basik.Evt.KEYB_DOWN, () => {
                 Basik.G.callFunc(Basik.Evt.KEYB_DOWN);
             });
-            Basik.Event.addEventListener(Basik.Evt.KEYB_UP, () => {
+            Basik.BEvent.addEventListener(Basik.Evt.KEYB_UP, () => {
                 Basik.G.callFunc(Basik.Evt.KEYB_UP);
             });
-            Basik.Event.addEventListener(Basik.Evt.MOUSE_DOWN, () => {
+            Basik.BEvent.addEventListener(Basik.Evt.MOUSE_DOWN, () => {
                 Basik.G.callFunc(Basik.Evt.MOUSE_DOWN);
             });
-            Basik.Event.addEventListener(Basik.Evt.MOUSE_END_DRAG, () => {
+            Basik.BEvent.addEventListener(Basik.Evt.MOUSE_END_DRAG, () => {
                 Basik.G.callFunc(Basik.Evt.MOUSE_END_DRAG);
             });
-            Basik.Event.addEventListener(Basik.Evt.MOUSE_MOVE, () => {
+            Basik.BEvent.addEventListener(Basik.Evt.MOUSE_MOVE, () => {
                 Basik.G.callFunc(Basik.Evt.MOUSE_MOVE);
             });
-            Basik.Event.addEventListener(Basik.Evt.MOUSE_START_DRAG, () => {
+            Basik.BEvent.addEventListener(Basik.Evt.MOUSE_START_DRAG, () => {
                 Basik.G.callFunc(Basik.Evt.MOUSE_START_DRAG);
             });
-            Basik.Event.addEventListener(Basik.Evt.MOUSE_TAP, () => {
+            Basik.BEvent.addEventListener(Basik.Evt.MOUSE_TAP, () => {
                 Basik.G.callFunc(Basik.Evt.MOUSE_TAP);
             });
-            Basik.Event.addEventListener(Basik.Evt.MOUSE_UP, () => {
+            Basik.BEvent.addEventListener(Basik.Evt.MOUSE_UP, () => {
                 Basik.G.callFunc(Basik.Evt.MOUSE_UP);
             });
-            Basik.Event.addEventListener(Basik.Evt.UPDATE, () => {
+            Basik.BEvent.addEventListener(Basik.Evt.UPDATE, () => {
                 Basik.G.callFunc(Basik.Evt.UPDATE);
             });
-            Basik.Event.addEventListener(Basik.Evt.SOUND_ENDED, () => {
+            Basik.BEvent.addEventListener(Basik.Evt.SOUND_ENDED, () => {
                 Basik.G.callFunc(Basik.Evt.SOUND_ENDED);
             });
-            Basik.Event.addEventListener(Basik.Evt.GAMBAR_DILOAD, () => {
-                Ip.daftar.forEach((gbr) => {
-                    if (gbr.pendingStempel) {
-                        gbr.pendingStempel = false;
-                        Ip.Draw(gbr);
-                    }
-                });
+            Basik.BEvent.addEventListener(Basik.Evt.GAMBAR_DILOAD, () => {
             });
-            Basik.Event.addEventListener(Basik.Evt.RENDER, () => {
+            Basik.BEvent.addEventListener(Basik.Evt.RENDER, () => {
                 if (Basik.G.callFunc(Basik.Evt.RENDER)) {
                 }
             });
@@ -500,11 +526,13 @@ var Basik;
         }
         static init(buffer) {
             if (!buffer) {
+                console.warn("failed to init event, buffer not available");
             }
             buffer.style.touchAction = 'none';
             buffer.addEventListener("pointerdown", (e) => {
                 e.stopPropagation();
                 e.preventDefault();
+                console.debug("pointer down");
                 let pos = Input.getPos(e.clientX, e.clientY, buffer);
                 let inp = Input.getInput(e);
                 let downState = inp.isDown;
@@ -513,7 +541,7 @@ var Basik;
                 Input._pointerEvent = e;
                 Input._lastButton = e.button;
                 if (downState == false) {
-                    Basik.Event.dispatchEvent(Basik.Evt.MOUSE_DOWN);
+                    Basik.BEvent.dispatchEvent(Basik.Evt.MOUSE_DOWN);
                 }
             });
             buffer.addEventListener("pointermove", (e) => {
@@ -532,21 +560,23 @@ var Basik;
                             input.xStart = input.x;
                             input.yStart = input.y;
                             if (input != Input.global) {
-                                Basik.Event.dispatchEvent(Basik.Evt.MOUSE_START_DRAG);
+                                Basik.BEvent.dispatchEvent(Basik.Evt.MOUSE_START_DRAG);
                             }
                         }
                         input.xDrag = input.x - input.xStart;
                         input.yDrag = input.y - input.yStart;
                     }
                 }
-                Basik.Event.dispatchEvent(Basik.Evt.MOUSE_MOVE);
+                Basik.BEvent.dispatchEvent(Basik.Evt.MOUSE_MOVE);
             });
             buffer.addEventListener("pointerout", (e) => {
                 pointerUp(e);
+                console.debug("pointer out");
             });
             buffer.addEventListener("pointerup", (e) => {
                 this._lastButton = e.button;
                 pointerUp(e);
+                console.debug("pointer up");
             });
             function pointerUp(e) {
                 e.stopPropagation();
@@ -558,15 +588,15 @@ var Basik;
                 let isTap = Input.checkTap(input);
                 input.isTap = (isTap == '');
                 if (input.isTap) {
-                    Basik.Event.dispatchEvent(Basik.Evt.MOUSE_TAP);
+                    Basik.BEvent.dispatchEvent(Basik.Evt.MOUSE_TAP);
                 }
                 Input.lst.forEach((item) => {
                     if (item.isDrag) {
-                        Basik.Event.dispatchEvent(Basik.Evt.MOUSE_END_DRAG);
+                        Basik.BEvent.dispatchEvent(Basik.Evt.MOUSE_END_DRAG);
                     }
                     Input.evt.up(item);
                 });
-                Basik.Event.dispatchEvent(Basik.Evt.MOUSE_UP);
+                Basik.BEvent.dispatchEvent(Basik.Evt.MOUSE_UP);
             }
         }
         static reg(e) {
@@ -676,7 +706,7 @@ var Basik;
                 if (k.isDown == false) {
                     Keyboard.setDown(e.key, true);
                     Keyboard.setDown('', true);
-                    Basik.Event.dispatchEvent(Basik.Evt.KEYB_DOWN);
+                    Basik.BEvent.dispatchEvent(Basik.Evt.KEYB_DOWN);
                 }
             });
             window.addEventListener("keyup", (e) => {
@@ -685,7 +715,7 @@ var Basik;
                 Keyboard._obj = e;
                 Keyboard.setDown(e.key, false);
                 Keyboard.setDown('', false);
-                Basik.Event.dispatchEvent(Basik.Evt.KEYB_UP);
+                Basik.BEvent.dispatchEvent(Basik.Evt.KEYB_UP);
             });
         }
     }
@@ -1129,26 +1159,142 @@ var Basik;
 })(Basik || (Basik = {}));
 var Basik;
 (function (Basik) {
-    class GbrObj {
-        constructor(url = '', pf, lf) {
+    class GbrTransform {
+        constructor() {
+            this._panjangOri = undefined;
+            this._lebarOri = undefined;
             this._x = 0;
             this._y = 0;
             this._alpha = 100;
             this._pusatX = 0;
             this._pusatY = 0;
-            this._panjang = 0;
-            this._lebar = 0;
+            this._panjang = undefined;
+            this._lebar = undefined;
             this._rotasi = 0;
-            this._tilable = false;
-            this._panjangFrame = 0;
-            this._lebarFrame = 0;
+            this._panjangFrame = undefined;
+            this._lebarFrame = undefined;
+            this._frame = 0;
+        }
+        static fromGbr(gbr) {
+            let h = new GbrTransform();
+            h.x = gbr.t.x;
+            h.y = gbr.t.y;
+            h.panjang = gbr.t.panjang;
+            h.lebar = gbr.t.lebar;
+            h.frame = gbr.t.frame;
+            h.panjangFrame = gbr.t.panjangFrame;
+            h.lebarFrame = gbr.t.lebarFrame;
+            h.alpha = gbr.t.alpha;
+            h.pusatX = gbr.t.pusatX;
+            h.pusatY = gbr.t.pusatY;
+            h.rotasi = gbr.t.rotasi;
+            return h;
+        }
+        update(gbr) {
+            if (this.panjang === undefined)
+                this.panjang = gbr.panjang;
+            if (this.lebar === undefined)
+                this.lebar = gbr.lebar;
+            if (this.panjangOri === undefined)
+                this.panjangOri = gbr.panjangOri;
+            if (this.lebarOri === undefined)
+                this.lebarOri = gbr.lebarOri;
+            if (this.panjangFrame === undefined)
+                this.panjangFrame = gbr.panjangFrame;
+            if (this.lebarFrame === undefined)
+                this.lebarFrame = gbr.lebarFrame;
+        }
+        get panjangOri() {
+            return this._panjangOri;
+        }
+        set panjangOri(value) {
+            this._panjangOri = value;
+        }
+        get lebarOri() {
+            return this._lebarOri;
+        }
+        set lebarOri(value) {
+            this._lebarOri = value;
+        }
+        get x() {
+            return this._x;
+        }
+        set x(value) {
+            this._x = value;
+        }
+        get y() {
+            return this._y;
+        }
+        set y(value) {
+            this._y = value;
+        }
+        get alpha() {
+            return this._alpha;
+        }
+        set alpha(value) {
+            this._alpha = value;
+        }
+        get pusatX() {
+            return this._pusatX;
+        }
+        set pusatX(value) {
+            this._pusatX = value;
+        }
+        get pusatY() {
+            return this._pusatY;
+        }
+        set pusatY(value) {
+            this._pusatY = value;
+        }
+        get panjang() {
+            return this._panjang;
+        }
+        set panjang(value) {
+            this._panjang = value;
+        }
+        get lebar() {
+            return this._lebar;
+        }
+        set lebar(value) {
+            this._lebar = value;
+        }
+        get rotasi() {
+            return this._rotasi;
+        }
+        set rotasi(value) {
+            this._rotasi = value;
+        }
+        get panjangFrame() {
+            return this._panjangFrame;
+        }
+        set panjangFrame(value) {
+            this._panjangFrame = value;
+        }
+        get lebarFrame() {
+            return this._lebarFrame;
+        }
+        set lebarFrame(value) {
+            this._lebarFrame = value;
+        }
+        get frame() {
+            return this._frame;
+        }
+        set frame(value) {
+            this._frame = value;
+        }
+    }
+    Basik.GbrTransform = GbrTransform;
+    class GbrObj {
+        constructor(url = '', pf, lf) {
+            this.t = new GbrTransform();
             this._diDrag = false;
             this._down = false;
-            this._frame = 0;
             this._pendingStempel = false;
             this._tipeDrag = 0;
             this._diRender = true;
             this._temp = false;
+            this._error = false;
+            this._dimuat = false;
             this._ctrIdx = 0;
             this._isAnim = false;
             this._dragAwalY = 0;
@@ -1156,60 +1302,53 @@ var Basik;
             this._sudutTekanAwal = 0;
             this._sudutAwal = 0;
             this._rect = new Basik.Ktk();
-            this._dimuat = false;
-            let img = document.createElement('img');
-            let canvas = document.createElement('canvas');
-            let ctx = canvas.getContext('2d');
-            let self = this;
-            let gbr;
-            gbr = this;
-            let rect = Basik.Ktk.buat(0, 0, img.naturalWidth, img.naturalHeight);
-            Ip.register(this, url, 0);
-            gbr.img = img;
-            gbr.kanvas = canvas;
-            gbr.rect = rect;
-            gbr.dimuat = false;
-            if (!gbr.url) {
+            let gbr = this;
+            if (lf !== undefined)
+                gbr.t.lebarFrame = lf;
+            if (pf !== undefined)
+                gbr.t.panjangFrame = pf;
+            Basik.ImageCache.get(Ip.resolveGbrUrl(url), (img) => {
+                Ip.register(gbr);
+                gbr.img = img;
                 gbr.dimuat = true;
-                imgOnLoad(img);
-            }
-            img.onload = () => {
-                console.log("selesai memuat gambar, url: " + url);
-                imgOnLoad(img);
-            };
-            img.onerror = () => {
-                console.warn('gagal load image, url ' + url);
-                imgOnLoadDefault();
-            };
-            img.src = url;
-            function imgOnLoad(imgP) {
-                canvas.width = imgP.naturalWidth;
-                canvas.height = imgP.naturalHeight;
-                ctx.drawImage(imgP, 0, 0);
-                gbr.rect = Basik.Ktk.buat(0, 0, imgP.naturalWidth, imgP.naturalHeight);
-                gbr.dimuat = true;
-                gbr.img = imgP;
-                if (!gbr.panjang) {
-                    gbr.panjang = imgP.naturalWidth;
+                gbr.rect = Basik.Ktk.buat(0, 0, img.naturalWidth, img.naturalHeight);
+                this.t.panjangOri = img.naturalWidth;
+                this.t.lebarOri = img.naturalHeight;
+                if (this.t.panjang === undefined) {
+                    this.t.panjang = img.naturalWidth;
                 }
-                if (!gbr.lebar) {
-                    gbr.lebar = imgP.naturalHeight;
+                if (this.t.lebar === undefined) {
+                    this.t.lebar = img.naturalHeight;
                 }
-                if (!gbr.lebarFrame)
-                    gbr.lebarFrame = imgP.naturalHeight;
-                if (!gbr.panjangFrame)
-                    gbr.panjangFrame = imgP.naturalWidth;
-                Basik.ImgImpl.lastImg = self;
-                Basik.Event.dispatchEvent(Basik.Evt.GAMBAR_DILOAD);
-            }
-            function imgOnLoadDefault() {
-                console.log("muat gambar default");
-            }
-            this.nama = url;
-            if (pf != undefined)
-                this.panjangFrame = pf;
-            if (lf != undefined)
-                this.lebarFrame = lf;
+                if (this.t.panjangFrame === undefined)
+                    this.t.panjangFrame = img.naturalWidth;
+                if (this.t.lebarFrame === undefined)
+                    this.t.lebarFrame = img.naturalHeight;
+                Basik.ImgImpl.lastImg = gbr;
+                Basik.BEvent.dispatchEvent(Basik.Evt.GAMBAR_DILOAD);
+            }, () => {
+                gbr.error = true;
+                dialog("gagal memuat image dengan url: " + url);
+            });
+        }
+        get lebarOri() {
+            return this.t.lebarOri;
+        }
+        set lebarOri(value) {
+            this.t.lebarOri = value;
+            ;
+        }
+        get panjangOri() {
+            return this.t.panjangOri;
+        }
+        set panjangOri(value) {
+            this.t.panjangOri = value;
+        }
+        get error() {
+            return this._error;
+        }
+        set error(value) {
+            this._error = value;
         }
         get temp() {
             return this._temp;
@@ -1224,10 +1363,10 @@ var Basik;
             this._diRender = value;
         }
         get layarX() {
-            return this._x - Basik.Camera.x;
+            return this.t.x - Basik.Camera.x;
         }
         get layarY() {
-            return this._x - Basik.Camera.y;
+            return this.t.y - Basik.Camera.y;
         }
         get img() {
             return this._img;
@@ -1272,96 +1411,76 @@ var Basik;
             this._inputId = value;
         }
         get frame() {
-            return this._frame;
+            return this.t.frame;
         }
         set frame(value) {
-            this._frame = value;
-        }
-        get kanvas() {
-            return this._canvas;
-        }
-        set kanvas(value) {
-            this._canvas = value;
-        }
-        get ubin() {
-            return this._tilable;
-        }
-        set ubin(value) {
-            this._tilable = value;
+            this.t.frame = value;
         }
         get panjangFrame() {
-            return this._panjangFrame;
+            return this.t.panjangFrame;
         }
         set panjangFrame(value) {
-            this._panjangFrame = value;
+            this.t.panjangFrame = value;
         }
         get lebarFrame() {
-            return this._lebarFrame;
+            return this.t.lebarFrame;
         }
         set lebarFrame(value) {
-            this._lebarFrame = value;
+            this.t.lebarFrame = value;
         }
         get x() {
-            return this._x;
+            return this.t.x;
         }
         set x(value) {
-            this._x = value;
+            this.t.x = value;
         }
         get y() {
-            return this._y;
+            return this.t.y;
         }
         set y(value) {
-            this._y = value;
+            this.t.y = value;
         }
         get alpha() {
-            return this._alpha;
+            return this.t.alpha;
         }
         set alpha(value) {
-            this._alpha = value;
+            this.t.alpha = value;
         }
         get pusatY() {
-            return this._pusatY;
+            return this.t.pusatY;
         }
         set pusatY(value) {
-            this._pusatY = value;
+            this.t.pusatY = value;
         }
         get pusatX() {
-            return this._pusatX;
+            return this.t.pusatX;
         }
         set pusatX(value) {
-            this._pusatX = value;
+            this.t.pusatX = value;
         }
         get panjang() {
-            if (this._panjang)
-                return this._panjang;
-            if (this.img)
-                return this.img.naturalWidth;
-            return 0;
+            return this.t.panjang;
         }
         set panjang(value) {
-            this._panjang = value;
+            this.t.panjang = value;
         }
         get lebar() {
-            if (this._lebar)
-                return this._lebar;
-            if (this.img)
-                return this.img.naturalHeight;
-            return 0;
+            return this.t.lebar;
         }
         set lebar(value) {
-            this._lebar = value;
+            this.t.lebar = value;
+        }
+        get rotasi() {
+            return normalisasiSudut(this.t.rotasi);
+        }
+        set rotasi(value) {
+            this.t.rotasi = value;
         }
         get ctrIdx() {
             return this._ctrIdx;
         }
         set ctrIdx(value) {
             this._ctrIdx = value;
-        }
-        get rotasi() {
-            return normalisasiSudut(this._rotasi);
-        }
-        set rotasi(value) {
-            this._rotasi = value;
         }
         get dragAwalX() {
             return this._dragAwalX;
@@ -1432,9 +1551,6 @@ var Basik;
         }
         static CreateImage(width, height) {
             let h = new Basik.GbrObj();
-            h.kanvas = document.createElement('canvas');
-            h.kanvas.width = width;
-            h.kanvas.height = height;
             h.lebarFrame = height;
             h.panjangFrame = width;
             h.panjang = width;
@@ -1491,21 +1607,17 @@ var Basik;
             }
             return null;
         }
-        static register(image, url, tipeDrag) {
-            let hasil;
-            hasil = image;
-            hasil.tipeDrag = tipeDrag;
-            hasil.url = url;
-            Ip.daftar.push(hasil);
-            return hasil;
+        static register(gbr) {
+            Ip.daftar.push(gbr);
+            return gbr;
         }
-        static free(img) {
+        static free(gbr) {
             for (let i = 0; i < this.daftar.length; i++) {
-                if (this.daftar[i] == img) {
-                    img.kanvas = null;
-                    img.img = null;
-                    Basik.Ktk.destroy(img.rect);
+                if (this.daftar[i] == gbr) {
+                    gbr.img = null;
+                    Basik.Ktk.destroy(gbr.rect);
                     this.daftar.splice(i, 1);
+                    gbr.rect = null;
                     return;
                 }
             }
@@ -1516,38 +1628,6 @@ var Basik;
             return Basik.Ktk.collideDot(gbr1.rect, x2, y2);
         }
         ;
-        static gambarUbin(gbr, x = 0, y = 0, frame = 0) {
-            let jmlH = 0;
-            let jmlV = 0;
-            if (gbr.dimuat == false)
-                return;
-            let w2 = Math.floor(gbr.panjang);
-            let h2 = Math.floor(gbr.lebar);
-            while (x < 0) {
-                x += w2;
-            }
-            while (x > 0) {
-                x -= w2;
-            }
-            while (y < 0) {
-                y += h2;
-            }
-            while (y > 0) {
-                y -= h2;
-            }
-            x -= w2;
-            y -= h2;
-            frame = Math.floor(frame);
-            jmlH = Math.ceil((Basik.G.Kanvas().width + Math.abs(x)) / w2);
-            jmlV = Math.ceil((Basik.G.Kanvas().height + Math.abs(y)) / h2);
-            for (let i = 0; i < jmlH; i++) {
-                for (let j = 0; j < jmlV; j++) {
-                    gbr.x = x + (i * w2);
-                    gbr.y = y + (j * h2);
-                    Ip.GamberSingle(gbr);
-                }
-            }
-        }
         static AmbilPiksel(x = 0, y = 0) {
             try {
                 let data = Basik.G.Kanvas().getContext('2d').getImageData(x, y, 1, 1).data;
@@ -1568,60 +1648,38 @@ var Basik;
         static SetPiksel(x = 0, y = 0) {
             Basik.G.Kanvas().getContext('2d').fillRect(Math.floor(x), Math.floor(y), 1, 1);
         }
-        static Draw(img) {
-            if (img.dimuat) {
-                gambarSetelahDimuat();
-            }
-            else {
-                if (Basik.G.isUpdating) {
-                }
-                else {
-                    img.pendingStempel = true;
-                }
-            }
-            function gambarSetelahDimuat() {
-                if (img.ubin) {
-                    Ip.gambarUbin(img, img.x, img.y, img.frame);
-                }
-                else {
-                    Ip.GamberSingle(img);
-                }
-                if (img.temp) {
-                    ImgImpl.free(img);
-                    console.log('free image ' + img.url);
-                }
-            }
+        static GambarTrans(t) {
+            ImgImpl.GamberTransSingle(t);
         }
-        static GamberSingle(gbr) {
+        static GamberTransSingle(t) {
             let ctx = Basik.G.Kanvas().getContext('2d');
             let jmlH = 0;
             let frameX = 0;
             let frameY = 0;
             let imgW = 0;
-            if (gbr.dimuat == false) {
-                return;
-            }
-            imgW = gbr.img.naturalWidth;
-            gbr.ctrIdx = Basik.GbrObj.ctrDraw++;
-            let frame = Math.floor(gbr.frame);
-            jmlH = Math.floor(imgW / gbr.panjangFrame);
+            let trans = t.trans;
+            let img = t.gbr.img;
+            trans.update(t.gbr);
+            imgW = trans.panjangOri;
+            let frame = Math.floor(trans.frame);
+            jmlH = Math.floor(imgW / trans.panjangFrame);
             frameX = (frame % jmlH);
             frameY = Math.floor(frame / jmlH);
-            frameX *= gbr.panjangFrame;
-            frameY *= gbr.lebarFrame;
+            frameX *= trans.panjangFrame;
+            frameY *= trans.lebarFrame;
             frameX = Math.floor(frameX);
             frameY = Math.floor(frameY);
-            let x2 = Math.floor(gbr.x);
-            let y2 = Math.floor(gbr.y);
-            let w2 = Math.floor(gbr.panjang);
-            let h2 = Math.floor(gbr.lebar);
-            x2 -= (gbr.pusatX);
-            y2 -= (gbr.pusatY);
-            if (gbr.rotasi != 0) {
+            let x2 = Math.floor(trans.x);
+            let y2 = Math.floor(trans.y);
+            let w2 = Math.floor(trans.panjang);
+            let h2 = Math.floor(trans.lebar);
+            x2 -= (trans.pusatX);
+            y2 -= (trans.pusatY);
+            if (trans.rotasi != 0) {
                 ctx.save();
-                ctx.translate(gbr.x, gbr.y);
-                ctx.rotate(gbr.rotasi * (Math.PI / 180));
-                drawImpl(-gbr.pusatX, -gbr.pusatY);
+                ctx.translate(trans.x, trans.y);
+                ctx.rotate(trans.rotasi * (Math.PI / 180));
+                drawImpl(-trans.pusatX, -trans.pusatY);
                 ctx.restore();
             }
             else {
@@ -1630,8 +1688,9 @@ var Basik;
                 ctx.restore();
             }
             function drawImpl(posX, posY) {
-                ctx.globalAlpha = gbr.alpha / 100;
-                ctx.drawImage(gbr.kanvas, frameX, frameY, gbr.panjangFrame, gbr.lebarFrame, Math.floor(posX), Math.floor(posY), w2, h2);
+                const { panjangFrame, lebarFrame, alpha } = trans;
+                ctx.globalAlpha = alpha / 100;
+                ctx.drawImage(img, frameX, frameY, panjangFrame, lebarFrame, Math.floor(posX), Math.floor(posY), w2, h2);
                 ctx.globalAlpha = 1;
             }
         }
@@ -1693,19 +1752,19 @@ var Basik;
     })(tipeDrag || (tipeDrag = {}));
     class GbrInter {
         init() {
-            Basik.Event.addEventListener(Basik.Evt.MOUSE_DOWN, () => {
+            Basik.BEvent.addEventListener(Basik.Evt.MOUSE_DOWN, () => {
                 this.inputDown({
                     x: Basik.Input.global.x,
                     y: Basik.Input.global.y
                 }, Basik.Input.global.id);
             });
-            Basik.Event.addEventListener(Basik.Evt.MOUSE_MOVE, () => {
+            Basik.BEvent.addEventListener(Basik.Evt.MOUSE_MOVE, () => {
                 this.inputMove({
                     x: Basik.Input.global.x,
                     y: Basik.Input.global.y
                 }, Basik.Input.global.id);
             });
-            Basik.Event.addEventListener(Basik.Evt.MOUSE_UP, () => {
+            Basik.BEvent.addEventListener(Basik.Evt.MOUSE_UP, () => {
                 Ip.daftar.forEach((img) => {
                     img.ditekan = false;
                     img.diDrag = false;
@@ -1713,6 +1772,7 @@ var Basik;
             });
         }
         handleGbrDitekan(img, posCanvas, id) {
+            console.debug("handle gambar ditekan");
             img.ditekan = true;
             img.dragAwalX = posCanvas.x - img.x;
             img.dragAwalY = posCanvas.y - img.y;
@@ -1755,12 +1815,86 @@ var Basik;
                         img.rotasi = img.initialAngle + perbedaan;
                     }
                     else {
+                        console.warn("invalid tipe drag " + img.tipeDrag);
                     }
                 }
             });
         }
     }
     Basik.sprInt = new GbrInter();
+})(Basik || (Basik = {}));
+var Basik;
+(function (Basik) {
+    class ImageCache {
+        constructor() {
+            this._error = false;
+            this._loaded = false;
+            this.loadListeners = [];
+            this.errorListeners = [];
+        }
+        get url() {
+            return this._url;
+        }
+        get img() {
+            return this._img;
+        }
+        get error() {
+            return this._error;
+        }
+        get loaded() {
+            return this._loaded;
+        }
+        static get(url, onLoad, onError) {
+            for (const i of ImageCache.list) {
+                if (i.url === url) {
+                    if (i.loaded) {
+                        onLoad(i.img);
+                        return;
+                    }
+                    if (i.error) {
+                        onError(new Event("error"));
+                        return;
+                    }
+                    i.loadListeners.push(onLoad);
+                    i.errorListeners.push(onError);
+                    return;
+                }
+            }
+            const img = new Image();
+            const c = new ImageCache();
+            c._url = url;
+            c._img = img;
+            c.loadListeners.push(onLoad);
+            c.errorListeners.push(onError);
+            ImageCache.list.push(c);
+            img.onload = () => {
+                if (c._error || c._loaded)
+                    return;
+                c._loaded = true;
+                c.loadListeners.forEach(f => f(img));
+                c.loadListeners.length = 0;
+            };
+            img.onerror = (err) => {
+                if (c._error || c._loaded)
+                    return;
+                c._error = true;
+                c.errorListeners.forEach(f => f(err));
+                c.errorListeners.length = 0;
+            };
+            img.src = url;
+        }
+        static clear(url) {
+            const idx = ImageCache.list.findIndex(i => i.url === url);
+            if (idx >= 0) {
+                ImageCache.list.splice(idx, 1);
+            }
+        }
+        static clearAll() {
+            ImageCache.list.length = 0;
+        }
+    }
+    ImageCache.list = [];
+    Basik.ImageCache = ImageCache;
 })(Basik || (Basik = {}));
 var Basik;
 (function (Basik) {
@@ -1901,6 +2035,44 @@ var Basik;
     Warna.warnaAr = [];
     Basik.Warna = Warna;
 })(Basik || (Basik = {}));
+var Basik;
+(function (Basik) {
+    class Scheduler {
+        constructor() {
+            this.ls = [];
+        }
+        reg(obj) {
+            this.ls.push({
+                gbr: obj,
+                trans: Basik.GbrTransform.fromGbr(obj)
+            });
+            this.render();
+        }
+        render() {
+            while (this.ls.length > 0) {
+                const item = this.ls[0];
+                if (item.gbr.dimuat) {
+                    Ip.GamberTransSingle(item);
+                    if (item.gbr.temp)
+                        Ip.free(item.gbr);
+                    this.ls.shift();
+                }
+                else {
+                    if (item.gbr.error) {
+                        this.ls.shift();
+                    }
+                    else {
+                        requestAnimationFrame(() => {
+                            this.render();
+                        });
+                        return;
+                    }
+                }
+            }
+        }
+    }
+    Basik.scheduler = new Scheduler();
+})(Basik || (Basik = {}));
 function posisiKamera(x, y) {
     Basik.Camera.x = x;
     Basik.Camera.y = y;
@@ -1911,6 +2083,7 @@ function KameraX() {
 function KameraY() {
     return Basik.Camera.y;
 }
+Basik.scheduler.ls.length;
 function bukaPath(x = 0, y = 0) {
     let ctx = G.Kanvas().getContext('2d');
     ctx.beginPath();
@@ -2122,7 +2295,7 @@ function muatSuara(url) {
     sound.onended = () => {
         try {
             Basik.data.soundEvent = sound;
-            Basik.Event.dispatchEvent(Basik.Evt.SOUND_ENDED);
+            Basik.BEvent.dispatchEvent(Basik.Evt.SOUND_ENDED);
             console.log("sound ended");
         }
         catch (e) {
@@ -2150,7 +2323,7 @@ function buatKanvas(w = 800, h = 600, canvas = null, mode = 1) {
 function mulai(w = 800, h = 600, canvas = null, mode = 1) {
     G.Graphics(w, h, canvas, mode);
 }
-function bersihkanLayar(x = 0, y = 0, w = 0, h = 0) {
+function bersihkanLayar(x = 0, y = 0, w = 800, h = 600) {
     G.Cls(x, y, w, h);
 }
 function hijau() {
@@ -2271,28 +2444,30 @@ function stempel(img, x, y) {
         let img2 = Ip.Muat(img);
         img2.temp = true;
         posisi(img2, x, y);
-        Ip.Draw(img2);
+        Basik.scheduler.reg(img2);
     }
     else {
         if (x != undefined && y != undefined) {
             posisi(img, x, y);
         }
-        Ip.Draw(img);
+        else {
+        }
+        Basik.scheduler.reg(img);
     }
     function posisi(img, x, y) {
         if (x != undefined) {
-            img.x = x;
+            img.t.x = x;
         }
         if (y != undefined) {
-            img.y = y;
+            img.t.y = y;
         }
     }
 }
 function gambarTabrakan(img1, img2) {
-    return Ip.tabrakan(img1, img1.x, img1.y, img2, img2.x, img2.y);
+    return Ip.tabrakan(img1, img1.t.x, img1.t.y, img2, img2.t.x, img2.t.y);
 }
 function poinDidalamGambar(img, x, y) {
-    return Ip.dotInsideImage(img, img.x, img.y, x, y);
+    return Ip.dotInsideImage(img, img.t.x, img.t.y, x, y);
 }
 function buatGambar(width, height) {
     return Ip.CreateImage(width, height);
@@ -2304,8 +2479,8 @@ function hapusGAmbar(img) {
     Ip.free(img);
 }
 function posisiGambar(img, x = 0, y = 0) {
-    img.x = x;
-    img.y = y;
+    img.t.x = x;
+    img.t.y = y;
 }
 function ukuranGambar(img, p = 32, l = 32) {
     img.panjang = p;

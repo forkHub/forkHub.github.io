@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="en-us" dir="ltr">
+
+<head>
+	<meta charset="utf-8">
+<meta name="viewport" content="width=device-width">
+<title>Teknikals | Basik</title>
+
+<link rel="stylesheet" href="../css/main.7ae13d0ce9a0a0e7258d18bacffb83a20124fd832e7bf1b9de84e21823667ac0.css">
+
+<script src="../js/main.23cd0c7d837263b9eaeb96ee2d9ccfa2969daa3fa00fa1c1fe8701a9b87251a1.js"></script>
+
+</head>
+
+<body>
+	<div class="container">
+		
+  <h1>Teknikals</h1>
+  
+  
+    <section>
+      <h2><a href="../teknikal/api/">BASIK</a></h2>
+      <h1 id="api">API</h1>
+    </section>
+  
+    <section>
+      <h2><a href="../teknikal/api-doc-bentuk/"></a></h2>
+      <p><a href="../">Beranda</a></p>
+<h2 id="-menggambar-bentuk-dasar">📝 menggambar bentuk dasar</h2>
+<p>Berisi kumpulan perintah untuk menggambar dengan bangun geometri</p>
+<h4 id="warnaidx-number--0-trans--100"><code>warna(idx: number = 0, trans = 100)</code></h4>
+<p>Mengeset warna fill</p>
+<p><strong>Parameters</strong></p>
+<ul>
+<li><code>x</code>: <code>number</code>, default 0
+posisi x dari tengah lingkaran</li>
+</ul>
+<h4 id="warnagarisidx-number-trans--100"><code>warnaGaris(idx: number, trans = 100)</code></h4>
+<p>Mengeset warna garis</p>
+<p><strong>Parameters</strong></p>
+<ul>
+<li><code>x</code>: <code>number</code>, default 0
+posisi x dari tengah lingkaran</li>
+</ul>
+<h4 id="tebalgarisn-number"><code>tebalGaris(n: number)</code></h4>
+<p>Mengatur ketbalan garis</p>
+<p><strong>Parameters</strong></p>
+<ul>
+<li><code>x</code>: <code>number</code>, default 0
+posisi x dari tengah lingkaran</li>
+</ul>
+<h3 id="bukapathx-number--0-y-number--0-void"><code>bukaPath(x: number = 0, y: number = 0): void</code></h3>
+<p>Perintah ini berfungsi untuk memulai menggambar bentuk yang kompleks.
+Perintah ini bisa di ikuti dengan perintah <code>garisKe()</code>, <code>kurvaKe()</code> dan <code>lingkaranKe()</code></p>
+    </section>
+  
+    <section>
+      <h2><a href="../teknikal/api-doc-event/"></a></h2>
+      <p><a href="../">Beranda</a></p>
+<h1 id="event">Event</h1>
+<p>Basik memiliki cara untuk menghandle event yang disederhanakan.<br>
+Ketika sebuah event terjadi, maka Basik akan mencari deklarasi fungsi yang berhubungan dengan event tersebut, dan memanggilnya.</p>
+<p>Contoh:
+Ketika terjadi event mouse ditekan, maka Basik akan mencari deklarasi fungsi mouseDitekan. Bila tersedia, maka fungsi ini akan dipanggil secara otomatis.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="language-javascript" data-lang="javascript"><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">mulai</span>();
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">function</span> <span style="color:#a6e22e">mouseDitekan</span>() {
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">stempel</span>(<span style="color:#e6db74">&#34;roket&#34;</span>, <span style="color:#a6e22e">mouseX</span>(), <span style="color:#a6e22e">mouseY</span>());
+</span></span><span style="display:flex;"><span>}  
+</span></span><span style="display:flex;"><span>  
+</span></span></code></pre></div><p>Bila contoh diatas dijalankan, ketika user menekan tombol mouse maka gambar roket akan di gambar pada posisi dimana mouse berada.</p>
+    </section>
+  
+    <section>
+      <h2><a href="../teknikal/api-doc-matematika/"></a></h2>
+      <p><a href="../">Beranda</a></p>
+<h2 id="-perintah-matematika">📝 Perintah Matematika</h2>
+<p>perintah umum matematika.</p>
+<h4 id="akarn--4-number"><code>akar(n = 4): number</code></h4>
+<p>Mencari akar dari bilangan</p>
+<p><strong>Parameters</strong></p>
+<ul>
+<li><code>n</code>: <code>number</code>, default 4
+bilangan yang ingin dicari akarnya</li>
+</ul>
+<p><strong>Returns:</strong> <code>number</code>.</p>
+<h4 id="pi-number"><code>pi(): number</code></h4>
+<p>Mengembalikan nilai dari Pi, (3.14 &hellip;)</p>
+<p><strong>Returns:</strong> <code>number</code>.</p>
+<h4 id="jarakx-number--0-y-number--0-number"><code>jarak(x: number = 0, y: number = 0): number</code></h4>
+<p>Menghitung jarak</p>
+<p><strong>Parameters</strong></p>
+<ul>
+<li>
+<p><code>x</code>: <code>number</code>, default 0</p>
+</li>
+<li>
+<p><code>y</code>: <code>number</code>, default 0</p>
+</li>
+</ul>
+<p><strong>Returns:</strong> <code>number</code>.</p>
+<h4 id="jaraksudutsudut1-number--0-sudut2-number-min-boolean--true"><code>jarakSudut(sudut1: number = 0, sudut2: number, min: boolean = true)</code></h4>
+<p>menghitung jarak antar dua sudut</p>
+    </section>
+  
+    <section>
+      <h2><a href="../teknikal/api-doc-perintah/"></a></h2>
+      <p><a href="../">Beranda</a></p>
+<h2 id="-perintah-umum">📝 Perintah Umum</h2>
+<h3 id="mulaipjg-number--800-lbr-number--600-kanvas-htmlcanvaselement--null-mode-number--1void"><code>mulai(pjg: number = 800, lbr: number = 600, kanvas: HTMLCanvasElement = null, mode: number = 1):void</code></h3>
+<p>Memulai aplikasi. Ini adalah perintah awal untuk memulai applikasi dengan BASIK.</p>
+<p><strong>Parameters</strong></p>
+<ul>
+<li><code>pjg</code>: <code>number</code>, default 800<br>
+panjang kanvas</li>
+<li><code>lbr</code>: <code>number</code>, default 600<br>
+lebar kanvas</li>
+<li><code>kanvas</code>: <code>number</code>, default null<br>
+Kanvas yang akan dipakai bila ada.<br>
+Bila diisi null maka BASIK akan otomatis mencari kanvas yang ada di dokumen atau membuat baru bila tidak tersedia</li>
+<li><code>mode</code>: <code>number</code>, default 1<br>
+Mode yang dipakai: 1 bila ingin full-screen atau 0 bila ingin kanvas apa adanya. Gunakan 0 bila ingin mendapatkan kontrol penuh terhadap kanvas yang ingin dipakai.</li>
+</ul>
+<p><strong>Returns:</strong> <code>void</code></p>
+    </section>
+  
+    <section>
+      <h2><a href="../teknikal/objek-gambar/"></a></h2>
+      <p><a href="../">Beranda</a></p>
+<h1 id="-gambar-sebagai-object">📝 Gambar sebagai object</h1>
+<p>BASIK memiliki object bawaan <code>Gambar</code>. Object ini dibuat dengan perintah <code>muatGambar()</code>.</p>
+<p>Object <code>Gambar</code> memiliki property sebagai berikut:</p>
+<ul>
+<li><strong>x</strong> (<code>number</code>): Posisi x</li>
+<li><strong>y</strong> (<code>number</code>): Posisi y</li>
+<li><strong>alpha</strong> (<code>number</code>): Transparansi (0 - 100)</li>
+<li><strong>pusatX</strong> (<code>number</code>): Posisi pusat x</li>
+<li><strong>pusatY</strong> (<code>number</code>): Posisi pusat y</li>
+<li><strong>panjang</strong> (<code>number</code>): Panjang</li>
+<li><strong>lebar</strong> (<code>number</code>): Lebar</li>
+<li><strong>rotasi</strong> (<code>number</code>): Rotasi (0 - 360)</li>
+<li><strong>diDrag</strong> (<code>boolean</code>): Apakah gambar sedang di-drag</li>
+<li><strong>diTekan</strong> / <strong>ditekan</strong> (<code>boolean</code>): Apakah gambar sedang ditekan oleh mouse/jari</li>
+<li><strong>tipeDrag</strong> (<code>number</code>): Tipe drag (1 = geser, 2 = rotasi, 3 = geser tanpa sentuh, 4 = rotasi tanpa sentuh)</li>
+<li><strong>dimuat</strong> (<code>boolean</code>): Apakah gambar sudah selesai dimuat</li>
+<li><strong>frame</strong> (<code>number</code>): Nomor frame aktif, bila gambar berupa animasi spritesheet</li>
+<li><strong>panjangFrame</strong> (<code>number</code>): Panjang dari tiap frame dalam animasi, bila gambar berupa animasi spritesheet</li>
+<li><strong>lebarFrame</strong> (<code>number</code>): Lebar dari tiap frame, bila gambar berupa animasi spritesheet</li>
+<li><strong>dragAwalX</strong> (<code>number</code>): Posisi awal x saat gambar mulai di-drag</li>
+<li><strong>dragAwalY</strong> (<code>number</code>): Posisi awal y saat gambar mulai di-drag</li>
+</ul>
+    </section>
+  
+
+	</div>
+</body>
+
+</html>

@@ -1,4 +1,11 @@
 declare namespace Basik {
+    class Auto {
+        private readonly daftar;
+        init(): void;
+        daftarFungsi(): string[];
+    }
+}
+declare namespace Basik {
     class Camera {
         private static _x;
         private static _y;
@@ -40,15 +47,15 @@ declare namespace Basik {
         GAMBAR_DILOAD = "gambarDiload",
         RESIZE = "resize"
     }
-    class Event {
+    class BEvent {
         private static readonly list;
         private _type;
         private _f;
         get type(): string;
         get f(): () => void;
         constructor(type: string, f: () => void);
-        static addEventListener(type: string, f: () => void): Event;
-        static removeListener(e: Event): void;
+        static addEventListener(type: string, f: () => void): BEvent;
+        static removeListener(e: BEvent): void;
         static dispatchEvent(type: string): void;
     }
 }
@@ -259,8 +266,11 @@ declare namespace Basik {
     const Tf: typeof Transform;
 }
 declare namespace Basik {
-    class GbrObj {
-        constructor(url?: string, pf?: number, lf?: number);
+    class GbrTransform {
+        static fromGbr(gbr: GbrObj): GbrTransform;
+        update(gbr: GbrObj): void;
+        private _panjangOri;
+        private _lebarOri;
         private _x;
         private _y;
         private _alpha;
@@ -269,18 +279,55 @@ declare namespace Basik {
         private _panjang;
         private _lebar;
         private _rotasi;
-        private _tilable;
         private _panjangFrame;
         private _lebarFrame;
+        private _frame;
+        get panjangOri(): number;
+        set panjangOri(value: number);
+        get lebarOri(): number;
+        set lebarOri(value: number);
+        get x(): number;
+        set x(value: number);
+        get y(): number;
+        set y(value: number);
+        get alpha(): number;
+        set alpha(value: number);
+        get pusatX(): number;
+        set pusatX(value: number);
+        get pusatY(): number;
+        set pusatY(value: number);
+        get panjang(): number;
+        set panjang(value: number);
+        get lebar(): number;
+        set lebar(value: number);
+        get rotasi(): number;
+        set rotasi(value: number);
+        get panjangFrame(): number;
+        set panjangFrame(value: number);
+        get lebarFrame(): number;
+        set lebarFrame(value: number);
+        get frame(): number;
+        set frame(value: number);
+    }
+    class GbrObj {
+        constructor(url?: string, pf?: number, lf?: number);
+        readonly t: GbrTransform;
         private _diDrag;
         private _down;
-        private _frame;
         private _pendingStempel;
         private _nama;
         private _img;
         private _tipeDrag;
         private _diRender;
         private _temp;
+        private _error;
+        private _dimuat;
+        get lebarOri(): number;
+        set lebarOri(value: number);
+        get panjangOri(): number;
+        set panjangOri(value: number);
+        get error(): boolean;
+        set error(value: boolean);
         get temp(): boolean;
         set temp(value: boolean);
         get diRender(): boolean;
@@ -292,7 +339,6 @@ declare namespace Basik {
         private _ctrIdx;
         private static _ctrDraw;
         private _url;
-        private _canvas;
         private _isAnim;
         private _dragAwalY;
         private _dragAwalX;
@@ -304,7 +350,6 @@ declare namespace Basik {
         private _rect;
         get rect(): Ktk;
         set rect(value: Ktk);
-        private _dimuat;
         get dimuat(): boolean;
         set dimuat(value: boolean);
         get nama(): string;
@@ -315,10 +360,6 @@ declare namespace Basik {
         set inputId(value: string);
         get frame(): number;
         set frame(value: number);
-        get kanvas(): HTMLCanvasElement;
-        set kanvas(value: HTMLCanvasElement);
-        get ubin(): boolean;
-        set ubin(value: boolean);
         get panjangFrame(): number;
         set panjangFrame(value: number);
         get lebarFrame(): number;
@@ -337,10 +378,10 @@ declare namespace Basik {
         set panjang(value: number);
         get lebar(): number;
         set lebar(value: number);
-        get ctrIdx(): number;
-        set ctrIdx(value: number);
         get rotasi(): number;
         set rotasi(value: number);
+        get ctrIdx(): number;
+        set ctrIdx(value: number);
         get dragAwalX(): number;
         set dragAwalX(value: number);
         get dragAwalY(): number;
@@ -374,14 +415,13 @@ declare namespace Basik {
         static Muat(url: string): GbrObj;
         static tabrakan(gbr1: GbrObj, x1: number, y1: number, gbr2: GbrObj, x2: number, y2: number): boolean;
         static getByName(nama: string, buat: boolean): GbrObj;
-        static register(image: GbrObj, url: string, tipeDrag: number): GbrObj;
-        static free(img: Basik.GbrObj): void;
+        static register(gbr: GbrObj): GbrObj;
+        static free(gbr: Basik.GbrObj): void;
         static dotInsideImage(gbr1: GbrObj, x1: number, y1: number, x2: number, y2: number): boolean;
-        private static gambarUbin;
         static AmbilPiksel(x?: number, y?: number): void;
         static SetPiksel(x?: number, y?: number): void;
-        static Draw(img: GbrObj): void;
-        private static GamberSingle;
+        static GambarTrans(t: ItemRender): void;
+        static GamberTransSingle(t: ItemRender): void;
         private static resetRect;
         private static rectToImageTf;
         static AllImageLoaded(): boolean;
@@ -396,6 +436,24 @@ declare namespace Basik {
     }
     export const sprInt: GbrInter;
     export {};
+}
+declare namespace Basik {
+    class ImageCache {
+        static readonly list: ImageCache[];
+        private _url;
+        private _img;
+        private _error;
+        private _loaded;
+        readonly loadListeners: ((img: HTMLImageElement) => void)[];
+        readonly errorListeners: ((err: Event) => void)[];
+        get url(): string;
+        get img(): HTMLImageElement;
+        get error(): boolean;
+        get loaded(): boolean;
+        static get(url: string, onLoad: (img: HTMLImageElement) => void, onError: (err: Event) => void): void;
+        static clear(url: string): void;
+        static clearAll(): void;
+    }
 }
 declare namespace Basik {
     class Teks {
@@ -439,6 +497,19 @@ declare namespace Basik {
         static warnaGaris(idx?: number, trans?: number): void;
         static init(): void;
     }
+}
+declare namespace Basik {
+    export interface ItemRender {
+        gbr: GbrObj;
+        trans: GbrTransform;
+    }
+    class Scheduler {
+        readonly ls: ItemRender[];
+        reg(obj: GbrObj): void;
+        render(): void;
+    }
+    export const scheduler: Scheduler;
+    export {};
 }
 declare function posisiKamera(x: number, y: number): void;
 declare function KameraX(): number;
