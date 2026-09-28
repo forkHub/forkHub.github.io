@@ -11,11 +11,16 @@ li {
 	padding: 0px;
 }
 
+ul {
+	padding-left: 16px;
+}
+
 button {
 	position: relative;
 	box-shadow: 4px 4px #333;
 	padding: 4px 8px 4px 8px;
 	margin-left: 4px;
+	margin-right: 4px;
 }
 
 button:active,

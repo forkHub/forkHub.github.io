@@ -2129,7 +2129,7 @@ function tutupPath() {
     ctx.stroke();
     ctx.fill();
 }
-function gambarLingkaran(x = 100, y = 100, radius = 20, awal = 0, akhir = 360) {
+function lingkaran(x = 100, y = 100, radius = 20, awal = 0, akhir = 360) {
     let ctx = G.Kanvas().getContext('2d');
     ctx.beginPath();
     awal *= (Math.PI / 180);
@@ -2138,7 +2138,7 @@ function gambarLingkaran(x = 100, y = 100, radius = 20, awal = 0, akhir = 360) {
     ctx.stroke();
     ctx.fill();
 }
-function gambarElips(x = 0, y = 0, radiusX = 32, radiusY = 64, awal = 0, akhir = 360, searahJarumJam = false) {
+function elips(x = 0, y = 0, radiusX = 32, radiusY = 64, awal = 0, akhir = 360, searahJarumJam = false) {
     let ctx = G.Kanvas().getContext('2d');
     awal *= (Math.PI / 180);
     akhir *= Math.PI / 180;
@@ -2146,10 +2146,72 @@ function gambarElips(x = 0, y = 0, radiusX = 32, radiusY = 64, awal = 0, akhir =
     ctx.stroke();
     ctx.fill();
 }
-function gambarKotak(x1 = 10, y1 = 10, x2 = 100, y2 = 100) {
+function kotak(x1 = 10, y1 = 10, x2 = 100, y2 = 100) {
     let ctx = G.Kanvas().getContext('2d');
     ctx.fillRect(x1, y1, x2, y2);
     ctx.strokeRect(x1, y1, x2, y2);
+}
+function pie(x, y, radius, startAngleDeg, endAngleDeg) {
+    const startAngle = (startAngleDeg * Math.PI) / 180;
+    const endAngle = (endAngleDeg * Math.PI) / 180;
+    let ctx = G.Kontek();
+    ctx.beginPath();
+    ctx.moveTo(x, y);
+    ctx.arc(x, y, radius, startAngle, endAngle);
+    ctx.lineTo(x, y);
+    ctx.closePath();
+    ctx.fill();
+    ctx.stroke();
+}
+function garis(x = 100, y = 100, x2 = 500, y2 = 500) {
+    let ctx = G.Kontek();
+    ctx.beginPath();
+    ctx.moveTo(x, y);
+    ctx.lineTo(x2, y2);
+    ctx.stroke();
+}
+function polygonTeratur(x, y, radius, sides) {
+    if (sides < 3)
+        return;
+    const angleStep = (2 * Math.PI) / sides;
+    let ctx = G.Kontek();
+    ctx.beginPath();
+    for (let i = 0; i < sides; i++) {
+        const px = x + radius * Math.cos(angleStep * i - Math.PI / 2);
+        const py = y + radius * Math.sin(angleStep * i - Math.PI / 2);
+        if (i === 0) {
+            ctx.moveTo(px, py);
+        }
+        else {
+            ctx.lineTo(px, py);
+        }
+    }
+    ctx.closePath();
+    ctx.fill();
+    ctx.stroke();
+}
+function gambarBintang(ctx, x, y, spikes, outerRadius, innerRadius, fillColor = "gold") {
+    let rot = Math.PI / 2 * 3;
+    let step = Math.PI / spikes;
+    let cx = x;
+    let cy = y;
+    ctx.beginPath();
+    ctx.moveTo(cx, cy - outerRadius);
+    for (let i = 0; i < spikes; i++) {
+        let x1 = cx + Math.cos(rot) * outerRadius;
+        let y1 = cy + Math.sin(rot) * outerRadius;
+        ctx.lineTo(x1, y1);
+        rot += step;
+        let x2 = cx + Math.cos(rot) * innerRadius;
+        let y2 = cy + Math.sin(rot) * innerRadius;
+        ctx.lineTo(x2, y2);
+        rot += step;
+    }
+    ctx.lineTo(cx, cy - outerRadius);
+    ctx.closePath();
+    ctx.fillStyle = fillColor;
+    ctx.fill();
+    ctx.stroke();
 }
 function gambarSegitiga(x, y, base, height, position) {
     let ctx = G.Kontek();
@@ -2223,68 +2285,6 @@ function gambarSegitiga(x, y, base, height, position) {
         ctx.fill();
     }
 }
-function gambarPie(x, y, radius, startAngleDeg, endAngleDeg) {
-    const startAngle = (startAngleDeg * Math.PI) / 180;
-    const endAngle = (endAngleDeg * Math.PI) / 180;
-    let ctx = G.Kontek();
-    ctx.beginPath();
-    ctx.moveTo(x, y);
-    ctx.arc(x, y, radius, startAngle, endAngle);
-    ctx.lineTo(x, y);
-    ctx.closePath();
-    ctx.fill();
-    ctx.stroke();
-}
-function polygonTeratur(x, y, radius, sides) {
-    if (sides < 3)
-        return;
-    const angleStep = (2 * Math.PI) / sides;
-    let ctx = G.Kontek();
-    ctx.beginPath();
-    for (let i = 0; i < sides; i++) {
-        const px = x + radius * Math.cos(angleStep * i - Math.PI / 2);
-        const py = y + radius * Math.sin(angleStep * i - Math.PI / 2);
-        if (i === 0) {
-            ctx.moveTo(px, py);
-        }
-        else {
-            ctx.lineTo(px, py);
-        }
-    }
-    ctx.closePath();
-    ctx.fill();
-    ctx.stroke();
-}
-function gambarBintang(ctx, x, y, spikes, outerRadius, innerRadius, fillColor = "gold") {
-    let rot = Math.PI / 2 * 3;
-    let step = Math.PI / spikes;
-    let cx = x;
-    let cy = y;
-    ctx.beginPath();
-    ctx.moveTo(cx, cy - outerRadius);
-    for (let i = 0; i < spikes; i++) {
-        let x1 = cx + Math.cos(rot) * outerRadius;
-        let y1 = cy + Math.sin(rot) * outerRadius;
-        ctx.lineTo(x1, y1);
-        rot += step;
-        let x2 = cx + Math.cos(rot) * innerRadius;
-        let y2 = cy + Math.sin(rot) * innerRadius;
-        ctx.lineTo(x2, y2);
-        rot += step;
-    }
-    ctx.lineTo(cx, cy - outerRadius);
-    ctx.closePath();
-    ctx.fillStyle = fillColor;
-    ctx.fill();
-    ctx.stroke();
-}
-function gambarGaris(x = 100, y = 100, x2 = 500, y2 = 500) {
-    let ctx = G.Kontek();
-    ctx.beginPath();
-    ctx.moveTo(x, y);
-    ctx.lineTo(x2, y2);
-    ctx.stroke();
-}
 const S = Basik.Sn;
 function muatSuara(url) {
     let sound = document.createElement("audio");
@@ -2301,7 +2301,7 @@ function muatSuara(url) {
         catch (e) {
         }
     };
-    sound.src = url;
+    sound.src = Basik.ImgImpl.resolveGbrUrl(url);
     return sound;
 }
 function mainkanSuara(s) {
@@ -2326,6 +2326,7 @@ function mulai(w = 800, h = 600, canvas = null, mode = 1) {
 function bersihkanLayar(x = 0, y = 0, w = 800, h = 600) {
     G.Cls(x, y, w, h);
 }
+const bl = bersihkanLayar;
 function hijau() {
     return G.hijau;
 }
@@ -2350,7 +2351,7 @@ function warna(idx = 0, trans = 100) {
 function warnaGaris(idx, trans = 100) {
     Basik.Warna.warnaGaris(idx, trans);
 }
-function tebalGaris(n) {
+function tebalGaris(n = 1) {
     G.Kanvas().getContext('2d').lineWidth = n;
 }
 const dialog = G.alert;
@@ -2489,6 +2490,13 @@ function ukuranGambar(img, p = 32, l = 32) {
 function pusatGambar(img, x = 0, y = 0) {
     img.pusatX = x;
     img.pusatY = y;
+}
+function geserGambar(img, x = 0, y = 0) {
+    img.x += x;
+    img.y += y;
+}
+function putarGambar(img, n = 0) {
+    img.rotasi += n;
 }
 const posisiTeks = Basik.Teks.Goto;
 const tulis = Basik.Teks.WriteLn;

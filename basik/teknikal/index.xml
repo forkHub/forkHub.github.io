@@ -10,23 +10,7 @@
 		
 		
 		
-			<lastBuildDate>Thu, 03 Sep 2026 09:31:11 +0700</lastBuildDate>
-		
 			<atom:link href="/teknikal/index.xml" rel="self" type="application/rss+xml" />
-			<item>
-				<title>BASIK</title>
-				<link>/teknikal/api/</link>
-				<pubDate>Thu, 03 Sep 2026 09:31:11 +0700</pubDate>
-				<guid>/teknikal/api/</guid>
-				<description>&lt;h1 id=&#34;api&#34;&gt;API&lt;/h1&gt;</description>
-			</item>
-			<item>
-				<title></title>
-				<link>/teknikal/api-doc-bentuk/</link>
-				<pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
-				<guid>/teknikal/api-doc-bentuk/</guid>
-				<description>&lt;p&gt;&lt;a href=&#34;../&#34;&gt;Beranda&lt;/a&gt;&lt;/p&gt;&#xA;&lt;h2 id=&#34;-menggambar-bentuk-dasar&#34;&gt;📝 menggambar bentuk dasar&lt;/h2&gt;&#xA;&lt;p&gt;Berisi kumpulan perintah untuk menggambar dengan bangun geometri&lt;/p&gt;&#xA;&lt;h4 id=&#34;warnaidx-number--0-trans--100&#34;&gt;&lt;code&gt;warna(idx: number = 0, trans = 100)&lt;/code&gt;&lt;/h4&gt;&#xA;&lt;p&gt;Mengeset warna fill&lt;/p&gt;&#xA;&lt;p&gt;&lt;strong&gt;Parameters&lt;/strong&gt;&lt;/p&gt;&#xA;&lt;ul&gt;&#xA;&lt;li&gt;&lt;code&gt;x&lt;/code&gt;: &lt;code&gt;number&lt;/code&gt;, default 0&#xA;posisi x dari tengah lingkaran&lt;/li&gt;&#xA;&lt;/ul&gt;&#xA;&lt;h4 id=&#34;warnagarisidx-number-trans--100&#34;&gt;&lt;code&gt;warnaGaris(idx: number, trans = 100)&lt;/code&gt;&lt;/h4&gt;&#xA;&lt;p&gt;Mengeset warna garis&lt;/p&gt;&#xA;&lt;p&gt;&lt;strong&gt;Parameters&lt;/strong&gt;&lt;/p&gt;&#xA;&lt;ul&gt;&#xA;&lt;li&gt;&lt;code&gt;x&lt;/code&gt;: &lt;code&gt;number&lt;/code&gt;, default 0&#xA;posisi x dari tengah lingkaran&lt;/li&gt;&#xA;&lt;/ul&gt;&#xA;&lt;h4 id=&#34;tebalgarisn-number&#34;&gt;&lt;code&gt;tebalGaris(n: number)&lt;/code&gt;&lt;/h4&gt;&#xA;&lt;p&gt;Mengatur ketbalan garis&lt;/p&gt;&#xA;&lt;p&gt;&lt;strong&gt;Parameters&lt;/strong&gt;&lt;/p&gt;&#xA;&lt;ul&gt;&#xA;&lt;li&gt;&lt;code&gt;x&lt;/code&gt;: &lt;code&gt;number&lt;/code&gt;, default 0&#xA;posisi x dari tengah lingkaran&lt;/li&gt;&#xA;&lt;/ul&gt;&#xA;&lt;h3 id=&#34;bukapathx-number--0-y-number--0-void&#34;&gt;&lt;code&gt;bukaPath(x: number = 0, y: number = 0): void&lt;/code&gt;&lt;/h3&gt;&#xA;&lt;p&gt;Perintah ini berfungsi untuk memulai menggambar bentuk yang kompleks.&#xA;Perintah ini bisa di ikuti dengan perintah &lt;code&gt;garisKe()&lt;/code&gt;, &lt;code&gt;kurvaKe()&lt;/code&gt; dan &lt;code&gt;lingkaranKe()&lt;/code&gt;&lt;/p&gt;</description>
-			</item>
 			<item>
 				<title></title>
 				<link>/teknikal/api-doc-event/</link>
@@ -36,17 +20,10 @@
 			</item>
 			<item>
 				<title></title>
-				<link>/teknikal/api-doc-matematika/</link>
-				<pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
-				<guid>/teknikal/api-doc-matematika/</guid>
-				<description>&lt;p&gt;&lt;a href=&#34;../&#34;&gt;Beranda&lt;/a&gt;&lt;/p&gt;&#xA;&lt;h2 id=&#34;-perintah-matematika&#34;&gt;📝 Perintah Matematika&lt;/h2&gt;&#xA;&lt;p&gt;perintah umum matematika.&lt;/p&gt;&#xA;&lt;h4 id=&#34;akarn--4-number&#34;&gt;&lt;code&gt;akar(n = 4): number&lt;/code&gt;&lt;/h4&gt;&#xA;&lt;p&gt;Mencari akar dari bilangan&lt;/p&gt;&#xA;&lt;p&gt;&lt;strong&gt;Parameters&lt;/strong&gt;&lt;/p&gt;&#xA;&lt;ul&gt;&#xA;&lt;li&gt;&lt;code&gt;n&lt;/code&gt;: &lt;code&gt;number&lt;/code&gt;, default 4&#xA;bilangan yang ingin dicari akarnya&lt;/li&gt;&#xA;&lt;/ul&gt;&#xA;&lt;p&gt;&lt;strong&gt;Returns:&lt;/strong&gt; &lt;code&gt;number&lt;/code&gt;.&lt;/p&gt;&#xA;&lt;h4 id=&#34;pi-number&#34;&gt;&lt;code&gt;pi(): number&lt;/code&gt;&lt;/h4&gt;&#xA;&lt;p&gt;Mengembalikan nilai dari Pi, (3.14 &amp;hellip;)&lt;/p&gt;&#xA;&lt;p&gt;&lt;strong&gt;Returns:&lt;/strong&gt; &lt;code&gt;number&lt;/code&gt;.&lt;/p&gt;&#xA;&lt;h4 id=&#34;jarakx-number--0-y-number--0-number&#34;&gt;&lt;code&gt;jarak(x: number = 0, y: number = 0): number&lt;/code&gt;&lt;/h4&gt;&#xA;&lt;p&gt;Menghitung jarak&lt;/p&gt;&#xA;&lt;p&gt;&lt;strong&gt;Parameters&lt;/strong&gt;&lt;/p&gt;&#xA;&lt;ul&gt;&#xA;&lt;li&gt;&#xA;&lt;p&gt;&lt;code&gt;x&lt;/code&gt;: &lt;code&gt;number&lt;/code&gt;, default 0&lt;/p&gt;&#xA;&lt;/li&gt;&#xA;&lt;li&gt;&#xA;&lt;p&gt;&lt;code&gt;y&lt;/code&gt;: &lt;code&gt;number&lt;/code&gt;, default 0&lt;/p&gt;&#xA;&lt;/li&gt;&#xA;&lt;/ul&gt;&#xA;&lt;p&gt;&lt;strong&gt;Returns:&lt;/strong&gt; &lt;code&gt;number&lt;/code&gt;.&lt;/p&gt;&#xA;&lt;h4 id=&#34;jaraksudutsudut1-number--0-sudut2-number-min-boolean--true&#34;&gt;&lt;code&gt;jarakSudut(sudut1: number = 0, sudut2: number, min: boolean = true)&lt;/code&gt;&lt;/h4&gt;&#xA;&lt;p&gt;menghitung jarak antar dua sudut&lt;/p&gt;</description>
-			</item>
-			<item>
-				<title></title>
 				<link>/teknikal/api-doc-perintah/</link>
 				<pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
 				<guid>/teknikal/api-doc-perintah/</guid>
-				<description>&lt;p&gt;&lt;a href=&#34;../&#34;&gt;Beranda&lt;/a&gt;&lt;/p&gt;&#xA;&lt;h2 id=&#34;-perintah-umum&#34;&gt;📝 Perintah Umum&lt;/h2&gt;&#xA;&lt;h3 id=&#34;mulaipjg-number--800-lbr-number--600-kanvas-htmlcanvaselement--null-mode-number--1void&#34;&gt;&lt;code&gt;mulai(pjg: number = 800, lbr: number = 600, kanvas: HTMLCanvasElement = null, mode: number = 1):void&lt;/code&gt;&lt;/h3&gt;&#xA;&lt;p&gt;Memulai aplikasi. Ini adalah perintah awal untuk memulai applikasi dengan BASIK.&lt;/p&gt;&#xA;&lt;p&gt;&lt;strong&gt;Parameters&lt;/strong&gt;&lt;/p&gt;&#xA;&lt;ul&gt;&#xA;&lt;li&gt;&lt;code&gt;pjg&lt;/code&gt;: &lt;code&gt;number&lt;/code&gt;, default 800&lt;br&gt;&#xA;panjang kanvas&lt;/li&gt;&#xA;&lt;li&gt;&lt;code&gt;lbr&lt;/code&gt;: &lt;code&gt;number&lt;/code&gt;, default 600&lt;br&gt;&#xA;lebar kanvas&lt;/li&gt;&#xA;&lt;li&gt;&lt;code&gt;kanvas&lt;/code&gt;: &lt;code&gt;number&lt;/code&gt;, default null&lt;br&gt;&#xA;Kanvas yang akan dipakai bila ada.&lt;br&gt;&#xA;Bila diisi null maka BASIK akan otomatis mencari kanvas yang ada di dokumen atau membuat baru bila tidak tersedia&lt;/li&gt;&#xA;&lt;li&gt;&lt;code&gt;mode&lt;/code&gt;: &lt;code&gt;number&lt;/code&gt;, default 1&lt;br&gt;&#xA;Mode yang dipakai: 1 bila ingin full-screen atau 0 bila ingin kanvas apa adanya. Gunakan 0 bila ingin mendapatkan kontrol penuh terhadap kanvas yang ingin dipakai.&lt;/li&gt;&#xA;&lt;/ul&gt;&#xA;&lt;p&gt;&lt;strong&gt;Returns:&lt;/strong&gt; &lt;code&gt;void&lt;/code&gt;&lt;/p&gt;</description>
+				<description>&lt;p&gt;&lt;a href=&#34;../&#34;&gt;Beranda&lt;/a&gt;&lt;/p&gt;&#xA;&lt;h2 id=&#34;-perintah-umum-dan-gambar&#34;&gt;📝 Perintah Umum dan Gambar&lt;/h2&gt;&#xA;&lt;h3 id=&#34;mulaipjg-number--800-lbr-number--600-kanvas-htmlcanvaselement--null-mode-number--1void&#34;&gt;&lt;code&gt;mulai(pjg: number = 800, lbr: number = 600, kanvas: HTMLCanvasElement = null, mode: number = 1):void&lt;/code&gt;&lt;/h3&gt;&#xA;&lt;p&gt;Memulai aplikasi. Ini adalah perintah awal untuk memulai applikasi dengan BASIK.&lt;/p&gt;&#xA;&lt;p&gt;&lt;strong&gt;Parameters&lt;/strong&gt;&lt;/p&gt;&#xA;&lt;ul&gt;&#xA;&lt;li&gt;&lt;code&gt;pjg&lt;/code&gt;: &lt;code&gt;number&lt;/code&gt;, default 800&lt;br&gt;&#xA;panjang kanvas&lt;/li&gt;&#xA;&lt;li&gt;&lt;code&gt;lbr&lt;/code&gt;: &lt;code&gt;number&lt;/code&gt;, default 600&lt;br&gt;&#xA;lebar kanvas&lt;/li&gt;&#xA;&lt;li&gt;&lt;code&gt;kanvas&lt;/code&gt;: &lt;code&gt;number&lt;/code&gt;, default null&lt;br&gt;&#xA;Kanvas yang akan dipakai bila ada.&lt;br&gt;&#xA;Bila diisi null maka BASIK akan otomatis mencari kanvas yang ada di dokumen atau membuat baru bila tidak tersedia&lt;/li&gt;&#xA;&lt;li&gt;&lt;code&gt;mode&lt;/code&gt;: &lt;code&gt;number&lt;/code&gt;, default 1&lt;br&gt;&#xA;Mode yang dipakai: 1 bila ingin full-screen atau 0 bila ingin kanvas apa adanya. Gunakan 0 bila ingin mendapatkan kontrol penuh terhadap kanvas yang ingin dipakai.&lt;/li&gt;&#xA;&lt;/ul&gt;&#xA;&lt;p&gt;&lt;strong&gt;Returns:&lt;/strong&gt; &lt;code&gt;void&lt;/code&gt;&lt;/p&gt;</description>
 			</item>
 			<item>
 				<title></title>

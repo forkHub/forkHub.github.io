@@ -5,12 +5,6 @@
     <loc>/</loc>
     <lastmod>2026-09-03T09:31:11+07:00</lastmod>
   </url><url>
-    <loc>/teknikal/api/</loc>
-    <lastmod>2026-09-03T09:31:11+07:00</lastmod>
-  </url><url>
-    <loc>/teknikal/</loc>
-    <lastmod>2026-09-03T09:31:11+07:00</lastmod>
-  </url><url>
     <loc>/tags/blue/</loc>
     <lastmod>2023-03-15T11:00:00-07:00</lastmod>
   </url><url>
@@ -45,11 +39,7 @@
   </url><url>
     <loc>/pelajaran/mulai/</loc>
   </url><url>
-    <loc>/teknikal/api-doc-bentuk/</loc>
-  </url><url>
     <loc>/teknikal/api-doc-event/</loc>
-  </url><url>
-    <loc>/teknikal/api-doc-matematika/</loc>
   </url><url>
     <loc>/teknikal/api-doc-perintah/</loc>
   </url><url>
@@ -58,5 +48,7 @@
     <loc>/categories/</loc>
   </url><url>
     <loc>/pelajaran/</loc>
+  </url><url>
+    <loc>/teknikal/</loc>
   </url>
 </urlset>

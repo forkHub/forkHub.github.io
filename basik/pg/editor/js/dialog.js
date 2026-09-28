@@ -42,6 +42,7 @@ function dialogDaftarFile(onConfirm, onCancel) {
             return buttonContainer;
         }
         dialog.appendChild(list);
+        dialog.appendChild(document.createElement("hr"));
         dialog.appendChild(buatTombolCont());
         return dialog;
     }
@@ -52,6 +53,12 @@ function dialogDaftarFile(onConfirm, onCancel) {
     }
     function refresh() {
         list.innerHTML = '';
+        if (fileList.length == 0) {
+            let p = document.createElement('p');
+            p.innerText = 'Belum ada file';
+            list.appendChild(p);
+            return;
+        }
         fileList.forEach(item => {
             const li = document.createElement('li');
             li.className = 'dialog-item pd';

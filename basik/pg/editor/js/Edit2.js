@@ -146,7 +146,7 @@ class Edit2 {
         });
     }
     init() {
-        console.group("init");
+        console.groupCollapsed("init");
         this.initTombol();
         this.hideTbl("edit");
         this.muatFileAwal();
@@ -327,7 +327,7 @@ class Edit2 {
             window.localStorage.setItem(storageNama, JSON.stringify(fileList));
         }
     }
-    compile() {
+    checkJsHint() {
         JSHINT('/* jshint esversion: 6 */\n' +
             this.myCodeMirror.getValue());
         console.log(JSHINT.errors);
@@ -338,6 +338,57 @@ class Edit2 {
                 message: item.reason
             });
         });
+        return err;
+        // if (err.length > 0) {
+        // 	showErrorDialog(
+        // 		err,
+        // 		() => {
+        // 			return true;
+        // 		},
+        // 		() => {
+        // 			this.editClick();
+        // 			return true;
+        // 		});
+        // }
+        // else {
+        // 	return true;
+        // }
+    }
+    compile() {
+        let err = this.checkJsHint();
+        console.group("accorn parse");
+        let { varErr, funErr, callErr } = acornParser.parse(this.myCodeMirror.getValue());
+        console.groupEnd();
+        varErr.forEach((v) => {
+            err.push({
+                line: -1,
+                message: `tidak boleh mendeklarasikan variable dengan nama: <code>${v}</code>, karena namanya sama dengan variable/fungsi bawaan dari BASIK`
+            });
+        });
+        funErr.forEach((v) => {
+            err.push({
+                line: -1,
+                message: `fungsi dengan nama <code>${v.v}</code> kemungkinan memiliki kesalahan ejaan, yang benar adalah <code>${v.b}</code>`
+            });
+        });
+        callErr.forEach((v) => {
+            err.push({
+                line: -1,
+                message: `perintah dengan nama <code>${v.v}</code> kemungkinan memiliki kesalahan ejaan, yang benar adalah <code>${v.b}</code>`
+            });
+        });
+        // JSHINT(
+        // 	'/* jshint esversion: 6 */\n' +
+        // 	this.myCodeMirror.getValue()
+        // );
+        // console.log(JSHINT.errors);
+        // let err: ErrorItem[] = [];
+        // JSHINT.errors.forEach((item: any) => {
+        // 	err.push({
+        // 		line: item.line - 1,
+        // 		message: item.reason
+        // 	})
+        // });
         if (err.length > 0) {
             showErrorDialog(err, () => {
                 this.runOk();
@@ -359,6 +410,9 @@ class Edit2 {
         let iframeCont = document.body.querySelector('div.kontainer-2 div.web');
         iframeCont.innerHTML = '';
         iframeCont.appendChild(iframe);
+        console.groupCollapsed("compile");
+        console.log(hal2);
+        console.groupEnd();
         setTimeout(() => {
             iframe.contentWindow.document.open();
             iframe.contentWindow.document.write(hal2);
@@ -506,13 +560,21 @@ function showErrorDialog(errors, okHandle, cancelHandle) {
     const list = document.createElement('ul');
     errors.forEach((err) => {
         const item = document.createElement('li');
-        item.textContent = `Baris ${err.line}: ${err.message}`;
+        if (err.line > -1) {
+            item.innerHTML = `Baris ${err.line}: ${err.message}`;
+        }
+        else {
+            item.innerHTML = err.message;
+        }
         list.appendChild(item);
     });
     dialog.appendChild(list);
     dialog.appendChild(document.createElement('hr'));
+    html('p', dialog, (el) => {
+        el.innerText = "Pesan ini mungkin memiliki kesalahan, dan hanya ditujukan untuk pengecekan.";
+    });
     const p = document.createElement('p');
-    p.innerText = "Tekan 'Lanjutkan' untuk tetap menjalankan aplikasi, tekan 'Batal' untuk mengedit kembali.";
+    p.innerText = "Tekan 'Lanjutkan' bila yakin tidak ada kesalahan, tekan 'Batal' untuk mengedit kembali.";
     dialog.appendChild(p);
     // Buttons container
     const buttons = document.createElement('div');
@@ -542,6 +604,12 @@ function showErrorDialog(errors, okHandle, cancelHandle) {
     // Append and show
     document.body.appendChild(dialog);
     dialog.showModal();
+    function html(t, p, e) {
+        let h = document.createElement(t);
+        p.appendChild(h);
+        if (e)
+            e(h);
+    }
 }
 function dlgBelumSelesai() {
     alert("Maaf fungsi masih belum tersedia");
