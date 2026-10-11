@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+	<channel>
+		<title>BASIK on Basik</title>
+		<link>/</link>
+		<description>Recent content in BASIK on Basik</description>
+		<generator>Hugo</generator>
+		<language>en-us</language>
+		
+		
+		
+		
+			<lastBuildDate>Wed, 15 Mar 2023 11:00:00 -0700</lastBuildDate>
+		
+			<atom:link href="/index.xml" rel="self" type="application/rss+xml" />
+			<item>
+				<title>Post 3</title>
+				<link>/posts/post-3/</link>
+				<pubDate>Wed, 15 Mar 2023 11:00:00 -0700</pubDate>
+				<guid>/posts/post-3/</guid>
+				<description>&lt;p&gt;Occaecat aliqua consequat laborum ut ex aute aliqua culpa quis irure esse magna dolore quis. Proident fugiat labore eu laboris officia Lorem enim. Ipsum occaecat cillum ut tempor id sint aliqua incididunt nisi incididunt reprehenderit. Voluptate ad minim sint est aute aliquip esse occaecat tempor officia qui sunt. Aute ex ipsum id ut in est velit est laborum incididunt. Aliqua qui id do esse sunt eiusmod id deserunt eu nostrud aute sit ipsum. Deserunt esse cillum Lorem non magna adipisicing mollit amet consequat.&lt;/p&gt;</description>
+			</item>
+			<item>
+				<title>Post 2</title>
+				<link>/posts/post-2/</link>
+				<pubDate>Wed, 15 Feb 2023 10:00:00 -0700</pubDate>
+				<guid>/posts/post-2/</guid>
+				<description>&lt;p&gt;Anim eiusmod irure incididunt sint cupidatat. Incididunt irure irure irure nisi ipsum do ut quis fugiat consectetur proident cupidatat incididunt cillum. Dolore voluptate occaecat qui mollit laborum ullamco et. Ipsum laboris officia anim laboris culpa eiusmod ex magna ex cupidatat anim ipsum aute. Mollit aliquip occaecat qui sunt velit ut cupidatat reprehenderit enim sunt laborum. Velit veniam in officia nulla adipisicing ut duis officia.&lt;/p&gt;&#xA;&lt;p&gt;Exercitation voluptate irure in irure tempor mollit Lorem nostrud ad officia. Velit id fugiat occaecat do tempor. Sit officia Lorem aliquip eu deserunt consectetur. Aute proident deserunt in nulla aliquip dolore ipsum Lorem ut cupidatat consectetur sit sint laborum. Esse cupidatat sit sint sunt tempor exercitation deserunt. Labore dolor duis laborum est do nisi ut veniam dolor et nostrud nostrud.&lt;/p&gt;</description>
+			</item>
+			<item>
+				<title>Post 1</title>
+				<link>/posts/post-1/</link>
+				<pubDate>Sun, 15 Jan 2023 09:00:00 -0700</pubDate>
+				<guid>/posts/post-1/</guid>
+				<description>&lt;p&gt;Tempor proident minim aliquip reprehenderit dolor et ad anim Lorem duis sint eiusmod. Labore ut ea duis dolor. Incididunt consectetur proident qui occaecat incididunt do nisi Lorem. Tempor do laborum elit laboris excepteur eiusmod do. Eiusmod nisi excepteur ut amet pariatur adipisicing Lorem.&lt;/p&gt;&#xA;&lt;p&gt;Occaecat nulla excepteur dolore excepteur duis eiusmod ullamco officia anim in voluptate ea occaecat officia. Cillum sint esse velit ea officia minim fugiat. Elit ea esse id aliquip pariatur cupidatat id duis minim incididunt ea ea. Anim ut duis sunt nisi. Culpa cillum sit voluptate voluptate eiusmod dolor. Enim nisi Lorem ipsum irure est excepteur voluptate eu in enim nisi. Nostrud ipsum Lorem anim sint labore consequat do.&lt;/p&gt;</description>
+			</item>
+			<item>
+				<title></title>
+				<link>/pelajaran/collision/</link>
+				<pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+				<guid>/pelajaran/collision/</guid>
+				<description></description>
+			</item>
+			<item>
+				<title></title>
+				<link>/pelajaran/interaksi/</link>
+				<pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+				<guid>/pelajaran/interaksi/</guid>
+				<description></description>
+			</item>
+			<item>
+				<title></title>
+				<link>/pelajaran/muat_gambar/</link>
+				<pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+				<guid>/pelajaran/muat_gambar/</guid>
+				<description>&lt;p&gt;&lt;a href=&#34;./&#34;&gt;Beranda&lt;/a&gt;&lt;/p&gt;&#xA;&lt;h1 id=&#34;-memuat-gambar&#34;&gt;📖 Memuat Gambar&lt;/h1&gt;&#xA;&lt;p&gt;Pada tulisan sebelumnya kita sudah belajar cara menempel gambar ke layar.&lt;/p&gt;&#xA;&lt;p&gt;Pada tulisan kali ini kia akan membahas bagaimana caranya untuk memuat gambar terlebih dahulu sebelum menempelkan ke layar.&lt;/p&gt;&#xA;&lt;p&gt;Perhatikan kode berikut:&lt;/p&gt;&#xA;&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;&#34;&gt;&lt;code class=&#34;language-javascript&#34; data-lang=&#34;javascript&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#a6e22e&#34;&gt;mulai&lt;/span&gt;();&#xA;&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#66d9ef&#34;&gt;let&lt;/span&gt; &lt;span style=&#34;color:#a6e22e&#34;&gt;roket&lt;/span&gt; &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color:#a6e22e&#34;&gt;muatGambar&lt;/span&gt;(&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;roket&amp;#34;&lt;/span&gt;);&#xA;&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#a6e22e&#34;&gt;stempel&lt;/span&gt;(&lt;span style=&#34;color:#a6e22e&#34;&gt;roket&lt;/span&gt;);&#xA;&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;&lt;code&gt;muatGambar()&lt;/code&gt; adalah perintah untuk memuat gambar, di contoh ini kita memuat gambar dengan nama &amp;ldquo;roket&amp;rdquo;.&#xA;Kita menyimpannya ke variable roket, kemudian kita menggunakan variable ini untuk dipakai sebagai parameter perintah &lt;code&gt;stempel()&lt;/code&gt;.&lt;/p&gt;</description>
+			</item>
+			<item>
+				<title></title>
+				<link>/pelajaran/mulai/</link>
+				<pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+				<guid>/pelajaran/mulai/</guid>
+				<description>&lt;p&gt;&lt;a href=&#34;./&#34;&gt;Beranda&lt;/a&gt;&lt;/p&gt;&#xA;&lt;h1 id=&#34;-memulai-basik&#34;&gt;📖 Memulai BASIK&lt;/h1&gt;&#xA;&lt;p&gt;Untuk pengguna daring, BASIK bisa dibuka melalui &lt;a href=&#34;https://forkhub.github.io/basik/pg/editor.html&#34;&gt;alamat ini&lt;/a&gt;.&lt;/p&gt;&#xA;&lt;p&gt;Untuk pengguna luring, silakan download dahulu, kemudian ekstrak dan buka file &lt;code&gt;basik.html&lt;/code&gt; di browser untuk memulai.&lt;/p&gt;&#xA;&lt;p&gt;Contoh aplikasi sederhana:&lt;/p&gt;&#xA;&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;&#34;&gt;&lt;code class=&#34;language-javascript&#34; data-lang=&#34;javascript&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#a6e22e&#34;&gt;mulai&lt;/span&gt;();&#xA;&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#a6e22e&#34;&gt;stempel&lt;/span&gt;(&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;roket&amp;#34;&lt;/span&gt;);&#xA;&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;&lt;code&gt;mulai()&lt;/code&gt; adalah perintah pertama yang berfungsi untuk memulai aplikasi. Perintah ini harus dipanggil pertama kali sebelum memanggil perintah yang lain.&lt;/p&gt;&#xA;&lt;p&gt;&lt;code&gt;stempel(&amp;quot;roket&amp;quot;)&lt;/code&gt; adalah perintah untuk men-stempel gambar ke kanvas. &amp;ldquo;roket&amp;rdquo; adalah gambar yang ingin distempel.&lt;/p&gt;&#xA;&lt;p&gt;Tekan tombol &lt;code&gt;Jalankan&lt;/code&gt; untuk menjalankan aplikasi. Kita akan melihat gambar roket di pojok kiri atas layar.&lt;/p&gt;</description>
+			</item>
+			<item>
+				<title></title>
+				<link>/pelajaran/update/</link>
+				<pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+				<guid>/pelajaran/update/</guid>
+				<description>&lt;p&gt;&lt;a href=&#34;./&#34;&gt;Beranda&lt;/a&gt;&lt;/p&gt;&#xA;&lt;h1 id=&#34;-fungsi-update&#34;&gt;📖 fungsi Update&lt;/h1&gt;&#xA;&lt;p&gt;Fungsi update adalah fungsi bawaan dari BASIK untuk menangani apa yang terjadi saat applikasi di update.&#xA;Perhatikan contoh berikut:&lt;/p&gt;&#xA;&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;&#34;&gt;&lt;code class=&#34;language-Javascript&#34; data-lang=&#34;Javascript&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#a6e22e&#34;&gt;mulai&lt;/span&gt;();&#xA;&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#66d9ef&#34;&gt;let&lt;/span&gt; &lt;span style=&#34;color:#a6e22e&#34;&gt;astro&lt;/span&gt; &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color:#a6e22e&#34;&gt;muatGambar&lt;/span&gt;(&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;astronot&amp;#39;&lt;/span&gt;);&#xA;&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#a6e22e&#34;&gt;posisiGambar&lt;/span&gt;(&lt;span style=&#34;color:#a6e22e&#34;&gt;astro&lt;/span&gt;, &lt;span style=&#34;color:#ae81ff&#34;&gt;400&lt;/span&gt;, &lt;span style=&#34;color:#ae81ff&#34;&gt;300&lt;/span&gt;);&#xA;&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&#xA;&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#66d9ef&#34;&gt;function&lt;/span&gt; &lt;span style=&#34;color:#a6e22e&#34;&gt;update&lt;/span&gt;() {&#xA;&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&#x9;&lt;span style=&#34;color:#a6e22e&#34;&gt;bl&lt;/span&gt;();&#xA;&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&#x9;&lt;span style=&#34;color:#a6e22e&#34;&gt;putarGambar&lt;/span&gt;(&lt;span style=&#34;color:#a6e22e&#34;&gt;astro&lt;/span&gt;, &lt;span style=&#34;color:#ae81ff&#34;&gt;5&lt;/span&gt;);&#xA;&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&#x9;&lt;span style=&#34;color:#a6e22e&#34;&gt;stempel&lt;/span&gt;(&lt;span style=&#34;color:#a6e22e&#34;&gt;astro&lt;/span&gt;);&#xA;&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;}&#xA;&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;Jalankan aplikasi ini maka akan terlihat di layar gambar astronot yang berputar tanpa henti.&lt;/p&gt;&#xA;&lt;p&gt;BASIK akan di update secara terus menerus, dan setiap kali update terjadi maka semua perintah yang ada di dalam fungsi &lt;code&gt;update()&lt;/code&gt; akan terus dijalankan.&lt;/p&gt;</description>
+			</item>
+			<item>
+				<title></title>
+				<link>/teknikal/api-doc-event/</link>
+				<pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+				<guid>/teknikal/api-doc-event/</guid>
+				<description>&lt;p&gt;&lt;a href=&#34;./&#34;&gt;Beranda&lt;/a&gt;&lt;/p&gt;&#xA;&lt;h1 id=&#34;event&#34;&gt;Event&lt;/h1&gt;&#xA;&lt;p&gt;Basik memiliki cara untuk menghandle event yang disederhanakan.&lt;br&gt;&#xA;Ketika sebuah event terjadi, maka Basik akan mencari deklarasi fungsi yang berhubungan dengan event tersebut, dan memanggilnya.&lt;/p&gt;&#xA;&lt;p&gt;Contoh:&#xA;Ketika terjadi event mouse ditekan, maka Basik akan mencari deklarasi fungsi mouseDitekan. Bila tersedia, maka fungsi ini akan dipanggil secara otomatis.&lt;/p&gt;&#xA;&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;&#34;&gt;&lt;code class=&#34;language-javascript&#34; data-lang=&#34;javascript&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&#xA;&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#a6e22e&#34;&gt;mulai&lt;/span&gt;();&#xA;&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&#xA;&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#66d9ef&#34;&gt;function&lt;/span&gt; &lt;span style=&#34;color:#a6e22e&#34;&gt;mouseDitekan&lt;/span&gt;() {&#xA;&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&#x9;&lt;span style=&#34;color:#a6e22e&#34;&gt;stempel&lt;/span&gt;(&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;roket&amp;#34;&lt;/span&gt;, &lt;span style=&#34;color:#a6e22e&#34;&gt;mouseX&lt;/span&gt;(), &lt;span style=&#34;color:#a6e22e&#34;&gt;mouseY&lt;/span&gt;());&#xA;&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;}  &#xA;&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;  &#xA;&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;Bila contoh diatas dijalankan, ketika user menekan tombol mouse maka gambar roket akan di gambar pada posisi dimana mouse berada.&lt;/p&gt;</description>
+			</item>
+			<item>
+				<title></title>
+				<link>/teknikal/api-doc-perintah/</link>
+				<pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+				<guid>/teknikal/api-doc-perintah/</guid>
+				<description>&lt;p&gt;&lt;a href=&#34;./&#34;&gt;Beranda&lt;/a&gt;&lt;/p&gt;&#xA;&lt;h2 id=&#34;-perintah-umum-dan-gambar&#34;&gt;📝 Perintah Umum dan Gambar&lt;/h2&gt;&#xA;&lt;h3 id=&#34;mulaipjg-number--800-lbr-number--600-kanvas-htmlcanvaselement--null-mode-number--1void&#34;&gt;&lt;code&gt;mulai(pjg: number = 800, lbr: number = 600, kanvas: HTMLCanvasElement = null, mode: number = 1):void&lt;/code&gt;&lt;/h3&gt;&#xA;&lt;p&gt;Memulai aplikasi. Ini adalah perintah awal untuk memulai applikasi dengan BASIK.&lt;/p&gt;&#xA;&lt;p&gt;&lt;strong&gt;Parameters&lt;/strong&gt;&lt;/p&gt;&#xA;&lt;ul&gt;&#xA;&lt;li&gt;&lt;code&gt;pjg&lt;/code&gt;: &lt;code&gt;number&lt;/code&gt;, default 800&lt;br&gt;&#xA;panjang kanvas&lt;/li&gt;&#xA;&lt;li&gt;&lt;code&gt;lbr&lt;/code&gt;: &lt;code&gt;number&lt;/code&gt;, default 600&lt;br&gt;&#xA;lebar kanvas&lt;/li&gt;&#xA;&lt;li&gt;&lt;code&gt;kanvas&lt;/code&gt;: &lt;code&gt;number&lt;/code&gt;, default null&lt;br&gt;&#xA;Kanvas yang akan dipakai bila ada.&lt;br&gt;&#xA;Bila diisi null maka BASIK akan otomatis mencari kanvas yang ada di dokumen atau membuat baru bila tidak tersedia&lt;/li&gt;&#xA;&lt;li&gt;&lt;code&gt;mode&lt;/code&gt;: &lt;code&gt;number&lt;/code&gt;, default 1&lt;br&gt;&#xA;Mode yang dipakai: 1 bila ingin full-screen atau 0 bila ingin kanvas apa adanya. Gunakan 0 bila ingin mendapatkan kontrol penuh terhadap kanvas yang ingin dipakai.&lt;/li&gt;&#xA;&lt;/ul&gt;&#xA;&lt;p&gt;&lt;strong&gt;Returns:&lt;/strong&gt; &lt;code&gt;void&lt;/code&gt;&lt;/p&gt;</description>
+			</item>
+			<item>
+				<title></title>
+				<link>/teknikal/objek-gambar/</link>
+				<pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+				<guid>/teknikal/objek-gambar/</guid>
+				<description>&lt;p&gt;&lt;a href=&#34;./&#34;&gt;Beranda&lt;/a&gt;&lt;/p&gt;&#xA;&lt;h1 id=&#34;-gambar-sebagai-object&#34;&gt;📝 Gambar sebagai object&lt;/h1&gt;&#xA;&lt;p&gt;BASIK memiliki object bawaan &lt;code&gt;Gambar&lt;/code&gt;. Object ini dibuat dengan perintah &lt;code&gt;muatGambar()&lt;/code&gt;.&lt;/p&gt;&#xA;&lt;p&gt;Object &lt;code&gt;Gambar&lt;/code&gt; memiliki property sebagai berikut:&lt;/p&gt;&#xA;&lt;ul&gt;&#xA;&lt;li&gt;&lt;strong&gt;x&lt;/strong&gt; (&lt;code&gt;number&lt;/code&gt;): Posisi x&lt;/li&gt;&#xA;&lt;li&gt;&lt;strong&gt;y&lt;/strong&gt; (&lt;code&gt;number&lt;/code&gt;): Posisi y&lt;/li&gt;&#xA;&lt;li&gt;&lt;strong&gt;alpha&lt;/strong&gt; (&lt;code&gt;number&lt;/code&gt;): Transparansi (0 - 100)&lt;/li&gt;&#xA;&lt;li&gt;&lt;strong&gt;pusatX&lt;/strong&gt; (&lt;code&gt;number&lt;/code&gt;): Posisi pusat x&lt;/li&gt;&#xA;&lt;li&gt;&lt;strong&gt;pusatY&lt;/strong&gt; (&lt;code&gt;number&lt;/code&gt;): Posisi pusat y&lt;/li&gt;&#xA;&lt;li&gt;&lt;strong&gt;panjang&lt;/strong&gt; (&lt;code&gt;number&lt;/code&gt;): Panjang&lt;/li&gt;&#xA;&lt;li&gt;&lt;strong&gt;lebar&lt;/strong&gt; (&lt;code&gt;number&lt;/code&gt;): Lebar&lt;/li&gt;&#xA;&lt;li&gt;&lt;strong&gt;rotasi&lt;/strong&gt; (&lt;code&gt;number&lt;/code&gt;): Rotasi (0 - 360)&lt;/li&gt;&#xA;&lt;li&gt;&lt;strong&gt;diDrag&lt;/strong&gt; (&lt;code&gt;boolean&lt;/code&gt;): Apakah gambar sedang di-drag&lt;/li&gt;&#xA;&lt;li&gt;&lt;strong&gt;diTekan&lt;/strong&gt; / &lt;strong&gt;ditekan&lt;/strong&gt; (&lt;code&gt;boolean&lt;/code&gt;): Apakah gambar sedang ditekan oleh mouse/jari&lt;/li&gt;&#xA;&lt;li&gt;&lt;strong&gt;tipeDrag&lt;/strong&gt; (&lt;code&gt;number&lt;/code&gt;): Tipe drag (1 = geser, 2 = rotasi, 3 = geser tanpa sentuh, 4 = rotasi tanpa sentuh)&lt;/li&gt;&#xA;&lt;li&gt;&lt;strong&gt;dimuat&lt;/strong&gt; (&lt;code&gt;boolean&lt;/code&gt;): Apakah gambar sudah selesai dimuat&lt;/li&gt;&#xA;&lt;li&gt;&lt;strong&gt;frame&lt;/strong&gt; (&lt;code&gt;number&lt;/code&gt;): Nomor frame aktif, bila gambar berupa animasi spritesheet&lt;/li&gt;&#xA;&lt;li&gt;&lt;strong&gt;panjangFrame&lt;/strong&gt; (&lt;code&gt;number&lt;/code&gt;): Panjang dari tiap frame dalam animasi, bila gambar berupa animasi spritesheet&lt;/li&gt;&#xA;&lt;li&gt;&lt;strong&gt;lebarFrame&lt;/strong&gt; (&lt;code&gt;number&lt;/code&gt;): Lebar dari tiap frame, bila gambar berupa animasi spritesheet&lt;/li&gt;&#xA;&lt;li&gt;&lt;strong&gt;dragAwalX&lt;/strong&gt; (&lt;code&gt;number&lt;/code&gt;): Posisi awal x saat gambar mulai di-drag&lt;/li&gt;&#xA;&lt;li&gt;&lt;strong&gt;dragAwalY&lt;/strong&gt; (&lt;code&gt;number&lt;/code&gt;): Posisi awal y saat gambar mulai di-drag&lt;/li&gt;&#xA;&lt;/ul&gt;</description>
+			</item>
+	</channel>
+</rss>

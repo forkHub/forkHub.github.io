@@ -1,0 +1,432 @@
+<!DOCTYPE html>
+<html lang="en-us" dir="ltr">
+
+<head>
+	<meta charset="utf-8">
+<meta name="viewport" content="width=device-width">
+<title> | Basik</title>
+
+<link rel="stylesheet" href="../../css/main.fbb9baf7573768d711cfbf22e52241a77d5a0e41c56f8fcbb94cf174300c76e3.css">
+
+<script src="../../js/main.23cd0c7d837263b9eaeb96ee2d9ccfa2969daa3fa00fa1c1fe8701a9b87251a1.js"></script>
+
+</head>
+
+<body>
+	<div class="container">
+		
+<p><a href="../../">Beranda</a></p>
+<h2 id="-perintah-umum-dan-gambar">📝 Perintah Umum dan Gambar</h2>
+<h3 id="mulaipjg-number--800-lbr-number--600-kanvas-htmlcanvaselement--null-mode-number--1void"><code>mulai(pjg: number = 800, lbr: number = 600, kanvas: HTMLCanvasElement = null, mode: number = 1):void</code></h3>
+<p>Memulai aplikasi. Ini adalah perintah awal untuk memulai applikasi dengan BASIK.</p>
+<p><strong>Parameters</strong></p>
+<ul>
+<li><code>pjg</code>: <code>number</code>, default 800<br>
+panjang kanvas</li>
+<li><code>lbr</code>: <code>number</code>, default 600<br>
+lebar kanvas</li>
+<li><code>kanvas</code>: <code>number</code>, default null<br>
+Kanvas yang akan dipakai bila ada.<br>
+Bila diisi null maka BASIK akan otomatis mencari kanvas yang ada di dokumen atau membuat baru bila tidak tersedia</li>
+<li><code>mode</code>: <code>number</code>, default 1<br>
+Mode yang dipakai: 1 bila ingin full-screen atau 0 bila ingin kanvas apa adanya. Gunakan 0 bila ingin mendapatkan kontrol penuh terhadap kanvas yang ingin dipakai.</li>
+</ul>
+<p><strong>Returns:</strong> <code>void</code></p>
+<h3 id="bersihkanlayarx-number--0-y-number--0-pjg-number--800-lbr-number--600void"><code>bersihkanLayar(x: number = 0, y: number = 0, pjg: number = 800, lbr: number = 600):void</code></h3>
+<p>Membersihkan layar</p>
+<p><strong>Parameters</strong></p>
+<ul>
+<li><code>x</code>: <code>number</code>, default 0
+posisi x dari posisi awal membersihkan layar</li>
+<li><code>y</code>: <code>number</code>, default 0
+posisi y dari posisi awal membersihkan layar</li>
+<li><code>pjg</code>: <code>number</code>, default 800
+panjang area untuk dibersihkan</li>
+<li><code>lbr</code>: <code>number</code>, default 600
+lebar area untuk dibersihkan</li>
+</ul>
+<p><strong>Returns:</strong> <code>void</code></p>
+<h3 id="stempelurl--roket-x-yvoid"><code>stempel(url = &quot;roket&quot;, x?, y?):void</code></h3>
+<p>Menstempel gambar ke layar pada posisi tertentu</p>
+<p><strong>Parameters</strong></p>
+<ul>
+<li><code>url</code>: <code>string</code> default &ldquo;roket&rdquo;, atau object <code>Gambar</code>
+<code>url</code> bisa diisi dengan alamat/url gambar yang akan di stempel atau object <code>Gambar</code> yang akan di stempel ke layar.<br>
+Bila hanya diisi menggunakan nama file (&ldquo;kotak&rdquo; atau &ldquo;kotak.png&rdquo;) maka BASIK akan otomatis mencari di folder <code>asset</code>.<br>
+<code>url</code> dengan type string ditujukan untuk penyederhanaan bagi pemula yang belum mengenal konsep <code>object</code> dengan fitur yang lebih sedikit.
+Untuk fitur yang lebih kompleks seperti mengatur ukuran gambar, rotasi, dll, maka dianjurkan untuk memuat gambar terlebih dahulu dengan perintah <code>muatGambar()</code>.</li>
+<li><code>x</code>: <code>number</code>, optional<br>
+Menentukan posisi x.<br>
+Parameter ini berifat opsional. Bila kosong dan url mereferensi pada object gambar, maka akan menggunakan property x dari gambar</li>
+<li><code>y</code>: <code>number</code>, optional
+Menentukan posisi y.<br>
+Parameter ini berifat opsional. Bila kosong dan url mereferensi pada object gambar, maka akan menggunkaan property y dari gambar</li>
+</ul>
+<p><strong>Returns:</strong> <code>void</code></p>
+<h3 id="muatgambarurlgambar"><code>muatGambar(url):Gambar</code></h3>
+<p>Memuat gambar. Hasil dari perintah ini bisa digunakan dengan perintah <code>stempel()</code>, atau perintah lainnya.<br>
+Dengan memuat gambar terlebih dahulu, kita akan punya lebih banyak fitur seperti mengatur panjang/lebar, rotasi, dsb.</p>
+<p><strong>Parameters</strong></p>
+<ul>
+<li><code>url</code>: <code>string</code> default &ldquo;roket&rdquo;<br>
+Alamat Gambar yang akan di dimuat.<br>
+Alamat  bisa berupa nama file tanpa ekstensi (&ldquo;kotak&rdquo;), dengan ekstensi (&ldquo;kotak.png&rdquo;), alamat relatif (&quot;./assets/kotak.png&quot;), atau alamat absolut (&ldquo;<a href="http://www.alamat.com/kotak.png%22)">http://www.alamat.com/kotak.png&quot;)</a>.
+Bila alamat hanya menggunakan nama (&ldquo;kotak&rdquo; atau &ldquo;kotak.png&rdquo;) maka BASIK akan otomatis mencari di folder asset.</li>
+</ul>
+<p><strong>Returns:</strong> <code>Gambar</code></p>
+<h3 id="gambartabrakanimg1-gambar-img2-gambar-boolean"><code>gambarTabrakan(img1: Gambar, img2: Gambar): boolean</code></h3>
+<p>Mengecek apakah dua gambar bertabrakan. Pengecekan dilakukan dengan mengecek bounding box dari kedua objek <code>Gambar</code>.
+Pengecekan mensupport gambar yang di rotasi.</p>
+<p><strong>Parameters</strong></p>
+<ul>
+<li><code>img1</code>: <code>Gambar</code><br>
+objek gambar pertama yang akan di check</li>
+<li><code>img2</code>: <code>Gambar</code><br>
+objek gambar kedua yang akan di check</li>
+</ul>
+<p><strong>Returns:</strong> <code>boolean</code>. bernilai true bila terjadi tabrakan, atau false bila tidak terjadi tabrakan</p>
+<h3 id="poindidalamgambarimg-gambar-x-number-y-number-boolean"><code>poinDidalamGambar(img: Gambar, x: number, y: number): boolean</code></h3>
+<p>Mengecek apakah sebuah poin pada lokasi tertentu ada di dalam gambar</p>
+<p><strong>Parameters</strong></p>
+<ul>
+<li><code>img</code>: <code>Gambar</code><br>
+Gambar yang akan di check</li>
+<li><code>x</code>: <code>number</code><br>
+Posisi x point</li>
+<li><code>y</code>: <code>number</code><br>
+Poisi y point</li>
+</ul>
+<p><strong>Returns:</strong> <code>boolean</code>. Bernilai <code>true</code> bila point berada di dalam gambar</p>
+<h3 id="semuagambarselesaidimuat-boolean"><code>semuaGambarSelesaiDimuat(): boolean</code></h3>
+<p>Mengecek apakah semua gambar sudah selesai dimuat. Gambar yang belum di muat masih bisa menerima perintah dan event.
+Bila kita men-<code>stempel</code> gambar yang belum dimuat, maka gambarnya akan terlihat setelah gambar selesai di muat.
+Perintah ini diperlukan kalau kita benar-benar ingin menunggu semua gambar selesai di muat sebelum melakukan sesuatu.</p>
+<p><strong>Returns:</strong> <code>boolean</code>. Bernilai <code>true</code> bila semua gambar selesai dimuat.</p>
+<h3 id="posisigambargbr-gambar-xnumber--0-ynumber--0-void"><code>posisiGambar(gbr: Gambar, x:number = 0, y:number = 0): void</code></h3>
+<p>Mengubah posisi gambar. Kita juga bisa mengubah posisi gambar secara parsial dengan mengubah property <code>x</code> atau <code>y</code> secara langsung.</p>
+<p><strong>Parameters</strong></p>
+<ul>
+<li><code>gbr</code>: <code>Gambar</code><br>
+Gambar yang akan di pindah</li>
+<li><code>x</code>: <code>number</code>, default 0<br>
+Posisi x</li>
+<li><code>y</code>: <code>number</code>, default 0<br>
+Posisi y</li>
+</ul>
+<h3 id="ukurangambargbr-gambar-pjgnumber--32-lbrnumber--32-void"><code>ukuranGambar(gbr: Gambar, pjg:number = 32, lbr:number = 32): void</code></h3>
+<p>Mengubah ukuran gambar. Kita juga bisa mengubah ukuran gambar melalui property <code>panjang</code> dan <code>lebar</code>.</p>
+<p><strong>Parameters</strong></p>
+<ul>
+<li><code>gbr</code>: <code>Gambar</code><br>
+Gambar yang akan di ubah ukurannya</li>
+<li><code>pjg</code>: <code>number</code>, default 32<br>
+panjang gambar</li>
+<li><code>lbr</code>: <code>number</code>, default 32
+Lebar gambar</li>
+</ul>
+<h3 id="gesergambargbr-gambar-xnumber--0-ynumber--0-void"><code>geserGambar(gbr: Gambar, x:number = 0, y:number = 0): void</code></h3>
+<p>Menggeser gambar dengan mengubah property x dan y.</p>
+<p><strong>Parameters</strong></p>
+<ul>
+<li><code>gbr</code>: <code>Gambar</code><br>
+Gambar yang akan digeser</li>
+<li><code>x</code>: <code>number</code>, default 0<br>
+pergeseran horizontal</li>
+<li><code>y</code>: <code>number</code>, default 0
+pergeseran vertikal</li>
+</ul>
+<h3 id="putargambargbr-gambar-nnumber--0-void"><code>putarGambar(gbr: Gambar, n:number = 0): void</code></h3>
+<p>Memutar gambar.</p>
+<p><strong>Parameters</strong></p>
+<ul>
+<li><code>gbr</code>: <code>Gambar</code><br>
+Gambar yang akan diputar</li>
+<li><code>n</code>: <code>number</code>, default 0<br>
+besar putaran</li>
+</ul>
+<h2 id="-input">📝 Input</h2>
+<p>Perintah-perintah yang berhubungan dengan input seperti mouse, touch, dan keyboard.</p>
+<h3 id="mouseditekan-boolean"><code>mouseDitekan(): boolean</code></h3>
+<p>Mengecek apakah mouse sedang di tekan</p>
+<p><strong>Returns:</strong> <code>boolean</code>. Bernilai true bila mouse sedang ditekan</p>
+<h3 id="mousedidrag-boolean"><code>mouseDidrag(): boolean</code></h3>
+<p>Mengecek apakah mouse sedang di drag</p>
+<p><strong>Returns:</strong> <code>boolean</code>. Bernilai true bila mouse sedang di drag</p>
+<h3 id="mousedragx-number"><code>mouseDragX(): number</code></h3>
+<p>Mengembalikan jarak vertikal mouse saat di drag, dihitung dari posisi awal saat drag dimulai</p>
+<p><strong>Returns:</strong> <code>number</code>. besaran drag horizontal</p>
+<h3 id="mousedragy-number"><code>mouseDragY(): number</code></h3>
+<p>Mengembalikan jarak vertikal mouse saat di drag, dihitung dari posisi awal saat drag dimulai</p>
+<p><strong>Returns:</strong> <code>number</code>. besaran drag vertikal</p>
+<h3 id="mousex-number"><code>mouseX(): number</code></h3>
+<p>Mengembalikan posisi X dari mouse</p>
+<p><strong>Returns:</strong> <code>number</code>. posisi x dari mouse</p>
+<h3 id="mousey-number"><code>mouseY(): number</code></h3>
+<p>Mengembalikan posisi Y dari mouse</p>
+<p><strong>Returns:</strong> <code>number</code>. posisi y dari mouse</p>
+<h3 id="mousedragawalx-number"><code>mouseDragAwalX(): number</code></h3>
+<p>Mengembalikan Posisi awal mouse saat mulai di drag</p>
+<p><strong>Returns:</strong> <code>number</code>. posisi x saat mulai di drag</p>
+<h3 id="mousedragawaly-number"><code>mouseDragAwalY(): number</code></h3>
+<p>Mengembalikan Posisi awal mouse saat mulai di drag</p>
+<p><strong>Returns:</strong> <code>number</code>. posisi y saat mulai di drag</p>
+<h3 id="mousegerakx-number"><code>mouseGerakX(): number</code></h3>
+<p>Mengembalikan besar pergerakan horizontal saat mouse bergerak</p>
+<p><strong>Returns:</strong> <code>number</code>. besar pergerakan horizontal saat mouse digerakkan</p>
+<h3 id="mousegeraky-number"><code>mouseGerakY(): number</code></h3>
+<p>Mengembalikan besar pergerakan vertikal saat mouse bergerak</p>
+<p><strong>Returns:</strong> <code>number</code>. besar pergerakan vertikal saat mouse digerakkan</p>
+<h3 id="tombolditahankey-string--"><code>tombolDitahan(key: string = '')</code></h3>
+<p>mengecek apakah sebuah tombol keybord sedang ditahan</p>
+<p><strong>Parameters</strong></p>
+<ul>
+<li><code>key</code>: <code>string</code>
+tombol yang sedang ditekan</li>
+</ul>
+<h3 id="tomboleventstring"><code>tombolEvent():string </code></h3>
+<p>Mengembalikan informasi tombol terakhir yang terlibat saat ada event keyboard</p>
+<p><strong>Returns:</strong> <code>string</code>. tombol yang sedang ditekan</p>
+<h2 id="-perintah-teks">📝 Perintah Teks</h2>
+<p>Perintah-perintah yang berhubungan dengan teks.</p>
+<h3 id="tulisteks-string---xnumber-ynumbervoid"><code>tulis(teks: string = &quot;&quot;, x:number, y:number):void</code></h3>
+<p>Menulis sesuatu di layar</p>
+<p><strong>Parameters</strong></p>
+<ul>
+<li><code>teks</code>: <code>string</code>, default &quot;&rdquo;
+teks yang ingin di tulis</li>
+<li><code>x</code>: <code>number</code>, opsional
+posisi x dari tulisan, bila tidak disediakan maka akan sama dengan teks sebelumnya</li>
+<li><code>y</code>: <code>number</code>, optional
+posisi y dari tulisan, bila tidak disediakan maka posisinya adalah di bawah teks sebelumnya</li>
+</ul>
+<h3 id="ukuranteksnnumber--12void"><code>ukuranTeks(n:number = 12):void</code></h3>
+<p>Mengeset ukuran teks</p>
+<p><strong>Parameters</strong></p>
+<ul>
+<li><code>n</code>: <code>number</code>, default 12
+ukuran teks</li>
+</ul>
+<h3 id="perataanteksnnumber--1void"><code>perataanTeks(n:number = 1):void</code></h3>
+<p>Mengatur perataan teks</p>
+<p><strong>Parameters</strong></p>
+<ul>
+<li><code>n</code>: <code>number</code>, default 1
+perataan: 1: kiri, 2: tengah, 3: kanan</li>
+</ul>
+<h2 id="-menggambar-bentuk-dasar">📝 menggambar bentuk dasar</h2>
+<p>Berisi kumpulan perintah untuk menggambar dengan bangun geometri</p>
+<h3 id="warnaidx-number--0-trans--100"><code>warna(idx: number = 0, trans = 100)</code></h3>
+<p>Mengeset warna isi dari bangun yang digambar</p>
+<p><strong>Parameters</strong></p>
+<ul>
+<li><code>idx</code>: <code>number</code>, default 0
+nomor dari warna yang dipilih</li>
+<li><code>trans</code>: <code>number</code>, default 100
+transparansi (0 - 100)</li>
+</ul>
+<h3 id="warnagarisidx-number-trans--100"><code>warnaGaris(idx: number, trans = 100)</code></h3>
+<p>Mengeset warna garis</p>
+<p><strong>Parameters</strong></p>
+<ul>
+<li><code>idx</code>: <code>number</code>, default 0
+nomor dari warna yang dipilih</li>
+<li><code>trans</code>: <code>number</code>, default 100
+transparansi (0 - 100)</li>
+</ul>
+<h3 id="tebalgarisn-number--1"><code>tebalGaris(n: number = 1)</code></h3>
+<p>Mengatur ketbalan garis</p>
+<p><strong>Parameters</strong></p>
+<ul>
+<li><code>n</code>: <code>number</code>, default 1
+tebal garis</li>
+</ul>
+<h3 id="bukapathx-number--0-y-number--0-void"><code>bukaPath(x: number = 0, y: number = 0): void</code></h3>
+<p>Perintah ini berfungsi untuk memulai menggambar bentuk yang kompleks.<br>
+Perintah ini bisa di ikuti dengan perintah lain, yaitu: <code>garisKe()</code>, <code>kurvaKe()</code> dan <code>lingkaranKe()</code>.<br>
+Setelah selesai membuat bangun, bisa di akhiri dengan perintah <code>tutupPath()</code></p>
+<p><strong>Parameters</strong></p>
+<ul>
+<li><code>x</code>: <code>number</code><br>
+Posisi X mulai menggambar.</li>
+<li><code>y</code>: <code>number</code>, default 32<br>
+Posisi Y mulai menggambar.</li>
+</ul>
+<h3 id="gariskex-number-y-number-void"><code>garisKe(x: number, y: number): void</code></h3>
+<p>Membuat garis ke posisi tertentu dari posisi terakhir.</p>
+<p><strong>Parameters</strong></p>
+<ul>
+<li><code>x</code>: <code>number</code><br>
+Posisi x ujung garis</li>
+<li><code>y</code>: <code>number</code>, default 32<br>
+Posisi y ujung garis</li>
+</ul>
+<h3 id="kurvakecx-number-cy-number-x-number-y-number-void"><code>kurvaKe(cx: number, cy: number, x: number, y: number): void</code></h3>
+<p>Membuat kurva yang berakhir ke posisi x dan y, dengan kontrol point ditentukan oleh cx dan cy</p>
+<p><strong>Parameters</strong></p>
+<ul>
+<li><code>cx</code>: <code>number</code><br>
+posisi x kontrol point</li>
+<li><code>cy</code>: <code>number</code><br>
+posisi y kontrol point</li>
+<li><code>x</code>: <code>number</code><br>
+posisi x ujung kurva</li>
+<li><code>y</code>: <code>number</code><br>
+posisi y ujung kurva</li>
+</ul>
+<h3 id="lingkaranketx-number-ty-number-sudut-number-searahjarumjam--false"><code>lingkaranKe(tx: number, ty: number, sudut: number, searahJarumJam = false)</code></h3>
+<p>Membuat lingkaran dari posisi terakhir sebesar sudut tertentu</p>
+<p><strong>Parameters</strong></p>
+<ul>
+<li><code>tx</code>: <code>number</code><br>
+posisi x dari tengah lingkaran</li>
+<li><code>ty</code>: <code>number</code><br>
+posisi y dari tengah lingkaran</li>
+<li><code>sudut</code>: <code>number</code><br>
+sudut akhir lingkaran di hitung dari posisi akhir x dan y</li>
+<li><code>searahJarumJam</code>: <code>boolean</code><br>
+apakah lingkaran digambar searah jarum jam</li>
+</ul>
+<h3 id="tutuppath"><code>tutupPath()</code></h3>
+<p>Menutup Path. Perintah ini harus dipanggil untuk mengakhiri perintah dari <code>bukaPath()</code>.</p>
+<h3 id="elipx-number--0-y-number--0-radiusx-number--0-radiusy-number--0-awal-number--0-akhir-number--360-searahjarumjamboolean--false-void"><code>elip(x: number = 0, y: number = 0, radiusX: number = 0, radiusY: number = 0, awal: number = 0, akhir: number = 360, searahJarumJam:boolean = false): void</code></h3>
+<p>Menggambar elip atau lingkaran</p>
+<p><strong>Parameters</strong></p>
+<ul>
+<li><code>x</code>: <code>number</code>, default 0
+posisi x dari tengah lingkaran</li>
+<li><code>y</code>: <code>number</code>, default 0
+posisi y dari tengah lingkaran</li>
+<li><code>radiusX</code>: <code>number</code>, default 32<br>
+radius horizontal</li>
+<li><code>radiusY</code>: <code>number</code>, default 64
+radius vertikal</li>
+<li><code>awal</code>: <code>number</code>, default 0<br>
+sudut awal elip</li>
+<li><code>akhir</code>: <code>number</code>, default 360<br>
+sudut akhir elip</li>
+<li><code>searahJarumJam</code>: <code>boolean</code>, default false<br>
+apakah elips searah jarum jam</li>
+</ul>
+<h3 id="kotakx-number--10-y-number--10-pjg-number--100-lbr-number--100"><code>kotak(x: number = 10, y: number = 10, pjg: number = 100, lbr: number = 100)</code></h3>
+<p><strong>Parameters</strong></p>
+<ul>
+<li><code>x</code>: <code>number</code>, default 10<br>
+posisi x dari awal kotak</li>
+<li><code>y</code>: <code>number</code>, default 10<br>
+posisi y dari awal kotak</li>
+<li><code>pjg</code>: <code>number</code>, default 100<br>
+panjang kotak</li>
+<li><code>lbr</code>: <code>number</code>, default 100<br>
+lebar kotak</li>
+</ul>
+<h3 id="garisx-number--100-y-number--100-x2-number--500-y2-number--500-void"><code>garis(x: number = 100, y: number = 100, x2: number = 500, y2: number = 500): void</code></h3>
+<p>Membuat garis.</p>
+<p><strong>Parameters</strong></p>
+<ul>
+<li><code>x</code>: <code>number</code>, defalt 100<br>
+Posisi x awal garis</li>
+<li><code>y</code>: <code>number</code>, default 100<br>
+Posisi y awal garis</li>
+<li><code>x2</code>: <code>number</code>, default 500<br>
+Posisi x akhir garis</li>
+<li><code>y2</code>: <code>number</code>, default 500<br>
+Posisi y akhir garis</li>
+</ul>
+<h2 id="-perintah-matematika">📝 Perintah Matematika</h2>
+<p>perintah umum matematika.</p>
+<h3 id="akarn--4-number"><code>akar(n = 4): number</code></h3>
+<p>Mencari akar dari bilangan</p>
+<p><strong>Parameters</strong></p>
+<ul>
+<li><code>n</code>: <code>number</code>, default 4
+bilangan yang ingin dicari akarnya</li>
+</ul>
+<p><strong>Returns:</strong> <code>number</code>.</p>
+<h3 id="pi-number"><code>pi(): number</code></h3>
+<p>Mengembalikan nilai dari Pi, (3.14 &hellip;)</p>
+<p><strong>Returns:</strong> <code>number</code>.</p>
+<h3 id="jarakx-number--0-y-number--0-number"><code>jarak(x: number = 0, y: number = 0): number</code></h3>
+<p>Menghitung jarak dari titik (0, 0) ke suatu titik tertentu</p>
+<p><strong>Parameters</strong></p>
+<ul>
+<li><code>x</code>: <code>number</code>, default 0<br>
+posisi titik x</li>
+<li><code>y</code>: <code>number</code>, default 0<br>
+posisi titik x</li>
+</ul>
+<p><strong>Returns:</strong> <code>number</code>.</p>
+<h3 id="jaraksudutsudut1-number--0-sudut2-number-min-boolean--true"><code>jarakSudut(sudut1: number = 0, sudut2: number, min: boolean = true)</code></h3>
+<p>menghitung jarak antar dua sudut</p>
+<p><strong>Parameters</strong></p>
+<ul>
+<li><code>sudut1</code>: <code>number</code>, default 0
+sudut pertama</li>
+<li><code>sudut2</code>: <code>number</code>, default 0
+sudut kedua</li>
+<li><code>min</code>: <code>boolean</code>, default true
+apakah mencari jarak terdekat, atau jarak terjauh dari dua sudut</li>
+</ul>
+<p><strong>Returns:</strong> <code>number</code>.</p>
+<h3 id="sudutx-number-y-number"><code>sudut(x: number, y: number)</code></h3>
+<p>Menghitung sudut dari posisi x dan y terhadap posisi 0, 0</p>
+<p><strong>Parameters</strong></p>
+<ul>
+<li><code>x</code>: <code>number</code>
+posisi x</li>
+<li><code>y</code>: <code>number</code>
+posisi xy</li>
+</ul>
+<p><strong>Returns:</strong> <code>number</code>.</p>
+<h3 id="polarxpanjang--100-sudut--0"><code>polarX(panjang = 100, sudut = 0)</code></h3>
+<p>Posisi X dari koordinat polar.</p>
+<p><strong>Parameters</strong></p>
+<ul>
+<li><code>panjang</code>: <code>number</code>, default 100
+panjang radius</li>
+<li><code>sudut</code>: <code>number</code>, default 0
+sudut</li>
+</ul>
+<p><strong>Returns:</strong> <code>number</code>.</p>
+<h3 id="polarypanjang--100-sudut--0"><code>polarY(panjang = 100, sudut = 0)</code></h3>
+<p>Posisi Y dari koordinat polar</p>
+<p><strong>Parameters</strong></p>
+<ul>
+<li><code>panjang</code>: <code>number</code>, default 100
+panjang radius</li>
+<li><code>sudut</code>: <code>number</code>, default 0
+sudut</li>
+</ul>
+<p><strong>Returns:</strong> <code>number</code>.</p>
+<h3 id="absn-number-number"><code>abs(n: number): number</code></h3>
+<p>Menghasilkan nilai absolute dari suatu bilangan</p>
+<p><strong>Parameters</strong></p>
+<ul>
+<li><code>n</code>: <code>number</code>, default 0
+bilangan yang ingin dicari nilai absolutenya</li>
+</ul>
+<p><strong>Returns:</strong> <code>number</code>.</p>
+<h3 id="normalisasisudutsdt-number--0-number"><code>normalisasiSudut(sdt: number = 0): number</code></h3>
+<p>Menghasilkan sudut yang nilainya antara 0 - 360, dari sebuah sudut</p>
+<p><strong>Parameters</strong></p>
+<ul>
+<li><code>sdt</code>: <code>number</code>, default 0
+sudut yang ingin dicari nilai normalnya</li>
+</ul>
+<p><strong>Returns:</strong> <code>number</code>.</p>
+<h3 id="pembulatann-number-b-number--1-type-number--0-number"><code>pembulatan(n: number, b: number = 1, type: number = 0): number</code></h3>
+<p>Membulatkan bilangan</p>
+<p><strong>Parameters</strong></p>
+<ul>
+<li><code>n</code>: `number<br>
+nilai yang ingin dibulatkan</li>
+<li><code>b</code>: <code>number</code>, default 1<br>
+dasar pembulatan</li>
+<li><code>type</code>: <code>number</code>, default 0<br>
+type pembulatan: 0: terdekat, 1: pembulatan ke atas, 2: pembulatan ke bawah</li>
+</ul>
+
+
+	</div>
+</body>
+
+</html>

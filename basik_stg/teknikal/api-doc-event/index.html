@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en-us" dir="ltr">
+
+<head>
+	<meta charset="utf-8">
+<meta name="viewport" content="width=device-width">
+<title> | Basik</title>
+
+<link rel="stylesheet" href="../../css/main.fbb9baf7573768d711cfbf22e52241a77d5a0e41c56f8fcbb94cf174300c76e3.css">
+
+<script src="../../js/main.23cd0c7d837263b9eaeb96ee2d9ccfa2969daa3fa00fa1c1fe8701a9b87251a1.js"></script>
+
+</head>
+
+<body>
+	<div class="container">
+		
+<p><a href="../../">Beranda</a></p>
+<h1 id="event">Event</h1>
+<p>Basik memiliki cara untuk menghandle event yang disederhanakan.<br>
+Ketika sebuah event terjadi, maka Basik akan mencari deklarasi fungsi yang berhubungan dengan event tersebut, dan memanggilnya.</p>
+<p>Contoh:
+Ketika terjadi event mouse ditekan, maka Basik akan mencari deklarasi fungsi mouseDitekan. Bila tersedia, maka fungsi ini akan dipanggil secara otomatis.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="language-javascript" data-lang="javascript"><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">mulai</span>();
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">function</span> <span style="color:#a6e22e">mouseDitekan</span>() {
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">stempel</span>(<span style="color:#e6db74">&#34;roket&#34;</span>, <span style="color:#a6e22e">mouseX</span>(), <span style="color:#a6e22e">mouseY</span>());
+</span></span><span style="display:flex;"><span>}  
+</span></span><span style="display:flex;"><span>  
+</span></span></code></pre></div><p>Bila contoh diatas dijalankan, ketika user menekan tombol mouse maka gambar roket akan di gambar pada posisi dimana mouse berada.</p>
+<p>Berikut adalah daftar fungsi yang akan dipanggil secara otomatis dan event yang berkaitan dengan fungsi tersebut:</p>
+<ul>
+<li>mouseDitekan: ketika mouse mulai ditekan</li>
+<li>mouseDilepas: ketika mouse mulai dilepaskan</li>
+<li>mouseGerak: ketika mouse digerakkan</li>
+<li>mouseDitap: ketika mouse di tap</li>
+<li>mouseMulaiDrag: ketika mouse mulai di drag</li>
+<li>mouseSelesaiDrag: ketika mouse selesai di drag</li>
+<li>keyboardDitekan: ketika keyboard di tekan</li>
+<li>keyboardDilepas: ketika keyboard di lepas</li>
+<li>update: ketika aplikasi di update</li>
+</ul>
+<p>Data yang berhubungan dengan event dipanggil melalui fungsi terpisah. Contohnya: mouseX() yang menghasilkan posisi x dari mouse, dsb.</p>
+
+
+	</div>
+</body>
+
+</html>
