@@ -1,0 +1,8 @@
+.dialog-item {
+	cursor: pointer;
+	user-select: none;
+}
+
+.dialog-item.selected {
+	background-color: gray;
+}

@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en-us" dir="ltr">
+
+<head>
+	<meta charset="utf-8">
+<meta name="viewport" content="width=device-width">
+<title> | Basik</title>
+
+<link rel="stylesheet" href="../../css/main.fbb9baf7573768d711cfbf22e52241a77d5a0e41c56f8fcbb94cf174300c76e3.css">
+
+<script src="../../js/main.23cd0c7d837263b9eaeb96ee2d9ccfa2969daa3fa00fa1c1fe8701a9b87251a1.js"></script>
+
+</head>
+
+<body>
+	<div class="container">
+		
+<p><a href="../../">Beranda</a></p>
+<h1 id="-fungsi-update">📖 fungsi Update</h1>
+<p>Fungsi update adalah fungsi bawaan dari BASIK untuk menangani apa yang terjadi saat applikasi di update.
+Perhatikan contoh berikut:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="language-Javascript" data-lang="Javascript"><span style="display:flex;"><span><span style="color:#a6e22e">mulai</span>();
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">let</span> <span style="color:#a6e22e">astro</span> <span style="color:#f92672">=</span> <span style="color:#a6e22e">muatGambar</span>(<span style="color:#e6db74">&#39;astronot&#39;</span>);
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">posisiGambar</span>(<span style="color:#a6e22e">astro</span>, <span style="color:#ae81ff">400</span>, <span style="color:#ae81ff">300</span>);
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">function</span> <span style="color:#a6e22e">update</span>() {
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">bl</span>();
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">putarGambar</span>(<span style="color:#a6e22e">astro</span>, <span style="color:#ae81ff">5</span>);
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">stempel</span>(<span style="color:#a6e22e">astro</span>);
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p>Jalankan aplikasi ini maka akan terlihat di layar gambar astronot yang berputar tanpa henti.</p>
+<p>BASIK akan di update secara terus menerus, dan setiap kali update terjadi maka semua perintah yang ada di dalam fungsi <code>update()</code> akan terus dijalankan.</p>
+<p>Bila fungsi <code>update()</code> tidak ada, maka otomatis tidak akan ada yang dijalankan.</p>
+<p>Fungsi update() adalah fungsi yang sangat penting di dalam BASIK.</p>
+<p>Berikut ini adalah contoh animasi yang lain.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="language-Javascript" data-lang="Javascript"><span style="display:flex;"><span><span style="color:#a6e22e">mulai</span>();
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">let</span> <span style="color:#a6e22e">astro</span> <span style="color:#f92672">=</span> <span style="color:#a6e22e">muatGambar</span>(<span style="color:#e6db74">&#39;astronot&#39;</span>);
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">posisiGambar</span>(<span style="color:#a6e22e">astro</span>, <span style="color:#ae81ff">400</span>, <span style="color:#ae81ff">300</span>);
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">function</span> <span style="color:#a6e22e">update</span>() {
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">bl</span>();
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">geserGambar</span>(<span style="color:#a6e22e">astro</span>, <span style="color:#ae81ff">5</span>,<span style="color:#ae81ff">0</span>);
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">if</span> (<span style="color:#a6e22e">astro</span>.<span style="color:#a6e22e">x</span> <span style="color:#f92672">&gt;</span> <span style="color:#ae81ff">800</span>) {
+</span></span><span style="display:flex;"><span>		<span style="color:#a6e22e">astro</span>.<span style="color:#a6e22e">x</span> <span style="color:#f92672">=</span><span style="color:#ae81ff">0</span>;
+</span></span><span style="display:flex;"><span>	}
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">stempel</span>(<span style="color:#a6e22e">astro</span>);
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p>Jalankan applikasinya, maka akan terlihat gambar astronot yang bergerak ke kanan dan akan muncul kembali di sebelah kiri setelah astronot melewati batas layar.</p>
+
+
+	</div>
+</body>
+
+</html>
