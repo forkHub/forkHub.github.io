@@ -15,6 +15,35 @@
 <body>
 	<div class="container">
 		
+<p><a href="../../">Beranda</a></p>
+<h1 id="-interaksi">📖 Interaksi</h1>
+<p>Pada tulisan sebelumnya kita sudah belajar cara memuat gambar dan menyetempelkannya ke layar.</p>
+<p>Di tulisan kali ini kita akan membahas tentang interaksi.</p>
+<p>BASIK mendukung banyak sekali interaksi, salah satunya adalah interaksi saat mouse digerakkan.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="language-javascript" data-lang="javascript"><span style="display:flex;"><span><span style="color:#a6e22e">mulai</span>();
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">let</span> <span style="color:#a6e22e">roket</span> <span style="color:#f92672">=</span> <span style="color:#a6e22e">muatGambar</span>(<span style="color:#e6db74">&#34;roket&#34;</span>);
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">function</span> <span style="color:#a6e22e">mouseGerak</span>() {
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">stempel</span>(<span style="color:#a6e22e">roket</span>, <span style="color:#a6e22e">mouseX</span>(), <span style="color:#a6e22e">mouseY</span>());
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p>Bila kode di atas dijalankan, dan kita menggerakkan mouse, maka akan terlihat gambar roket di layar yang terus di gambar mengikuti posisi mouse.</p>
+<p>Fungsi <code>mouseGerak()</code> adalah fungsi yang menangani saat mouse digerakkan. Di dalam fungsi ini kita memiliki satu perintah, yaitu perintah <code>stempel()</code>: yang akan menyetempel gambar roket.</p>
+<p>Perintah <code>mouseX()</code> dan <code>mouseY()</code> adalah perintah yang akan mengembalikan posisi x dan y dari mouse.</p>
+<p>Baris perintah <code>stempel(roket, mouseX(), mouseY())</code> artinya kita memerintahkan komputer untuk menyetempel gambar roket ditempat dimana mouse berada.</p>
+<p>Perhatikan contoh berikut:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="language-javascript" data-lang="javascript"><span style="display:flex;"><span><span style="color:#a6e22e">mulai</span>();
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">let</span> <span style="color:#a6e22e">roket</span> <span style="color:#f92672">=</span> <span style="color:#a6e22e">muatGambar</span>(<span style="color:#e6db74">&#34;roket&#34;</span>);
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">function</span> <span style="color:#a6e22e">mouseGerak</span>() {
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">bl</span>();
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">stempel</span>(<span style="color:#a6e22e">roket</span>, <span style="color:#a6e22e">mouseX</span>(), <span style="color:#a6e22e">mouseY</span>());
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p>Jalankan lagi perintahnya, dan perhatikan hasilnya. Saat ini layar tampak lebih bersih, dan hanya tampak satu gambar roket saja.</p>
+<p>Kenapa begitu?  karena sekarang ada perintah <code>bl()</code> yang berfungsi untuk membersihkan layar.</p>
+<p>Setiap kali mouse digerakkan, maka layar akan dibersihkan terlebih dahulu kemudian gambar roket akan distempel di tempat dimana mouse berada.</p>
+<p><strong>Latihan:</strong><br>
+Coba ganti fungsi <code>mouseGerak()</code> dengan fungsi <code>mouseDitekan()</code>. Jalankan kodenya kemudian coba tekan mouse di sembarang tempat, perhatikan apa yang terjadi.
+Apa bedanya bila ada perintah <code>bl()</code> dan tidak ada perintah tersebut.</p>
 
 
 	</div>

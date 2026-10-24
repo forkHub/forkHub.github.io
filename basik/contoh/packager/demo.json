@@ -1,47 +1,47 @@
 demoData = [
   {
-    "namaFile": "bola_02.js",
-    "data": "mulai();\r\n\r\nlet bola = muatGambar(\"bola\");\r\npusatGambar(bola, 32, 32);\r\nlet vx = 3;\r\nlet vy = 0;\r\nlet grav = 0.1;\r\n\r\nfunction update() {\r\n  \tvy += grav;\r\n\tgeserGambar(bola, vx, vy);\r\n\t\r\n\tif (bola.x > 768) {\r\n\t\tbola.x = 768;\r\n\t\tvx = -3;\r\n\t}\r\n\t\r\n\tif (bola.x < 32) {\r\n\t\tbola.x = 32;\r\n\t\tvx = 3;\r\n\t}\r\n\t\r\n\tif (bola.y < 32) {\r\n\t\tbola.y = 32;\r\n\t\tvy = 4;\r\n\t}\r\n\t\r\n\tif(bola.y > 568) {\r\n\t\tbola.y = 568;\r\n\t\tvy = -10;\r\n\t}\r\n\t\r\n\tbl();\r\n\tstempel(bola);\r\n}\r\n"
+    "namaFile": "bola_01.js",
+    "data": "mulai();\r\n\r\nlet bola = muatGambar(\"bola\");\r\npusatGambar(bola, 32, 32);\r\nlet vx = 3;\r\nlet vy = 4;\r\n\r\nfunction update() {\r\n\tgeserGambar(bola, vx, vy);\r\n\t\r\n\tif (bola.x > 768) {\r\n\t\tbola.x = 768;\r\n\t\tvx = -3;\r\n\t}\r\n\t\r\n\tif (bola.x < 32) {\r\n\t\tbola.x = 32;\r\n\t\tvx = 3;\r\n\t}\r\n\t\r\n\tif (bola.y < 32) {\r\n\t\tbola.y = 32;\r\n\t\tvy = 4;\r\n\t}\r\n\t\r\n\tif(bola.y > 568) {\r\n\t\tbola.y = 568;\r\n\t\tvy = -4;\r\n\t}\r\n\t\r\n\tbl();\r\n\tstempel(bola);\r\n}\r\n"
   },
   {
-    "namaFile": "dasar_animasi.js",
-    "data": "mulai();\r\n\r\nlet asap = muatAnimasi(\"asap\", 100, 300);\r\nukuranGambar(asap, 200, 600);\r\nasap.x = 0;\r\n\r\nlet asap2 = muatAnimasi(\"asap2\", 32, 100);\r\nukuranGambar(asap2, 200, 600);\r\nasap2.x = 400;\r\n\r\nlet frame = 0;\r\n\r\nfunction update() {\r\n\tbl();\r\n  \r\n\tframe++;\r\n\tif (frame >= 8) {\r\n\t\tframe = 0;\r\n\t}\r\n\t\r\n\tasap.frame = frame;\r\n\tasap2.frame = frame;\r\n\t\r\n\tstempel(asap);\r\n\tstempel(asap2);\r\n}\r\n"
+    "namaFile": "bola_02.js",
+    "data": "mulai();\r\n\r\nlet bola = muatGambar(\"bola\");\r\npusatGambar(bola, 32, 32);\r\nlet vx = 3;\r\nlet vy = 0;\r\nlet grav = 0.1;\r\n\r\nfunction update() {\r\n  \tvy += grav;\r\n\tgeserGambar(bola, vx, vy);\r\n\t\r\n\tif (bola.x > 768) {\r\n\t\tbola.x = 768;\r\n\t\tvx = -3;\r\n\t}\r\n\t\r\n\tif (bola.x < 32) {\r\n\t\tbola.x = 32;\r\n\t\tvx = 3;\r\n\t}\r\n\t\r\n\tif (bola.y < 32) {\r\n\t\tbola.y = 32;\r\n\t\tvy = 4;\r\n\t}\r\n\t\r\n\tif(bola.y > 568) {\r\n\t\tbola.y = 568;\r\n\t\tvy = -10;\r\n\t}\r\n\t\r\n\tbl();\r\n\tstempel(bola);\r\n}\r\n"
   },
   {
     "namaFile": "dasar_animasi_ast.js",
     "data": "mulai();\r\nlet ast = muatAnimasi(\"astronot_spr\", 74, 134);\r\nukuranGambar(ast, 400, 600);\r\nlet ctr = 0;\r\n\r\nfunction update() {\r\n  ctr++;\r\n  if (ctr > 20) {\r\n    ctr = 0;\r\n    ast.frame++;\r\n    if (ast.frame > 3) {\r\n      ast.frame = 0;\r\n    }\r\n  }\r\n  \r\n  bl();\r\n  stempel(ast);\r\n}\r\n"
   },
   {
-    "namaFile": "bola_01.js",
-    "data": "mulai();\r\n\r\nlet bola = muatGambar(\"bola\");\r\npusatGambar(bola, 32, 32);\r\nlet vx = 3;\r\nlet vy = 4;\r\n\r\nfunction update() {\r\n\tgeserGambar(bola, vx, vy);\r\n\t\r\n\tif (bola.x > 768) {\r\n\t\tbola.x = 768;\r\n\t\tvx = -3;\r\n\t}\r\n\t\r\n\tif (bola.x < 32) {\r\n\t\tbola.x = 32;\r\n\t\tvx = 3;\r\n\t}\r\n\t\r\n\tif (bola.y < 32) {\r\n\t\tbola.y = 32;\r\n\t\tvy = 4;\r\n\t}\r\n\t\r\n\tif(bola.y > 568) {\r\n\t\tbola.y = 568;\r\n\t\tvy = -4;\r\n\t}\r\n\t\r\n\tbl();\r\n\tstempel(bola);\r\n}\r\n"
+    "namaFile": "dasar_animasi.js",
+    "data": "mulai();\r\n\r\nlet asap = muatAnimasi(\"asap\", 100, 300);\r\nukuranGambar(asap, 200, 600);\r\nasap.x = 0;\r\n\r\nlet asap2 = muatAnimasi(\"asap2\", 32, 100);\r\nukuranGambar(asap2, 200, 600);\r\nasap2.x = 400;\r\n\r\nlet frame = 0;\r\n\r\nfunction update() {\r\n\tbl();\r\n  \r\n\tframe++;\r\n\tif (frame >= 8) {\r\n\t\tframe = 0;\r\n\t}\r\n\t\r\n\tasap.frame = frame;\r\n\tasap2.frame = frame;\r\n\t\r\n\tstempel(asap);\r\n\tstempel(asap2);\r\n}\r\n"
   },
   {
     "namaFile": "dasar_drag_rotasi.js",
     "data": "mulai();\r\nlet roket = muatGambar(\"roket\");\r\nroket.tipeDrag = 2;\r\nposisiGambar(roket, 260, 220);\r\npusatGambar(roket, 32, 46);\r\n\r\n//game loop\r\nfunction update() {\r\n\tbl();\r\n\tstempel(roket);\r\n\ttulis(\"Putar roket dengan mouse\", 10, 20);\r\n}"
   },
   {
-    "namaFile": "dasar_drag.js",
-    "data": "mulai();\r\nlet roket = muatGambar(\"roket\");\r\nposisiGambar(roket, 400, 300);\r\nroket.tipeDrag = 1;\r\n\r\nfunction update() {\r\n\tbl();\r\n\tstempel(roket);\r\n\ttulis(\"Geser roket dengan mouse\", 10, 20);\r\n}\r\n"
-  },
-  {
     "namaFile": "dasar_keyboard.js",
     "data": "mulai();\r\nlet jmlTekan = 0;\r\nlet jmlLepas = 0;\r\n\r\nfunction keyboardDitekan() {\r\n\tjmlTekan++;\r\n}\r\n\r\nfunction keyboardDilepas() {\r\n\tjmlLepas++;\r\n}\r\n\r\nfunction update() {\r\n\tbl();\r\n\ttulis(\"Tekan tombol keyboard mana saja\", 10, 20);\r\n\ttulis(\"\");\r\n\ttulis(\"tombol sedang ditahan: \" + tombolDitahan());\r\n\ttulis(\"tombol terakhir: \" + tombolEvent());\r\n\ttulis(\"jumlah tombol dipencet: \" + jmlTekan);\r\n\ttulis(\"jumlah tombol dilepas: \" + jmlLepas);\r\n}\r\n"
-  },
-  {
-    "namaFile": "dasar_mouse.js",
-    "data": "mulai();\r\nlet jmlKlik = 0;\r\n\r\nfunction mouseKlik() {\r\n\tjmlKlik++;\r\n}\r\n\r\nfunction update() {\r\n\tbl();\r\n\ttulis(\"Pencet Mouse dan gerakkan: \", 10, 20);\r\n\ttulis(\"\");\r\n\ttulis(\"ditahan: \" + mouseDitahan());\r\n\ttulis(\"jml Klik: \" + jmlKlik);\r\n\ttulis(\"x: \" + mouseX());\r\n\ttulis(\"y: \" + mouseY());\r\n\ttulis(\"drag awal x: \" + mouseDragAwalX());\r\n\ttulis(\"drag awal y: \" + mouseDragAwalY());\r\n\ttulis(\"drag x: \" + mouseDragX());\r\n\ttulis(\"drag y: \" + mouseDragY());\r\n\ttulis(\"sedang didrag: \" + mouseDidrag());\r\n}\r\n"
   },
   {
     "namaFile": "dasar_drag_remote.js",
     "data": "mulai();\r\nlet roket = muatGambar(\"roket\");\r\nposisiGambar(roket, 400, 300);\r\nroket.tipeDrag = 3;\r\n\r\nfunction update() {\r\n\tbl();\r\n\tstempel(roket);\r\n\ttulis(\"Gerakkan roket dengan cara menggeser mouse di mana saja\", 10, 20);\r\n}\r\n"
   },
   {
-    "namaFile": "dasar_muat_image.js",
-    "data": "mulai();\r\n\r\nlet bg = muatGambar(\"bg_bintang\");\r\nlet bintang = muatGambar(\"bintang\");\r\n\r\nlet roket = muatGambar(\"roket\");\r\nukuranGambar(roket, 100, 200);\r\nroket.rotasi = 45;\r\n\r\nfunction update() {\r\n\tstempel(bg);\r\n\tstempel(bintang, 100, 100);\t\r\n\tstempel(bintang, 400, 300);\t\r\n\tstempel(bintang, 600, 250);\r\n\tstempel(bintang, 600, 400);\r\n\tstempel(roket, 160, 120);\r\n}\r\n"
+    "namaFile": "dasar_drag.js",
+    "data": "mulai();\r\nlet roket = muatGambar(\"roket\");\r\nposisiGambar(roket, 400, 300);\r\nroket.tipeDrag = 1;\r\n\r\nfunction update() {\r\n\tbl();\r\n\tstempel(roket);\r\n\ttulis(\"Geser roket dengan mouse\", 10, 20);\r\n}\r\n"
+  },
+  {
+    "namaFile": "dasar_mouse.js",
+    "data": "mulai();\r\nlet jmlKlik = 0;\r\n\r\nfunction mouseKlik() {\r\n\tjmlKlik++;\r\n}\r\n\r\nfunction update() {\r\n\tbl();\r\n\ttulis(\"Pencet Mouse dan gerakkan: \", 10, 20);\r\n\ttulis(\"\");\r\n\ttulis(\"ditahan: \" + mouseDitahan());\r\n\ttulis(\"jml Klik: \" + jmlKlik);\r\n\ttulis(\"x: \" + mouseX());\r\n\ttulis(\"y: \" + mouseY());\r\n\ttulis(\"drag awal x: \" + mouseDragAwalX());\r\n\ttulis(\"drag awal y: \" + mouseDragAwalY());\r\n\ttulis(\"drag x: \" + mouseDragX());\r\n\ttulis(\"drag y: \" + mouseDragY());\r\n\ttulis(\"sedang didrag: \" + mouseDidrag());\r\n}\r\n"
   },
   {
     "namaFile": "dasar_rotate_remote.js",
     "data": "mulai();\r\nlet roket = muatGambar(\"roket\");\r\nroket.tipeDrag = 4;\r\nposisiGambar(roket, 320, 240);\r\npusatGambar(roket, 16, 16);\r\n\r\nfunction update() {\r\n\tbl();\r\n\tstempel(roket);\r\n\ttulis(\"Drag dimana saja untuk memutar roket\", 10, 20);\r\n}\r\n"
+  },
+  {
+    "namaFile": "dasar_muat_image.js",
+    "data": "mulai();\r\n\r\nlet bg = muatGambar(\"bg_bintang\");\r\nlet bintang = muatGambar(\"bintang\");\r\n\r\nlet roket = muatGambar(\"roket\");\r\nukuranGambar(roket, 100, 200);\r\nroket.rotasi = 45;\r\n\r\nfunction update() {\r\n\tstempel(bg);\r\n\tstempel(bintang, 100, 100);\t\r\n\tstempel(bintang, 400, 300);\t\r\n\tstempel(bintang, 600, 250);\r\n\tstempel(bintang, 600, 400);\r\n\tstempel(roket, 160, 120);\r\n}\r\n"
   },
   {
     "namaFile": "dasar_sound.js",
