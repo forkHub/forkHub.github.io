@@ -26,4 +26,10 @@ a {
   color: #00e;
   text-decoration: none;
 }
+.container {
+  padding: 16px;
+}
+pre {
+  padding: 16px;
+}
 /*# sourceMappingURL=main.css.map */
