@@ -17,25 +17,24 @@
 		
 <p><a href="../../">Beranda</a></p>
 <h1 id="-memuat-gambar">📖 Memuat Gambar</h1>
-<p>Pada tulisan sebelumnya kita sudah belajar cara menempel gambar ke layar.</p>
-<p>Pada tulisan kali ini kia akan membahas bagaimana caranya untuk memuat gambar terlebih dahulu sebelum menempelkan ke layar.</p>
+<p>Pada tulisan sebelumnya kita sudah belajar cara menyetempel gambar ke layar.</p>
+<p>Pada tulisan kali ini kia akan membahas bagaimana caranya untuk memuat gambar terlebih dahulu sebelum menyetempelnya ke layar.</p>
 <p>Perhatikan kode berikut:</p>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="language-javascript" data-lang="javascript"><span style="display:flex;"><span><span style="color:#a6e22e">mulai</span>();
 </span></span><span style="display:flex;"><span><span style="color:#66d9ef">let</span> <span style="color:#a6e22e">roket</span> <span style="color:#f92672">=</span> <span style="color:#a6e22e">muatGambar</span>(<span style="color:#e6db74">&#34;roket&#34;</span>);
 </span></span><span style="display:flex;"><span><span style="color:#a6e22e">stempel</span>(<span style="color:#a6e22e">roket</span>);
-</span></span></code></pre></div><p><code>muatGambar()</code> adalah perintah untuk memuat gambar, di contoh ini kita memuat gambar dengan nama &ldquo;roket&rdquo;.
-Kita menyimpannya ke variable roket, kemudian kita menggunakan variable ini untuk dipakai sebagai parameter perintah <code>stempel()</code>.</p>
-<p>Disini kita tidak menggunakan parameter &ldquo;string&rdquo;, melainkan kita menggunakan parameter berupa variable.</p>
-<p>Apa keunggulan dari metode ini, dibanding metode sebelumnya?</p>
-<p>Dengan memuat gambar terlebih dahulu dan menyimpannya ke variable maka kita akan mendapatkan banyak manfaat, antara lain adalah kita bisa memutar gambar, dan mengubah ukuran gambar.</p>
-<p>Sebelumnya kita hanya bisa menentukan posisi gambar.</p>
+</span></span></code></pre></div><p><code>muatGambar()</code> adalah perintah untuk memuat gambar, di contoh ini kita memuat gambar &ldquo;roket&rdquo;,
+menyimpannya ke variable roket, kemudian menyetempelkan ke layar dengan perintah <code>stempel()</code>.</p>
+<p>Perhatikan disini kita menggunakan variable <code>roket</code> sebagai parameter perintah <code>stempel()</code> dan tidak menggunakan nama file: &ldquo;stempel&rdquo;;</p>
+<p>Dengan memuat gambar terlebih dahulu dan menyimpannya ke variable, kita akan mendapatkan banyak manfaat, antara lain: kita bisa memutar gambar, mengubah ukuran gambar, dan masih banyak fungsi yang lain lagi.</p>
+<p>Perhatikan kode berikut:</p>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="language-javascript" data-lang="javascript"><span style="display:flex;"><span><span style="color:#a6e22e">mulai</span>();
 </span></span><span style="display:flex;"><span><span style="color:#66d9ef">let</span> <span style="color:#a6e22e">roket</span> <span style="color:#f92672">=</span> <span style="color:#a6e22e">muatGambar</span>(<span style="color:#e6db74">&#34;roket&#34;</span>);
 </span></span><span style="display:flex;"><span><span style="color:#a6e22e">putarGambar</span>(<span style="color:#a6e22e">roket</span>, <span style="color:#ae81ff">45</span>);
 </span></span><span style="display:flex;"><span><span style="color:#a6e22e">ukuranGambar</span>(<span style="color:#a6e22e">roket</span>, <span style="color:#ae81ff">200</span>, <span style="color:#ae81ff">300</span>);
 </span></span><span style="display:flex;"><span><span style="color:#a6e22e">stempel</span>(<span style="color:#a6e22e">roket</span>, <span style="color:#ae81ff">220</span>, <span style="color:#ae81ff">120</span>);
-</span></span></code></pre></div><p>Jalankan kode di atas, maka akan terlihat gambar roket dengan ukuran yang lebih besar dan sudut yang berbeda.</p>
-<p>Memuat gambar terlebih dahulu memiliki banyak kelebihan lain, karena sebagian besar perintah BASIK akan membutuhkan gambar untuk dimuat terlebih dahulu.</p>
+</span></span></code></pre></div><p>Bila kode di atas dijalankan, akan terlihat gambar roket dengan ukuran yang lebih besar dengan sudut yang berbeda.</p>
+<p>Berikut kode dari latihan sebelumnya yang diganti dengan memuat gambar terlebih dahulu sebelum di stempel ke layar.</p>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="language-javascript" data-lang="javascript"><span style="display:flex;"><span><span style="color:#a6e22e">mulai</span>();
 </span></span><span style="display:flex;"><span><span style="color:#66d9ef">let</span> <span style="color:#a6e22e">roket</span> <span style="color:#f92672">=</span> <span style="color:#a6e22e">muatGambar</span>(<span style="color:#e6db74">&#34;roket&#34;</span>);
 </span></span><span style="display:flex;"><span><span style="color:#66d9ef">let</span> <span style="color:#a6e22e">bg</span> <span style="color:#f92672">=</span> <span style="color:#a6e22e">muatGambar</span>(<span style="color:#e6db74">&#34;bg_bintang&#34;</span>);

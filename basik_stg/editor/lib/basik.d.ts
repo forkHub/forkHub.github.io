@@ -548,6 +548,7 @@ declare function polarY(panjang?: number, sudut?: number): number;
 declare function abs(n: number): number;
 declare function normalisasiSudut(sdt?: number): number;
 declare function pembulatan(n: number, b?: number, type?: number): number;
+declare function acak(a?: number, b?: number): number;
 declare function muatGambar(url: string): Basik.GbrObj;
 declare function muatAnimasi(url: string, fw?: number, fh?: number): Basik.GbrObj;
 declare function stempel(img: Basik.GbrObj | string, x?: number, y?: number): void;

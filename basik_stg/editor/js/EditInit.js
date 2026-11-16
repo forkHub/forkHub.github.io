@@ -36,6 +36,35 @@ window.onload = () => {
     // JSHINT.warnings = jshintWarnings;
     // JSHINT.info = jsHintInfo;
 };
+//================================================================================
+function tunggu(getValue_1) {
+    return __awaiter(this, arguments, void 0, function* (getValue, options = {}) {
+        function sleep(durationMs) {
+            return new Promise(function (resolve) {
+                setTimeout(function () {
+                    resolve();
+                }, durationMs);
+            });
+        }
+        const interval = options.interval !== undefined ? options.interval : 100;
+        const timeout = options.timeout !== undefined ? options.timeout : 5000;
+        if (typeof getValue !== "function") {
+            throw new TypeError("getValue harus berupa function");
+        }
+        const startTime = Date.now();
+        while (true) {
+            const currentValue = getValue();
+            if (currentValue) {
+                return true;
+            }
+            const elapsedTime = Date.now() - startTime;
+            if (elapsedTime > timeout) {
+                throw new Error("Timeout: nilai tidak berubah menjadi true dalam " + timeout + " ms");
+            }
+            yield sleep(interval);
+        }
+    });
+}
 function loadScript(src) {
     const script = document.createElement('script');
     script.src = src;
