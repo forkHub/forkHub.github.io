@@ -2355,6 +2355,11 @@ function pembulatan(n, b = 1, type = 0) {
     }
     return Math.round(n / b) * b;
 }
+function acak(a = 0, b = 100) {
+    const min = Math.ceil(Math.min(a, b));
+    const max = Math.floor(Math.max(a, b));
+    return Math.floor(Math.random() * (max - min + 1)) + min;
+}
 function muatGambar(url) {
     return Ip.Muat(url);
 }
