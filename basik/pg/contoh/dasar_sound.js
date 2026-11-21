@@ -3,7 +3,6 @@ let jmlSoundBerakhir = 0;
 let sound = muatSuara("sound.mp3");
 
 function mouseKlik() {
-	console.log('mainkan suara');
 	mainkanSuara(sound);
 }
 
@@ -12,9 +11,8 @@ function suaraSelesai() {
 }
 
 function update() {
-	bersihkanLayar();
-	posisiTeks(0, 20);
-	tulis("klik untuk mendengarkan suara");
+	bl();	
+	tulis("klik untuk mendengarkan suara", 10, 20);
 	tulis("");
 	tulis("jml sound selesai " + jmlSoundBerakhir);
 }

@@ -1,16 +1,13 @@
 mulai();
 
-let brush = muatGambar("brush.png");
-brush.handleX = 8;
-brush.handleY = 8;
+let brush = muatGambar("brush");
+pusatGambar(brush, 8, 8);
 
-posisiTeks(10, 20);
-tulis("Drag pelan-pelan untuk menggambar");
+tulis("Drag pelan-pelan untuk menggambar", 10, 20);
 
 function update() {
 	if (mouseDitahan()) {
-		brush.x = mouseX();
-		brush.y = mouseY();
+		posisiGambar(brush, mouseX(), mouseY());
 		stempel(brush);
 	}
 }

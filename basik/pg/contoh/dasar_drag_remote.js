@@ -1,16 +1,10 @@
 mulai();
 let roket = muatGambar("roket");
-roket.x = 400;
-roket.y = 300;
+posisiGambar(roket, 400, 300);
 roket.tipeDrag = 3;
 
 function update() {
-	bersihkanLayar();
+	bl();
 	stempel(roket);
-	debugMouse();
-}
-
-function debugMouse() {
-	posisiTeks(10, 20);
-	tulis("Gerakkan roket dengan cara menggeser mouse di mana saja");
+	tulis("Gerakkan roket dengan cara menggeser mouse di mana saja", 10, 20);
 }

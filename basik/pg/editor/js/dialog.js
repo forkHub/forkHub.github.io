@@ -3,6 +3,7 @@ function dialogDaftarFile(onConfirm, onCancel) {
     let selectedItem = null;
     let dialog;
     let list;
+    let mode = 'file';
     function createDialogEl(list) {
         // Create dialog element
         const dialog = document.createElement('dialog');
@@ -41,6 +42,18 @@ function dialogDaftarFile(onConfirm, onCancel) {
             // Assemble dialog
             return buttonContainer;
         }
+        //tipe cont
+        html("div", dialog, (el) => {
+            el.style.display = 'none'; //sementara ditutup
+            el.appendChild(tombol("file", () => {
+                //TODO:
+                mode == 'file';
+            }));
+            el.appendChild(tombol("demo", () => {
+                //TODO:
+                mode == 'demo';
+            }));
+        });
         dialog.appendChild(list);
         dialog.appendChild(document.createElement("hr"));
         dialog.appendChild(buatTombolCont());
@@ -53,25 +66,59 @@ function dialogDaftarFile(onConfirm, onCancel) {
     }
     function refresh() {
         list.innerHTML = '';
-        if (fileList.length == 0) {
-            let p = document.createElement('p');
-            p.innerText = 'Belum ada file';
-            list.appendChild(p);
-            return;
+        mode == 'file' ? fileMode() : demoMode();
+        function demoMode() {
+            if (!demoData) {
+                console.warn("demo belum ke muat");
+                return;
+            }
+            renderItem(demoData);
+            //TODO:
         }
-        fileList.forEach(item => {
-            const li = document.createElement('li');
-            li.className = 'dialog-item pd';
-            li.textContent = item.namaFile || "---";
-            li.addEventListener('click', () => {
-                list.querySelectorAll('.dialog-item').forEach(el => {
-                    el.classList.remove('selected');
+        function fileMode() {
+            renderItem(fileList);
+            // if (fileList.length == 0) {
+            // 	let p = document.createElement('p');
+            // 	p.innerText = 'Belum ada file';
+            // 	list.appendChild(p);
+            // 	return;
+            // }
+            // fileList.forEach(item => {
+            // 	const li = document.createElement('li');
+            // 	li.className = 'dialog-item pd';
+            // 	li.textContent = item.namaFile || "---";
+            // 	li.addEventListener('click', () => {
+            // 		list.querySelectorAll('.dialog-item').forEach(el => {
+            // 			el.classList.remove('selected');
+            // 		});
+            // 		li.classList.add('selected');
+            // 		selectedItem = item;
+            // 	});
+            // 	list.appendChild(li);
+            // });
+        }
+        function renderItem(fileList) {
+            list.innerHTML = '';
+            if (!fileList || fileList.length == 0) {
+                let p = document.createElement('p');
+                p.innerText = 'Belum ada data';
+                list.appendChild(p);
+                return;
+            }
+            fileList.forEach(item => {
+                const li = document.createElement('li');
+                li.className = 'dialog-item pd';
+                li.textContent = item.namaFile || "---";
+                li.addEventListener('click', () => {
+                    list.querySelectorAll('.dialog-item').forEach(el => {
+                        el.classList.remove('selected');
+                    });
+                    li.classList.add('selected');
+                    selectedItem = item;
                 });
-                li.classList.add('selected');
-                selectedItem = item;
+                list.appendChild(li);
             });
-            list.appendChild(li);
-        });
+        }
     }
     function hapusKlik() {
         if (!selectedItem) {
@@ -79,21 +126,26 @@ function dialogDaftarFile(onConfirm, onCancel) {
             return;
         }
         let konfirm = confirm("Apakah Anda yakin");
-        if (konfirm) {
-            for (let i = fileList.length - 1; i >= 0; i--) {
-                if (fileList[i].namaFile == selectedItem.namaFile) {
-                    console.log("hapus " + i);
-                    console.log(fileList[i].namaFile);
-                    console.log(selectedItem.namaFile);
-                    console.log(fileList);
-                    fileList.splice(i, 1);
-                    console.log(fileList);
-                    refresh();
+        if (mode == 'file') {
+            if (konfirm) {
+                for (let i = fileList.length - 1; i >= 0; i--) {
+                    if (fileList[i].namaFile == selectedItem.namaFile) {
+                        console.log("hapus " + i);
+                        console.log(fileList[i].namaFile);
+                        console.log(selectedItem.namaFile);
+                        console.log(fileList);
+                        fileList.splice(i, 1);
+                        console.log(fileList);
+                        refresh();
+                    }
                 }
             }
+            //simpan
+            window.localStorage.setItem(storageNama, JSON.stringify(fileList));
         }
-        //simpan
-        window.localStorage.setItem(storageNama, JSON.stringify(fileList));
+        else {
+            //TODO:
+        }
     }
     function confirmKlik() {
         onConfirm(selectedItem);

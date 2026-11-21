@@ -1,26 +1,21 @@
 mulai();
 let box = muatGambar("kotak.png");
 box.panjang = 75;
-box.x = 100;
-box.y = 150;
 box.pusatY = 16;
 
 let box2 = muatGambar("kotak.png");
 box2.panjang = 75;
-box2.x = 200;
-box2.y = 150;
 box2.pusatY = 16;
 
 function update() {
-	box.rotasi += 5;
-	box2.rotasi += 2;
-	bersihkanLayar();
+	putarGambar(box, 5);
+	putarGambar(box2, 2);
+	bl();
 
-	stempel(box);
-	stempel(box2);
+	stempel(box, 100, 150);
+	stempel(box2, 200, 150);
 
-	let col = gambarTabrakan(box, box2);
+	let status = gambarTabrakan(box, box2);
 
-	posisiTeks(0, 20);
-	tulis("Status Tabrakan: " + col);
+	tulis("Status Tabrakan: " + status, 0, 20);
 }

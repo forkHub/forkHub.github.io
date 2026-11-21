@@ -6,10 +6,8 @@ function mouseKlik() {
 }
 
 function update() {
-	//clear screen
-	bersihkanLayar();
-	posisiTeks(10, 20);
-	tulis("Pencet Mouse dan gerakkan: ");
+	bl();
+	tulis("Pencet Mouse dan gerakkan: ", 10, 20);
 	tulis("");
 	tulis("ditahan: " + mouseDitahan());
 	tulis("jml Klik: " + jmlKlik);

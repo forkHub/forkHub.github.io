@@ -1,19 +1,17 @@
 mulai();
 
-let asap = muatAnimasi("asap.png", 100, 300);
-asap.lebar=600;
-asap.panjang=200;
+let asap = muatAnimasi("asap", 100, 300);
+ukuranGambar(asap, 200, 600);
 asap.x = 0;
 
-let asap2 = muatAnimasi("asap2.png", 32, 100);
-asap2.lebar=600;
-asap2.panjang=200;
+let asap2 = muatAnimasi("asap2", 32, 100);
+ukuranGambar(asap2, 200, 600);
 asap2.x = 400;
 
 let frame = 0;
 
 function update() {
-	bersihkanLayar();
+	bl();
   
 	frame++;
 	if (frame >= 8) {

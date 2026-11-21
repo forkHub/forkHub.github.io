@@ -78,7 +78,7 @@ function update() {
 		if (checkUbin())
 			char.x = ubinTertabrak.x + 32;
 	}
-	bersihkanLayar();
+	bl();
 	ubinAr.forEach((tile) => {
 		stempel(tile);
 	});

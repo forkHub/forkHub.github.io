@@ -1,14 +1,11 @@
 mulai();
 let roket = muatGambar("roket");
 roket.tipeDrag = 4;
-roket.x = 320;
-roket.y = 240;
-roket.pusatX = 16;
-roket.pusatY = 16;
+posisiGambar(roket, 320, 240);
+pusatGambar(roket, 16, 16);
 
 function update() {
-	bersihkanLayar();
+	bl();
 	stempel(roket);
-	posisiTeks(0, 20);
-	tulis("Drag dimana saja untuk memutar roket");
+	tulis("Drag dimana saja untuk memutar roket", 10, 20);
 }

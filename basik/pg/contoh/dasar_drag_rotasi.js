@@ -1,15 +1,12 @@
 mulai();
 let roket = muatGambar("roket");
 roket.tipeDrag = 2;
-roket.x = 260;
-roket.y = 220;
-roket.pusatX = 32;
-roket.pusatY = 46;
+posisiGambar(roket, 260, 220);
+pusatGambar(roket, 32, 46);
 
 //game loop
 function update() {
-	bersihkanLayar();
+	bl();
 	stempel(roket);
-	posisiTeks(10, 20);
-	tulis("Putar roket dengan mouse");
+	tulis("Putar roket dengan mouse", 10, 20);
 }

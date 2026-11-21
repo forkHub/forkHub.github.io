@@ -1,10 +1,7 @@
 mulai();
-let ast = muatAnimasi("astronot_spr.png", 74, 134);
-ast.lebar=600;
-ast.panjang=400;
-stempel(ast);
+let ast = muatAnimasi("astronot_spr", 74, 134);
+ukuranGambar(ast, 400, 600);
 let ctr = 0;
-console.log(ast);
 
 function update() {
   ctr++;
@@ -16,6 +13,6 @@ function update() {
     }
   }
   
-  bersihkanLayar();
+  bl();
   stempel(ast);
 }

@@ -348,39 +348,11 @@ var Basik;
             document.getElementById("customAlertMessage").innerHTML = msg;
             overlay.style.display = "flex";
         }
-        static get merah() {
-            return Basik.G._merah;
-        }
-        static set merah(value) {
-            Basik.G._merah = value;
-        }
-        static get hijau() {
-            return Basik.G._green;
-        }
-        static set hijau(value) {
-            Basik.G._green = value;
-        }
-        static get biru() {
-            return Basik.G._blue;
-        }
-        static set biru(value) {
-            Basik.G._blue = value;
-        }
-        static get alpha() {
-            return Basik.G._transparan;
-        }
-        static set alpha(value) {
-            Basik.G._transparan = value;
-        }
     }
     Graphic._autoScale = true;
     Graphic._lastX = 0;
     Graphic._isUpdating = false;
     Graphic._lastY = 0;
-    Graphic._merah = 0;
-    Graphic._green = 0;
-    Graphic._blue = 0;
-    Graphic._transparan = 0;
     Basik.Graphic = Graphic;
     Basik.G = Graphic;
 })(Basik || (Basik = {}));
@@ -1628,26 +1600,6 @@ var Basik;
             return Basik.Ktk.collideDot(gbr1.rect, x2, y2);
         }
         ;
-        static AmbilPiksel(x = 0, y = 0) {
-            try {
-                let data = Basik.G.Kanvas().getContext('2d').getImageData(x, y, 1, 1).data;
-                let hasil = [];
-                hasil.push(data[0]);
-                hasil.push(data[1]);
-                hasil.push(data[2]);
-                hasil.push(data[3]);
-                Basik.G.merah = data[0];
-                Basik.G.hijau = data[1];
-                Basik.G.biru = data[2];
-                Basik.G.alpha = data[3];
-            }
-            catch (e) {
-                console.error(e);
-            }
-        }
-        static SetPiksel(x = 0, y = 0) {
-            Basik.G.Kanvas().getContext('2d').fillRect(Math.floor(x), Math.floor(y), 1, 1);
-        }
         static GambarTrans(t) {
             ImgImpl.GamberTransSingle(t);
         }
@@ -1996,16 +1948,10 @@ var Basik;
             let item = Warna.warnaAr[idx];
             let t2 = trans / 100;
             Basik.G.Kanvas().getContext('2d').fillStyle = `rgba(${item.r}, ${item.g}, ${item.b}, ${t2})`;
-            Basik.G.merah = item.r;
-            Basik.G.biru = item.b;
-            Basik.G.hijau = item.g;
         }
         static warnaGaris(idx = 0, trans = 100) {
             let item = Warna.warnaAr[idx];
             Basik.G.Kanvas().getContext('2d').strokeStyle = `rgba(${item.r}, ${item.g}, ${item.b}, ${trans / 100})`;
-            Basik.G.merah = item.r;
-            Basik.G.biru = item.b;
-            Basik.G.hijau = item.g;
         }
         static init() {
             let s3 = Math.floor(256 / 6);
@@ -2316,10 +2262,6 @@ const In = Basik.In;
 function kanvas() {
     return G.Kanvas();
 }
-function buatKanvas(w = 800, h = 600, canvas = null, mode = 1) {
-    console.log("buat kanvas");
-    G.Graphics(w, h, canvas, mode);
-}
 function mulai(w = 800, h = 600, canvas = null, mode = 1) {
     G.Graphics(w, h, canvas, mode);
 }
@@ -2327,24 +2269,6 @@ function bersihkanLayar(x = 0, y = 0, w = 800, h = 600) {
     G.Cls(x, y, w, h);
 }
 const bl = bersihkanLayar;
-function hijau() {
-    return G.hijau;
-}
-function merah() {
-    return G.merah;
-}
-function biru() {
-    return G.biru;
-}
-function alpha() {
-    return Math.floor(G.alpha * 100);
-}
-function ambilPiksel(x = 0, y = 0) {
-    Ip.AmbilPiksel(x, y);
-}
-function setPiksel(x = 0, y = 0) {
-    Ip.SetPiksel(x, y);
-}
 function warna(idx = 0, trans = 100) {
     Basik.Warna.warna(idx, trans);
 }
@@ -2431,6 +2355,11 @@ function pembulatan(n, b = 1, type = 0) {
     }
     return Math.round(n / b) * b;
 }
+function acak(a = 0, b = 100) {
+    const min = Math.ceil(Math.min(a, b));
+    const max = Math.floor(Math.max(a, b));
+    return Math.floor(Math.random() * (max - min + 1)) + min;
+}
 function muatGambar(url) {
     return Ip.Muat(url);
 }
@@ -2495,7 +2424,7 @@ function geserGambar(img, x = 0, y = 0) {
     img.x += x;
     img.y += y;
 }
-function putarGambar(img, n = 0) {
+function putarGambar(img, n = 10) {
     img.rotasi += n;
 }
 const posisiTeks = Basik.Teks.Goto;

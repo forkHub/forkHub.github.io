@@ -1,104 +1,10 @@
 "use strict";
-var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
-    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
-    return new (P || (P = Promise))(function (resolve, reject) {
-        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
-        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
-        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
-        step((generator = generator.apply(thisArg, _arguments || [])).next());
-    });
-};
-var EState;
-(function (EState) {
-    EState[EState["awal"] = 0] = "awal";
-    EState[EState["edit"] = 1] = "edit";
-    EState[EState["dialogSimpan"] = 2] = "dialogSimpan";
-    EState[EState["jalankan"] = 3] = "jalankan";
-})(EState || (EState = {}));
-//globa state
-let fileDiedit = false;
-let fileHash = '';
-let fileNama = "latihan_" + (Math.floor(Math.random() * 1000) + 1000);
-let fileList = [];
-let fileBaru = true;
-let fileAktif = {
-    namaFile: fileNama,
-    data: ""
-};
-let appState = EState.edit;
-const storageNama = "io.github.forkhub.basik.data";
-class Edit2 {
+class Edit2 extends Edit {
     constructor() {
-        this.editArea = document.querySelector('textarea.edit-area');
-        this.webCont = document.querySelector('div.kontainer-2 div.web');
-        this.editCont = document.querySelector('div.kontainer-2 div.edit-text');
-        this.tblEditGroup = ["simpan", "muat", "jalan", "baru"];
-        this.tblJalanGroup = ["edit",];
+        super();
         this.webCont;
         this.editCont;
         this.fileInfo = document.querySelector("div.file-info span.nama");
-    }
-    getTbl(nama) {
-        return document.querySelector(`button.${nama}`);
-    }
-    showTbl(tbl) {
-        if (Array.isArray(tbl)) {
-            tbl.forEach((item) => {
-                this.showTbl(item);
-            });
-        }
-        else if (typeof tbl === "string") {
-            this.showTbl(this.getTbl(tbl));
-        }
-        else {
-            tbl.classList.add('disp-inline');
-            tbl.classList.remove('disp-none');
-        }
-    }
-    hideTbl(tbl) {
-        if (Array.isArray(tbl)) {
-            tbl.forEach((item) => {
-                this.hideTbl(item);
-            });
-        }
-        else if (typeof tbl == "string") {
-            this.hideTbl(this.getTbl(tbl));
-        }
-        else {
-            tbl.classList.remove('active');
-            tbl.classList.remove('disp-inline');
-            tbl.classList.add('disp-none');
-        }
-    }
-    getQuery(key) {
-        let q = '';
-        let h = '';
-        console.group('get query: ' + key);
-        q = window.top.location.search;
-        console.log(q);
-        q = q.slice(1, q.length);
-        console.log(q);
-        let qAr = q.split("&");
-        console.log(qAr);
-        qAr.forEach((item) => {
-            let keyAr = item.split('=');
-            let pKey = keyAr[0];
-            if (pKey == key) {
-                h = keyAr[1];
-            }
-        });
-        console.log('res: ' + h);
-        console.groupEnd();
-        return h;
-    }
-    injectScript(src, f) {
-        console.group('inject script');
-        console.log('src:', src);
-        let script = document.createElement('script');
-        script.onload = f;
-        script.src = src;
-        document.head.appendChild(script);
-        console.groupEnd();
     }
     initTombol() {
         this.getTbl("simpan").onclick = () => {
@@ -131,65 +37,49 @@ class Edit2 {
             this.baruKlik();
         };
     }
-    initCodeMirror(code = '') {
-        console.log("init code mirror");
-        this.myCodeMirror = CodeMirror.fromTextArea(this.editArea, {
-            lineNumbers: true,
-            mode: "javascript",
-            gutters: ["CodeMirror-lint-markers"],
-            lint: false,
-            init: code
-        });
-        this.myCodeMirror.setValue(code);
-        this.myCodeMirror.on("change", () => {
-            this.updateNama();
-        });
-    }
     init() {
         console.groupCollapsed("init");
         this.initTombol();
         this.hideTbl("edit");
         this.muatFileAwal();
         this.fileInfo.innerText = fileNama;
-        let code = this.getQuery("pId");
-        if (code) {
-            this.injectScript("./demo/" + code + ".js", () => {
-                //TODO:
-                console.log("script loaded");
-                this.initCodeMirror(codeDemo.code);
-            });
-            return;
-        }
-        //let load code;
+        console.groupEnd();
+        //let load code demo for online purpose;
+        console.groupCollapsed("init 2");
         let loadCode = this.getQuery("url");
         if (loadCode) {
+            console.log("load code from url");
             loadFileFromUrl(loadCode)
                 .then((code) => {
                 this.initCodeMirror(code);
+                mulai();
             })
                 .catch((err) => {
+                //gagal load codes
+                //TODO: dialog
+                //TODO: 
+                // tunggu demo dan muat dari demo sebagai alternatif
+                // paramter load code dibuat nama demo
+                // dan base url di set otomatis
+                // dialog("");
                 console.log(err);
+                this.initCodeMirror("mulai()");
+                mulai();
             });
         }
         else {
-            this.initCodeMirror("mulai();\n");
+            this.initCodeMirror("mulai()");
+            mulai();
+            //loading stop
         }
-        console.groupEnd();
-    }
-    demoKlik() {
-        let demo = document.querySelector("dialog.demo") || (() => { throw new Error("Demo dialog not found"); })();
-        demo.showModal();
-    }
-    reload() {
-        try {
-            // Get the current URL without query parameters and hash
-            const cleanUrl = window.location.origin + window.location.pathname;
-            // Replace the current history entry without reloading
-            window.history.replaceState({}, document.title, cleanUrl);
-            // Reload the page without query parameters
-        }
-        catch (error) {
-            console.error("Failed to reload without query parameters:", error);
+        function mulai() {
+            //loading stop
+            document.querySelector("#loading-screen").classList.add("hidden");
+            console.log("load async js");
+            loadScript("./editor/js/demo.js");
+            loadScript("./editor/lib/jshint.js");
+            loadScript("./editor/lib/acorn.js");
+            console.groupEnd();
         }
     }
     baruKlik() {
@@ -215,20 +105,6 @@ class Edit2 {
         }, () => {
             //nothing
         });
-    }
-    muatFileAwal() {
-        console.log("muat file awal:");
-        try {
-            let s = window.localStorage.getItem(storageNama);
-            fileList = JSON.parse(s);
-            if (!fileList)
-                fileList = [];
-            console.log(fileList);
-        }
-        catch (e) {
-            console.warn(e);
-            fileList = [];
-        }
     }
     editClick() {
         // this.gantiState(EState.edit);
@@ -327,68 +203,38 @@ class Edit2 {
             window.localStorage.setItem(storageNama, JSON.stringify(fileList));
         }
     }
-    checkJsHint() {
-        JSHINT('/* jshint esversion: 6 */\n' +
-            this.myCodeMirror.getValue());
-        console.log(JSHINT.errors);
-        let err = [];
-        JSHINT.errors.forEach((item) => {
-            err.push({
-                line: item.line - 1,
-                message: item.reason
-            });
-        });
-        return err;
-        // if (err.length > 0) {
-        // 	showErrorDialog(
-        // 		err,
-        // 		() => {
-        // 			return true;
-        // 		},
-        // 		() => {
-        // 			this.editClick();
-        // 			return true;
-        // 		});
-        // }
-        // else {
-        // 	return true;
-        // }
-    }
     compile() {
-        let err = this.checkJsHint();
-        console.group("accorn parse");
-        let { varErr, funErr, callErr } = acornParser.parse(this.myCodeMirror.getValue());
-        console.groupEnd();
-        varErr.forEach((v) => {
-            err.push({
-                line: -1,
-                message: `tidak boleh mendeklarasikan variable dengan nama: <code>${v}</code>, karena namanya sama dengan variable/fungsi bawaan dari BASIK`
-            });
-        });
-        funErr.forEach((v) => {
-            err.push({
-                line: -1,
-                message: `fungsi dengan nama <code>${v.v}</code> kemungkinan memiliki kesalahan ejaan, yang benar adalah <code>${v.b}</code>`
-            });
-        });
-        callErr.forEach((v) => {
-            err.push({
-                line: -1,
-                message: `perintah dengan nama <code>${v.v}</code> kemungkinan memiliki kesalahan ejaan, yang benar adalah <code>${v.b}</code>`
-            });
-        });
-        // JSHINT(
-        // 	'/* jshint esversion: 6 */\n' +
-        // 	this.myCodeMirror.getValue()
-        // );
-        // console.log(JSHINT.errors);
-        // let err: ErrorItem[] = [];
-        // JSHINT.errors.forEach((item: any) => {
-        // 	err.push({
-        // 		line: item.line - 1,
-        // 		message: item.reason
-        // 	})
-        // });
+        //optional checking
+        let err = [];
+        try {
+            err = this.checkJsHint();
+            if (acornParser) {
+                console.group("accorn parse");
+                let { varErr, funErr, callErr } = acornParser.parse(this.myCodeMirror.getValue());
+                console.groupEnd();
+                varErr.forEach((v) => {
+                    err.push({
+                        line: -1,
+                        message: `tidak boleh mendeklarasikan variable dengan nama: <code>${v}</code>, karena namanya sama dengan variable/fungsi bawaan dari BASIK`
+                    });
+                });
+                funErr.forEach((v) => {
+                    err.push({
+                        line: -1,
+                        message: `fungsi dengan nama <code>${v.v}</code> kemungkinan memiliki kesalahan ejaan, yang benar adalah <code>${v.b}</code>`
+                    });
+                });
+                callErr.forEach((v) => {
+                    err.push({
+                        line: -1,
+                        message: `perintah dengan nama <code>${v.v}</code> kemungkinan memiliki kesalahan ejaan, yang benar adalah <code>${v.b}</code>`
+                    });
+                });
+            }
+        }
+        catch (e) {
+            console.warn(e);
+        }
         if (err.length > 0) {
             showErrorDialog(err, () => {
                 this.runOk();
@@ -400,239 +246,5 @@ class Edit2 {
         else {
             this.runOk();
         }
-        // console.log
-        // console.log(this.myCodeMirror.getValue());
-        // console.log(hal2);
     }
-    runOk() {
-        let hal2 = renderIframe(this.myCodeMirror.getValue());
-        let iframe = document.createElement('iframe');
-        let iframeCont = document.body.querySelector('div.kontainer-2 div.web');
-        iframeCont.innerHTML = '';
-        iframeCont.appendChild(iframe);
-        console.groupCollapsed("compile");
-        console.log(hal2);
-        console.groupEnd();
-        setTimeout(() => {
-            iframe.contentWindow.document.open();
-            iframe.contentWindow.document.write(hal2);
-            iframe.contentWindow.document.close();
-            iframe.focus();
-        }, 0);
-    }
-    checkFileUpdated() {
-        let data = this.myCodeMirror.getValue();
-        let fData = fileAktif.data;
-        return (data != fData);
-    }
-    updateNama() {
-        if (this.checkFileUpdated()) {
-            this.fileInfo.innerText = fileNama + "(*)";
-        }
-        else {
-            this.fileInfo.innerText = fileNama;
-        }
-    }
-}
-window.onload = () => {
-    let edit = new Edit2();
-    edit.init();
-    // console.log(JSHINT.errors);
-    // JSHINT.errors = jsHIntErrors;
-    // JSHINT.warnings = jshintWarnings;
-    // JSHINT.info = jsHintInfo;
-};
-function renderIframe(script) {
-    let rand = Math.floor(Math.random() * 1000);
-    let hal = `
-<html>
-<meta charset="utf-8" />
-
-<head>
-	<style>
-		canvas {
-			border: 1px solid gray;
-			background-color: white;
-		}
-
-		html,
-		body {
-			margin: 0px;
-			padding: 0px;
-			background-color: lightGray;
-		}
-
-		.custom-alert-overlay {		
-			position: fixed;
-			top: 0;
-			left: 0;
-			width: 100%;
-			height: 100%;
-			background: rgba(0, 0, 0, 0.5);
-			display: none;
-			/* awalnya hidden */
-			justify-content: center;
-			align-items: center;
-			z-index: 9999;
-		}
-
-		.custom-alert-box {
-			background: #fff;
-			padding: 20px;
-			border-radius: 8px;
-			min-width: 250px;
-			text-align: center;
-			box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
-		}
-
-		.custom-alert-box button {
-			margin-top: 15px;
-			padding: 8px 16px;
-			border: none;
-			background: #0078d7;
-			color: #fff;
-			border-radius: 4px;
-			cursor: pointer;
-		}
-
-	</style>
-	<script>
-	function loadScriptsSequentially(sources, finalCallback) {
-		function loadNext(index) {
-			if (index >= sources.length) {
-				if (typeof finalCallback === 'function') finalCallback();
-				return;
-			}
-
-			const script = document.createElement('script');
-			script.src = sources[index];
-			script.onload = () => loadNext(index + 1);
-			script.onerror = () => {
-				console.error("Failed to load: " + sources[index]);
-				loadNext(index + 1); // Skip failed script and continue
-			};
-			document.head.appendChild(script);
-		}
-
-		loadNext(0);
-	}
-
-	// Example usage:
-	loadScriptsSequentially([
-		'./editor/lib/basik.min.js?r=${rand}',
-		'./editor/lib/mulai.js?r=${rand}'
-	], () => {
-		const script = document.createElement('script');
-		script.textContent = \`${script}\`
-		document.head.appendChild(script);
-	});
-	window.focus();
-	</script>
-</head>
-
-<body>
-</body>
-
-</html>
-`;
-    return hal;
-}
-function showErrorDialog(errors, okHandle, cancelHandle) {
-    // Remove existing dialog if any
-    const existing = document.getElementById('error-dialog');
-    if (existing) {
-        existing.close();
-        existing.remove();
-    }
-    // Create dialog element
-    const dialog = document.createElement('dialog');
-    dialog.id = 'error-dialog';
-    dialog.style.padding = '20px';
-    dialog.style.border = '1px solid #ccc';
-    dialog.style.minWidth = '300px';
-    dialog.style.boxSizing = 'border-box';
-    // Title
-    const title = document.createElement('h2');
-    title.textContent = 'Ups, ada kesalahan, check dulu ya!';
-    title.style.marginTop = '0';
-    dialog.appendChild(title);
-    // Error list
-    const list = document.createElement('ul');
-    errors.forEach((err) => {
-        const item = document.createElement('li');
-        if (err.line > -1) {
-            item.innerHTML = `Baris ${err.line}: ${err.message}`;
-        }
-        else {
-            item.innerHTML = err.message;
-        }
-        list.appendChild(item);
-    });
-    dialog.appendChild(list);
-    dialog.appendChild(document.createElement('hr'));
-    html('p', dialog, (el) => {
-        el.innerText = "Pesan ini mungkin memiliki kesalahan, dan hanya ditujukan untuk pengecekan.";
-    });
-    const p = document.createElement('p');
-    p.innerText = "Tekan 'Lanjutkan' bila yakin tidak ada kesalahan, tekan 'Batal' untuk mengedit kembali.";
-    dialog.appendChild(p);
-    // Buttons container
-    const buttons = document.createElement('div');
-    buttons.style.marginTop = '20px';
-    buttons.style.display = 'flex';
-    buttons.style.justifyContent = 'flex-end';
-    buttons.style.gap = '10px';
-    // Continue button
-    const continueBtn = document.createElement('button');
-    continueBtn.textContent = 'Lanjutkan';
-    continueBtn.onclick = () => {
-        // Empty handler
-        dialog.close();
-        okHandle();
-    };
-    // Abort button
-    const abortBtn = document.createElement('button');
-    abortBtn.textContent = 'Batal';
-    abortBtn.onclick = () => {
-        // Empty handler
-        dialog.close();
-        cancelHandle();
-    };
-    buttons.appendChild(continueBtn);
-    buttons.appendChild(abortBtn);
-    dialog.appendChild(buttons);
-    // Append and show
-    document.body.appendChild(dialog);
-    dialog.showModal();
-    function html(t, p, e) {
-        let h = document.createElement(t);
-        p.appendChild(h);
-        if (e)
-            e(h);
-    }
-}
-function dlgBelumSelesai() {
-    alert("Maaf fungsi masih belum tersedia");
-}
-/**
- * Load file content from a given URL.
- * @param url - The URL of the file to fetch.
- * @param type - The expected response type: "text", "json", or "arrayBuffer".
- * @returns Promise with the file content in the chosen format.
- */
-function loadFileFromUrl(url_1) {
-    return __awaiter(this, arguments, void 0, function* (url, type = "text") {
-        const response = yield fetch(url);
-        if (!response.ok) {
-            throw new Error(`Failed to load file: ${response.status} ${response.statusText}`);
-        }
-        switch (type) {
-            case "json":
-                return (yield response.json());
-            case "arrayBuffer":
-                return (yield response.arrayBuffer());
-            default:
-                return (yield response.text());
-        }
-    });
 }

@@ -11,9 +11,8 @@ function keyboardDilepas() {
 }
 
 function update() {
-	bersihkanLayar();
-	posisiTeks(0, 20);
-	tulis("Tekan tombol keyboard mana saja");
+	bl();
+	tulis("Tekan tombol keyboard mana saja", 10, 20);
 	tulis("");
 	tulis("tombol sedang ditahan: " + tombolDitahan());
 	tulis("tombol terakhir: " + tombolEvent());

@@ -10,6 +10,7 @@
 	<link rel="stylesheet" href='./editor/lib/codemirror/theme/ambiance.css' />
 	<link rel="stylesheet" href='./editor/css/css.css' />
 	<link rel="stylesheet" href='./editor/css/list_files.css' />
+	<link rel="stylesheet" href='./editor/css/loading.css' />
 
 </head>
 
@@ -63,11 +64,16 @@
 		</div>
 	</dialog>
 
-	<script src='./editor/lib/codemirror/lib/codemirror.js' defer></script>
+	<div id="loading-screen" class="loading-overlay">
+		<div class="loading-spinner"></div>
+		<p class="loading-text">Loading...</p>
+	</div>
+
+	<script src='./editor/lib/codemirror/lib/codemirror.min.js' defer></script>
 	<script src="./editor/lib/codemirror/mode/javascript/javascript.js" defer></script>
 
-	<script src="./editor/lib/jshint.js" defer></script>
-	<script src="./editor/lib/acorn.js" defer></script>
+	<!-- <script src="./editor/lib/jshint.js" defer></script>
+	<script src="./editor/lib/acorn.js" defer></script> -->
 	<!-- <script src="./editor/lib/codemirror/addon/lint/lint.js"></script> -->
 	<!-- <script src="./editor/lib/codemirror/addon/lint/javascript-lint.js"></script> -->
 
@@ -78,6 +84,8 @@
 	<script src='./editor/js/dialog.js' defer></script>
 	<script src='./editor/js/accorn.js' defer></script>
 	<!-- <script src='./editor/js/jsHInt.js' defer></script> -->
+	<script src='./editor/js/EditInit.js' defer></script>
+	<script src='./editor/js/Edit.js' defer></script>
 	<script src='./editor/js/Edit2.js' defer></script>
 </body>
 

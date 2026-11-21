@@ -8,8 +8,7 @@ let grav = 0.1;
 
 function update() {
   	vy += grav;
-	bola.x += vx;
-	bola.y += vy;
+	geserGambar(bola, vx, vy);
 	
 	if (bola.x > 768) {
 		bola.x = 768;
@@ -31,6 +30,6 @@ function update() {
 		vy = -10;
 	}
 	
-	bersihkanLayar();
+	bl();
 	stempel(bola);
 }
