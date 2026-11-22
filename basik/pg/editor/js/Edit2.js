@@ -37,6 +37,13 @@ class Edit2 extends Edit {
             this.baruKlik();
         };
     }
+    loadDemo(url) {
+        loadScript("./editor/js/demo.js", () => {
+            url;
+        }, () => {
+            //warning
+        });
+    }
     init() {
         console.groupCollapsed("init");
         this.initTombol();

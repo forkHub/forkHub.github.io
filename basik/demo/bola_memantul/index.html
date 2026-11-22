@@ -1,0 +1,245 @@
+<!DOCTYPE html>
+<html lang="en-us" dir="ltr">
+
+<head>
+	<meta charset="utf-8">
+<meta name="viewport" content="width=device-width">
+<title> | Basik</title>
+
+<link rel="stylesheet" href="../../css/main.fbb9baf7573768d711cfbf22e52241a77d5a0e41c56f8fcbb94cf174300c76e3.css">
+
+<script src="../../js/main.23cd0c7d837263b9eaeb96ee2d9ccfa2969daa3fa00fa1c1fe8701a9b87251a1.js"></script>
+
+</head>
+
+<body>
+	<div class="container">
+		
+<h1 id="-tutorial-basik-membuat-animasi-bola-memantul-bouncing-ball">🏀 Tutorial BASIK: Membuat Animasi Bola Memantul (<em>Bouncing Ball</em>)</h1>
+<p>Pada tutorial ini, kita akan belajar cara membuat animasi pergerakan bola yang dapat memantul secara otomatis ketika menabrak batas dinding kanvas. Proyek ini merupakan fondasi penting sebelum membuat gim interaktif yang lebih kompleks seperti <em>Pong</em>, <em>Breakout</em>, atau <em>Pinball</em>.</p>
+<hr>
+<h2 id="-konsep-dasar-yang-perlu-dipahami">💡 Konsep Dasar yang Perlu Dipahami</h2>
+<p>Sebelum masuk ke baris kode, mari pahami tiga konsep utama yang digunakan dalam proyek ini:</p>
+<ol>
+<li><strong>Sumbu Koordinat Kanvas BASIK</strong>:
+<ul>
+<li>Secara bawaan (<em>default</em>), kanvas BASIK memiliki ukuran <strong>800 x 600 piksel</strong>.</li>
+<li>Titik <strong><code>(0, 0)</code></strong> terletak di <strong>sudut kiri atas</strong> kanvas.</li>
+<li>Nilai <strong>Sumbu X</strong> bertambah jika bergerak ke <strong>kanan</strong>.</li>
+<li>Nilai <strong>Sumbu Y</strong> bertambah jika bergerak ke <strong>bawah</strong>.</li>
+</ul>
+</li>
+<li><strong>Vektor Kecepatan (<code>vx</code> dan <code>vy</code>)</strong>:
+<ul>
+<li><code>vx</code> (<em>Velocity X</em>) menentukan kecepatan gerak mendatar (horisontal). Nilai positif bergerak ke kanan, nilai negatif bergerak ke kiri.</li>
+<li><code>vy</code> (<em>Velocity Y</em>) menentukan kecepatan gerak tegak (vertikal). Nilai positif bergerak ke bawah, nilai negatif bergerak ke atas.</li>
+</ul>
+</li>
+<li><strong>Prinsip Animasi Komputer (<em>Flipbook</em>)</strong>:
+<ul>
+<li>Animasi bekerja seperti buku gambar lipat. Di setiap <em>frame</em> (bingkai), layar dibersihkan, posisi objek digeser, dan objek digambar kembali di posisi yang baru.</li>
+</ul>
+</li>
+</ol>
+<hr>
+<h2 id="-kode-program-lengkap">📜 Kode Program Lengkap</h2>
+<p>Berikut adalah kode lengkap yang akan kita bahas:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="language-javascript" data-lang="javascript"><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>  <span style="color:#a6e22e">mulai</span>();
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>  <span style="color:#66d9ef">let</span> <span style="color:#a6e22e">bola</span> <span style="color:#f92672">=</span> <span style="color:#a6e22e">muatGambar</span>(<span style="color:#e6db74">&#34;bola&#34;</span>);
+</span></span><span style="display:flex;"><span>  <span style="color:#a6e22e">pusatGambar</span>(<span style="color:#a6e22e">bola</span>, <span style="color:#ae81ff">32</span>, <span style="color:#ae81ff">32</span>);
+</span></span><span style="display:flex;"><span>  <span style="color:#66d9ef">let</span> <span style="color:#a6e22e">vx</span> <span style="color:#f92672">=</span> <span style="color:#ae81ff">3</span>;
+</span></span><span style="display:flex;"><span>  <span style="color:#66d9ef">let</span> <span style="color:#a6e22e">vy</span> <span style="color:#f92672">=</span> <span style="color:#ae81ff">4</span>;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>  <span style="color:#66d9ef">function</span> <span style="color:#a6e22e">update</span>() {
+</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">geserGambar</span>(<span style="color:#a6e22e">bola</span>, <span style="color:#a6e22e">vx</span>, <span style="color:#a6e22e">vy</span>);
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">if</span> (<span style="color:#a6e22e">bola</span>.<span style="color:#a6e22e">x</span> <span style="color:#f92672">&gt;</span> <span style="color:#ae81ff">768</span>) {
+</span></span><span style="display:flex;"><span>      <span style="color:#a6e22e">bola</span>.<span style="color:#a6e22e">x</span> <span style="color:#f92672">=</span> <span style="color:#ae81ff">768</span>;
+</span></span><span style="display:flex;"><span>      <span style="color:#a6e22e">vx</span> <span style="color:#f92672">=</span> <span style="color:#f92672">-</span><span style="color:#ae81ff">3</span>;
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">if</span> (<span style="color:#a6e22e">bola</span>.<span style="color:#a6e22e">x</span> <span style="color:#f92672">&lt;</span> <span style="color:#ae81ff">32</span>) {
+</span></span><span style="display:flex;"><span>      <span style="color:#a6e22e">bola</span>.<span style="color:#a6e22e">x</span> <span style="color:#f92672">=</span> <span style="color:#ae81ff">32</span>;
+</span></span><span style="display:flex;"><span>      <span style="color:#a6e22e">vx</span> <span style="color:#f92672">=</span> <span style="color:#ae81ff">3</span>;
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">if</span> (<span style="color:#a6e22e">bola</span>.<span style="color:#a6e22e">y</span> <span style="color:#f92672">&lt;</span> <span style="color:#ae81ff">32</span>) {
+</span></span><span style="display:flex;"><span>      <span style="color:#a6e22e">bola</span>.<span style="color:#a6e22e">y</span> <span style="color:#f92672">=</span> <span style="color:#ae81ff">32</span>;
+</span></span><span style="display:flex;"><span>      <span style="color:#a6e22e">vy</span> <span style="color:#f92672">=</span> <span style="color:#ae81ff">4</span>;
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">if</span> (<span style="color:#a6e22e">bola</span>.<span style="color:#a6e22e">y</span> <span style="color:#f92672">&gt;</span> <span style="color:#ae81ff">568</span>) {
+</span></span><span style="display:flex;"><span>      <span style="color:#a6e22e">bola</span>.<span style="color:#a6e22e">y</span> <span style="color:#f92672">=</span> <span style="color:#ae81ff">568</span>;
+</span></span><span style="display:flex;"><span>      <span style="color:#a6e22e">vy</span> <span style="color:#f92672">=</span> <span style="color:#f92672">-</span><span style="color:#ae81ff">4</span>;
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">bl</span>();
+</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">stempel</span>(<span style="color:#a6e22e">bola</span>);
+</span></span><span style="display:flex;"><span>  }
+</span></span></code></pre></div><hr>
+<h2 id="-bedah-kode-langkah-demi-langkah">🔍 Bedah Kode Langkah demi Langkah</h2>
+<p>Mari kita dekonstruksi kode di atas menjadi beberapa bagian logis:</p>
+<h3 id="1-inisialisasi-aplikasi-dan-memuat-objek-gambar">1. Inisialisasi Aplikasi dan Memuat Objek Gambar</h3>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="language-javascript" data-lang="javascript"><span style="display:flex;"><span><span style="color:#a6e22e">mulai</span>();
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">let</span> <span style="color:#a6e22e">bola</span> <span style="color:#f92672">=</span> <span style="color:#a6e22e">muatGambar</span>(<span style="color:#e6db74">&#34;bola&#34;</span>);
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">pusatGambar</span>(<span style="color:#a6e22e">bola</span>, <span style="color:#ae81ff">32</span>, <span style="color:#ae81ff">32</span>);
+</span></span></code></pre></div><ul>
+<li><strong><code>mulai();</code></strong>: Perintah awal untuk mengaktifkan aplikasi dan menyiapkan kanvas BASIK berukuran 800 x 600 piksel. Ini adalah perintah pertama yang harus dipanggil untuk memulai aplikasi yang dibuat dengan BASIK.</li>
+<li><strong><code>let bola = muatGambar(&quot;bola&quot;);</code></strong>: Memuat berkas gambar bernama <code>&quot;bola&quot;</code> dari folder aset dan menyimpannya ke dalam variabel <code>bola</code> sebagai sebuah objek gambar. Dengan menjadi objek, kita bisa membaca dan mengubah properti seperti posisi <code>bola.x</code> dan <code>bola.y</code>.</li>
+<li><strong><code>pusatGambar(bola, 32, 32);</code></strong>: Mengatur titik pusat (<em>anchor point</em>) gambar bola. Jika gambar bola berukuran (64 x 64) piksel, titik tengahnya berada di jari-jari 32 piksel dari tepi. Pengaturan ini memudahkan perhitungan batas dinding.</li>
+</ul>
+<hr>
+<h3 id="2-menentukan-kecepatan-dan-arah-awal">2. Menentukan Kecepatan dan Arah Awal</h3>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="language-javascript" data-lang="javascript"><span style="display:flex;"><span><span style="color:#66d9ef">let</span> <span style="color:#a6e22e">vx</span> <span style="color:#f92672">=</span> <span style="color:#ae81ff">3</span>;
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">let</span> <span style="color:#a6e22e">vy</span> <span style="color:#f92672">=</span> <span style="color:#ae81ff">4</span>;
+</span></span></code></pre></div><ul>
+<li><strong><code>vx = 3;</code></strong>: Menandakan bola bergerak ke kanan sebanyak 3 piksel per <em>frame</em>.</li>
+<li><strong><code>vy = 4;</code></strong>: Menandakan bola bergerak ke bawah sebanyak 4 piksel per <em>frame</em>.</li>
+<li>Karena <code>vx</code> dan <code>vy</code> aktif bersamaan, bola akan bergerak secara <strong>diagonal</strong> ke arah kanan-bawah.</li>
+</ul>
+<hr>
+<h3 id="3-menggerakkan-bola-di-dalam-loop-update">3. Menggerakkan Bola di Dalam Loop <code>update()</code></h3>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="language-javascript" data-lang="javascript"><span style="display:flex;"><span><span style="color:#66d9ef">function</span> <span style="color:#a6e22e">update</span>() {
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">geserGambar</span>(<span style="color:#a6e22e">bola</span>, <span style="color:#a6e22e">vx</span>, <span style="color:#a6e22e">vy</span>);
+</span></span></code></pre></div><ul>
+<li><strong><code>function update()</code></strong>: Fungsi utama BASIK yang dijalankan secara berulang-ulang puluhan kali per detik (loop animasi utama).</li>
+<li><strong><code>geserGambar(bola, vx, vy);</code></strong>: Mengubah koordinat posisi objek <code>bola</code> secara berkesinambungan dengan menambahkan nilai <code>vx</code> ke <code>bola.x</code> dan <code>vy</code> ke <code>bola.y</code>.</li>
+</ul>
+<hr>
+<h3 id="4-logika-pantulan-dinding-deteksi-batas--collision-detection">4. Logika Pantulan Dinding (Deteksi Batas / <em>Collision Detection</em>)</h3>
+<p>Bagian pengondisian <code>if</code> ini menggunakan pilar <strong>abstraksi dan algoritma</strong> untuk mendeteksi empat batas dinding kanvas:</p>
+<h4 id="a-pantulan-dinding-kanan-bolax--768">A. Pantulan Dinding Kanan (<code>bola.x &gt; 768</code>)</h4>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="language-javascript" data-lang="javascript"><span style="display:flex;"><span><span style="color:#66d9ef">if</span> (<span style="color:#a6e22e">bola</span>.<span style="color:#a6e22e">x</span> <span style="color:#f92672">&gt;</span> <span style="color:#ae81ff">768</span>) {
+</span></span><span style="display:flex;"><span>  <span style="color:#a6e22e">bola</span>.<span style="color:#a6e22e">x</span> <span style="color:#f92672">=</span> <span style="color:#ae81ff">768</span>;
+</span></span><span style="display:flex;"><span>  <span style="color:#a6e22e">vx</span> <span style="color:#f92672">=</span> <span style="color:#f92672">-</span><span style="color:#ae81ff">3</span>;
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><ul>
+<li>Lebar kanvas adalah 800 piksel. Karena titik pusat bola berada di tengah (jari-jari 32 piksel), tepi kanan bola akan menyentuh batas saat posisi <code>X = 800 - 32 = 768</code>.</li>
+<li><code>bola.x = 768;</code>: Menahan bola agar tidak menembus keluar dari kanvas.</li>
+<li><code>vx = -3;</code>: Mengubah arah pergerakan horisontal menjadi negatif (bergerak ke kiri).</li>
+</ul>
+<h4 id="b-pantulan-dinding-kiri-bolax--32">B. Pantulan Dinding Kiri (<code>bola.x &lt; 32</code>)</h4>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="language-javascript" data-lang="javascript"><span style="display:flex;"><span><span style="color:#66d9ef">if</span> (<span style="color:#a6e22e">bola</span>.<span style="color:#a6e22e">x</span> <span style="color:#f92672">&lt;</span> <span style="color:#ae81ff">32</span>) {
+</span></span><span style="display:flex;"><span>  <span style="color:#a6e22e">bola</span>.<span style="color:#a6e22e">x</span> <span style="color:#f92672">=</span> <span style="color:#ae81ff">32</span>;
+</span></span><span style="display:flex;"><span>  <span style="color:#a6e22e">vx</span> <span style="color:#f92672">=</span> <span style="color:#ae81ff">3</span>;
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><ul>
+<li>Batas kiri kanvas adalah <code>X = 0</code>. Tepi kiri bola menyentuh dinding saat titik pusatnya berada di <code>0 + 32 = 32</code>.</li>
+<li><code>bola.x = 32;</code>: Menahan posisi bola tepat di tepi kiri.</li>
+<li><code>vx = 3;</code>: Membalikkan arah gerak menjadi positif (kembali bergerak ke kanan).</li>
+</ul>
+<h4 id="c-pantulan-dinding-atas-bolay--32">C. Pantulan Dinding Atas (<code>bola.y &lt; 32</code>)</h4>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="language-javascript" data-lang="javascript"><span style="display:flex;"><span><span style="color:#66d9ef">if</span> (<span style="color:#a6e22e">bola</span>.<span style="color:#a6e22e">y</span> <span style="color:#f92672">&lt;</span> <span style="color:#ae81ff">32</span>) {
+</span></span><span style="display:flex;"><span>  <span style="color:#a6e22e">bola</span>.<span style="color:#a6e22e">y</span> <span style="color:#f92672">=</span> <span style="color:#ae81ff">32</span>;
+</span></span><span style="display:flex;"><span>  <span style="color:#a6e22e">vy</span> <span style="color:#f92672">=</span> <span style="color:#ae81ff">4</span>;
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><ul>
+<li>Batas atas kanvas adalah <code>Y = 0</code>.</li>
+<li><code>bola.y = 32;</code>: Menahan posisi bola di batas atas.</li>
+<li><code>vy = 4;</code>: Membalikkan arah gerak vertikal menjadi positif (bergerak ke bawah).</li>
+</ul>
+<h4 id="d-pantulan-dinding-bawah-bolay--568">D. Pantulan Dinding Bawah (<code>bola.y &gt; 568</code>)</h4>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="language-javascript" data-lang="javascript"><span style="display:flex;"><span><span style="color:#66d9ef">if</span> (<span style="color:#a6e22e">bola</span>.<span style="color:#a6e22e">y</span> <span style="color:#f92672">&gt;</span> <span style="color:#ae81ff">568</span>) {
+</span></span><span style="display:flex;"><span>  <span style="color:#a6e22e">bola</span>.<span style="color:#a6e22e">y</span> <span style="color:#f92672">=</span> <span style="color:#ae81ff">568</span>;
+</span></span><span style="display:flex;"><span>  <span style="color:#a6e22e">vy</span> <span style="color:#f92672">=</span> <span style="color:#f92672">-</span><span style="color:#ae81ff">4</span>;
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><ul>
+<li>Tinggi kanvas adalah 600 piksel. Tepi bawah bola menyentuh dasar kanvas saat <code>Y = 600 - 32 = 568</code>.</li>
+<li><code>bola.y = 568;</code>: Menahan bola agar tidak membal melampaui batas bawah.</li>
+<li><code>vy = -4;</code>: Membalikkan arah gerak vertikal menjadi negatif (kembali memantul ke atas).</li>
+</ul>
+<hr>
+<h3 id="5-membersihkan-dan-merender-layar">5. Membersihkan dan Merender Layar</h3>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="language-javascript" data-lang="javascript"><span style="display:flex;"><span>	<span style="color:#a6e22e">bl</span>();
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">stempel</span>(<span style="color:#a6e22e">bola</span>);
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><ul>
+<li><strong><code>bl();</code></strong>: Singkatan dari <strong><code>bersihkanLayar()</code></strong>. Fungsi ini menghapus gambar bola dari <em>frame</em> sebelumnya. Tanpa baris ini, bola akan meninggalkan jejak garis tebal di sepanjang lintasannya.</li>
+<li><strong><code>stempel(bola);</code></strong>: Menampilkan ulang visual objek <code>bola</code> pada lokasi koordinat barunya.</li>
+</ul>
+<hr>
+<h2 id="-ringkasan-fungsi-basik-yang-digunakan">🛠️ Ringkasan Fungsi BASIK yang Digunakan</h2>
+<table>
+	<thead>
+			<tr>
+					<th style="text-align: left">Perintah BASIK</th>
+					<th style="text-align: left">Kegunaan / Fungsi Utama</th>
+					<th style="text-align: left">Keterangan Parameter</th>
+			</tr>
+	</thead>
+	<tbody>
+			<tr>
+					<td style="text-align: left"><strong><code>mulai()</code></strong></td>
+					<td style="text-align: left">Menginisialisasi kanvas dan aplikasi BASIK</td>
+					<td style="text-align: left">Ukuran default: <code>800 x 600</code> piksel</td>
+			</tr>
+			<tr>
+					<td style="text-align: left"><strong><code>muatGambar(url)</code></strong></td>
+					<td style="text-align: left">Memuat gambar dari folder aset menjadi objek</td>
+					<td style="text-align: left">Mengembalikan objek <code>Gambar</code></td>
+			</tr>
+			<tr>
+					<td style="text-align: left"><strong><code>pusatGambar(gbr, x, y)</code></strong></td>
+					<td style="text-align: left">Menentukan titik acuan/pusat objek gambar</td>
+					<td style="text-align: left"><code>x</code> dan <code>y</code> adalah jarak titik pusat dari sudut kiri atas gambar</td>
+			</tr>
+			<tr>
+					<td style="text-align: left"><strong><code>geserGambar(gbr, x, y)</code></strong></td>
+					<td style="text-align: left">Menggerakkan posisi objek secara relatif</td>
+					<td style="text-align: left">Menambahkan <code>x</code> ke <code>gbr.x</code> dan <code>y</code> ke <code>gbr.y</code></td>
+			</tr>
+			<tr>
+					<td style="text-align: left"><strong><code>bl()</code> / <code>bersihkanLayar()</code></strong></td>
+					<td style="text-align: left">Membersihkan jejak visual di kanvas</td>
+					<td style="text-align: left">Mencegah terjadinya <em>glitch</em> atau efek bayangan berjejak</td>
+			</tr>
+			<tr>
+					<td style="text-align: left"><strong><code>stempel(gbr)</code></strong></td>
+					<td style="text-align: left">Menggambar/merender objek ke layar</td>
+					<td style="text-align: left">Menampilkan objek sesuai koordinat terbarunya</td>
+			</tr>
+	</tbody>
+</table>
+<hr>
+<h2 id="-menganalisis--mengatasi-masalah-debugging-guide">❓ Menganalisis &amp; Mengatasi Masalah (<em>Debugging Guide</em>)</h2>
+<p>Dalam belajar koding, <em>error</em> atau perilaku aneh adalah bagian normal yang melatih pemikiran kritis:</p>
+<ol>
+<li>
+<p><strong>Bola meninggalkan jejak panjang seperti ekor komet:</strong></p>
+<ul>
+<li><em>Penyebab</em>: Kamu lupa memanggil fungsi <code>bl();</code> di dalam fungsi <code>update()</code>.</li>
+<li><em>Solusi</em>: Pastikan <code>bl();</code> dipanggil sebelum <code>stempel(bola);</code>.</li>
+</ul>
+</li>
+<li>
+<p><strong>Bola bergetar atau tersangkut di dinding:</strong></p>
+<ul>
+<li><em>Penyebab</em>: Lupa menyertakan perintah reset posisi (<code>bola.x = 768;</code>, dll.) saat pengondisian <code>if</code>. Jika posisi tidak direset, bola masih berada di luar batas pada <em>frame</em> berikutnya sehingga arah kecepatan terus-menerus berbalik bolak-balik.</li>
+</ul>
+</li>
+<li>
+<p><strong>Bola tidak muncul di layar sama sekali:</strong></p>
+<ul>
+<li><em>Penyebab</em>: Nama berkas gambar di <code>muatGambar(&quot;bola&quot;)</code> tidak cocok dengan berkas di folder aset, atau lupa memanggil <code>stempel(bola);</code> di akhir fungsi <code>update()</code>.</li>
+</ul>
+</li>
+</ol>
+<hr>
+<h2 id="-latihan-tantangan-mandiri-hands-on-challenge">🚀 Latihan Tantangan Mandiri (<em>Hands-On Challenge</em>)</h2>
+<p>Uji pemahamanmu dengan memodifikasi kode di atas:</p>
+<ul>
+<li><strong>Tantangan 1 (Kecepatan Tinggi):</strong> Ubah nilai <code>vx</code> menjadi <code>8</code> dan <code>vy</code> menjadi <code>12</code>. Apa yang terjadi pada gerak bola?</li>
+<li><strong>Tantangan 2 (Efek Gravitasi):</strong> Tambahkan baris kode <code>vy = vy + 0.2;</code> tepat di atas <code>geserGambar(bola, vx, vy);</code> di dalam fungsi <code>update()</code>. Amati bagaimana bola akan jatuh semakin cepat dan memantul layaknya bola basket sungguhan!</li>
+<li><strong>Tantangan 3 (Pengacak Sudut Pantul):</strong> Cobalah ubah nilai <code>vx = -3;</code> saat memantul di dinding kanan menjadi angka acak antara <code>-2</code> sampai <code>-6</code> agar arah pantulan sulit ditebak!</li>
+</ul>
+<hr>
+<p>Semoga tutorial ini membantu kamu memahami cara kerja animasi dan matematika sederhana di balik pembuatan gim di BASIK. Selamat mencoba! 🎮</p>
+
+
+	</div>
+</body>
+
+</html>

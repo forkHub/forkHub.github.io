@@ -1559,6 +1559,10 @@ var Basik;
             return new Basik.GbrObj(imgUrl);
         }
         static tabrakan(gbr1, x1, y1, gbr2, x2, y2) {
+            if (!gbr1.dimuat)
+                return false;
+            if (!gbr2.dimuat)
+                return false;
             Ip.resetRect(gbr1);
             Ip.rectToImageTf(gbr1, x1, y1);
             Ip.resetRect(gbr2);

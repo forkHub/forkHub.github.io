@@ -26,6 +26,7 @@ let fileAktif = {
     data: ""
 };
 let isOnline = false;
+let loadedScripts = [];
 let appState = EState.edit;
 const storageNama = "io.github.forkhub.basik.data";
 window.onload = () => {
@@ -65,14 +66,24 @@ function tunggu(getValue_1) {
         }
     });
 }
-function loadScript(src) {
+function loadScript(src, fLoad = undefined, fError = undefined) {
+    if (loadedScripts.indexOf(src) >= 0)
+        return;
+    loadedScripts.push(src);
     const script = document.createElement('script');
+    script.onload = () => {
+        if (fLoad) {
+            fLoad();
+        }
+        console.log("sukses muat " + src);
+    };
+    script.onerror = () => {
+        if (fError) {
+            fError();
+        }
+        console.warn("gagal muat file: " + src);
+    };
     script.src = src;
-    script.onload = () => console.log("sukses muat " + src);
-    script.onerror = () => console.warn("gagal muat file: " + src);
-    // 	console.error("Failed to load: " + sources[index]);
-    // 	loadNext(index + 1); // Skip failed script and continue
-    // };
     document.head.appendChild(script);
 }
 function loadScripts(sources, finalCallback) {
