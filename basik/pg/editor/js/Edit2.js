@@ -75,7 +75,7 @@ class Edit2 extends Edit {
             });
         }
         else {
-            this.initCodeMirror("mulai()");
+            this.initCodeMirror("mulai();");
             mulai();
             //loading stop
         }
