@@ -1,0 +1,1 @@
+demoData = "mulai();\r\nlet roket = muatGambar(\"roket\");\r\nroket.tipeDrag = 2;\r\nposisiGambar(roket, 260, 220);\r\npusatGambar(roket, 32, 46);\r\n\r\n//game loop\r\nfunction update() {\r\n\tbl();\r\n\tstempel(roket);\r\n\ttulis(\"Putar roket dengan mouse\", 10, 20);\r\n}"

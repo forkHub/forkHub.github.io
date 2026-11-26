@@ -1,0 +1,1 @@
+demoData = "mulai();\r\n\r\nlet brush = muatGambar(\"brush\");\r\npusatGambar(brush, 8, 8);\r\n\r\ntulis(\"Drag pelan-pelan untuk menggambar\", 10, 20);\r\n\r\nfunction update() {\r\n\tif (mouseDitahan()) {\r\n\t\tposisiGambar(brush, mouseX(), mouseY());\r\n\t\tstempel(brush);\r\n\t}\r\n}\r\n"

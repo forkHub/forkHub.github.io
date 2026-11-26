@@ -1,0 +1,1 @@
+demoData = "mulai();\r\nlet ast = muatAnimasi(\"astronot_spr\", 74, 134);\r\nukuranGambar(ast, 400, 600);\r\nlet ctr = 0;\r\n\r\nfunction update() {\r\n  ctr++;\r\n  if (ctr > 20) {\r\n    ctr = 0;\r\n    ast.frame++;\r\n    if (ast.frame > 3) {\r\n      ast.frame = 0;\r\n    }\r\n  }\r\n  \r\n  bl();\r\n  stempel(ast);\r\n}\r\n"

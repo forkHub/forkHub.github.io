@@ -35,6 +35,12 @@ async function readJsFilesContent(dirPath) {
 	}
 }
 
+async function writePData(name, content) {
+	console.log("writePData", name);
+	await fs.writeFile(name, 'demoData = ' + JSON.stringify(content, null, 2), 'utf-8');
+	console.log("writePdata selesai");
+}
+
 // Contoh Penggunaan:
 (async () => {
 	const folderPath = '../'; // Ganti dengan folder Anda
@@ -43,6 +49,10 @@ async function readJsFilesContent(dirPath) {
 	const filesContentJson = await readJsFilesContent(folderPath);
 
 	console.log('Object JavaScript:', filesContentJson);
+	for (item of filesContentJson) {
+		// console.log(item);
+		await writePData(item.namaFile, item.data);
+	}
 
 	// Jika ingin menyimpan object tersebut ke file output.json di disk:
 	await fs.writeFile('demo.json', 'demoData = ' + JSON.stringify(filesContentJson, null, 2), 'utf-8');

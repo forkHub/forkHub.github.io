@@ -1,0 +1,1 @@
+demoData = "mulai();\r\nlet roket = muatGambar(\"roket\");\r\nposisiGambar(roket, 400, 300);\r\nroket.tipeDrag = 1;\r\n\r\nfunction update() {\r\n\tbl();\r\n\tstempel(roket);\r\n\ttulis(\"Geser roket dengan mouse\", 10, 20);\r\n}\r\n"
